@@ -1,0 +1,30 @@
+# https://habr.com/ru/post/493488/
+# https://github.com/newnon/UnityGitHabr1/blob/master/.gitignore
+
+# Visual Studio
+.vs/
+*.sln
+*.csproj
+.vsconfig
+
+# Visual Studio Code
+.vscode/
+
+# Unity
+StreamingAssets/
+UserSettings/
+UIElementsSchema/
+Library/
+Obj/
+Logs/
+Temp/
+
+# Misc
+Build/
+Builds/
+
+# Exceptions
+# !*[Tt]emp*
+# !*[Tt]mp*
+!*.dll
+!*.obj
