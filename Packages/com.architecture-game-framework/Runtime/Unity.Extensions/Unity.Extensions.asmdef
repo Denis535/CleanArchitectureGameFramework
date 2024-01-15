@@ -1,0 +1,20 @@
+{
+    "name": "Unity.Extensions",
+    "rootNamespace": "UnityEngine",
+    "references": [
+        "Unity.ResourceManager",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.Extensions.Internal",
+        "Unity.Extensions.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

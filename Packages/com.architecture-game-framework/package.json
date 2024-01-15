@@ -1,0 +1,28 @@
+{
+    "name": "com.architecture-game-framework",
+    "displayName": "Architecture Game Framework",
+    "version": "1.0.0",
+    "description": "This package provides you with beautiful theme style sheets and some additions and tools for UIToolkit.",
+    "author": {
+        "name": "Denis535",
+        "url": "https://github.com/Denis535/ArchitectureGameFramework"
+    },
+    "unity": "2023.2",
+    "dependencies": {
+        "com.unity.addressables" : "1.*.*",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
+    },
+    "keywords": [
+        "Architecture",
+        "Game Architecture",
+        "Clean Architecture",
+        "Framework",
+        "Game Framework",
+        "UI",
+        "GUI",
+        "Best Practices",
+        "Uber Ribs"
+    ],
+    "hideInEditor": false
+}
