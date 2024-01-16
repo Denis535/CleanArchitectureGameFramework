@@ -1,0 +1,23 @@
+{
+    "name": "com.colorful-project-window",
+    "displayName": "Colorful Project Window",
+    "version": "1.0.0",
+    "description": "This package provides you with comfortable and colorful project window helping you quickly navigate the project.",
+    "author": {
+        "name": "Denis535",
+        "url": "https://github.com/Denis535"
+    },
+    "unity": "2023.2",
+    "dependencies": {
+    },
+    "keywords": [
+        "Editor",
+        "Tools",
+        "Extensions",
+        "Project",
+        "Window",
+        "Project Window",
+        "Custom Project Window"
+    ],
+    "hideInEditor": false
+}

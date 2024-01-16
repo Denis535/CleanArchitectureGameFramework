@@ -10,6 +10,12 @@
         "com.unity.modules.uielements": "1.0.0"
       }
     },
+    "com.colorful-project-window": {
+      "version": "file:com.colorful-project-window",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.addressables": {
       "version": "1.21.19",
       "depth": 0,
