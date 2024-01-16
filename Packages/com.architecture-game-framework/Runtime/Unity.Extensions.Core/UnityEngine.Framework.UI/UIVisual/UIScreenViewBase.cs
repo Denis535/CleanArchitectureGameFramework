@@ -15,9 +15,9 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // ShowView
-        public abstract void ShowView(UIWidgetViewBase widget, UIWidgetViewBase[] shadowed);
-        public abstract void HideView(UIWidgetViewBase widget, UIWidgetViewBase[] unshadowed);
+        // ShowWidget
+        public abstract void ShowWidget(UIWidgetViewBase widget, UIWidgetViewBase[] shadowed);
+        public abstract void HideWidget(UIWidgetViewBase widget, UIWidgetViewBase[] unshadowed);
 
         // Helpers/CreateScreen
         protected static VisualElement CreateScreen(out VisualElement screen, out VisualElement container, out VisualElement modalContainer) {

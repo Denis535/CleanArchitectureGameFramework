@@ -86,8 +86,8 @@ namespace UnityEngine.Framework.UI {
                 // OnBeforeAttach
                 OnBeforeAttachEvent?.Invoke();
                 OnBeforeAttach();
-                Screen!.ShowWidget( this );
                 // OnAttach
+                Screen!.ShowWidget( this );
                 OnAttachEvent?.Invoke();
                 OnAttach();
             }
@@ -111,8 +111,8 @@ namespace UnityEngine.Framework.UI {
                 // OnDetach
                 OnDetach();
                 OnDetachEvent?.Invoke();
-                // OnAfterDetach
                 Screen!.HideWidget( this );
+                // OnAfterDetach
                 OnAfterDetach();
                 OnAfterDetachEvent?.Invoke();
             }

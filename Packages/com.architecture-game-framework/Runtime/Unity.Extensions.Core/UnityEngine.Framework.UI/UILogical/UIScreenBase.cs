@@ -62,7 +62,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' ({widget}) must be valid" ).Valid( widget.Screen == this );
             if (widget.IsViewable) {
                 var shadowed = Widget!.DescendantsAndSelf.TakeWhile( i => i != widget ).Where( i => i.IsViewable ).Select( i => i.View! ).ToArray();
-                View.ShowView( widget.View, shadowed );
+                View.ShowWidget( widget.View, shadowed );
             }
         }
         public virtual void HideWidget(UIWidgetBase widget) {
@@ -71,7 +71,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' ({widget}) must be valid" ).Valid( widget.Screen == this );
             if (widget.IsViewable) {
                 var unshadowed = Widget!.DescendantsAndSelf.TakeWhile( i => i != widget ).Where( i => i.IsViewable ).Select( i => i.View! ).ToArray();
-                View.HideView( widget.View, unshadowed );
+                View.HideWidget( widget.View, unshadowed );
             }
         }
 
