@@ -73,20 +73,8 @@ namespace UnityEngine.UIElements {
             element.userData = userData;
             return element;
         }
-        //public static T Pipe<T>(this T element, Action<T> callback) where T : VisualElement {
-        //    callback( element );
-        //    return element;
-        //}
 
         // SetUp
-        public static T Parent<T>(this T element, VisualElement? parent) where T : VisualElement {
-            if (parent != null) {
-                parent.Add( element );
-            } else {
-                element.RemoveFromHierarchy();
-            }
-            return element;
-        }
         public static T Children<T>(this T element, params VisualElement?[] children) where T : VisualElement {
             foreach (var child in children) {
                 element.Add( child );
@@ -126,7 +114,7 @@ namespace UnityEngine.UIElements {
             element.RegisterCallback( callback, arg, TrickleDown.TrickleDown );
         }
 
-        // OnEvent/NoTrickleDown
+        // OnEvent/BubbleUp
         public static void OnEvent<TEvt>(this VisualElement element, EventCallback<TEvt> callback) where TEvt : EventBase<TEvt>, new() {
             element.RegisterCallback( callback, TrickleDown.NoTrickleDown );
         }
