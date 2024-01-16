@@ -13,7 +13,6 @@ namespace UnityEngine.Framework.UI {
         private Lock Lock { get; } = new Lock();
         // Globals
         protected internal UIDocument Document { get; set; } = default!;
-        protected internal AudioSource AudioSource { get; set; } = default!;
         // View
         public UIScreenViewBase View { get; protected set; } = default!;
         UIViewBase IUIViewable.View => View;
@@ -28,7 +27,6 @@ namespace UnityEngine.Framework.UI {
         // Awake
         public void Awake() {
             Document = gameObject.RequireComponentInChildren<UIDocument>();
-            AudioSource = gameObject.RequireComponentInChildren<AudioSource>();
         }
         public void OnDestroy() {
         }
@@ -87,29 +85,29 @@ namespace UnityEngine.Framework.UI {
         public virtual void OnAfterDescendantWidgetDetach(UIWidgetBase descendant) {
         }
 
-        // Helpers
-        protected static void AddView(UIDocument document, UIScreenViewBase view) {
+        // Helpers/AddScreen
+        protected static void AddScreen(UIDocument document, VisualElement screen) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document != null );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen != null );
             Assert.Object.Message( $"Document {document} must be awakened" ).Valid( document.didAwake );
             Assert.Object.Message( $"Document {document} must be alive" ).Alive( document != null );
-            document.rootVisualElement.Add( view.VisualElement );
+            document.rootVisualElement.Add( screen );
         }
-        protected static void AddViewIfNeeded(UIDocument document, UIScreenViewBase view) {
+        protected static void AddScreenIfNeeded(UIDocument document, VisualElement screen) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document != null );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen != null );
             Assert.Object.Message( $"Document {document} must be awakened" ).Valid( document.didAwake );
             Assert.Object.Message( $"Document {document} must be alive" ).Alive( document != null );
-            if (!document.rootVisualElement.Contains( view.VisualElement )) {
-                document.rootVisualElement.Add( view.VisualElement );
+            if (!document.rootVisualElement.Contains( screen )) {
+                document.rootVisualElement.Add( screen );
             }
         }
-        protected static void RemoveView(UIDocument document, UIScreenViewBase view) {
+        protected static void RemoveScreen(UIDocument document, VisualElement screen) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document != null );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen != null );
             Assert.Object.Message( $"Document {document} must be awakened" ).Valid( document.didAwake );
             Assert.Object.Message( $"Document {document} must be alive" ).Alive( document != null );
-            document.rootVisualElement.Remove( view.VisualElement );
+            document.rootVisualElement.Remove( screen );
         }
 
     }

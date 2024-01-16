@@ -8,95 +8,92 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIScreenViewBase : UIViewBase {
 
-        // Screen
-        internal UIScreenBase Screen { get; }
-
         // Constructor
-        public UIScreenViewBase(UIScreenBase screen) {
-            Screen = screen;
+        public UIScreenViewBase() {
         }
         public override void Dispose() {
             base.Dispose();
         }
 
         // ShowView
-        public abstract void ShowView(UIWidgetViewBase view, UIWidgetViewBase[] shadowed);
-        public abstract void HideView(UIWidgetViewBase view, UIWidgetViewBase[] unshadowed);
+        public abstract void ShowView(UIWidgetViewBase widget, UIWidgetViewBase[] shadowed);
+        public abstract void HideView(UIWidgetViewBase widget, UIWidgetViewBase[] unshadowed);
 
-        // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement view, out VisualElement viewsContainer, out VisualElement modalViewsContainer) {
-            var visualElement = view = new VisualElement();
-            visualElement.name = "screen-view";
-            visualElement.pickingMode = PickingMode.Ignore;
-            visualElement.AddToClassList( "screen-view" );
+        // Helpers/CreateScreen
+        protected static VisualElement CreateScreen(out VisualElement screen, out VisualElement container, out VisualElement modalContainer) {
+            screen = new VisualElement();
+            screen.name = "screen-view";
+            screen.AddToClassList( "screen-view" );
+            screen.pickingMode = PickingMode.Ignore;
             {
-                viewsContainer = new VisualElement();
-                viewsContainer.name = "views-container";
-                viewsContainer.pickingMode = PickingMode.Ignore;
-                viewsContainer.AddToClassList( "views-container" );
-                visualElement.Add( viewsContainer );
+                container = new VisualElement();
+                container.name = "views-container";
+                container.AddToClassList( "views-container" );
+                container.pickingMode = PickingMode.Ignore;
+                screen.Add( container );
             }
             {
-                modalViewsContainer = new VisualElement();
-                modalViewsContainer.name = "modal-views-container";
-                modalViewsContainer.pickingMode = PickingMode.Ignore;
-                modalViewsContainer.AddToClassList( "modal-views-container" );
-                visualElement.Add( modalViewsContainer );
+                modalContainer = new VisualElement();
+                modalContainer.name = "modal-views-container";
+                modalContainer.AddToClassList( "modal-views-container" );
+                modalContainer.pickingMode = PickingMode.Ignore;
+                screen.Add( modalContainer );
             }
-            return visualElement;
+            return screen;
         }
-        // Helpers/AddView
-        protected static void AddView(VisualElement container, UIWidgetViewBase view, UIWidgetViewBase? shadowed) {
+        // Helpers/AddWidget
+        protected static void AddWidget(VisualElement container, VisualElement widget, VisualElement? shadowed) {
             if (shadowed != null) {
-                shadowed.VisualElement.style.display = DisplayStyle.None;
-                shadowed.VisualElement.SetEnabled( false );
+                shadowed.style.display = DisplayStyle.None;
+                shadowed.SetEnabled( false );
             }
-            container.Add( view.VisualElement );
+            container.Add( widget );
         }
-        protected static void RemoveView(VisualElement container, UIWidgetViewBase view, UIWidgetViewBase? unshadowed) {
-            container.Remove( view.VisualElement );
+        protected static void RemoveWidget(VisualElement container, VisualElement widget, VisualElement? unshadowed) {
+            container.Remove( widget );
             if (unshadowed != null) {
-                unshadowed.VisualElement.SetEnabled( true );
-                unshadowed.VisualElement.style.display = DisplayStyle.Flex;
+                unshadowed.SetEnabled( true );
+                unshadowed.style.display = DisplayStyle.Flex;
             }
         }
-        // Helpers/AddModalView
-        protected static void AddModalView(VisualElement container, UIWidgetViewBase view, UIWidgetViewBase? shadowed) {
-            shadowed?.VisualElement.SetEnabled( false );
-            container.Add( view.VisualElement );
+        // Helpers/AddModalWidget
+        protected static void AddModalWidget(VisualElement container, VisualElement widget, VisualElement? shadowed) {
+            shadowed?.SetEnabled( false );
+            container.Add( widget );
         }
-        protected static void RemoveModalView(VisualElement container, UIWidgetViewBase view, UIWidgetViewBase? unshadowed) {
-            container.Remove( view.VisualElement );
-            unshadowed?.VisualElement.SetEnabled( true );
+        protected static void RemoveModalWidget(VisualElement container, VisualElement widget, VisualElement? unshadowed) {
+            container.Remove( widget );
+            unshadowed?.SetEnabled( true );
         }
         // Helpers/SetFocus
-        protected static void SetFocus(UIWidgetViewBase view) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view.VisualElement.panel != null );
-            if (view.VisualElement.focusable) {
-                view.VisualElement.Focus();
+        protected static void SetFocus(VisualElement widget) {
+            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
+            if (widget.focusable) {
+                widget.Focus();
             } else {
-                view.VisualElement.focusable = true;
-                view.VisualElement.delegatesFocus = true;
-                view.VisualElement.Focus();
-                view.VisualElement.delegatesFocus = false;
-                view.VisualElement.focusable = false;
+                widget.focusable = true;
+                widget.delegatesFocus = true;
+                widget.Focus();
+                widget.delegatesFocus = false;
+                widget.focusable = false;
             }
         }
-        protected static void LoadFocus(UIWidgetViewBase view) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view.VisualElement.panel != null );
-            var focusedElement = (VisualElement?) view.VisualElement.userData;
+        protected static void LoadFocus(VisualElement widget) {
+            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
+            var focusedElement = (VisualElement?) widget.userData;
             if (focusedElement != null) {
                 focusedElement.Focus();
             }
         }
-        protected static void SaveFocus(UIWidgetViewBase view) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view.VisualElement.panel != null );
-            var focusController = view.VisualElement.focusController;
-            var focusedElement = (VisualElement?) focusController.focusedElement;
-            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) {
-                view.VisualElement.userData = focusedElement;
+        protected static void SaveFocus(VisualElement widget) {
+            SaveFocus( widget, widget.focusController.focusedElement );
+        }
+        protected static void SaveFocus(VisualElement widget, Focusable focusedElement) {
+            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
+            if (focusedElement != null && (widget == focusedElement || widget.Contains( (VisualElement) focusedElement ))) {
+                widget.userData = focusedElement;
             } else {
-                view.VisualElement.userData = null;
+                widget.userData = null;
             }
         }
 
