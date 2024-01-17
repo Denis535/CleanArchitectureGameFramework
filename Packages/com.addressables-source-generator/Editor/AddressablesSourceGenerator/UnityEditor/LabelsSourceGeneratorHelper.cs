@@ -1,6 +1,5 @@
-﻿#if UNITY_EDITOR
-#nullable enable
-namespace UnityEditor.Tools_ {
+﻿#nullable enable
+namespace UnityEditor {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -24,4 +23,3 @@ namespace UnityEditor.Tools_ {
 
     }
 }
-#endif

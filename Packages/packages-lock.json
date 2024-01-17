@@ -1,13 +1,21 @@
 {
   "dependencies": {
+    "com.addressables-source-generator": {
+      "version": "file:com.addressables-source-generator",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.addressables": "1.*"
+      }
+    },
     "com.architecture-game-framework": {
       "version": "file:com.architecture-game-framework",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.unity.addressables": "1.*.*",
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.uielements": "1.0.0"
+        "com.unity.addressables": "1.*",
+        "com.unity.modules.ui": "1.*",
+        "com.unity.modules.uielements": "1.*"
       }
     },
     "com.colorful-project-window": {

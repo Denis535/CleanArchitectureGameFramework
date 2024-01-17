@@ -9,16 +9,28 @@ namespace System.Collections.Generic {
     public static class KeyValueTreeList {
 
         // Create
-        public static KeyValueTreeList<T> Create<T>(IEnumerable<(string[] Dir, string Key, T Value)> items) {
+        public static KeyValueTreeList<T> Create<T>(IEnumerable<(string[] Keys, T Value)> items) {
             var treeList = new KeyValueTreeList<T>();
-            foreach (var (dir, key, value) in items) {
-                treeList.AddValue( dir, key, value );
+            foreach (var (keys, value) in items) {
+                treeList.AddValue( keys.SkipLast( 1 ).ToArray(), keys.Last(), value );
+            }
+            return treeList;
+        }
+
+        // Create
+        public static KeyValueTreeList<T> Create<T>(IEnumerable<(string[] Keys, string Key, T Value)> items) {
+            var treeList = new KeyValueTreeList<T>();
+            foreach (var (keys, key, value) in items) {
+                treeList.AddValue( keys, key, value );
             }
             return treeList;
         }
 
     }
-    public class KeyValueTreeList<T> : KeyValueTreeList<T>.IListItem {
+    internal interface IKeyValueTreeList<T> {
+        List<KeyValueTreeList<T>.Item> Items { get; }
+    }
+    public class KeyValueTreeList<T> : IKeyValueTreeList<T> {
         // Item
         public abstract class Item {
             public string Key { get; }
@@ -26,18 +38,15 @@ namespace System.Collections.Generic {
                 Key = key;
             }
         }
-        // Item/Value
+        // ValueItem
         public class ValueItem : Item {
             public T Value { get; }
             public ValueItem(string key, T value) : base( key ) {
                 Value = value;
             }
         }
-        // Item/List
-        internal interface IListItem {
-            List<KeyValueTreeList<T>.Item> Items { get; }
-        }
-        public class ListItem : Item, IListItem {
+        // ListItem
+        public class ListItem : Item, IKeyValueTreeList<T> {
             public List<KeyValueTreeList<T>.Item> Items { get; } = new List<KeyValueTreeList<T>.Item>( 0 );
             public ListItem(string key) : base( key ) {
             }
@@ -53,14 +62,16 @@ namespace System.Collections.Generic {
         public T? GetValue(IEnumerable<string> keys, string key) {
             var list = this.GetList( keys );
             if (list != null) {
-                return list.Items.OfType<ValueItem>().Where( i => i.Key == key ).Select( i => i.Value ).FirstOrDefault();
+                var result = list.Items.OfType<ValueItem>().Where( i => i.Key == key ).Select( i => i.Value ).FirstOrDefault();
+                return result;
             }
             return default;
         }
         public T[]? GetValues(IEnumerable<string> keys, string key) {
             var list = this.GetList( keys );
             if (list != null) {
-                return list.Items.OfType<ValueItem>().Where( i => i.Key == key ).Select( i => i.Value ).ToArray().NullIfEmpty();
+                var result = list.Items.OfType<ValueItem>().Where( i => i.Key == key ).Select( i => i.Value ).ToArray();
+                return result.Any() ? result : null;
             }
             return default;
         }
@@ -100,15 +111,15 @@ namespace System.Collections.Generic {
     internal static class KeyValueTreeListHelper {
 
         // GetList
-        public static KeyValueTreeList<T>.IListItem? GetList<T>(this KeyValueTreeList<T>.IListItem list, IEnumerable<string> keys) {
+        public static IKeyValueTreeList<T>? GetList<T>(this IKeyValueTreeList<T> list, IEnumerable<string> keys) {
             var result = list;
             foreach (var key in keys) {
                 result = result.GetList( key );
-                if (result == null) break;
+                if (result == null) return null;
             }
             return result;
         }
-        public static KeyValueTreeList<T>.IListItem GetOrAddList<T>(this KeyValueTreeList<T>.IListItem list, IEnumerable<string> keys) {
+        public static IKeyValueTreeList<T> GetOrAddList<T>(this IKeyValueTreeList<T> list, IEnumerable<string> keys) {
             var result = list;
             foreach (var key in keys) {
                 result = result.GetOrAddList( key );
@@ -117,23 +128,22 @@ namespace System.Collections.Generic {
         }
 
         // GetList
-        private static KeyValueTreeList<T>.ListItem? GetList<T>(this KeyValueTreeList<T>.IListItem list, string key) {
+        private static IKeyValueTreeList<T>? GetList<T>(this IKeyValueTreeList<T> list, string key) {
             var result = list.Items.OfType<KeyValueTreeList<T>.ListItem>().Where( i => i.Key == key ).FirstOrDefault();
             return result;
         }
-        private static KeyValueTreeList<T>.ListItem GetOrAddList<T>(this KeyValueTreeList<T>.IListItem list, string key) {
+        private static IKeyValueTreeList<T> GetOrAddList<T>(this IKeyValueTreeList<T> list, string key) {
             var result = list.Items.OfType<KeyValueTreeList<T>.ListItem>().Where( i => i.Key == key ).FirstOrDefault();
             if (result == null) {
-                result = new KeyValueTreeList<T>.ListItem( key );
-                list.Items.Add( result );
+                list.Items.Add( result = new KeyValueTreeList<T>.ListItem( key ) );
             }
             return result;
         }
 
         // Sort
-        public static void Sort_<T>(this KeyValueTreeList<T>.IListItem list, Comparison<KeyValueTreeList<T>.Item> comparison) {
+        public static void Sort_<T>(this IKeyValueTreeList<T> list, Comparison<KeyValueTreeList<T>.Item> comparison) {
             list.Items.Sort( comparison );
-            foreach (var item in list.Items.OfType<KeyValueTreeList<T>.ListItem>()) {
+            foreach (var item in list.Items.OfType<IKeyValueTreeList<T>>()) {
                 item.Sort_( comparison );
             }
         }

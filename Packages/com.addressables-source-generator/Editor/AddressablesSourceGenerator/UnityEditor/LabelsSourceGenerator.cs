@@ -1,6 +1,5 @@
-﻿#if UNITY_EDITOR
-#nullable enable
-namespace UnityEditor.Tools_ {
+﻿#nullable enable
+namespace UnityEditor {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace UnityEditor.Tools_ {
     public class LabelsSourceGenerator {
 
         // Generate
-        public void Generate(string path, string @namespace, string name, AddressableAssetSettings settings) {
+        public void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
             var builder = new StringBuilder();
             var treeList = LabelsSourceGeneratorHelper.GetTreeList( settings.GetLabels().Where( IsSupported ) );
             AppendCompilationUnit( builder, @namespace, name, treeList );
@@ -73,4 +72,3 @@ namespace UnityEditor.Tools_ {
 
     }
 }
-#endif

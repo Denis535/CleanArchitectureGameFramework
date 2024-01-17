@@ -1,6 +1,5 @@
-﻿#if UNITY_EDITOR
-#nullable enable
-namespace UnityEditor.Tools_ {
+﻿#nullable enable
+namespace UnityEditor {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace UnityEditor.Tools_ {
     public class ResourcesSourceGenerator {
 
         // Generate
-        public void Generate(string path, string @namespace, string name, AddressableAssetSettings settings) {
+        public void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
             var builder = new StringBuilder();
             var treeList = ResourcesSourceGeneratorHelper.GetTreeList( settings.GetEntries().Where( IsSupported ) );
             AppendCompilationUnit( builder, @namespace, name, treeList );
@@ -45,7 +44,7 @@ namespace UnityEditor.Tools_ {
             if (value.IsAsset()) {
                 builder.AppendIndent( indent ).AppendLine( $"public const string @{name} = \"{value.address}\";" );
             } else {
-                throw Exceptions.Internal.NotSupported( $"Entry {value} is not supported" );
+                throw new NotSupportedException( $"Entry {value} is not supported" );
             }
         }
 
@@ -92,19 +91,9 @@ namespace UnityEditor.Tools_ {
 
         // Helpers
         private static string Escape(string name, string? outer) {
-            //var chars = name.ToCharArray();
-            //for (var i = 0; i < chars.Length; i++) {
-            //    if (chars[ i ] is '_' || char.IsLetterOrDigit( chars[ i ] )) {
-            //        continue;
-            //    }
-            //    chars[ i ] = '_';
-            //}
-            //name = new string( chars );
-            name = name.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+            name = name.TrimStart( ' ', '-', '_' ).TrimStart( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             name = name.TrimEnd( ' ', '-', '_' );
-            name = name.Replace( ' ', '_' );
-            name = name.Replace( '-', '_' );
-            name = name.Replace( '@', '_' );
+            name = name.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             return name == outer ? (name + "_") : name;
         }
         private static void WriteText(string path, string text) {
@@ -115,5 +104,12 @@ namespace UnityEditor.Tools_ {
         }
 
     }
+    internal static class StringBuilderExtensions {
+
+        public static StringBuilder AppendIndent(this StringBuilder builder, int indent) {
+            builder.Append( ' ', indent * 4 );
+            return builder;
+        }
+
+    }
 }
-#endif

@@ -19,5 +19,5 @@
         "Project Window",
         "Custom Project Window"
     ],
-    "hideInEditor": false
+    "hideInEditor": true
 }

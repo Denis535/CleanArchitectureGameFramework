@@ -1,7 +1,11 @@
 {
-    "name": "ColorfulProjectWindow",
+    "name": "AddressablesSourceGenerator",
     "rootNamespace": "UnityEditor",
-    "references": [],
+    "references": [
+        "Unity.ResourceManager",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor"
+    ],
     "includePlatforms": [
         "Editor"
     ],

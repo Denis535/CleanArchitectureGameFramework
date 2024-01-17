@@ -1,6 +1,5 @@
-#if UNITY_EDITOR
 #nullable enable
-namespace UnityEditor.Tools_ {
+namespace UnityEditor {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -40,7 +39,7 @@ namespace UnityEditor.Tools_ {
                     return dir.Append( name + "__" + name2 ).ToArray();
                 }
             } else {
-                throw Exceptions.Internal.NotSupported( $"Entry {entry} is not supported" );
+                throw new NotSupportedException( $"Entry {entry} is not supported" );
             }
         }
         private static string[] GetDir(AddressableAssetEntry entry) {
@@ -75,4 +74,3 @@ namespace UnityEditor.Tools_ {
 
     }
 }
-#endif
