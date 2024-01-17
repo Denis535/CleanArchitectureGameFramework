@@ -6,6 +6,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
+    [DefaultExecutionOrder( ScriptExecutionOrders.UIAudioTheme )]
     public abstract class UIAudioThemeBase : MonoBehaviour {
 
         // Globals

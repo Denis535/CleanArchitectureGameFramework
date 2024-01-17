@@ -7,6 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
+    [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
     public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement, IUIViewable {
 
         // System

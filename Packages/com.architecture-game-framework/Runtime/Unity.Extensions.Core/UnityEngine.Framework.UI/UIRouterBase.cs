@@ -5,6 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
+    [DefaultExecutionOrder( ScriptExecutionOrders.UIRouter )]
     public abstract class UIRouterBase : MonoBehaviour {
 
         // Awake

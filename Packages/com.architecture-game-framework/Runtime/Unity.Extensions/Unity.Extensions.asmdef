@@ -4,7 +4,6 @@
     "references": [
         "Unity.ResourceManager",
         "Unity.Addressables",
-        "Unity.Addressables.Editor",
         "Unity.Extensions.Internal",
         "Unity.Extensions.Core"
     ],

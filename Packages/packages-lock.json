@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.unity.addressables": "1.*"
+        "com.unity.addressables": "1.0.0"
       }
     },
     "com.architecture-game-framework": {
@@ -13,9 +13,9 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.unity.addressables": "1.*",
-        "com.unity.modules.ui": "1.*",
-        "com.unity.modules.uielements": "1.*"
+        "com.unity.addressables": "1.0.0",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
       }
     },
     "com.colorful-project-window": {

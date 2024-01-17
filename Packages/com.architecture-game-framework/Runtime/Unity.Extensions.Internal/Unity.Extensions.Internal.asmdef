@@ -3,8 +3,7 @@
     "rootNamespace": "UnityEngine",
     "references": [
         "Unity.ResourceManager",
-        "Unity.Addressables",
-        "Unity.Addressables.Editor"
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

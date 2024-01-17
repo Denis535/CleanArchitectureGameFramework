@@ -5,6 +5,7 @@ namespace UnityEngine.Framework.Game {
     using System.Collections.Generic;
     using UnityEngine;
 
+    [DefaultExecutionOrder( ScriptExecutionOrders.Player )]
     public abstract class PlayerBase : MonoBehaviour {
     }
 }
