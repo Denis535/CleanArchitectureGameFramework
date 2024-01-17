@@ -23,7 +23,7 @@ namespace UnityEditor {
         // OnGUI
         public static void OnGUI(string guid, Rect rect) {
             var path = AssetDatabase.GUIDToAssetPath( guid );
-            var module = Modules.FirstOrDefault( i => path.StartsWith( i ) );
+            var module = Modules.FirstOrDefault( i => path == i || path.StartsWith( i + '/' ) );
             if (module != null) {
                 if (path == module) {
                     DrawModule( rect );
