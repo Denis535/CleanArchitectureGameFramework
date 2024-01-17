@@ -29,13 +29,14 @@ namespace UnityEditor {
                     DrawModule( rect );
                     return;
                 }
-                if (path.StartsWith( "Assets" ) || path.StartsWith( "Resources" )) {
-                    var depth = path.Count( i => i == '/' ) - (module.Count( i => i == '/' ) + 1);
+                var content = path.Substring( module.Length );
+                if (content.StartsWith( "/Assets" ) || content.StartsWith( "/Resources" )) {
+                    var depth = content.Count( i => i == '/' ) - 1;
                     DrawAssets( rect, depth );
                     return;
                 }
-                if (Path.GetExtension( path ) is not ".asmdef" and not ".asmref" and not ".rsp") {
-                    var depth = path.Count( i => i == '/' ) - (module.Count( i => i == '/' ) + 1);
+                if (Path.GetExtension( content ) is not ".asmdef" and not ".asmref" and not ".rsp") {
+                    var depth = content.Count( i => i == '/' ) - 1;
                     DrawSources( rect, depth );
                     return;
                 }
