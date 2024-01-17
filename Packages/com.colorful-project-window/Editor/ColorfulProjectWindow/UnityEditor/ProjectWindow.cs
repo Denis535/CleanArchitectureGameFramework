@@ -40,6 +40,11 @@ namespace UnityEditor {
                     DrawSources( rect, depth );
                     return;
                 }
+                //{
+                //    var depth = content.Count( i => i == '/' ) - 1;
+                //    DrawMisc( rect, depth );
+                //    return;
+                //}
             }
         }
 
@@ -59,6 +64,13 @@ namespace UnityEditor {
             var color = depth switch {
                 0 => HSVA( 120, 1f, 1.0f, 0.3f ),
                 _ => HSVA( 120, 1f, 0.4f, 0.3f ),
+            };
+            DrawItem( rect, color );
+        }
+        private static void DrawMisc(Rect rect, int depth) {
+            var color = depth switch {
+                0 => HSVA( 0, 0f, 0.10f, 0.3f ),
+                _ => HSVA( 0, 0f, 0.04f, 0.3f ),
             };
             DrawItem( rect, color );
         }
