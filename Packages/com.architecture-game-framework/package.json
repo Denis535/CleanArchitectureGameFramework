@@ -9,9 +9,9 @@
     },
     "unity": "2023.2",
     "dependencies": {
-        "com.unity.addressables" : "1.*.*",
-        "com.unity.modules.ui": "1.*.*",
-        "com.unity.modules.uielements": "1.*.*"
+        "com.unity.addressables" : "1",
+        "com.unity.modules.ui": "1.0",
+        "com.unity.modules.uielements": "1.0"
     },
     "keywords": [
         "Architecture",

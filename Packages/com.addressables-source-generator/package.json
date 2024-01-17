@@ -9,7 +9,7 @@
     },
     "unity": "2023.2",
     "dependencies": {
-        "com.unity.addressables" : "1.*.*"
+        "com.unity.addressables" : "1"
     },
     "keywords": [
         "Editor",
