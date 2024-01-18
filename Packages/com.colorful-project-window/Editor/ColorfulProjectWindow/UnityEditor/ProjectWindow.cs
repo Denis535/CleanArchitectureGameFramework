@@ -10,7 +10,7 @@ namespace UnityEditor {
     using UnityEngine;
 
     [InitializeOnLoad]
-    public class ProjectWindow {
+    public static class ProjectWindow {
 
         private static string[] Modules { get; }
 
@@ -30,21 +30,23 @@ namespace UnityEditor {
                     return;
                 }
                 var content = path.Substring( module.Length );
-                if (content.StartsWith( "/Assets" ) || content.StartsWith( "/Resources" )) {
-                    var depth = content.Count( i => i == '/' ) - 1;
-                    DrawAssets( rect, depth );
-                    return;
+                if (AssetDatabase.IsValidFolder( path ) || content.Skip( 1 ).Contains( '/' )) {
+                    if (content.Equals( "/Assets" ) || content.StartsWith( "/Assets." )) {
+                        var depth = content.Count( i => i == '/' ) - 1;
+                        DrawAssets( rect, depth );
+                        return;
+                    }
+                    if (content.Equals( "/Resources" ) || content.StartsWith( "/Resources." )) {
+                        var depth = content.Count( i => i == '/' ) - 1;
+                        DrawAssets( rect, depth );
+                        return;
+                    }
+                    {
+                        var depth = content.Count( i => i == '/' ) - 1;
+                        DrawSources( rect, depth );
+                        return;
+                    }
                 }
-                if (Path.GetExtension( content ) is not ".asmdef" and not ".asmref" and not ".rsp") {
-                    var depth = content.Count( i => i == '/' ) - 1;
-                    DrawSources( rect, depth );
-                    return;
-                }
-                //{
-                //    var depth = content.Count( i => i == '/' ) - 1;
-                //    DrawMisc( rect, depth );
-                //    return;
-                //}
             }
         }
 
@@ -67,13 +69,13 @@ namespace UnityEditor {
             };
             DrawItem( rect, color );
         }
-        private static void DrawMisc(Rect rect, int depth) {
-            var color = depth switch {
-                0 => HSVA( 0, 0f, 0.10f, 0.3f ),
-                _ => HSVA( 0, 0f, 0.04f, 0.3f ),
-            };
-            DrawItem( rect, color );
-        }
+        //private static void DrawMisc(Rect rect, int depth) {
+        //    var color = depth switch {
+        //        0 => HSVA( 0, 0f, 0.10f, 0.3f ),
+        //        _ => HSVA( 0, 0f, 0.04f, 0.3f ),
+        //    };
+        //    DrawItem( rect, color );
+        //}
         private static void DrawItem(Rect rect, Color color) {
             rect.x -= 16;
             rect.width = 16;
