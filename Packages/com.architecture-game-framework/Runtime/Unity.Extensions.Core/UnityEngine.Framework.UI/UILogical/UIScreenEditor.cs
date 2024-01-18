@@ -18,8 +18,8 @@ namespace UnityEngine.Framework.UI {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             if (EditorApplication.isPlaying) {
-                LabelField( "View", GetDisplayString( Target.View.VisualElement ) );
                 LabelField( "Widget", GetDisplayString( Target.Widget ) );
+                LabelField( "View", GetDisplayString( Target.Widget?.View?.VisualElement ) );
             }
         }
         public override bool RequiresConstantRepaint() {
@@ -34,15 +34,16 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // Helpers
-        private static string? GetDisplayString(VisualElement view) {
-            var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
-            return builder.ToString();
-        }
         private static string? GetDisplayString(UIWidgetBase? widget) {
             if (widget == null) return null;
             var builder = new StringBuilder();
             builder.AppendHierarchy( widget, i => i.GetType().Name, i => i.Children );
+            return builder.ToString();
+        }
+        private static string? GetDisplayString(VisualElement? view) {
+            if (view == null) return null;
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( view, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
             return builder.ToString();
         }
 

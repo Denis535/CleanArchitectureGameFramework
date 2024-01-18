@@ -31,41 +31,5 @@ namespace UnityEngine.Framework.UI {
             sceen.__DetachWidget__( widget );
         }
 
-        // OnDescendantWidgetAttach
-        public static void OnBeforeDescendantWidgetAttach(this UIScreenBase screen, Action<UIWidgetBase> callback) {
-            screen.OnBeforeDescendantWidgetAttachEvent += callback;
-        }
-        public static void OnAfterDescendantWidgetAttach(this UIScreenBase screen, Action<UIWidgetBase> callback) {
-            screen.OnAfterDescendantWidgetAttachEvent += callback;
-        }
-        public static void OnBeforeDescendantWidgetDetach(this UIScreenBase screen, Action<UIWidgetBase> callback) {
-            screen.OnBeforeDescendantWidgetDetachEvent += callback;
-        }
-        public static void OnAfterDescendantWidgetDetach(this UIScreenBase screen, Action<UIWidgetBase> callback) {
-            screen.OnAfterDescendantWidgetDetachEvent += callback;
-        }
-
-        // OnDescendantWidgetAttach
-        public static void OnBeforeDescendantWidgetAttach<TWidget>(this UIScreenBase screen, Action<TWidget> callback) where TWidget : UIWidgetBase {
-            screen.OnBeforeDescendantWidgetAttachEvent += descendant => {
-                if (descendant is TWidget descendant_) callback( descendant_ );
-            };
-        }
-        public static void OnAfterDescendantWidgetAttach<TWidget>(this UIScreenBase screen, Action<TWidget> callback) where TWidget : UIWidgetBase {
-            screen.OnAfterDescendantWidgetAttachEvent += descendant => {
-                if (descendant is TWidget descendant_) callback( descendant_ );
-            };
-        }
-        public static void OnBeforeDescendantWidgetDetach<TWidget>(this UIScreenBase screen, Action<TWidget> callback) where TWidget : UIWidgetBase {
-            screen.OnBeforeDescendantWidgetDetachEvent += descendant => {
-                if (descendant is TWidget descendant_) callback( descendant_ );
-            };
-        }
-        public static void OnAfterDescendantWidgetDetach<TWidget>(this UIScreenBase screen, Action<TWidget> callback) where TWidget : UIWidgetBase {
-            screen.OnAfterDescendantWidgetDetachEvent += descendant => {
-                if (descendant is TWidget descendant_) callback( descendant_ );
-            };
-        }
-
     }
 }

@@ -69,13 +69,6 @@ namespace UnityEditor {
             };
             DrawItem( rect, color );
         }
-        //private static void DrawMisc(Rect rect, int depth) {
-        //    var color = depth switch {
-        //        0 => HSVA( 0, 0f, 0.10f, 0.3f ),
-        //        _ => HSVA( 0, 0f, 0.04f, 0.3f ),
-        //    };
-        //    DrawItem( rect, color );
-        //}
         private static void DrawItem(Rect rect, Color color) {
             rect.x -= 16;
             rect.width = 16;
