@@ -37,17 +37,6 @@ namespace UnityEngine.UIElements {
             }
         }
 
-        // IsSubmit
-        public static bool IsSubmit(this Button button) {
-            return button.name is "submit" or "submission" or "confirm" or "confirmation" or "okey" or "ok" or "yes";
-        }
-        public static bool IsCancel(this Button button) {
-            return button.name is "cancel" or "cancellation" or "back" or "no";
-        }
-        public static bool IsQuit(this Button button) {
-            return button.name is "quit";
-        }
-
         // SetUp
         public static T Name<T>(this T element, string? name) where T : VisualElement {
             element.name = name;
