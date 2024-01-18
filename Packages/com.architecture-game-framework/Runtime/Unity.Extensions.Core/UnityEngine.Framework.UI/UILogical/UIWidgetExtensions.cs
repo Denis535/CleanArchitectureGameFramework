@@ -43,5 +43,33 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
+        // OnAttach
+        public static void OnBeforeAttach(this UIWidgetBase widget, Action callback) {
+            widget.OnBeforeAttachEvent += callback;
+        }
+        public static void OnAfterAttach(this UIWidgetBase widget, Action callback) {
+            widget.OnAfterAttachEvent += callback;
+        }
+        public static void OnBeforeDetach(this UIWidgetBase widget, Action callback) {
+            widget.OnBeforeDetachEvent += callback;
+        }
+        public static void OnAfterDetach(this UIWidgetBase widget, Action callback) {
+            widget.OnAfterDetachEvent += callback;
+        }
+
+        // OnDescendantAttach
+        public static void OnBeforeDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
+            widget.OnBeforeDescendantAttachEvent += callback;
+        }
+        public static void OnAfterDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
+            widget.OnAfterDescendantAttachEvent += callback;
+        }
+        public static void OnBeforeDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
+            widget.OnBeforeDescendantDetachEvent += callback;
+        }
+        public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
+            widget.OnAfterDescendantDetachEvent += callback;
+        }
+
     }
 }

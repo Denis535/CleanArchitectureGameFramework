@@ -48,15 +48,15 @@ namespace UnityEngine.Framework.UI {
         public IReadOnlyList<UIWidgetBase> Descendants => this.GetDescendants();
         public IReadOnlyList<UIWidgetBase> DescendantsAndSelf => this.GetDescendantsAndSelf();
         // OnAttach
-        public Action? OnBeforeAttachEvent { get; set; }
-        public Action? OnAfterAttachEvent { get; set; }
-        public Action? OnBeforeDetachEvent { get; set; }
-        public Action? OnAfterDetachEvent { get; set; }
+        public event Action? OnBeforeAttachEvent;
+        public event Action? OnAfterAttachEvent;
+        public event Action? OnBeforeDetachEvent;
+        public event Action? OnAfterDetachEvent;
         // OnDescendantAttach
-        public Action<UIWidgetBase>? OnBeforeDescendantAttachEvent { get; set; }
-        public Action<UIWidgetBase>? OnAfterDescendantAttachEvent { get; set; }
-        public Action<UIWidgetBase>? OnBeforeDescendantDetachEvent { get; set; }
-        public Action<UIWidgetBase>? OnAfterDescendantDetachEvent { get; set; }
+        public event Action<UIWidgetBase>? OnBeforeDescendantAttachEvent;
+        public event Action<UIWidgetBase>? OnAfterDescendantAttachEvent;
+        public event Action<UIWidgetBase>? OnBeforeDescendantDetachEvent;
+        public event Action<UIWidgetBase>? OnAfterDescendantDetachEvent;
 
         // Constructor
         public UIWidgetBase() {
