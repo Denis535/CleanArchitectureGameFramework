@@ -327,13 +327,13 @@ namespace UnityEngine.Framework.UI {
             return VisualElement.Contains( element );
         }
 
-        public void Add(UISubViewBase view) {
+        public void Add(UIViewBase view) {
             VisualElement.Add( view.VisualElement );
         }
-        public void Remove(UISubViewBase view) {
+        public void Remove(UIViewBase view) {
             VisualElement.Remove( view.VisualElement );
         }
-        public bool Contains(UISubViewBase view) {
+        public bool Contains(UIViewBase view) {
             return VisualElement.Contains( view.VisualElement );
         }
 

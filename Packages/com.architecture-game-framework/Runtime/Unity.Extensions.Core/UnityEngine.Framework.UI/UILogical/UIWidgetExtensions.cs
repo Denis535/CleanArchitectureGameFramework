@@ -43,55 +43,5 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        //// OnAttach
-        //public static void OnBeforeAttach(this UIWidgetBase widget, Action callback) {
-        //    widget.OnBeforeAttachEvent += callback;
-        //}
-        //public static void OnAttach(this UIWidgetBase widget, Action callback) {
-        //    widget.OnAttachEvent += callback;
-        //}
-        //public static void OnDetach(this UIWidgetBase widget, Action callback) {
-        //    widget.OnDetachEvent += callback;
-        //}
-        //public static void OnAfterDetach(this UIWidgetBase widget, Action callback) {
-        //    widget.OnAfterDetachEvent += callback;
-        //}
-
-        //// OnDescendantAttach
-        //public static void OnBeforeDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
-        //    widget.OnBeforeDescendantAttachEvent += callback;
-        //}
-        //public static void OnAfterDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
-        //    widget.OnAfterDescendantAttachEvent += callback;
-        //}
-        //public static void OnBeforeDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
-        //    widget.OnBeforeDescendantDetachEvent += callback;
-        //}
-        //public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
-        //    widget.OnAfterDescendantDetachEvent += callback;
-        //}
-
-        //// OnDescendantAttach
-        //public static void OnBeforeDescendantAttach<TWidget>(this UIWidgetBase widget, Action<TWidget> callback) where TWidget : UIWidgetBase {
-        //    widget.OnBeforeDescendantAttachEvent += descendant => {
-        //        if (descendant is TWidget descendant_) callback( descendant_ );
-        //    };
-        //}
-        //public static void OnAfterDescendantAttach<TWidget>(this UIWidgetBase widget, Action<TWidget> callback) where TWidget : UIWidgetBase {
-        //    widget.OnAfterDescendantAttachEvent += descendant => {
-        //        if (descendant is TWidget descendant_) callback( descendant_ );
-        //    };
-        //}
-        //public static void OnBeforeDescendantDetach<TWidget>(this UIWidgetBase widget, Action<TWidget> callback) where TWidget : UIWidgetBase {
-        //    widget.OnBeforeDescendantDetachEvent += descendant => {
-        //        if (descendant is TWidget descendant_) callback( descendant_ );
-        //    };
-        //}
-        //public static void OnAfterDescendantDetach<TWidget>(this UIWidgetBase widget, Action<TWidget> callback) where TWidget : UIWidgetBase {
-        //    widget.OnAfterDescendantDetachEvent += descendant => {
-        //        if (descendant is TWidget descendant_) callback( descendant_ );
-        //    };
-        //}
-
     }
 }

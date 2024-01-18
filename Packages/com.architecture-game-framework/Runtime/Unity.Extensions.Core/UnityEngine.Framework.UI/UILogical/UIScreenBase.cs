@@ -30,7 +30,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Object.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             using (Lock.Enter()) {
                 Widget = widget;
-                Widget.Attach( this );
+                widget.Parent = null;
+                UIWidgetBase.AttachToScreen( Widget, this );
             }
         }
         protected internal virtual void __DetachWidget__(UIWidgetBase widget) {
@@ -39,7 +40,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Object.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
             Assert.Object.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
             using (Lock.Enter()) {
-                Widget.Detach( this );
+                UIWidgetBase.DetachFromScreen( Widget, this );
+                widget.Parent = null;
                 Widget = null;
             }
             if (widget.DisposeAutomatically) {
