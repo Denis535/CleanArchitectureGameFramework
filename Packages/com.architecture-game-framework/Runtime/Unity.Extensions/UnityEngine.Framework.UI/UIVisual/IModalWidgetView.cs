@@ -5,12 +5,12 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public interface IUIModalView {
+    public interface IModalWidgetView {
     }
-    public static class IUIModalViewExtensions {
+    public static class IModalWidgetViewExtensions {
 
         public static bool IsModal(this UIViewBase view) {
-            return view is IUIModalView;
+            return view is IModalWidgetView;
         }
 
     }
