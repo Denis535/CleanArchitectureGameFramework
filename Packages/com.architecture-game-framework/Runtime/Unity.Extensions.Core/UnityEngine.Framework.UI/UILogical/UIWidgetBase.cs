@@ -77,6 +77,36 @@ namespace UnityEngine.Framework.UI {
         public abstract void OnAttach();
         public abstract void OnDetach();
 
+        // OnAttach
+        private void OnBeforeAttach() {
+            foreach (var ancestor in this.GetAncestors().AsEnumerable().Reverse()) {
+                ancestor.OnBeforeDescendantAttachEvent?.Invoke( this );
+                ancestor.OnBeforeDescendantAttach( this );
+            }
+            OnBeforeAttachEvent?.Invoke();
+        }
+        private void OnAfterAttach() {
+            OnAfterAttachEvent?.Invoke();
+            foreach (var ancestor in this.GetAncestors()) {
+                ancestor.OnAfterDescendantAttach( this );
+                ancestor.OnAfterDescendantAttachEvent?.Invoke( this );
+            }
+        }
+        private void OnBeforeDetach() {
+            foreach (var ancestor in this.GetAncestors().AsEnumerable().Reverse()) {
+                ancestor.OnBeforeDescendantDetachEvent?.Invoke( this );
+                ancestor.OnBeforeDescendantDetach( this );
+            }
+            OnBeforeDetachEvent?.Invoke();
+        }
+        private void OnAfterDetach() {
+            OnAfterDetachEvent?.Invoke();
+            foreach (var ancestor in this.GetAncestors()) {
+                ancestor.OnAfterDescendantDetach( this );
+                ancestor.OnAfterDescendantDetachEvent?.Invoke( this );
+            }
+        }
+
         // AttachChild
         protected internal virtual void __AttachChild__(UIWidgetBase child) {
             // You can override it but you should not directly call this method
@@ -125,22 +155,12 @@ namespace UnityEngine.Framework.UI {
             widget.State = UIWidgetState.Attaching;
             widget.Screen = screen;
             {
-                foreach (var ancestor in widget.GetAncestors()) {
-                    ancestor.OnBeforeDescendantAttach( widget );
-                    ancestor.OnBeforeDescendantAttachEvent?.Invoke( widget );
+                widget.OnBeforeAttach();
+                widget.OnAttach();
+                foreach (var child in widget.Children) {
+                    AttachToScreen( child, screen );
                 }
-                {
-                    widget.OnBeforeAttachEvent?.Invoke();
-                    widget.OnAttach();
-                    widget.OnAfterAttachEvent?.Invoke();
-                    foreach (var child in widget.Children) {
-                        AttachToScreen( child, screen );
-                    }
-                }
-                foreach (var ancestor in widget.GetAncestors()) {
-                    ancestor.OnAfterDescendantAttach( widget );
-                    ancestor.OnAfterDescendantAttachEvent?.Invoke( widget );
-                }
+                widget.OnAfterAttach();
             }
             widget.State = UIWidgetState.Attached;
         }
@@ -152,22 +172,12 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen );
             widget.State = UIWidgetState.Detaching;
             {
-                foreach (var ancestor in widget.GetAncestors()) {
-                    ancestor.OnBeforeDescendantDetach( widget );
-                    ancestor.OnBeforeDescendantDetachEvent?.Invoke( widget );
+                widget.OnBeforeDetach();
+                foreach (var child in widget.Children.Reverse()) {
+                    DetachFromScreen( child, screen );
                 }
-                {
-                    foreach (var child in widget.Children.Reverse()) {
-                        DetachFromScreen( child, screen );
-                    }
-                    widget.OnBeforeDetachEvent?.Invoke();
-                    widget.OnDetach();
-                    widget.OnAfterDetachEvent?.Invoke();
-                }
-                foreach (var ancestor in widget.GetAncestors()) {
-                    ancestor.OnAfterDescendantDetach( widget );
-                    ancestor.OnAfterDescendantDetachEvent?.Invoke( widget );
-                }
+                widget.OnDetach();
+                widget.OnAfterDetach();
             }
             widget.Screen = null;
             widget.State = UIWidgetState.Detached;
