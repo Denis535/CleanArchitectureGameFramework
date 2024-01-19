@@ -14,7 +14,7 @@ namespace UnityEngine.Framework.UI {
         // Globals
         protected UIDocument Document { get; set; } = default!;
         // Widget
-        public abstract UIWidgetBase? Widget { get; protected set; }
+        public UIWidgetBase? Widget { get; private set; }
 
         // Awake
         public void Awake() {
