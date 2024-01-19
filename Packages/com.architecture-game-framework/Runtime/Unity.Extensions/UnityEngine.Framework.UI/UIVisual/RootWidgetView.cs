@@ -11,39 +11,39 @@ namespace UnityEngine.Framework.UI {
         // VisualElement
         public override VisualElement VisualElement { get; }
         public ElementWrapper Widget { get; }
-        public SlotWrapper Container { get; }
-        public SlotWrapper ModalContainer { get; }
+        public SlotWrapper WidgetContainer { get; }
+        public SlotWrapper ModalWidgetContainer { get; }
 
         // Constructor
         public RootWidgetView() {
-            VisualElement = CreateVisualElement( out var widget, out var container, out var modalContainer );
+            VisualElement = CreateVisualElement( out var widget, out var widgetContainer, out var modalWidgetContainer );
             Widget = widget.Wrap();
-            Container = container.AsSlot();
-            ModalContainer = modalContainer.AsSlot();
+            WidgetContainer = widgetContainer.AsSlot();
+            ModalWidgetContainer = modalWidgetContainer.AsSlot();
         }
         public override void Dispose() {
             base.Dispose();
         }
 
         // Helpers
-        private static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement container, out VisualElement modalContainer) {
+        private static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement widgetContainer, out VisualElement modalWidgetContainer) {
             widget = new VisualElement();
             widget.name = "root-widget";
             widget.AddToClassList( "root-widget" );
             widget.pickingMode = PickingMode.Ignore;
             {
-                container = new VisualElement();
-                container.name = "container";
-                container.AddToClassList( "container" );
-                container.pickingMode = PickingMode.Ignore;
-                widget.Add( container );
+                widgetContainer = new VisualElement();
+                widgetContainer.name = "widget-container";
+                widgetContainer.AddToClassList( "widget-container" );
+                widgetContainer.pickingMode = PickingMode.Ignore;
+                widget.Add( widgetContainer );
             }
             {
-                modalContainer = new VisualElement();
-                modalContainer.name = "modal-container";
-                modalContainer.AddToClassList( "modal-container" );
-                modalContainer.pickingMode = PickingMode.Ignore;
-                widget.Add( modalContainer );
+                modalWidgetContainer = new VisualElement();
+                modalWidgetContainer.name = "modal-widget-container";
+                modalWidgetContainer.AddToClassList( "modal-widget-container" );
+                modalWidgetContainer.pickingMode = PickingMode.Ignore;
+                widget.Add( modalWidgetContainer );
             }
             return widget;
         }

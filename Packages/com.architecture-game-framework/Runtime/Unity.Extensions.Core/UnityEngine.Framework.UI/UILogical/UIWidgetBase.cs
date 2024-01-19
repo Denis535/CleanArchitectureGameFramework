@@ -79,32 +79,24 @@ namespace UnityEngine.Framework.UI {
 
         // OnAttach
         private void OnBeforeAttach() {
-            foreach (var ancestor in this.GetAncestors().AsEnumerable().Reverse()) {
-                ancestor.OnBeforeDescendantAttachEvent?.Invoke( this );
-                ancestor.OnBeforeDescendantAttach( this );
-            }
+            Parent?.OnBeforeDescendantAttachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantAttach( this );
             OnBeforeAttachEvent?.Invoke();
         }
         private void OnAfterAttach() {
             OnAfterAttachEvent?.Invoke();
-            foreach (var ancestor in this.GetAncestors()) {
-                ancestor.OnAfterDescendantAttach( this );
-                ancestor.OnAfterDescendantAttachEvent?.Invoke( this );
-            }
+            Parent?.OnAfterDescendantAttach( this );
+            Parent?.OnAfterDescendantAttachEvent?.Invoke( this );
         }
         private void OnBeforeDetach() {
-            foreach (var ancestor in this.GetAncestors().AsEnumerable().Reverse()) {
-                ancestor.OnBeforeDescendantDetachEvent?.Invoke( this );
-                ancestor.OnBeforeDescendantDetach( this );
-            }
+            Parent?.OnBeforeDescendantDetachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantDetach( this );
             OnBeforeDetachEvent?.Invoke();
         }
         private void OnAfterDetach() {
             OnAfterDetachEvent?.Invoke();
-            foreach (var ancestor in this.GetAncestors()) {
-                ancestor.OnAfterDescendantDetach( this );
-                ancestor.OnAfterDescendantDetachEvent?.Invoke( this );
-            }
+            Parent?.OnAfterDescendantDetach( this );
+            Parent?.OnAfterDescendantDetachEvent?.Invoke( this );
         }
 
         // AttachChild
@@ -138,12 +130,20 @@ namespace UnityEngine.Framework.UI {
 
         // OnDescendantAttach
         public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant) {
+            Parent?.OnBeforeDescendantAttachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantAttach( this );
         }
         public virtual void OnAfterDescendantAttach(UIWidgetBase descendant) {
+            Parent?.OnAfterDescendantAttach( this );
+            Parent?.OnAfterDescendantAttachEvent?.Invoke( this );
         }
         public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant) {
+            Parent?.OnBeforeDescendantDetachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantDetach( this );
         }
         public virtual void OnAfterDescendantDetach(UIWidgetBase descendant) {
+            Parent?.OnAfterDescendantDetach( this );
+            Parent?.OnAfterDescendantDetachEvent?.Invoke( this );
         }
 
         // Helpers
