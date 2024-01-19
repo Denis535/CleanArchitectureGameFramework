@@ -137,21 +137,22 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnDescendantAttach
-        public virtual void OnBeforeDescendantAttach(UIWidgetBase widget) {
+        public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant) {
         }
-        public virtual void OnAfterDescendantAttach(UIWidgetBase widget) {
+        public virtual void OnAfterDescendantAttach(UIWidgetBase descendant) {
         }
-        public virtual void OnBeforeDescendantDetach(UIWidgetBase widget) {
+        public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant) {
         }
-        public virtual void OnAfterDescendantDetach(UIWidgetBase widget) {
+        public virtual void OnAfterDescendantDetach(UIWidgetBase descendant) {
         }
 
         // Helpers
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         internal static void AttachToScreen(UIWidgetBase widget, UIScreenBase screen) {
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be non-attached" ).Valid( widget.IsNonAttached );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == null );
-            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Attaching;
             widget.Screen = screen;
             {
@@ -166,10 +167,11 @@ namespace UnityEngine.Framework.UI {
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         internal static void DetachFromScreen(UIWidgetBase widget, UIScreenBase screen) {
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be attached" ).Valid( widget.IsAttached );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == screen );
-            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Detaching;
             {
                 widget.OnBeforeDetach();
@@ -209,17 +211,17 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnDescendantAttach
-        public override void OnBeforeDescendantAttach(UIWidgetBase widget) {
-            base.OnBeforeDescendantAttach( widget );
+        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantAttach( descendant );
         }
-        public override void OnAfterDescendantAttach(UIWidgetBase widget) {
-            base.OnAfterDescendantAttach( widget );
+        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
+            base.OnAfterDescendantAttach( descendant );
         }
-        public override void OnBeforeDescendantDetach(UIWidgetBase widget) {
-            base.OnBeforeDescendantDetach( widget );
+        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantDetach( descendant );
         }
-        public override void OnAfterDescendantDetach(UIWidgetBase widget) {
-            widget.OnAfterDescendantDetach( widget );
+        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
+            base.OnAfterDescendantDetach( descendant );
         }
 
     }

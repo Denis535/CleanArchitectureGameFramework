@@ -26,14 +26,14 @@ namespace UnityEngine.Framework.UI {
 
         // OnDescendantAttach
         public override void OnBeforeDescendantAttach(UIWidgetBase widget) {
-        }
-        public override void OnAfterDescendantAttach(UIWidgetBase widget) {
             // show widget
         }
+        public override void OnAfterDescendantAttach(UIWidgetBase widget) {
+        }
         public override void OnBeforeDescendantDetach(UIWidgetBase widget) {
-            // hide widget
         }
         public override void OnAfterDescendantDetach(UIWidgetBase widget) {
+            // hide widget
         }
 
     }
