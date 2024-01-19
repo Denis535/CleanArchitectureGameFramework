@@ -26,7 +26,6 @@ namespace UnityEngine.Framework.UI {
 
         // OnDescendantAttach
         public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            Debug.LogFormat( "Add Widget: {0} / {1}", descendant, descendant.IsViewable && descendant.View.VisualElement.panel == null );
             if (descendant.IsViewable && descendant.View.VisualElement.panel == null) {
                 View.AddWidget( descendant.View );
             }

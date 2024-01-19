@@ -130,20 +130,20 @@ namespace UnityEngine.Framework.UI {
 
         // OnDescendantAttach
         public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            Parent?.OnBeforeDescendantAttachEvent?.Invoke( this );
-            Parent?.OnBeforeDescendantAttach( this );
+            Parent?.OnBeforeDescendantAttachEvent?.Invoke( descendant );
+            Parent?.OnBeforeDescendantAttach( descendant );
         }
         public virtual void OnAfterDescendantAttach(UIWidgetBase descendant) {
-            Parent?.OnAfterDescendantAttach( this );
-            Parent?.OnAfterDescendantAttachEvent?.Invoke( this );
+            Parent?.OnAfterDescendantAttach( descendant );
+            Parent?.OnAfterDescendantAttachEvent?.Invoke( descendant );
         }
         public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            Parent?.OnBeforeDescendantDetachEvent?.Invoke( this );
-            Parent?.OnBeforeDescendantDetach( this );
+            Parent?.OnBeforeDescendantDetachEvent?.Invoke( descendant );
+            Parent?.OnBeforeDescendantDetach( descendant );
         }
         public virtual void OnAfterDescendantDetach(UIWidgetBase descendant) {
-            Parent?.OnAfterDescendantDetach( this );
-            Parent?.OnAfterDescendantDetachEvent?.Invoke( this );
+            Parent?.OnAfterDescendantDetach( descendant );
+            Parent?.OnAfterDescendantDetachEvent?.Invoke( descendant );
         }
 
         // Helpers
