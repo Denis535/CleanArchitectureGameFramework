@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIAudioThemeBase : MonoBehaviour {
 
         // Globals
-        protected internal AudioSource AudioSource { get; set; } = default!;
+        protected AudioSource AudioSource { get; set; } = default!;
         // AudioSource
         public AudioClip? Clip => AudioSource.clip;
         public bool IsPlaying { get; private set; }
