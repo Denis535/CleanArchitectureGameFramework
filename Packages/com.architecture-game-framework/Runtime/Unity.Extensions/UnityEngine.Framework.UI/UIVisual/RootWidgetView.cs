@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -28,16 +29,22 @@ namespace UnityEngine.Framework.UI {
         // AddWidget
         public virtual void AddWidget(UIViewBase widget) {
             if (!widget.IsModal()) {
+                WidgetSlot.Children.LastOrDefault()?.SetDisplayed( false );
                 WidgetSlot.Add( widget.VisualElement );
             } else {
+                WidgetSlot.Children.LastOrDefault()?.SetEnabled( false );
+                ModalWidgetSlot.Children.LastOrDefault()?.SetDisplayed( false );
                 ModalWidgetSlot.Add( widget.VisualElement );
             }
         }
         public virtual void RemoveWidget(UIViewBase widget) {
             if (!widget.IsModal()) {
                 WidgetSlot.Remove( widget.VisualElement );
+                WidgetSlot.Children.LastOrDefault()?.SetDisplayed( true );
             } else {
                 ModalWidgetSlot.Remove( widget.VisualElement );
+                ModalWidgetSlot.Children.LastOrDefault()?.SetDisplayed( true );
+                WidgetSlot.Children.LastOrDefault()?.SetEnabled( !ModalWidgetSlot.Children.Any() );
             }
         }
 
