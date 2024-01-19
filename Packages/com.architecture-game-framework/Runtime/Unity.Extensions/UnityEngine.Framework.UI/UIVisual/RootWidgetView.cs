@@ -28,16 +28,16 @@ namespace UnityEngine.Framework.UI {
         // AddWidget
         public virtual void AddWidget(UIViewBase widget) {
             if (!widget.IsModal()) {
-                WidgetSlot.Add( widget );
+                WidgetSlot.Add( widget.VisualElement );
             } else {
-                ModalWidgetSlot.Add( widget );
+                ModalWidgetSlot.Add( widget.VisualElement );
             }
         }
         public virtual void RemoveWidget(UIViewBase widget) {
             if (!widget.IsModal()) {
-                WidgetSlot.Remove( widget );
+                WidgetSlot.Remove( widget.VisualElement );
             } else {
-                ModalWidgetSlot.Remove( widget );
+                ModalWidgetSlot.Remove( widget.VisualElement );
             }
         }
 
