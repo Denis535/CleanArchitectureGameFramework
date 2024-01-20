@@ -3,7 +3,6 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -24,28 +23,6 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             base.Dispose();
-        }
-
-        // AddWidget
-        public virtual void AddWidget(UIViewBase widget) {
-            if (!widget.IsModal()) {
-                WidgetSlot.Children.LastOrDefault()?.SetDisplayed( false );
-                WidgetSlot.Add( widget.VisualElement );
-            } else {
-                WidgetSlot.Children.LastOrDefault()?.SetEnabled( false );
-                ModalWidgetSlot.Children.LastOrDefault()?.SetDisplayed( false );
-                ModalWidgetSlot.Add( widget.VisualElement );
-            }
-        }
-        public virtual void RemoveWidget(UIViewBase widget) {
-            if (!widget.IsModal()) {
-                WidgetSlot.Remove( widget.VisualElement );
-                WidgetSlot.Children.LastOrDefault()?.SetDisplayed( true );
-            } else {
-                ModalWidgetSlot.Remove( widget.VisualElement );
-                ModalWidgetSlot.Children.LastOrDefault()?.SetDisplayed( true );
-                WidgetSlot.Children.LastOrDefault()?.SetEnabled( !ModalWidgetSlot.Children.Any() );
-            }
         }
 
         // Helpers/CreateVisualElement
@@ -69,65 +46,6 @@ namespace UnityEngine.Framework.UI {
                 widget.Add( modalWidgetSlot );
             }
             return widget;
-        }
-        // Helpers/AddWidget
-        protected static void AddWidget(SlotWrapper slot, VisualElement widget, VisualElement? shadowed) {
-            if (shadowed != null) {
-                shadowed.SetEnabled( false );
-                shadowed.SetDisplayed( false );
-            }
-            slot.Add( widget );
-        }
-        protected static void RemoveWidget(SlotWrapper slot, VisualElement widget, VisualElement? unshadowed) {
-            slot.Remove( widget );
-            if (unshadowed != null) {
-                unshadowed.SetDisplayed( true );
-                unshadowed.SetEnabled( true );
-            }
-        }
-        // Helpers/AddModalWidget
-        protected static void AddModalWidget(SlotWrapper slot, VisualElement widget, VisualElement? shadowed) {
-            if (shadowed != null) {
-                shadowed.SetEnabled( false );
-            }
-            slot.Add( widget );
-        }
-        protected static void RemoveModalWidget(SlotWrapper slot, VisualElement widget, VisualElement? unshadowed) {
-            slot.Remove( widget );
-            if (unshadowed != null) {
-                unshadowed.SetEnabled( true );
-            }
-        }
-        // Helpers/SetFocus
-        protected static void SetFocus(VisualElement widget) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
-            if (widget.focusable) {
-                widget.Focus();
-            } else {
-                widget.focusable = true;
-                widget.delegatesFocus = true;
-                widget.Focus();
-                widget.delegatesFocus = false;
-                widget.focusable = false;
-            }
-        }
-        protected static void LoadFocus(VisualElement widget) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
-            var focusedElement = (VisualElement?) widget.userData;
-            if (focusedElement != null) {
-                focusedElement.Focus();
-            }
-        }
-        protected static void SaveFocus(VisualElement widget) {
-            SaveFocus( widget, widget.focusController.focusedElement );
-        }
-        protected static void SaveFocus(VisualElement widget, Focusable focusedElement) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.panel != null );
-            if (focusedElement != null && (widget == focusedElement || widget.Contains( (VisualElement) focusedElement ))) {
-                widget.userData = focusedElement;
-            } else {
-                widget.userData = null;
-            }
         }
 
     }
