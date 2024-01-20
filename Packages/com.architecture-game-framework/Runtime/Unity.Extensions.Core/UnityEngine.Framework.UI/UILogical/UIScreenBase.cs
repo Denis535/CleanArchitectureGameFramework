@@ -51,37 +51,27 @@ namespace UnityEngine.Framework.UI {
 
         // Helpers/ShowWidget
         protected static void ShowWidget(UIDocument document, UIWidgetBase widget) {
-            ShowWidgetView( document, widget.View!.VisualElement );
+            Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
+            Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
+            Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            document.rootVisualElement.Add( widget.View!.VisualElement );
         }
         protected static void ShowWidgetIfNeeded(UIDocument document, UIWidgetBase widget) {
-            ShowWidgetViewIfNeeded( document, widget.View!.VisualElement );
-        }
-        protected static void HideWidget(UIDocument document, UIWidgetBase widget) {
-            HideWidgetView( document, widget.View!.VisualElement );
-        }
-        // Helpers/ShowWidgetView
-        protected static void ShowWidgetView(UIDocument document, VisualElement view) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
             Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Add( view );
-        }
-        protected static void ShowWidgetViewIfNeeded(UIDocument document, VisualElement view) {
-            Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
-            Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
-            Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            if (!document.rootVisualElement.Contains( view )) {
-                document.rootVisualElement.Add( view );
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            if (!document.rootVisualElement.Contains( widget.View!.VisualElement )) {
+                document.rootVisualElement.Add( widget.View!.VisualElement );
             }
         }
-        protected static void HideWidgetView(UIDocument document, VisualElement view) {
+        protected static void HideWidget(UIDocument document, UIWidgetBase widget) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
             Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Remove( view );
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            document.rootVisualElement.Remove( widget.View!.VisualElement );
         }
 
     }

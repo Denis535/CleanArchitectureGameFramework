@@ -6,13 +6,28 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class RootWidgetView : UIViewBase {
+    public abstract class RootWidgetViewBase : UIViewBase {
+
+        // VisualElement
+        public abstract ElementWrapper Widget { get; }
+        public abstract SlotWrapper WidgetSlot { get; }
+        public abstract SlotWrapper ModalWidgetSlot { get; }
+
+        // Constructor
+        public RootWidgetViewBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    public class RootWidgetView : RootWidgetViewBase {
 
         // VisualElement
         public override VisualElement VisualElement { get; }
-        public ElementWrapper Widget { get; }
-        public SlotWrapper WidgetSlot { get; }
-        public SlotWrapper ModalWidgetSlot { get; }
+        public override ElementWrapper Widget { get; }
+        public override SlotWrapper WidgetSlot { get; }
+        public override SlotWrapper ModalWidgetSlot { get; }
 
         // Constructor
         public RootWidgetView() {
