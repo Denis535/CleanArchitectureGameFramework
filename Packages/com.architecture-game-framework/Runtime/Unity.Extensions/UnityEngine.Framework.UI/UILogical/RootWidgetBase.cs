@@ -46,43 +46,41 @@ namespace UnityEngine.Framework.UI {
         protected virtual void ShowWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
                 var covered = widget.Descendants.Where( i => i.IsViewable && !i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                ShowWidget( widget, covered, null );
+                ShowWidget( widget, covered );
             } else {
-                var covered = widget.Descendants.Where( i => i.IsViewable && !i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                var covered_modal = widget.Descendants.Where( i => i.IsViewable && i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                ShowWidget( widget, covered, covered_modal );
+                var covered = widget.Descendants.Where( i => i.IsViewable && i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
+                ShowWidget( widget, covered );
             }
         }
         protected virtual void HideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
                 var uncovered = widget.Descendants.Where( i => i.IsViewable && !i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                HideWidget( widget, uncovered, null );
+                HideWidget( widget, uncovered );
             } else {
-                var uncovered = widget.Descendants.Where( i => i.IsViewable && !i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                var uncovered_modal = widget.Descendants.Where( i => i.IsViewable && i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
-                HideWidget( widget, uncovered, uncovered_modal );
+                var uncovered = widget.Descendants.Where( i => i.IsViewable && i.IsModal() ).TakeWhile( i => i != widget ).LastOrDefault();
+                HideWidget( widget, uncovered );
             }
         }
 
         // ShowWidget
-        protected virtual void ShowWidget(UIWidgetBase widget, UIWidgetBase? covered, UIWidgetBase? covered_modal) {
+        protected virtual void ShowWidget(UIWidgetBase widget, UIWidgetBase? covered) {
             if (!widget.IsModal()) {
-                View.WidgetSlot.Add( widget.View!.VisualElement );
-                covered?.View!.VisualElement.SetDisplayed( false );
+                View.WidgetSlot.Add( widget.View! );
+                if (covered != null) covered.View!.IsDisplayed = false;
             } else {
-                View.ModalWidgetSlot.Add( widget.View!.VisualElement );
-                covered?.View!.VisualElement.SetEnabled( !View.ModalWidgetSlot.Children.Any() );
-                covered_modal?.View!.VisualElement.SetDisplayed( false );
+                View.ModalWidgetSlot.Add( widget.View! );
+                View.WidgetSlot.IsEnabled = View.ModalWidgetSlot.Children.Count == 0;
+                if (covered != null) covered.View!.IsDisplayed = false;
             }
         }
-        protected virtual void HideWidget(UIWidgetBase widget, UIWidgetBase? uncovered, UIWidgetBase? uncovered_modal) {
+        protected virtual void HideWidget(UIWidgetBase widget, UIWidgetBase? uncovered) {
             if (!widget.IsModal()) {
-                View.WidgetSlot.Remove( widget.View!.VisualElement );
-                uncovered?.View!.VisualElement.SetDisplayed( true );
+                View.WidgetSlot.Remove( widget.View! );
+                if (uncovered != null) uncovered.View!.IsDisplayed = true;
             } else {
-                View.ModalWidgetSlot.Remove( widget.View!.VisualElement );
-                uncovered?.View!.VisualElement.SetEnabled( !View.ModalWidgetSlot.Children.Any() );
-                uncovered_modal?.View!.VisualElement.SetDisplayed( true );
+                View.ModalWidgetSlot.Remove( widget.View! );
+                View.WidgetSlot.IsEnabled = View.ModalWidgetSlot.Children.Count == 0;
+                if (uncovered != null) uncovered.View!.IsDisplayed = true;
             }
         }
 

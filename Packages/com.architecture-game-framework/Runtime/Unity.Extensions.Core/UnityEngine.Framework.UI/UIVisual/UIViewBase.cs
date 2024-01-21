@@ -13,6 +13,19 @@ namespace UnityEngine.Framework.UI {
         public bool IsDisposed { get; private set; }
         // VisualElement
         public abstract VisualElement VisualElement { get; }
+        // VisualElement
+        public bool IsEnabled {
+            get => VisualElement.enabledSelf;
+            set => VisualElement.SetEnabled( value );
+        }
+        public bool IsDisplayed {
+            get => VisualElement.IsDisplayed();
+            set => VisualElement.SetDisplayed( value );
+        }
+        public bool IsValid {
+            get => VisualElement.IsValid();
+            set => VisualElement.SetValid( value );
+        }
 
         // Constructor
         public UIViewBase() {
