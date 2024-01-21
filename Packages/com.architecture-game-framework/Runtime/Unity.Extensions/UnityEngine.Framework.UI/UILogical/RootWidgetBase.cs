@@ -117,7 +117,7 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class RootWidget : RootWidgetBase<RootWidgetView> {
+    public class RootWidget : RootWidgetBase<RootWidgetView> {
 
         // View
         public override RootWidgetView View { get; }
