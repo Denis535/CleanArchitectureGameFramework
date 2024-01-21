@@ -45,41 +45,43 @@ namespace UnityEngine.Framework.UI {
         // ShowWidget
         protected virtual void ShowWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                var covered = View.WidgetSlot.Children.LastOrDefault();
-                ShowWidget( widget, covered );
+                View.WidgetSlot.Add( widget.View! );
+                OnShowWidget( widget );
             } else {
-                var covered = View.ModalWidgetSlot.Children.LastOrDefault();
-                ShowWidget( widget, covered );
+                OnHideWidget( widget );
+                View.ModalWidgetSlot.Add( widget.View! );
             }
         }
         protected virtual void HideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                var uncovered = View.WidgetSlot.Children.LastOrDefault();
-                HideWidget( widget, uncovered );
+                Assert.Operation.Message( $"You can hide only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
+                View.WidgetSlot.Remove( widget.View! );
+                OnShowWidget( widget );
             } else {
-                var uncovered = View.ModalWidgetSlot.Children.LastOrDefault();
-                HideWidget( widget, uncovered );
+                Assert.Operation.Message( $"You can hide only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
+                OnHideWidget( widget );
+                View.ModalWidgetSlot.Remove( widget.View! );
             }
         }
 
-        // ShowWidget
-        protected virtual void ShowWidget(UIWidgetBase widget, VisualElement? covered) {
+        // OnShowWidget
+        protected virtual void OnShowWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                View.WidgetSlot.Add( widget.View! );
+                var covered = View.WidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
                 covered?.SetDisplayed( false );
             } else {
-                View.ModalWidgetSlot.Add( widget.View! );
-                View.WidgetSlot.IsEnabled = View.ModalWidgetSlot.Children.Count == 0;
+                View.WidgetSlot.IsEnabled = false;
+                var covered = View.ModalWidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
                 covered?.SetDisplayed( false );
             }
         }
-        protected virtual void HideWidget(UIWidgetBase widget, VisualElement? uncovered) {
+        protected virtual void OnHideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                View.WidgetSlot.Remove( widget.View! );
+                var uncovered = View.WidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
                 uncovered?.SetDisplayed( true );
             } else {
-                View.ModalWidgetSlot.Remove( widget.View! );
-                View.WidgetSlot.IsEnabled = View.ModalWidgetSlot.Children.Count == 0;
+                View.WidgetSlot.IsEnabled = !View.ModalWidgetSlot.Children.Any( i => i != widget.View!.VisualElement );
+                var uncovered = View.ModalWidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
                 uncovered?.SetDisplayed( true );
             }
         }
