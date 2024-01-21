@@ -48,15 +48,15 @@ namespace UnityEngine.Framework.UI {
                 View.WidgetSlot.Add( widget.View! );
                 OnShowWidget( widget );
             } else {
-                OnShowWidget( widget );
                 View.ModalWidgetSlot.Add( widget.View! );
+                OnShowWidget( widget );
             }
         }
         protected virtual void HideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
                 Assert.Operation.Message( $"You can hide only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
-                View.WidgetSlot.Remove( widget.View! );
                 OnHideWidget( widget );
+                View.WidgetSlot.Remove( widget.View! );
             } else {
                 Assert.Operation.Message( $"You can hide only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
                 OnHideWidget( widget );
