@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
-
+ 
     public abstract class RootWidgetBase<TView> : UIWidgetBase<TView> where TView : RootWidgetViewBase {
 
         // Constructor
@@ -48,7 +48,7 @@ namespace UnityEngine.Framework.UI {
                 View.WidgetSlot.Add( widget.View! );
                 OnShowWidget( widget );
             } else {
-                OnHideWidget( widget );
+                OnShowWidget( widget );
                 View.ModalWidgetSlot.Add( widget.View! );
             }
         }
@@ -56,7 +56,7 @@ namespace UnityEngine.Framework.UI {
             if (!widget.IsModal()) {
                 Assert.Operation.Message( $"You can hide only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
                 View.WidgetSlot.Remove( widget.View! );
-                OnShowWidget( widget );
+                OnHideWidget( widget );
             } else {
                 Assert.Operation.Message( $"You can hide only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
                 OnHideWidget( widget );
