@@ -5,7 +5,7 @@
     "description": "This package provides you with comfortable and colorful project window helping you quickly navigate the project.",
     "author": {
         "name": "Denis535",
-        "url": "https://github.com/Denis535"
+        "url": "https://github.com/Denis535/CleanArchitectureGameFramework"
     },
     "unity": "2023.2",
     "dependencies": {

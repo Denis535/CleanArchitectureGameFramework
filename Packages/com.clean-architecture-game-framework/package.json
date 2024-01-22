@@ -1,11 +1,11 @@
 {
-    "name": "com.architecture-game-framework",
-    "displayName": "Architecture Game Framework",
+    "name": "com.clean-architecture-game-framework",
+    "displayName": "Clean Architecture Game Framework",
     "version": "1.0.0",
     "description": "This package provides you with clean architecture framework that helping you to develop your project.",
     "author": {
         "name": "Denis535",
-        "url": "https://github.com/Denis535"
+        "url": "https://github.com/Denis535/CleanArchitectureGameFramework"
     },
     "unity": "2023.2",
     "dependencies": {

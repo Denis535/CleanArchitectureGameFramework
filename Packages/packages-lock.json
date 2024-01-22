@@ -8,8 +8,8 @@
         "com.unity.addressables": "1.0.0"
       }
     },
-    "com.architecture-game-framework": {
-      "version": "file:com.architecture-game-framework",
+    "com.clean-architecture-game-framework": {
+      "version": "file:com.clean-architecture-game-framework",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
