@@ -15,14 +15,13 @@
     },
     "keywords": [
         "Architecture",
-        "Game Architecture",
         "Clean Architecture",
+        "Game Architecture",
         "Framework",
         "Game Framework",
         "UI",
         "GUI",
         "Best Practices",
         "Uber Ribs"
-    ],
-    "hideInEditor": true
+    ]
 }

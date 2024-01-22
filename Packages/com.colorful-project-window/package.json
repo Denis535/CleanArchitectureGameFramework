@@ -2,7 +2,7 @@
     "name": "com.colorful-project-window",
     "displayName": "Colorful Project Window",
     "version": "1.0.0",
-    "description": "This package provides you with comfortable and colorful project window helping you quickly navigate the project.",
+    "description": "This package (Colorful Project Window) gives you the more comfortable and colorful project window.",
     "author": {
         "name": "Denis535",
         "url": "https://github.com/Denis535/CleanArchitectureGameFramework"
@@ -17,7 +17,7 @@
         "Project",
         "Window",
         "Project Window",
-        "Custom Project Window"
-    ],
-    "hideInEditor": true
+        "Custom Project Window",
+        "Colorful Project Window"
+    ]
 }
