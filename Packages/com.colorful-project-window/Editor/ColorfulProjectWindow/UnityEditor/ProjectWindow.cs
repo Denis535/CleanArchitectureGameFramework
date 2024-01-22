@@ -23,7 +23,7 @@ namespace UnityEditor {
         // OnGUI
         public static void OnGUI(string guid, Rect rect) {
             var path = AssetDatabase.GUIDToAssetPath( guid );
-            var module = Modules.FirstOrDefault( i => path == i || path.StartsWith( i + '/' ) );
+            var module = Modules.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
             if (module != null) {
                 if (path == module) {
                     DrawModule( rect );
@@ -31,12 +31,12 @@ namespace UnityEditor {
                 }
                 var content = path.Substring( module.Length );
                 if (AssetDatabase.IsValidFolder( path ) || content.Skip( 1 ).Contains( '/' )) {
-                    if (content.Equals( "/Assets" ) || content.StartsWith( "/Assets." )) {
+                    if (content.Equals( "/Assets" ) || content.StartsWith( "/Assets/" ) || content.StartsWith( "/Assets." )) {
                         var depth = content.Count( i => i == '/' ) - 1;
                         DrawAssets( rect, depth );
                         return;
                     }
-                    if (content.Equals( "/Resources" ) || content.StartsWith( "/Resources." )) {
+                    if (content.Equals( "/Resources" ) || content.StartsWith( "/Resources/" ) || content.StartsWith( "/Resources." )) {
                         var depth = content.Count( i => i == '/' ) - 1;
                         DrawAssets( rect, depth );
                         return;
