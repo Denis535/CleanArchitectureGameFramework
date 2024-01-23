@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
- 
+
     public abstract class RootWidgetBase<TView> : UIWidgetBase<TView> where TView : RootWidgetViewBase {
 
         // Constructor
@@ -87,34 +87,34 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers/SetFocus
-        protected static void SetFocus(UIWidgetBase widget) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.View!.VisualElement.panel != null );
-            if (widget.View!.VisualElement.focusable) {
-                widget.View!.VisualElement.Focus();
+        protected static void SetFocus(VisualElement view) {
+            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
+            if (view.focusable) {
+                view.Focus();
             } else {
-                widget.View!.VisualElement.focusable = true;
-                widget.View!.VisualElement.delegatesFocus = true;
-                widget.View!.VisualElement.Focus();
-                widget.View!.VisualElement.delegatesFocus = false;
-                widget.View!.VisualElement.focusable = false;
+                view.focusable = true;
+                view.delegatesFocus = true;
+                view.Focus();
+                view.delegatesFocus = false;
+                view.focusable = false;
             }
         }
-        protected static void LoadFocus(UIWidgetBase widget) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.View!.VisualElement.panel != null );
-            var focusedElement = (VisualElement?) widget.View!.VisualElement.userData;
+        protected static void LoadFocus(VisualElement view) {
+            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
+            var focusedElement = (VisualElement?) view.userData;
             if (focusedElement != null) {
                 focusedElement.Focus();
             }
         }
-        protected static void SaveFocus(UIWidgetBase widget) {
-            SaveFocus( widget, widget.View!.VisualElement.focusController.focusedElement );
+        protected static void SaveFocus(VisualElement view) {
+            SaveFocus( view, view.focusController.focusedElement );
         }
-        protected static void SaveFocus(UIWidgetBase widget, Focusable focusedElement) {
-            Assert.Object.Message( $"Widget {widget} must be attached" ).Valid( widget.View!.VisualElement.panel != null );
-            if (focusedElement != null && (widget.View!.VisualElement == focusedElement || widget.View!.VisualElement.Contains( (VisualElement) focusedElement ))) {
-                widget.View!.VisualElement.userData = focusedElement;
+        protected static void SaveFocus(VisualElement view, Focusable focusedElement) {
+            Assert.Object.Message( $"View {view} must be attached" ).Valid( view.panel != null );
+            if (focusedElement != null && (view == focusedElement || view!.Contains( (VisualElement) focusedElement ))) {
+                view!.userData = focusedElement;
             } else {
-                widget.View!.VisualElement.userData = null;
+                view!.userData = null;
             }
         }
 
