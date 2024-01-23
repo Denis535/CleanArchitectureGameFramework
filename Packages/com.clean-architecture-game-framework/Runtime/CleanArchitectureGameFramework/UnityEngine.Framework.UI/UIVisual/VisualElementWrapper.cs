@@ -5,7 +5,6 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
-    using UnityEngine.Framework.UI;
     using UnityEngine.UIElements;
 
     public abstract class VisualElementWrapper {
@@ -97,49 +96,84 @@ namespace UnityEngine.Framework.UI {
             return new SlotWrapper( visualElement );
         }
 
-        // OnAttachToPanel
-        public static void OnAttachToPanel<T>(this VisualElementWrapper<T> wrapper, Action<VisualElementWrapper>? callback) where T : VisualElement {
-            wrapper.VisualElement.OnAttachToPanel( evt => callback?.Invoke( wrapper ) );
+        // OnEvent/TrickleDown
+        public static void OnEventTrickleDown<TEvt>(this VisualElementWrapper wrapper, EventCallback<TEvt> callback) where TEvt : EventBase<TEvt>, new() {
+            wrapper.VisualElement.RegisterCallback( callback, TrickleDown.TrickleDown );
         }
-        public static void OnDetachFromPanel<T>(this VisualElementWrapper<T> wrapper, Action<VisualElementWrapper>? callback) where T : VisualElement {
-            wrapper.VisualElement.OnDetachFromPanel( evt => callback?.Invoke( wrapper ) );
+        public static void OnEventTrickleDown<TEvt, TArg>(this VisualElementWrapper wrapper, EventCallback<TEvt, TArg> callback, TArg arg) where TEvt : EventBase<TEvt>, new() {
+            wrapper.VisualElement.RegisterCallback( callback, arg, TrickleDown.TrickleDown );
+        }
+
+        // OnEvent/BubbleUp
+        public static void OnEvent<TEvt>(this VisualElementWrapper wrapper, EventCallback<TEvt> callback) where TEvt : EventBase<TEvt>, new() {
+            wrapper.VisualElement.RegisterCallback( callback, TrickleDown.NoTrickleDown );
+        }
+        public static void OnEvent<TEvt, TArg>(this VisualElementWrapper wrapper, EventCallback<TEvt, TArg> callback, TArg arg) where TEvt : EventBase<TEvt>, new() {
+            wrapper.VisualElement.RegisterCallback( callback, arg, TrickleDown.NoTrickleDown );
+        }
+
+        // OnAttachToPanel
+        public static void OnAttachToPanel(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<AttachToPanelEvent>( evt => callback?.Invoke() );
+        }
+        public static void OnDetachFromPanel(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<DetachFromPanelEvent>( evt => callback?.Invoke() );
+        }
+
+        // OnFocus
+        public static void OnFocusIn(this VisualElementWrapper wrapper, EventCallback<FocusInEvent> callback) {
+            wrapper.VisualElement.RegisterCallback( callback ); // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
+        }
+        public static void OnFocus(this VisualElementWrapper wrapper, EventCallback<FocusEvent> callback) {
+            wrapper.VisualElement.RegisterCallback( callback ); // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
+        }
+        public static void OnFocusOut(this VisualElementWrapper wrapper, EventCallback<FocusOutEvent> callback) {
+            wrapper.VisualElement.RegisterCallback( callback ); // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
         }
 
         // OnClick
-        public static void OnClick(this ButtonWrapper wrapper, Action<VisualElementWrapper>? callback) {
-            wrapper.VisualElement.OnClick( evt => callback?.Invoke( wrapper ) );
+        public static void OnClick(this ButtonWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<ClickEvent>( evt => callback?.Invoke() );
         }
 
         // OnChange
-        public static void OnChange(this TextFieldWrapper<string> wrapper, Action<VisualElementWrapper, string?>? callback) {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue ) );
+        public static void OnChange(this TextFieldWrapper<string> wrapper, Action<string?>? callback) {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<string>>( evt => callback?.Invoke( evt.newValue ) );
         }
-        public static void OnChange(this TextFieldWrapper<string> wrapper, Action<VisualElementWrapper, string?, string?>? callback) {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue, evt.previousValue ) );
-        }
-
-        // OnChange
-        public static void OnChange<T>(this PopupFieldWrapper<T> wrapper, Action<VisualElementWrapper, T?>? callback) where T : notnull {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue ) );
-        }
-        public static void OnChange<T>(this PopupFieldWrapper<T> wrapper, Action<VisualElementWrapper, T?, T?>? callback) where T : notnull {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue, evt.previousValue ) );
+        public static void OnChange(this TextFieldWrapper<string> wrapper, Action<string?, string?>? callback) {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<string>>( evt => callback?.Invoke( evt.newValue, evt.previousValue ) );
         }
 
         // OnChange
-        public static void OnChange<T>(this SliderFieldWrapper<T> wrapper, Action<VisualElementWrapper, T>? callback) where T : struct, IComparable<T> {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue ) );
+        public static void OnChange<T>(this PopupFieldWrapper<T> wrapper, Action<T?>? callback) where T : notnull {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<T>>( evt => callback?.Invoke( evt.newValue ) );
         }
-        public static void OnChange<T>(this SliderFieldWrapper<T> wrapper, Action<VisualElementWrapper, T, T>? callback) where T : struct, IComparable<T> {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue, evt.previousValue ) );
+        public static void OnChange<T>(this PopupFieldWrapper<T> wrapper, Action<T?, T?>? callback) where T : notnull {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<T>>( evt => callback?.Invoke( evt.newValue, evt.previousValue ) );
         }
 
         // OnChange
-        public static void OnChange(this ToggleFieldWrapper<bool> wrapper, Action<VisualElementWrapper, bool>? callback) {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue ) );
+        public static void OnChange<T>(this SliderFieldWrapper<T> wrapper, Action<T>? callback) where T : struct, IComparable<T> {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<T>>( evt => callback?.Invoke( evt.newValue ) );
         }
-        public static void OnChange(this ToggleFieldWrapper<bool> wrapper, Action<VisualElementWrapper, bool, bool>? callback) {
-            wrapper.VisualElement.OnChange( evt => callback?.Invoke( wrapper, evt.newValue, evt.previousValue ) );
+        public static void OnChange<T>(this SliderFieldWrapper<T> wrapper, Action<T, T>? callback) where T : struct, IComparable<T> {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<T>>( evt => callback?.Invoke( evt.newValue, evt.previousValue ) );
+        }
+
+        // OnChange
+        public static void OnChange(this ToggleFieldWrapper<bool> wrapper, Action<bool>? callback) {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<bool>>( evt => callback?.Invoke( evt.newValue ) );
+        }
+        public static void OnChange(this ToggleFieldWrapper<bool> wrapper, Action<bool, bool>? callback) {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<bool>>( evt => callback?.Invoke( evt.newValue, evt.previousValue ) );
+        }
+
+        // OnSubmit
+        public static void OnSubmit(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<NavigationSubmitEvent>( evt => callback?.Invoke() );
+        }
+        public static void OnCancel(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<NavigationCancelEvent>( evt => callback?.Invoke() );
         }
 
     }

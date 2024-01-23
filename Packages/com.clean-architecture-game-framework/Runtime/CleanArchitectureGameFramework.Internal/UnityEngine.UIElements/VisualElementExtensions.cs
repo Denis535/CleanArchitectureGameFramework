@@ -121,13 +121,13 @@ namespace UnityEngine.UIElements {
 
         // OnFocus
         public static void OnFocusIn(this VisualElement element, EventCallback<FocusInEvent> callback) {
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback ); // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
         }
         public static void OnFocus(this VisualElement element, EventCallback<FocusEvent> callback) {
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback ); // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
         }
         public static void OnFocusOut(this VisualElement element, EventCallback<FocusOutEvent> callback) {
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback ); // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
         }
 
         // OnMouse
