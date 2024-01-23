@@ -121,29 +121,36 @@ namespace UnityEngine.UIElements {
 
         // OnFocus
         public static void OnFocusIn(this VisualElement element, EventCallback<FocusInEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
+            // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
+            element.RegisterCallback( callback );
         }
         public static void OnFocus(this VisualElement element, EventCallback<FocusEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
+            // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
+            element.RegisterCallback( callback );
         }
         public static void OnFocusOut(this VisualElement element, EventCallback<FocusOutEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
+            // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
+            element.RegisterCallback( callback );
         }
 
         // OnMouse
         public static void OnMouseOver(this VisualElement element, EventCallback<MouseOverEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent when the mouse pointer enters an element.
+            // Event sent when the mouse pointer enters an element.
+            element.RegisterCallback( callback );
         }
         public static void OnMouseOut(this VisualElement element, EventCallback<MouseOutEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent when the mouse pointer exits an element.
+            // Event sent when the mouse pointer exits an element.
+            element.RegisterCallback( callback );
         }
 
         // OnMouse
         public static void OnMouseEnter(this VisualElement element, EventCallback<MouseEnterEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent when the mouse pointer enters an element or one of its descendent elements.
+            // Event sent when the mouse pointer enters an element or one of its descendent elements.
+            element.RegisterCallback( callback );
         }
         public static void OnMouseLeave(this VisualElement element, EventCallback<MouseLeaveEvent> callback) {
-            element.RegisterCallback( callback ); // Event sent when the mouse pointer exits an element and all its descendent elements.
+            // Event sent when the mouse pointer exits an element and all its descendent elements.
+            element.RegisterCallback( callback );
         }
 
         // OnMouse
