@@ -1,9 +1,11 @@
 {
-    "name": "Unity.Extensions.Internal",
+    "name": "CleanArchitectureGameFramework",
     "rootNamespace": "UnityEngine",
     "references": [
         "Unity.ResourceManager",
-        "Unity.Addressables"
+        "Unity.Addressables",
+        "CleanArchitectureGameFramework.Internal",
+        "CleanArchitectureGameFramework.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
