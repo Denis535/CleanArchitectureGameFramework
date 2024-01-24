@@ -44,45 +44,75 @@ namespace UnityEngine.Framework.UI {
 
         // ShowWidget
         protected virtual void ShowWidget(UIWidgetBase widget) {
+            // cover last widget
             if (!widget.IsModal()) {
-                View.WidgetSlot.Add( widget.View! );
-                OnShowWidget( widget );
+                // cover last normal widget
+                var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
+                if (last != null) {
+                    SaveFocus( last );
+                    last.SetDisplayed( false );
+                }
             } else {
-                View.ModalWidgetSlot.Add( widget.View! );
-                OnShowWidget( widget );
+                // if you have any modal widget
+                // then cover last modal widget
+                // otherwise cover last normal widget
+                if (View.ModalWidgetSlot.Children.Any()) {
+                    var last = (VisualElement?) View.ModalWidgetSlot.Children.LastOrDefault();
+                    if (last != null) {
+                        SaveFocus( last );
+                        last.SetDisplayed( false );
+                    }
+                } else {
+                    var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
+                    if (last != null) {
+                        SaveFocus( last );
+                        last.SetEnabled( false );
+                    }
+                }
+            }
+            // show widget
+            if (!widget.IsModal()) {
+                View.WidgetSlot.Add( widget.View!.VisualElement );
+                SetFocus( widget.View!.VisualElement );
+            } else {
+                View.ModalWidgetSlot.Add( widget.View!.VisualElement );
+                SetFocus( widget.View!.VisualElement );
             }
         }
         protected virtual void HideWidget(UIWidgetBase widget) {
+            // hide widget
             if (!widget.IsModal()) {
-                Assert.Operation.Message( $"You can hide only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
-                OnHideWidget( widget );
-                View.WidgetSlot.Remove( widget.View! );
+                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
+                View.WidgetSlot.Remove( widget.View.VisualElement );
             } else {
-                Assert.Operation.Message( $"You can hide only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
-                OnHideWidget( widget );
-                View.ModalWidgetSlot.Remove( widget.View! );
+                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
+                View.ModalWidgetSlot.Remove( widget.View.VisualElement );
             }
-        }
-
-        // OnShowWidget
-        protected virtual void OnShowWidget(UIWidgetBase widget) {
+            // uncover last widget
             if (!widget.IsModal()) {
-                var covered = View.WidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
-                covered?.SetDisplayed( false );
+                // uncover last normal widget
+                var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
+                if (last != null) {
+                    last.SetDisplayed( true );
+                    LoadFocus( last );
+                }
             } else {
-                View.WidgetSlot.IsEnabled = false;
-                var covered = View.ModalWidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
-                covered?.SetDisplayed( false );
-            }
-        }
-        protected virtual void OnHideWidget(UIWidgetBase widget) {
-            if (!widget.IsModal()) {
-                var uncovered = View.WidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
-                uncovered?.SetDisplayed( true );
-            } else {
-                View.WidgetSlot.IsEnabled = !View.ModalWidgetSlot.Children.Any( i => i != widget.View!.VisualElement );
-                var uncovered = View.ModalWidgetSlot.Children.SkipLast( 1 ).LastOrDefault();
-                uncovered?.SetDisplayed( true );
+                // if you have any modal widget
+                // then uncover last modal widget
+                // otherwise uncover last normal widget
+                if (View.ModalWidgetSlot.Children.Any()) {
+                    var last = (VisualElement?) View.ModalWidgetSlot.Children.LastOrDefault();
+                    if (last != null) {
+                        last.SetDisplayed( true );
+                        LoadFocus( last );
+                    }
+                } else {
+                    var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
+                    if (last != null) {
+                        last.SetEnabled( true );
+                        LoadFocus( last );
+                    }
+                }
             }
         }
 
@@ -99,13 +129,6 @@ namespace UnityEngine.Framework.UI {
                 view.focusable = false;
             }
         }
-        protected static void LoadFocus(VisualElement view) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
-            var focusedElement = (VisualElement?) view.userData;
-            if (focusedElement != null) {
-                focusedElement.Focus();
-            }
-        }
         protected static void SaveFocus(VisualElement view) {
             SaveFocus( view, view.focusController.focusedElement );
         }
@@ -115,6 +138,13 @@ namespace UnityEngine.Framework.UI {
                 view!.userData = focusedElement;
             } else {
                 view!.userData = null;
+            }
+        }
+        protected static void LoadFocus(VisualElement view) {
+            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
+            var focusedElement = (VisualElement?) view.userData;
+            if (focusedElement != null) {
+                focusedElement.Focus();
             }
         }
 
