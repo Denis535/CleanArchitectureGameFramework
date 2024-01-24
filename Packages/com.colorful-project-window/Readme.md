@@ -1,5 +1,5 @@
 # Overview
-This package (Colorful Project Window) gives you the more comfortable and colorful project window.
+This package "Colorful Project Window" gives you the more comfortable and colorful project window.
 
 # Details
 This colors the project window using the following rules: 
@@ -7,4 +7,5 @@ This colors the project window using the following rules:
 - it marks its content in yellow (assets) or green (sources) colors.
 
 # Links
-- https://github.com/Denis535/CleanArchitectureGameFramework
+- https://u3d.as/39eY
+- https://youtu.be/tardralpxdA

@@ -1,5 +1,5 @@
 # Overview
-This package "Addressables Source Generator" provides gives you an ability to generate a hierarchical list of all addressable assets and its labels.
+This package "Addressables Source Generator" gives you an ability to generate a hierarchical list of all addressable assets and its labels.
 
 # Example (Assets)
 ```
@@ -49,4 +49,5 @@ namespace UnityEngine.AddressableAssets {
 ```
 
 # Links
-- https://github.com/Denis535/CleanArchitectureGameFramework
+- https://u3d.as/39eY
+- https://youtu.be/tardralpxdA
