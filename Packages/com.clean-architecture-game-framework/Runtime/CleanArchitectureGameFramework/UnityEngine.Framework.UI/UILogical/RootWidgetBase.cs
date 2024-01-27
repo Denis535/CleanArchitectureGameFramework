@@ -22,29 +22,13 @@ namespace UnityEngine.Framework.UI {
         public override void OnDetach() {
         }
 
-        // OnDescendantAttach
-        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            if (descendant.IsViewable && descendant.View.VisualElement.panel == null) {
-                ShowWidget( descendant );
-            }
-            base.OnBeforeDescendantAttach( descendant );
-        }
-        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
-            base.OnAfterDescendantAttach( descendant );
-        }
-        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantDetach( descendant );
-        }
-        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
-            if (descendant.IsViewable && descendant.View.VisualElement.panel != null) {
-                HideWidget( descendant );
-            }
-            base.OnAfterDescendantDetach( descendant );
-        }
-
         // ShowWidget
-        protected abstract void ShowWidget(UIWidgetBase widget);
-        protected abstract void HideWidget(UIWidgetBase widget);
+        protected override void ShowWidget(UIWidgetBase widget) {
+            base.ShowWidget( widget );
+        }
+        protected override void HideWidget(UIWidgetBase widget) {
+            base.HideWidget( widget );
+        }
 
         // Helpers/SetFocus
         protected static void SetFocus(VisualElement view) {
@@ -82,7 +66,7 @@ namespace UnityEngine.Framework.UI {
     public class RootWidget : RootWidgetBase<RootWidgetView> {
 
         // View
-        public override RootWidgetView View { get; }
+        protected override RootWidgetView View { get; }
 
         // Constructor
         public RootWidget() {
@@ -114,7 +98,16 @@ namespace UnityEngine.Framework.UI {
 
         // ShowWidget
         protected override void ShowWidget(UIWidgetBase widget) {
-            // cover last widget
+            OnBeforeShowWidget( widget );
+            OnShowWidget( widget );
+        }
+        protected override void HideWidget(UIWidgetBase widget) {
+            OnHideWidget( widget );
+            OnAfterHideWidget( widget );
+        }
+
+        // OnBeforeShowWidget
+        protected virtual void OnBeforeShowWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
                 // cover last normal widget
                 var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
@@ -140,25 +133,8 @@ namespace UnityEngine.Framework.UI {
                     }
                 }
             }
-            // show widget
-            if (!widget.IsModal()) {
-                View.WidgetSlot.Add( widget.View!.VisualElement );
-                SetFocus( widget.View!.VisualElement );
-            } else {
-                View.ModalWidgetSlot.Add( widget.View!.VisualElement );
-                SetFocus( widget.View!.VisualElement );
-            }
         }
-        protected override void HideWidget(UIWidgetBase widget) {
-            // hide widget
-            if (!widget.IsModal()) {
-                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
-                View.WidgetSlot.Remove( widget.View.VisualElement );
-            } else {
-                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.View!.VisualElement );
-                View.ModalWidgetSlot.Remove( widget.View.VisualElement );
-            }
-            // uncover last widget
+        protected virtual void OnAfterHideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
                 // uncover last normal widget
                 var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
@@ -183,6 +159,26 @@ namespace UnityEngine.Framework.UI {
                         LoadFocus( last );
                     }
                 }
+            }
+        }
+
+        // OnShowWidget
+        protected virtual void OnShowWidget(UIWidgetBase widget) {
+            if (!widget.IsModal()) {
+                View.WidgetSlot.Add( GetVisualElement( widget )! );
+                SetFocus( GetVisualElement( widget )! );
+            } else {
+                View.ModalWidgetSlot.Add( GetVisualElement( widget )! );
+                SetFocus( GetVisualElement( widget )! );
+            }
+        }
+        protected virtual void OnHideWidget(UIWidgetBase widget) {
+            if (!widget.IsModal()) {
+                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == GetVisualElement( widget )! );
+                View.WidgetSlot.Remove( GetVisualElement( widget )! );
+            } else {
+                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == GetVisualElement( widget )! );
+                View.ModalWidgetSlot.Remove( GetVisualElement( widget )! );
             }
         }
 

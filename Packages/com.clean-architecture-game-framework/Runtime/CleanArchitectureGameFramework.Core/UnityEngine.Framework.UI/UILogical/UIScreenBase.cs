@@ -9,8 +9,8 @@ namespace UnityEngine.Framework.UI {
     [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
     public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement {
 
-        // System
-        private Lock Lock { get; } = new Lock();
+        private readonly Lock @lock = new Lock();
+
         // Globals
         protected UIDocument Document { get; set; } = default!;
         // Widget
@@ -28,7 +28,7 @@ namespace UnityEngine.Framework.UI {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Object.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-            using (Lock.Enter()) {
+            using (@lock.Enter()) {
                 Widget = widget;
                 widget.Parent = null;
                 UIWidgetBase.AttachToScreen( Widget, this );
@@ -39,7 +39,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Object.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
             Assert.Object.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
-            using (Lock.Enter()) {
+            using (@lock.Enter()) {
                 UIWidgetBase.DetachFromScreen( Widget, this );
                 widget.Parent = null;
                 Widget = null;

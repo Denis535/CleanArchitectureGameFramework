@@ -8,13 +8,14 @@ namespace UnityEngine.Framework.UI {
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : IUILogicalElement, IDisposable {
 
+        private readonly Lock @lock = new Lock();
         private CancellationTokenSource? disposeCancellationTokenSource;
 
         // System
-        private Lock Lock { get; } = new Lock();
         public bool IsDisposed { get; private set; }
         public CancellationToken DisposeCancellationToken {
             get {
@@ -28,7 +29,7 @@ namespace UnityEngine.Framework.UI {
         public virtual bool DisposeAutomatically => true;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
-        public UIViewBase? View => (this as IUIViewable)?.View;
+        protected internal UIViewBase? View => (this as IUIViewable)?.View;
         // Screen
         public UIWidgetState State { get; private set; } = UIWidgetState.Unattached;
         [MemberNotNullWhen( true, "Screen" )] public bool IsAttached => State is UIWidgetState.Attached;
@@ -72,7 +73,7 @@ namespace UnityEngine.Framework.UI {
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
-         
+
         // OnAttach
         public virtual void OnBeforeAttach() {
             OnBeforeAttachEvent?.Invoke();
@@ -93,35 +94,6 @@ namespace UnityEngine.Framework.UI {
             Parent?.OnAfterDescendantDetach( this );
         }
 
-        // AttachChild
-        protected internal virtual void __AttachChild__(UIWidgetBase child) {
-            // You can override it but you should not directly call this method
-            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
-            using (Lock.Enter()) {
-                Children_.Add( child );
-                child.Parent = this;
-                if (IsAttached) {
-                    AttachToScreen( child, Screen );
-                }
-            }
-        }
-        protected internal virtual void __DetachChild__(UIWidgetBase child) {
-            // You can override it but you should not directly call this method
-            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
-            using (Lock.Enter()) {
-                if (IsAttached) {
-                    DetachFromScreen( child, Screen );
-                }
-                child.Parent = null;
-                Children_.Remove( child );
-            }
-            if (child.DisposeAutomatically) {
-                child.Dispose();
-            }
-        }
-
         // OnDescendantAttach
         public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant) {
             OnBeforeDescendantAttachEvent?.Invoke( this );
@@ -140,6 +112,49 @@ namespace UnityEngine.Framework.UI {
             Parent?.OnAfterDescendantDetach( descendant );
         }
 
+        // ShowWidget
+        protected virtual void ShowWidget(UIWidgetBase widget) {
+            Assert.Argument.Message( $"Widget must be viewable: {widget}" ).Valid( widget.IsViewable );
+            Assert.Argument.Message( $"View must be non-attached: {widget.View}" ).Valid( widget.View.VisualElement.panel == null );
+            Assert.Operation.Message( $"Can not show widget: {widget}" ).Valid( Parent != null );
+            Parent.ShowWidget( widget );
+        }
+        protected virtual void HideWidget(UIWidgetBase widget) {
+            Assert.Argument.Message( $"Widget must be viewable: {widget}" ).Valid( widget.IsViewable );
+            Assert.Argument.Message( $"View must be attached: {widget.View}" ).Valid( widget.View.VisualElement.panel != null );
+            Assert.Operation.Message( $"Can not hide widget: {widget}" ).Valid( Parent != null );
+            Parent.HideWidget( widget );
+        }
+
+        // AttachChild
+        protected internal virtual void __AttachChild__(UIWidgetBase child) {
+            // You can override it but you should not directly call this method
+            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
+            Assert.Object.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
+            using (@lock.Enter()) {
+                Children_.Add( child );
+                child.Parent = this;
+                if (IsAttached) {
+                    AttachToScreen( child, Screen );
+                }
+            }
+        }
+        protected internal virtual void __DetachChild__(UIWidgetBase child) {
+            // You can override it but you should not directly call this method
+            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
+            Assert.Object.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
+            using (@lock.Enter()) {
+                if (IsAttached) {
+                    DetachFromScreen( child, Screen );
+                }
+                child.Parent = null;
+                Children_.Remove( child );
+            }
+            if (child.DisposeAutomatically) {
+                child.Dispose();
+            }
+        }
+
         // Helpers
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         internal static void AttachToScreen(UIWidgetBase widget, UIScreenBase screen) {
@@ -152,6 +167,7 @@ namespace UnityEngine.Framework.UI {
             widget.OnBeforeAttach();
             {
                 widget.OnAttach();
+                if (widget.IsViewable) widget.Parent?.ShowWidget( widget );
                 foreach (var child in widget.Children) {
                     AttachToScreen( child, screen );
                 }
@@ -172,18 +188,26 @@ namespace UnityEngine.Framework.UI {
                 foreach (var child in widget.Children.Reverse()) {
                     DetachFromScreen( child, screen );
                 }
+                if (widget.IsViewable) widget.Parent?.HideWidget( widget );
                 widget.OnDetach();
             }
             widget.OnAfterDetach();
             widget.Screen = null;
             widget.State = UIWidgetState.Detached;
         }
+        // Helpers
+        protected static UIViewBase? GetView(UIWidgetBase widget) {
+            return widget?.View;
+        }
+        protected static VisualElement? GetVisualElement(UIWidgetBase widget) {
+            return widget?.View?.VisualElement;
+        }
 
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
         // View
-        public abstract new TView View { get; }
+        protected internal abstract new TView View { get; }
         UIViewBase IUIViewable.View => View;
 
         // Constructor
@@ -194,42 +218,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Object.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             View.Dispose();
             base.Dispose();
-        }
-
-        // OnAttach
-        public override void OnBeforeAttach() {
-            base.OnBeforeAttach();
-        }
-        public override void OnAfterAttach() {
-            base.OnAfterAttach();
-        }
-        public override void OnBeforeDetach() {
-            base.OnBeforeDetach();
-        }
-        public override void OnAfterDetach() {
-            base.OnAfterDetach();
-        }
-
-        // AttachChild
-        protected internal override void __AttachChild__(UIWidgetBase child) {
-            base.__AttachChild__( child );
-        }
-        protected internal override void __DetachChild__(UIWidgetBase child) {
-            base.__DetachChild__( child );
-        }
-
-        // OnDescendantAttach
-        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantAttach( descendant );
-        }
-        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
-            base.OnAfterDescendantAttach( descendant );
-        }
-        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantDetach( descendant );
-        }
-        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
-            base.OnAfterDescendantDetach( descendant );
         }
 
     }

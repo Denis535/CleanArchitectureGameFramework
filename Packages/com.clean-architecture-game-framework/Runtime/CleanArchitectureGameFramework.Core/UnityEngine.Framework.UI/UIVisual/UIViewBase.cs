@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.UI {
         // System
         public bool IsDisposed { get; private set; }
         // VisualElement
-        public abstract VisualElement VisualElement { get; }
+        protected internal abstract VisualElement VisualElement { get; }
 
         // Constructor
         public UIViewBase() {
