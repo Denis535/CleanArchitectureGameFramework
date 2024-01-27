@@ -75,14 +75,22 @@ namespace UnityEngine.Framework.UI {
 
         // OnAttach
         public virtual void OnBeforeAttach() {
+            Parent?.OnBeforeDescendantAttachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantAttach( this );
         }
         public abstract void OnAttach();
         public virtual void OnAfterAttach() {
+            Parent?.OnAfterDescendantAttach( this );
+            Parent?.OnAfterDescendantAttachEvent?.Invoke( this );
         }
         public virtual void OnBeforeDetach() {
+            Parent?.OnBeforeDescendantDetachEvent?.Invoke( this );
+            Parent?.OnBeforeDescendantDetach( this );
         }
         public abstract void OnDetach();
         public virtual void OnAfterDetach() {
+            Parent?.OnAfterDescendantDetach( this );
+            Parent?.OnAfterDescendantDetachEvent?.Invoke( this );
         }
 
         // AttachChild
@@ -141,20 +149,16 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Attaching;
             widget.Screen = screen;
+            widget.OnBeforeAttachEvent?.Invoke();
+            widget.OnBeforeAttach();
             {
-                widget.Parent?.OnBeforeDescendantAttachEvent?.Invoke( widget );
-                widget.Parent?.OnBeforeDescendantAttach( widget );
-                widget.OnBeforeAttachEvent?.Invoke();
-                widget.OnBeforeAttach();
                 widget.OnAttach();
                 foreach (var child in widget.Children) {
                     AttachToScreen( child, screen );
                 }
-                widget.OnAfterAttach();
-                widget.OnAfterAttachEvent?.Invoke();
-                widget.Parent?.OnAfterDescendantAttach( widget );
-                widget.Parent?.OnAfterDescendantAttachEvent?.Invoke( widget );
             }
+            widget.OnAfterAttach();
+            widget.OnAfterAttachEvent?.Invoke();
             widget.State = UIWidgetState.Attached;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -165,20 +169,16 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == screen );
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Detaching;
+            widget.OnBeforeDetachEvent?.Invoke();
+            widget.OnBeforeDetach();
             {
-                widget.Parent?.OnBeforeDescendantDetachEvent?.Invoke( widget );
-                widget.Parent?.OnBeforeDescendantDetach( widget );
-                widget.OnBeforeDetachEvent?.Invoke();
-                widget.OnBeforeDetach();
                 foreach (var child in widget.Children.Reverse()) {
                     DetachFromScreen( child, screen );
                 }
                 widget.OnDetach();
-                widget.OnAfterDetach();
-                widget.OnAfterDetachEvent?.Invoke();
-                widget.Parent?.OnAfterDescendantDetach( widget );
-                widget.Parent?.OnAfterDescendantDetachEvent?.Invoke( widget );
             }
+            widget.OnAfterDetach();
+            widget.OnAfterDetachEvent?.Invoke();
             widget.Screen = null;
             widget.State = UIWidgetState.Detached;
         }
@@ -198,6 +198,20 @@ namespace UnityEngine.Framework.UI {
             Assert.Object.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             View.Dispose();
             base.Dispose();
+        }
+
+        // OnAttach
+        public override void OnBeforeAttach() {
+            base.OnBeforeAttach();
+        }
+        public override void OnAfterAttach() {
+            base.OnAfterAttach();
+        }
+        public override void OnBeforeDetach() {
+            base.OnBeforeDetach();
+        }
+        public override void OnAfterDetach() {
+            base.OnAfterDetach();
         }
 
         // AttachChild
