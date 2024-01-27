@@ -72,25 +72,25 @@ namespace UnityEngine.Framework.UI {
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
-
+         
         // OnAttach
         public virtual void OnBeforeAttach() {
-            Parent?.OnBeforeDescendantAttachEvent?.Invoke( this );
+            OnBeforeAttachEvent?.Invoke();
             Parent?.OnBeforeDescendantAttach( this );
         }
         public abstract void OnAttach();
         public virtual void OnAfterAttach() {
+            OnAfterAttachEvent?.Invoke();
             Parent?.OnAfterDescendantAttach( this );
-            Parent?.OnAfterDescendantAttachEvent?.Invoke( this );
         }
         public virtual void OnBeforeDetach() {
-            Parent?.OnBeforeDescendantDetachEvent?.Invoke( this );
+            OnBeforeDetachEvent?.Invoke();
             Parent?.OnBeforeDescendantDetach( this );
         }
         public abstract void OnDetach();
         public virtual void OnAfterDetach() {
+            OnAfterDetachEvent?.Invoke();
             Parent?.OnAfterDescendantDetach( this );
-            Parent?.OnAfterDescendantDetachEvent?.Invoke( this );
         }
 
         // AttachChild
@@ -124,20 +124,20 @@ namespace UnityEngine.Framework.UI {
 
         // OnDescendantAttach
         public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            Parent?.OnBeforeDescendantAttachEvent?.Invoke( descendant );
+            OnBeforeDescendantAttachEvent?.Invoke( this );
             Parent?.OnBeforeDescendantAttach( descendant );
         }
         public virtual void OnAfterDescendantAttach(UIWidgetBase descendant) {
+            OnAfterDescendantAttachEvent?.Invoke( descendant );
             Parent?.OnAfterDescendantAttach( descendant );
-            Parent?.OnAfterDescendantAttachEvent?.Invoke( descendant );
         }
         public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            Parent?.OnBeforeDescendantDetachEvent?.Invoke( descendant );
+            OnBeforeDescendantDetachEvent?.Invoke( descendant );
             Parent?.OnBeforeDescendantDetach( descendant );
         }
         public virtual void OnAfterDescendantDetach(UIWidgetBase descendant) {
+            OnAfterDescendantDetachEvent?.Invoke( descendant );
             Parent?.OnAfterDescendantDetach( descendant );
-            Parent?.OnAfterDescendantDetachEvent?.Invoke( descendant );
         }
 
         // Helpers
@@ -149,7 +149,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Attaching;
             widget.Screen = screen;
-            widget.OnBeforeAttachEvent?.Invoke();
             widget.OnBeforeAttach();
             {
                 widget.OnAttach();
@@ -158,7 +157,6 @@ namespace UnityEngine.Framework.UI {
                 }
             }
             widget.OnAfterAttach();
-            widget.OnAfterAttachEvent?.Invoke();
             widget.State = UIWidgetState.Attached;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -169,7 +167,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == screen );
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
             widget.State = UIWidgetState.Detaching;
-            widget.OnBeforeDetachEvent?.Invoke();
             widget.OnBeforeDetach();
             {
                 foreach (var child in widget.Children.Reverse()) {
@@ -178,7 +175,6 @@ namespace UnityEngine.Framework.UI {
                 widget.OnDetach();
             }
             widget.OnAfterDetach();
-            widget.OnAfterDetachEvent?.Invoke();
             widget.Screen = null;
             widget.State = UIWidgetState.Detached;
         }
