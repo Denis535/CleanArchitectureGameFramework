@@ -113,14 +113,10 @@ namespace UnityEngine.Framework.UI {
 
         // ShowWidget
         protected virtual void ShowWidget(UIWidgetBase widget) {
-            Assert.Argument.Message( $"Widget must be viewable: {widget}" ).Valid( widget.IsViewable );
-            Assert.Argument.Message( $"View must be non-attached: {widget.View}" ).Valid( widget.View.VisualElement.panel == null );
             Assert.Operation.Message( $"Can not show widget: {widget}" ).Valid( Parent != null );
             Parent.ShowWidget( widget );
         }
         protected virtual void HideWidget(UIWidgetBase widget) {
-            Assert.Argument.Message( $"Widget must be viewable: {widget}" ).Valid( widget.IsViewable );
-            Assert.Argument.Message( $"View must be attached: {widget.View}" ).Valid( widget.View.VisualElement.panel != null );
             Assert.Operation.Message( $"Can not hide widget: {widget}" ).Valid( Parent != null );
             Parent.HideWidget( widget );
         }
@@ -166,7 +162,7 @@ namespace UnityEngine.Framework.UI {
             widget.OnBeforeAttach();
             {
                 widget.OnAttach();
-                if (widget.IsViewable) widget.Parent?.ShowWidget( widget );
+                widget.Parent?.ShowWidget( widget );
                 foreach (var child in widget.Children) {
                     AttachToScreen( child, screen );
                 }
@@ -187,7 +183,7 @@ namespace UnityEngine.Framework.UI {
                 foreach (var child in widget.Children.Reverse()) {
                     DetachFromScreen( child, screen );
                 }
-                if (widget.IsViewable) widget.Parent?.HideWidget( widget );
+                widget.Parent?.HideWidget( widget );
                 widget.OnDetach();
             }
             widget.OnAfterDetach();

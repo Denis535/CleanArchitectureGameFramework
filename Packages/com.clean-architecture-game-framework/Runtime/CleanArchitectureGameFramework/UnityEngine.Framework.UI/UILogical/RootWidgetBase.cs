@@ -30,9 +30,16 @@ namespace UnityEngine.Framework.UI {
             base.HideWidget( widget );
         }
 
-        // Helpers/SetFocus
-        protected static void SetFocus(VisualElement view) {
+        // Helpers
+        protected static void Focus(VisualElement view) {
+            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
             Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
+            if (HasFocusedElement( view )) {
+                return;
+            }
+            if (LoadFocusedElement( view )) {
+                return;
+            }
             if (view.focusable) {
                 view.Focus();
             } else {
@@ -44,22 +51,29 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void SaveFocus(VisualElement view) {
-            SaveFocus( view, view.focusController.focusedElement );
+            SaveFocusedElement( view, GetFocusedElement( view ) );
         }
-        protected static void SaveFocus(VisualElement view, Focusable focusedElement) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view.panel != null );
-            if (focusedElement != null && (view == focusedElement || view!.Contains( (VisualElement) focusedElement ))) {
-                view!.userData = focusedElement;
-            } else {
-                view!.userData = null;
-            }
+        // Helpers
+        private static bool HasFocusedElement(VisualElement view) {
+            var focusedElement = (VisualElement) view.focusController.focusedElement;
+            if (focusedElement != null && focusedElement.GetAncestorsAndSelf().Contains( view )) return true;
+            return false;
         }
-        protected static void LoadFocus(VisualElement view) {
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
+        private static VisualElement? GetFocusedElement(VisualElement view) {
+            var focusedElement = (VisualElement) view.focusController.focusedElement;
+            if (focusedElement != null && focusedElement.GetAncestorsAndSelf().Contains( view )) return focusedElement;
+            return null;
+        }
+        private static void SaveFocusedElement(VisualElement view, VisualElement? focusedElement) {
+            view.userData = focusedElement;
+        }
+        private static bool LoadFocusedElement(VisualElement view) {
             var focusedElement = (VisualElement?) view.userData;
             if (focusedElement != null) {
                 focusedElement.Focus();
+                return true;
             }
+            return false;
         }
 
     }
@@ -67,11 +81,79 @@ namespace UnityEngine.Framework.UI {
 
         // View
         protected override RootWidgetView View { get; }
+        private List<UIWidgetBase> Widgets_ { get; } = new List<UIWidgetBase>();
+        private List<UIWidgetBase> ModalWidgets_ { get; } = new List<UIWidgetBase>();
+        public IReadOnlyList<UIWidgetBase> Widgets => Widgets_;
+        public IReadOnlyList<UIWidgetBase> ModalWidgets => ModalWidgets_;
 
         // Constructor
         public RootWidget() {
-            View = new RootWidgetView();
-            View.Widget.OnEventTrickleDown<NavigationSubmitEvent>( evt => {
+            View = CreateView();
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+        // ShowWidget
+        protected override void ShowWidget(UIWidgetBase widget) {
+            if (widget.IsViewable) {
+                OnShowWidget( widget );
+                OnAfterShowWidget();
+            }
+        }
+        protected override void HideWidget(UIWidgetBase widget) {
+            if (widget.IsViewable) {
+                OnHideWidget( widget );
+                OnAfterHideWidget();
+            }
+        }
+
+        // OnShowWidget
+        protected virtual void OnShowWidget(UIWidgetBase widget) {
+            if (widget.IsModal()) {
+                ModalWidgets_.Add( widget );
+                View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
+            } else {
+                Widgets_.Add( widget );
+                View.WidgetSlot.Add( widget.GetVisualElement()! );
+            }
+        }
+        protected virtual void OnHideWidget(UIWidgetBase widget) {
+            if (widget.IsModal()) {
+                Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
+                ModalWidgets_.Remove( widget );
+                View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
+            } else {
+                Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == Widgets.LastOrDefault() );
+                Widgets_.Remove( widget );
+                View.WidgetSlot.Remove( widget.GetVisualElement()! );
+            }
+        }
+
+        // OnAfterShowWidget
+        protected virtual void OnAfterShowWidget() {
+            foreach (var widget in Widgets) {
+                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
+                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.LastOrDefault() );
+            }
+            foreach (var widget in ModalWidgets) {
+                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.LastOrDefault() );
+            }
+        }
+        protected virtual void OnAfterHideWidget() {
+            foreach (var widget in Widgets) {
+                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
+                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.LastOrDefault() );
+            }
+            foreach (var widget in ModalWidgets) {
+                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.LastOrDefault() );
+            }
+        }
+
+        // Helpers
+        private static RootWidgetView CreateView() {
+            var view = new RootWidgetView();
+            view.Widget.OnEventTrickleDown<NavigationSubmitEvent>( evt => {
                 if (evt.target is Button button) {
                     using (var click = ClickEvent.GetPooled()) {
                         click.target = button;
@@ -80,7 +162,7 @@ namespace UnityEngine.Framework.UI {
                     evt.StopPropagation();
                 }
             } );
-            View.Widget.OnEventTrickleDown<NavigationCancelEvent>( evt => {
+            view.Widget.OnEventTrickleDown<NavigationCancelEvent>( evt => {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( i => i.name.Contains( "widget" ) );
                 var button = widget?.Query<Button>().Where( i => i.name is "resume" or "cancel" or "cancellation" or "back" or "no" or "quit" ).First();
                 if (button != null) {
@@ -91,95 +173,7 @@ namespace UnityEngine.Framework.UI {
                     evt.StopPropagation();
                 }
             } );
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // ShowWidget
-        protected override void ShowWidget(UIWidgetBase widget) {
-            OnBeforeShowWidget( widget );
-            OnShowWidget( widget );
-        }
-        protected override void HideWidget(UIWidgetBase widget) {
-            OnHideWidget( widget );
-            OnAfterHideWidget( widget );
-        }
-
-        // OnBeforeShowWidget
-        protected virtual void OnBeforeShowWidget(UIWidgetBase widget) {
-            if (!widget.IsModal()) {
-                // cover last normal widget
-                var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
-                if (last != null) {
-                    SaveFocus( last );
-                    last.SetDisplayed( false );
-                }
-            } else {
-                // if you have any modal widget
-                // then cover last modal widget
-                // otherwise cover last normal widget
-                if (View.ModalWidgetSlot.Children.Any()) {
-                    var last = (VisualElement?) View.ModalWidgetSlot.Children.LastOrDefault();
-                    if (last != null) {
-                        SaveFocus( last );
-                        last.SetDisplayed( false );
-                    }
-                } else {
-                    var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
-                    if (last != null) {
-                        SaveFocus( last );
-                        last.SetEnabled( false );
-                    }
-                }
-            }
-        }
-        protected virtual void OnAfterHideWidget(UIWidgetBase widget) {
-            if (!widget.IsModal()) {
-                // uncover last normal widget
-                var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
-                if (last != null) {
-                    last.SetDisplayed( true );
-                    LoadFocus( last );
-                }
-            } else {
-                // if you have any modal widget
-                // then uncover last modal widget
-                // otherwise uncover last normal widget
-                if (View.ModalWidgetSlot.Children.Any()) {
-                    var last = (VisualElement?) View.ModalWidgetSlot.Children.LastOrDefault();
-                    if (last != null) {
-                        last.SetDisplayed( true );
-                        LoadFocus( last );
-                    }
-                } else {
-                    var last = (VisualElement?) View.WidgetSlot.Children.LastOrDefault();
-                    if (last != null) {
-                        last.SetEnabled( true );
-                        LoadFocus( last );
-                    }
-                }
-            }
-        }
-
-        // OnShowWidget
-        protected virtual void OnShowWidget(UIWidgetBase widget) {
-            if (!widget.IsModal()) {
-                View.WidgetSlot.Add( widget.GetVisualElement()! );
-                SetFocus( widget.GetVisualElement()! );
-            } else {
-                View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
-                SetFocus( widget.GetVisualElement()! );
-            }
-        }
-        protected virtual void OnHideWidget(UIWidgetBase widget) {
-            if (!widget.IsModal()) {
-                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.GetVisualElement()! );
-                View.WidgetSlot.Remove( widget.GetVisualElement()! );
-            } else {
-                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.GetVisualElement()! );
-                View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
-            }
+            return view;
         }
 
     }
