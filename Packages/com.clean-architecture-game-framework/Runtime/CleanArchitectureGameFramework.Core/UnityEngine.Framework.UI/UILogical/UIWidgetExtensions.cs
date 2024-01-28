@@ -5,6 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public static class UIWidgetExtensions {
 
@@ -69,6 +70,16 @@ namespace UnityEngine.Framework.UI {
         }
         public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase> callback) {
             widget.OnAfterDescendantDetachEvent += callback;
+        }
+
+        // GetView
+        public static UIViewBase? GetView(this UIWidgetBase widget) {
+            return widget?.View;
+        }
+
+        // GetVisualElement
+        public static VisualElement? GetVisualElement(this UIWidgetBase widget) {
+            return widget?.View?.VisualElement;
         }
 
     }

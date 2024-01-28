@@ -1,20 +1,22 @@
+#nullable enable
 namespace System.Diagnostics.CodeAnalysis {
+    // https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis
 
-    // Input:  field, property, argument
-    // Output: field, property, argument, result
+    // Input:  field (set), property (set), argument
+    // Output: field (get), property (get), argument (out), result
 
-    // AllowNull            - Null input is allowed
-    // DisallowNull         - Null input is disallowed
+    // AllowNull            - Input allows null
+    // DisallowNull         - Input disallows null
 
     // MaybeNull            - Output may be null
     // MaybeNull/When       - Output may be null (when result == true/false)
 
-    // NotNull              - Output will be non-null
-    // NotNull/When         - Output will be non-null (when result   == true/false)
-    // NotNull/If/NotNull   - Output will be non-null (if   argument == non-null)
+    // NotNull              - Output is non-null
+    // NotNull/When         - Output is non-null (when result == true/false)
+    // NotNull/If/NotNull   - Output is non-null (if argument == non-null)
 
-    // MemberNotNull        - Method/property will ensure that the field/property is non-null
-    // MemberNotNull/When   - Method/property will ensure that the field/property is non-null (when result == true/false)
+    // MemberNotNull        - Method/property will ensure that the output is non-null
+    // MemberNotNull/When   - Method/property will ensure that the output is non-null (when result == true/false)
 
     // DoesNotReturn        - Method will never return
     // DoesNotReturn/If     - Method will never return (if argument == true/false)
@@ -83,7 +85,7 @@ namespace System.Diagnostics.CodeAnalysis {
         }
     }
 
-    // DoesNotReturn
+    // Ensure
     //[AttributeUsage( AttributeTargets.Method, Inherited = false )]
     //public sealed class DoesNotReturnAttribute : Attribute {
     //}

@@ -165,20 +165,20 @@ namespace UnityEngine.Framework.UI {
         // OnShowWidget
         protected virtual void OnShowWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                View.WidgetSlot.Add( GetVisualElement( widget )! );
-                SetFocus( GetVisualElement( widget )! );
+                View.WidgetSlot.Add( widget.GetVisualElement()! );
+                SetFocus( widget.GetVisualElement()! );
             } else {
-                View.ModalWidgetSlot.Add( GetVisualElement( widget )! );
-                SetFocus( GetVisualElement( widget )! );
+                View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
+                SetFocus( widget.GetVisualElement()! );
             }
         }
         protected virtual void OnHideWidget(UIWidgetBase widget) {
             if (!widget.IsModal()) {
-                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == GetVisualElement( widget )! );
-                View.WidgetSlot.Remove( GetVisualElement( widget )! );
+                Assert.Operation.Message( $"You can remove only last widget in widget slot" ).Valid( View.WidgetSlot.Children.LastOrDefault() == widget.GetVisualElement()! );
+                View.WidgetSlot.Remove( widget.GetVisualElement()! );
             } else {
-                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == GetVisualElement( widget )! );
-                View.ModalWidgetSlot.Remove( GetVisualElement( widget )! );
+                Assert.Operation.Message( $"You can remove only last widget in modal widget slot" ).Valid( View.ModalWidgetSlot.Children.LastOrDefault() == widget.GetVisualElement()! );
+                View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
             }
         }
 

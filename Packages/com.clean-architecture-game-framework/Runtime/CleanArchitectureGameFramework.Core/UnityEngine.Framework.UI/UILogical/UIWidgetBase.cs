@@ -8,7 +8,6 @@ namespace UnityEngine.Framework.UI {
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : IUILogicalElement, IDisposable {
 
@@ -194,13 +193,6 @@ namespace UnityEngine.Framework.UI {
             widget.OnAfterDetach();
             widget.Screen = null;
             widget.State = UIWidgetState.Detached;
-        }
-        // Helpers
-        protected static UIViewBase? GetView(UIWidgetBase widget) {
-            return widget?.View;
-        }
-        protected static VisualElement? GetVisualElement(UIWidgetBase widget) {
-            return widget?.View?.VisualElement;
         }
 
     }
