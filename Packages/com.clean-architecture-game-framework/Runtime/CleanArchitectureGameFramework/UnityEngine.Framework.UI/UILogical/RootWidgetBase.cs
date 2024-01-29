@@ -56,12 +56,13 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         private static bool HasFocusedElement(VisualElement view) {
             var focusedElement = (VisualElement) view.focusController.focusedElement;
-            if (focusedElement != null && focusedElement.GetAncestorsAndSelf().Contains( view )) return true;
+            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return true;
             return false;
         }
         private static VisualElement? GetFocusedElement(VisualElement view) {
+            view.IsAncestorOf( view );
             var focusedElement = (VisualElement) view.focusController.focusedElement;
-            if (focusedElement != null && focusedElement.GetAncestorsAndSelf().Contains( view )) return focusedElement;
+            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return focusedElement;
             return null;
         }
         private static void SaveFocusedElement(VisualElement view, VisualElement? focusedElement) {
@@ -69,6 +70,7 @@ namespace UnityEngine.Framework.UI {
         }
         private static bool LoadFocusedElement(VisualElement view) {
             var focusedElement = (VisualElement?) view.userData;
+            view.userData = null;
             if (focusedElement != null) {
                 focusedElement.Focus();
                 return true;
@@ -97,56 +99,39 @@ namespace UnityEngine.Framework.UI {
         // ShowWidget
         protected override void ShowWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
-                OnShowWidget( widget );
-                OnAfterShowWidget();
+                if (widget.IsModal()) {
+                    ModalWidgets_.Add( widget );
+                    View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
+                } else {
+                    Widgets_.Add( widget );
+                    View.WidgetSlot.Add( widget.GetVisualElement()! );
+                }
+                RecalcVisibility();
             }
         }
         protected override void HideWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
-                OnHideWidget( widget );
-                OnAfterHideWidget();
+                if (widget.IsModal()) {
+                    Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
+                    ModalWidgets_.Remove( widget );
+                    View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
+                } else {
+                    Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == Widgets.LastOrDefault() );
+                    Widgets_.Remove( widget );
+                    View.WidgetSlot.Remove( widget.GetVisualElement()! );
+                }
+                RecalcVisibility();
             }
         }
 
-        // OnShowWidget
-        protected virtual void OnShowWidget(UIWidgetBase widget) {
-            if (widget.IsModal()) {
-                ModalWidgets_.Add( widget );
-                View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
-            } else {
-                Widgets_.Add( widget );
-                View.WidgetSlot.Add( widget.GetVisualElement()! );
-            }
-        }
-        protected virtual void OnHideWidget(UIWidgetBase widget) {
-            if (widget.IsModal()) {
-                Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
-                ModalWidgets_.Remove( widget );
-                View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
-            } else {
-                Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == Widgets.LastOrDefault() );
-                Widgets_.Remove( widget );
-                View.WidgetSlot.Remove( widget.GetVisualElement()! );
-            }
-        }
-
-        // OnAfterShowWidget
-        protected virtual void OnAfterShowWidget() {
+        // RecalcVisibility
+        protected virtual void RecalcVisibility() {
             foreach (var widget in Widgets) {
                 widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
-                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.LastOrDefault() );
+                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.Last() );
             }
             foreach (var widget in ModalWidgets) {
-                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.LastOrDefault() );
-            }
-        }
-        protected virtual void OnAfterHideWidget() {
-            foreach (var widget in Widgets) {
-                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
-                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.LastOrDefault() );
-            }
-            foreach (var widget in ModalWidgets) {
-                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.LastOrDefault() );
+                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.Last() );
             }
         }
 
