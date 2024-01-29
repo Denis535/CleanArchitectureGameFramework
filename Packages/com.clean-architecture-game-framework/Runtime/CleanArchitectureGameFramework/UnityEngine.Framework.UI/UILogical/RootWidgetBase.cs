@@ -137,23 +137,23 @@ namespace UnityEngine.Framework.UI {
         // RecalcVisibility
         protected virtual void RecalcVisibility() {
             foreach (var widget in Widgets.SkipLast( 1 )) {
-                // Hide covered widgets
+                // hide covered widgets
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( false );
             }
             if (Widgets.Any()) {
-                // Show new widget or unhide uncover widget
+                // show new widget or unhide uncover widget
                 var widget = Widgets.Last();
                 widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
                 widget.GetVisualElement()!.SetDisplayed( true );
             }
             foreach (var widget in ModalWidgets.SkipLast( 1 )) {
-                // Hide covered widgets
+                // hide covered widgets
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( false );
             }
             if (ModalWidgets.Any()) {
-                // Show new widget or unhide uncover widget
+                // show new widget or unhide uncover widget
                 var widget = ModalWidgets.Last();
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( true );
