@@ -106,7 +106,13 @@ namespace UnityEngine.Framework.UI {
                     Widgets_.Add( widget );
                     View.WidgetSlot.Add( widget.GetVisualElement()! );
                 }
-                RecalcVisibility();
+                {
+                    var covered = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
+                    if (covered != null) SaveFocus( covered.GetVisualElement()! );
+                    RecalcVisibility();
+                    var newWidget = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
+                    if (newWidget != null) Focus( newWidget.GetVisualElement()! );
+                }
             }
         }
         protected override void HideWidget(UIWidgetBase widget) {
@@ -120,18 +126,37 @@ namespace UnityEngine.Framework.UI {
                     Widgets_.Remove( widget );
                     View.WidgetSlot.Remove( widget.GetVisualElement()! );
                 }
-                RecalcVisibility();
+                {
+                    RecalcVisibility();
+                    var uncovered = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
+                    if (uncovered != null) Focus( uncovered.GetVisualElement()! );
+                }
             }
         }
 
         // RecalcVisibility
         protected virtual void RecalcVisibility() {
-            foreach (var widget in Widgets) {
-                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
-                widget.GetVisualElement()!.SetDisplayed( widget == Widgets.Last() );
+            foreach (var widget in Widgets.SkipLast( 1 )) {
+                // Hide covered widgets
+                widget.GetVisualElement()!.SetEnabled( true );
+                widget.GetVisualElement()!.SetDisplayed( false );
             }
-            foreach (var widget in ModalWidgets) {
-                widget.GetVisualElement()!.SetDisplayed( widget == ModalWidgets.Last() );
+            if (Widgets.Any()) {
+                // Show new widget or unhide uncover widget
+                var widget = Widgets.Last();
+                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
+                widget.GetVisualElement()!.SetDisplayed( true );
+            }
+            foreach (var widget in ModalWidgets.SkipLast( 1 )) {
+                // Hide covered widgets
+                widget.GetVisualElement()!.SetEnabled( true );
+                widget.GetVisualElement()!.SetDisplayed( false );
+            }
+            if (ModalWidgets.Any()) {
+                // Show new widget or unhide uncover widget
+                var widget = ModalWidgets.Last();
+                widget.GetVisualElement()!.SetEnabled( true );
+                widget.GetVisualElement()!.SetDisplayed( true );
             }
         }
 
