@@ -119,6 +119,11 @@ namespace UnityEngine.UIElements {
             element.RegisterCallback( callback );
         }
 
+        // OnGeometryChanged
+        public static void OnGeometryChanged(this VisualElement element, EventCallback<GeometryChangedEvent> callback) {
+            element.RegisterCallback( callback );
+        }
+
         // OnFocus
         public static void OnFocusIn(this VisualElement element, EventCallback<FocusInEvent> callback) {
             // Event sent immediately before an element gains focus. This event trickles down and bubbles up.

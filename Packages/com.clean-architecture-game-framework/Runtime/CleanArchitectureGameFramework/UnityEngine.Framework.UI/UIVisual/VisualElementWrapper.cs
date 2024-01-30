@@ -116,40 +116,50 @@ namespace UnityEngine.Framework.UI {
         public static void OnAttachToPanel(this VisualElementWrapper wrapper, Action? callback) {
             wrapper.VisualElement.RegisterCallback<AttachToPanelEvent>( evt => callback?.Invoke() );
         }
-        public static void OnDetachFromPanel(this VisualElementWrapper wrapper, Action? callback) {
-            wrapper.VisualElement.RegisterCallback<DetachFromPanelEvent>( evt => callback?.Invoke() );
-        }
-
-        // OnAttachToPanel
         public static void OnAttachToPanel(this VisualElementWrapper wrapper, Action<AttachToPanelEvent>? callback) {
             wrapper.VisualElement.RegisterCallback<AttachToPanelEvent>( evt => callback?.Invoke( evt ) );
+        }
+
+        // OnDetachFromPanel
+        public static void OnDetachFromPanel(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<DetachFromPanelEvent>( evt => callback?.Invoke() );
         }
         public static void OnDetachFromPanel(this VisualElementWrapper wrapper, Action<DetachFromPanelEvent>? callback) {
             wrapper.VisualElement.RegisterCallback<DetachFromPanelEvent>( evt => callback?.Invoke( evt ) );
         }
 
-        // OnFocus
+        // OnGeometryChanged
+        public static void OnGeometryChanged(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<GeometryChangedEvent>( evt => callback?.Invoke() );
+        }
+        public static void OnGeometryChanged(this VisualElementWrapper wrapper, Action<GeometryChangedEvent> callback) {
+            wrapper.VisualElement.RegisterCallback<GeometryChangedEvent>( evt => callback?.Invoke( evt ) );
+        }
+
+        // OnFocusIn
         public static void OnFocusIn(this VisualElementWrapper wrapper, Action? callback) {
             // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
             wrapper.VisualElement.RegisterCallback<FocusInEvent>( evt => callback?.Invoke() );
         }
-        public static void OnFocus(this VisualElementWrapper wrapper, Action? callback) {
-            // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
-            wrapper.VisualElement.RegisterCallback<FocusEvent>( evt => callback?.Invoke() );
-        }
-        public static void OnFocusOut(this VisualElementWrapper wrapper, Action? callback) {
-            // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
-            wrapper.VisualElement.RegisterCallback<FocusInEvent>( evt => callback?.Invoke() );
-        }
-
-        // OnFocus
         public static void OnFocusIn(this VisualElementWrapper wrapper, Action<FocusInEvent>? callback) {
             // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
             wrapper.VisualElement.RegisterCallback<FocusInEvent>( evt => callback?.Invoke( evt ) );
         }
+
+        // OnFocus
+        public static void OnFocus(this VisualElementWrapper wrapper, Action? callback) {
+            // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
+            wrapper.VisualElement.RegisterCallback<FocusEvent>( evt => callback?.Invoke() );
+        }
         public static void OnFocus(this VisualElementWrapper wrapper, Action<FocusEvent>? callback) {
             // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
             wrapper.VisualElement.RegisterCallback<FocusEvent>( evt => callback?.Invoke( evt ) );
+        }
+
+        // OnFocusOut
+        public static void OnFocusOut(this VisualElementWrapper wrapper, Action? callback) {
+            // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
+            wrapper.VisualElement.RegisterCallback<FocusInEvent>( evt => callback?.Invoke() );
         }
         public static void OnFocusOut(this VisualElementWrapper wrapper, Action<FocusOutEvent>? callback) {
             // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
@@ -200,13 +210,13 @@ namespace UnityEngine.Framework.UI {
         public static void OnSubmit(this VisualElementWrapper wrapper, Action? callback) {
             wrapper.VisualElement.RegisterCallback<NavigationSubmitEvent>( evt => callback?.Invoke() );
         }
-        public static void OnCancel(this VisualElementWrapper wrapper, Action? callback) {
-            wrapper.VisualElement.RegisterCallback<NavigationCancelEvent>( evt => callback?.Invoke() );
-        }
-
-        // OnSubmit
         public static void OnSubmit(this VisualElementWrapper wrapper, Action<NavigationSubmitEvent>? callback) {
             wrapper.VisualElement.RegisterCallback<NavigationSubmitEvent>( evt => callback?.Invoke( evt ) );
+        }
+
+        // OnCancel
+        public static void OnCancel(this VisualElementWrapper wrapper, Action? callback) {
+            wrapper.VisualElement.RegisterCallback<NavigationCancelEvent>( evt => callback?.Invoke() );
         }
         public static void OnCancel(this VisualElementWrapper wrapper, Action<NavigationCancelEvent>? callback) {
             wrapper.VisualElement.RegisterCallback<NavigationCancelEvent>( evt => callback?.Invoke( evt ) );
@@ -383,18 +393,29 @@ namespace UnityEngine.Framework.UI {
         public IReadOnlyList<VisualElement> Children {
             get => (IReadOnlyList<VisualElement>) VisualElement.Children();
         }
+        public event Action<VisualElement>? OnAddedEvent;
+        public event Action<VisualElement>? OnRemovedEvent;
 
         public SlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Add(VisualElement element) {
             VisualElement.Add( element );
+            OnAddedEvent?.Invoke( element );
         }
         public void Remove(VisualElement element) {
             VisualElement.Remove( element );
+            OnRemovedEvent?.Invoke( element );
         }
         public bool Contains(VisualElement element) {
             return VisualElement.Contains( element );
+        }
+
+        public void OnAdded(Action<VisualElement>? callback) {
+            OnAddedEvent += callback;
+        }
+        public void OnRemoved(Action<VisualElement>? callback) {
+            OnRemovedEvent += callback;
         }
 
     }
