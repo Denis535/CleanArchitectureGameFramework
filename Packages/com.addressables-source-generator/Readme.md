@@ -1,9 +1,9 @@
 # Overview
-This package "Addressables Source Generator" gives you an ability to generate a source code with hierarchical list of all addressable assets and its labels.
+This package gives you an ability to generate a source code with hierarchical list of all addressable assets and its labels.
 
 # How to use it
 The first way is to create the 'AddressablesSourceGenerator' asset and press 'Generate' button in the inspector.
-The seconds way is to write a script which will generate the source code.
+The second more advanced way is write a script that will generate the source code:
 ```
 var settings = AddressableAssetSettingsDefaultObject.Settings;
 new ResourcesSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R" );

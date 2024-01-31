@@ -1,7 +1,7 @@
 # Overview
-This package "CleanArchitectureGameFramework" provides you with clean architecture framework that helping you to develop your project following the best practices (like Clean Architecture and Uber Ribs).
+This package provides you with clean architecture framework that helping you to develop your project following the best practices (like Clean Architecture and Uber Ribs).
 
-# Details
+# Reference
 - Framework
   - IDependencyContainer
   - Program
