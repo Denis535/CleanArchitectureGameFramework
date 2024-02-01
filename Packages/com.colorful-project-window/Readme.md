@@ -1,14 +1,12 @@
 # Overview
-This package gives you the more comfortable and colorful project window.
+This package makes the project window much more convenient. This colors the special folders (modules, assets, resources and sources) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
+
+# How it works
+This identifies special folders according to the following rules:
+- Module folder must contain '*.asmdef' or '*.asmref' files.
+- Assets folder must start with 'Assets' or 'Assets.*' prefix.
+- Resources folder must start with 'Resources' or 'Resources.*' prefix.
+- Source folder is just any other folder.
 
 # How to use it
 Just install this package.
-
-# Reference
-This paints the project window using the following rules: 
-- It marks modules (folders with *.asmdef or *.asmref files) in red color.
-- it marks its content in yellow (assets) or green (sources) colors.
-
-# Links
-- https://u3d.as/39eY
-- https://youtu.be/tardralpxdA

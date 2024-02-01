@@ -12,18 +12,18 @@ namespace UnityEditor {
     [InitializeOnLoad]
     public static class ProjectWindow {
 
-        private static string[] Modules { get; }
+        private static readonly string[] ModulePaths;
 
         // ProjectWindow
         static ProjectWindow() {
-            Modules = AssetDatabase.GetAllAssetPaths().Where( i => Path.GetExtension( i ) is ".asmdef" or ".asmref" ).Select( Path.GetDirectoryName ).Select( i => i.Replace( '\\', '/' ) ).ToArray();
+            ModulePaths = AssetDatabase.GetAllAssetPaths().Where( i => Path.GetExtension( i ) is ".asmdef" or ".asmref" ).Select( Path.GetDirectoryName ).Select( i => i.Replace( '\\', '/' ) ).ToArray();
             EditorApplication.projectWindowItemOnGUI = OnGUI;
         }
 
         // OnGUI
         public static void OnGUI(string guid, Rect rect) {
             var path = AssetDatabase.GUIDToAssetPath( guid );
-            var module = Modules.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            var module = ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
             if (module != null) {
                 if (path == module) {
                     DrawModule( rect );
@@ -32,18 +32,15 @@ namespace UnityEditor {
                 var content = path.Substring( module.Length );
                 if (AssetDatabase.IsValidFolder( path ) || content.Skip( 1 ).Contains( '/' )) {
                     if (content.Equals( "/Assets" ) || content.StartsWith( "/Assets/" ) || content.StartsWith( "/Assets." )) {
-                        var depth = content.Count( i => i == '/' ) - 1;
-                        DrawAssets( rect, depth );
+                        DrawAssets( rect, content.Skip( 1 ).Count( i => i == '/' ) );
                         return;
                     }
                     if (content.Equals( "/Resources" ) || content.StartsWith( "/Resources/" ) || content.StartsWith( "/Resources." )) {
-                        var depth = content.Count( i => i == '/' ) - 1;
-                        DrawAssets( rect, depth );
+                        DrawResources( rect, content.Skip( 1 ).Count( i => i == '/' ) );
                         return;
                     }
                     {
-                        var depth = content.Count( i => i == '/' ) - 1;
-                        DrawSources( rect, depth );
+                        DrawSources( rect, content.Skip( 1 ).Count( i => i == '/' ) );
                         return;
                     }
                 }
@@ -56,6 +53,13 @@ namespace UnityEditor {
             DrawItem( rect, color );
         }
         private static void DrawAssets(Rect rect, int depth) {
+            var color = depth switch {
+                0 => HSVA( 060, 1f, 1.0f, 0.3f ),
+                _ => HSVA( 060, 1f, 0.4f, 0.3f ),
+            };
+            DrawItem( rect, color );
+        }
+        private static void DrawResources(Rect rect, int depth) {
             var color = depth switch {
                 0 => HSVA( 060, 1f, 1.0f, 0.3f ),
                 _ => HSVA( 060, 1f, 0.4f, 0.3f ),
