@@ -49,7 +49,7 @@ namespace UnityEditor.AddressableAssets {
         }
 
         // Sort
-        public virtual IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> Sort(IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> items) {
+        protected virtual IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> Sort(IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> items) {
             return items
                 .OrderByDescending( i => i.Key.Equals( "UnityEngine" ) )
                 .ThenByDescending( i => i.Key.Equals( "UnityEditor" ) )
@@ -89,7 +89,7 @@ namespace UnityEditor.AddressableAssets {
         }
 
         // IsSupported
-        public virtual bool IsSupported(AddressableAssetEntry entry) {
+        protected virtual bool IsSupported(AddressableAssetEntry entry) {
             return entry.MainAssetType != typeof( DefaultAsset );
         }
 

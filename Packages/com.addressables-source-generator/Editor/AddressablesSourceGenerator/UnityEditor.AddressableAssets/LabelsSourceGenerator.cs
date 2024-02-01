@@ -51,7 +51,7 @@ namespace UnityEditor.AddressableAssets {
         }
 
         // IsSupported
-        public virtual bool IsSupported(string label) {
+        protected virtual bool IsSupported(string label) {
             return true;
         }
 

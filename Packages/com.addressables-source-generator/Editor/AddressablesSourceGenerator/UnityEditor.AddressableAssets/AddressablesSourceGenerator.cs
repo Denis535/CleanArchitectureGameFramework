@@ -9,7 +9,7 @@ namespace UnityEditor.AddressableAssets {
     [CreateAssetMenu( fileName = "AddressablesSourceGenerator", menuName = "Addressables/AddressablesSourceGenerator" )]
     public class AddressablesSourceGenerator : ScriptableObject {
 
-        public virtual void Generate() {
+        public void Generate() {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             var path = AssetDatabase.GetAssetPath( this );
             var dir = Path.GetDirectoryName( path );
