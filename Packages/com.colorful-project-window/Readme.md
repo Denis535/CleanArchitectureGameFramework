@@ -12,4 +12,4 @@ This identifies special folders according to the following rules:
 Just install this package.
 
 # Setup
-You can change colors in 'Preferences/Colorful Project Window'.
+You can setup colors in 'Preferences/Colorful Project Window'.

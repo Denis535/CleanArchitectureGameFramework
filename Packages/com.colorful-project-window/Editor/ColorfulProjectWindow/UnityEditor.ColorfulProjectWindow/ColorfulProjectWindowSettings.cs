@@ -58,7 +58,7 @@ namespace UnityEditor.ColorfulProjectWindow {
         // Helpers
         private static Color LoadColor(string key, Color @default) {
             var result = EditorPrefs.GetString( key, ColorUtility.ToHtmlStringRGBA( @default ) );
-            if (ColorUtility.TryParseHtmlString( result, out var result2 )) {
+            if (ColorUtility.TryParseHtmlString( $"#{result}", out var result2 )) {
                 return result2;
             }
             return @default;
