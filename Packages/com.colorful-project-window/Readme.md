@@ -10,3 +10,6 @@ This identifies special folders according to the following rules:
 
 # How to use it
 Just install this package.
+
+# Setup
+You can change colors in 'Preferences/Colorful Project Window'.

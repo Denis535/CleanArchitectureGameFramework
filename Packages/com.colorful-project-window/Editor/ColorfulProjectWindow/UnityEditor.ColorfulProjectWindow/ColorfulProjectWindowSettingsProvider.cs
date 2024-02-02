@@ -38,6 +38,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                 if (scope.changed) {
                     var window = (EditorWindow?) Resources.FindObjectsOfTypeAll( Type.GetType( "UnityEditor.ProjectBrowser, UnityEditor.CoreModule" ) ).FirstOrDefault();
                     window?.Repaint();
+                    Settings.Save();
                 }
             }
         }

@@ -83,12 +83,12 @@ namespace UnityEditor.ColorfulProjectWindow {
             GUI.DrawTexture( rect, Texture2D.whiteTexture );
             GUI.color = prev;
         }
-        private static Color Lighten(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v * factor );
-            result.a = color.a;
-            return result;
-        }
+        //private static Color Lighten(Color color, float factor) {
+        //    Color.RGBToHSV( color, out var h, out var s, out var v );
+        //    var result = Color.HSVToRGB( h, s, v * factor );
+        //    result.a = color.a;
+        //    return result;
+        //}
         private static Color Darken(Color color, float factor) {
             Color.RGBToHSV( color, out var h, out var s, out var v );
             var result = Color.HSVToRGB( h, s, v / factor );
