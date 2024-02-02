@@ -3,6 +3,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -35,8 +36,8 @@ namespace UnityEditor.ColorfulProjectWindow {
                     }
                 }
                 if (scope.changed) {
-                    //var window = EditorWindow.GetWindow( Type.GetType( "UnityEditor.ProjectBrowser, UnityEditor.CoreModule" ) );
-                    //window?.Repaint(); // it hides color picker
+                    var window = (EditorWindow?) Resources.FindObjectsOfTypeAll( Type.GetType( "UnityEditor.ProjectBrowser, UnityEditor.CoreModule" ) ).FirstOrDefault();
+                    window?.Repaint();
                 }
             }
         }
