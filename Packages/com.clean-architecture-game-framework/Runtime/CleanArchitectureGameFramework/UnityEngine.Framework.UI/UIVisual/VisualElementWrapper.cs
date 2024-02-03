@@ -9,7 +9,7 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class VisualElementWrapper {
 
-        public VisualElement VisualElement { get; }
+        protected internal VisualElement VisualElement { get; }
 
         public bool IsEnabled {
             get => VisualElement.enabledSelf;
@@ -54,7 +54,7 @@ namespace UnityEngine.Framework.UI {
     }
     public abstract class VisualElementWrapper<T> : VisualElementWrapper where T : VisualElement {
 
-        public new T VisualElement => (T) base.VisualElement;
+        protected internal new T VisualElement => (T) base.VisualElement;
 
         public VisualElementWrapper(T visualElement) : base( visualElement ) {
         }
@@ -220,6 +220,14 @@ namespace UnityEngine.Framework.UI {
         }
         public static void OnCancel(this VisualElementWrapper wrapper, Action<NavigationCancelEvent>? callback) {
             wrapper.VisualElement.RegisterCallback<NavigationCancelEvent>( evt => callback?.Invoke( evt ) );
+        }
+
+        // GetVisualElement
+        public static VisualElement GetVisualElement(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement;
+        }
+        public static T GetVisualElement<T>(this VisualElementWrapper<T> wrapper) where T : VisualElement {
+            return wrapper.VisualElement;
         }
 
     }
