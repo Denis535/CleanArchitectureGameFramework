@@ -8,7 +8,7 @@ This framework contains the classes defining the architecture of your game.
 **IDependencyContainer**
 This interface allows you to resolve your dependencies.
 **Program**
-This class is responsible for startup and global logic.
+This class is responsible for a startup and global logic.
 
 ## Framework.UI
 **UIAudioTheme**
