@@ -10,7 +10,7 @@ AssetOrigin:
   serializedVersion: 1
   productId: 115
   packageName: Asset Store Publishing Tools
-  packageVersion: 11.3.1
+  packageVersion: 11.4.0
   assetPath: Packages/com.unity.asset-store-tools/Editor/Validator/Scripts/Tests/Remove
     Mixamo Files.asset
-  uploadId: 608112
+  uploadId: 640788
