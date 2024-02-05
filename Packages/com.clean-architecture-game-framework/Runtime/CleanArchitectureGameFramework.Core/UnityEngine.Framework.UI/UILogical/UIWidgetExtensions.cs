@@ -76,10 +76,16 @@ namespace UnityEngine.Framework.UI {
         public static UIViewBase? GetView(this UIWidgetBase widget) {
             return widget?.View;
         }
+        public static UIViewBase GetView<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+            return widget.View;
+        }
 
         // GetVisualElement
         public static VisualElement? GetVisualElement(this UIWidgetBase widget) {
             return widget?.View?.VisualElement;
+        }
+        public static VisualElement GetVisualElement<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+            return widget.View.VisualElement;
         }
 
     }
