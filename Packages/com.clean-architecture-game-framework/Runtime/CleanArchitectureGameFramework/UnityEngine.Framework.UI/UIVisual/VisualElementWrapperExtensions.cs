@@ -89,7 +89,7 @@ namespace UnityEngine.Framework.UI {
         public static void OnChange<T>(this VisualElementWrapper wrapper, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnChange<T>(this VisualElementWrapper<BaseField<T?>> wrapper, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
+        public static void OnChange<T>(this IVisualElementWrapper<BaseField<T?>> wrapper, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
         }
 

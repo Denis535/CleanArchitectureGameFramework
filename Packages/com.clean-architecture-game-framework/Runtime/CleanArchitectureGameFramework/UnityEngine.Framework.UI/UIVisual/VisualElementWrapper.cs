@@ -7,9 +7,10 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class VisualElementWrapper {
+    public abstract class VisualElementWrapper : IVisualElementWrapper {
 
         protected internal VisualElement VisualElement { get; }
+        VisualElement IVisualElementWrapper.VisualElement => VisualElement;
 
         public bool IsEnabled {
             get => VisualElement.enabledSelf;
@@ -52,9 +53,10 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class VisualElementWrapper<T> : VisualElementWrapper where T : VisualElement {
+    public abstract class VisualElementWrapper<T> : VisualElementWrapper, IVisualElementWrapper<T> where T : VisualElement {
 
         protected internal new T VisualElement => (T) base.VisualElement;
+        T IVisualElementWrapper<T>.VisualElement => VisualElement;
 
         public VisualElementWrapper(T visualElement) : base( visualElement ) {
         }
