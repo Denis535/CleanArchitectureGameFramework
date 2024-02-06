@@ -163,7 +163,7 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         private static RootWidgetView CreateView() {
             var view = new RootWidgetView();
-            view.Widget.OnEventTrickleDown<NavigationSubmitEvent>( evt => {
+            view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
                 if (evt.target is Button button) {
                     using (var click = ClickEvent.GetPooled()) {
                         click.target = button;
@@ -171,8 +171,8 @@ namespace UnityEngine.Framework.UI {
                     }
                     evt.StopPropagation();
                 }
-            } );
-            view.Widget.OnEventTrickleDown<NavigationCancelEvent>( evt => {
+            }, TrickleDown.TrickleDown );
+            view.Widget.OnEvent<NavigationCancelEvent>( evt => {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( i => i.name.Contains( "widget" ) );
                 var button = widget?.Query<Button>().Where( i => i.name is "resume" or "cancel" or "cancellation" or "back" or "no" or "quit" ).First();
                 if (button != null) {
@@ -182,7 +182,7 @@ namespace UnityEngine.Framework.UI {
                     }
                     evt.StopPropagation();
                 }
-            } );
+            }, TrickleDown.TrickleDown );
             return view;
         }
 

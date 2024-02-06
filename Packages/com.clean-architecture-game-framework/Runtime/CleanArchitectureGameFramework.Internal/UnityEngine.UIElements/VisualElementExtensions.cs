@@ -95,99 +95,91 @@ namespace UnityEngine.UIElements {
             return result;
         }
 
-        // OnEvent/TrickleDown
-        public static void OnEventTrickleDown<TEvt>(this VisualElement element, EventCallback<TEvt> callback) where TEvt : EventBase<TEvt>, new() {
-            element.RegisterCallback( callback, TrickleDown.TrickleDown );
+        // OnEvent
+        public static void OnEvent<T>(this VisualElement element, EventCallback<T> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnEventTrickleDown<TEvt, TArg>(this VisualElement element, EventCallback<TEvt, TArg> callback, TArg arg) where TEvt : EventBase<TEvt>, new() {
-            element.RegisterCallback( callback, arg, TrickleDown.TrickleDown );
-        }
-
-        // OnEvent/BubbleUp
-        public static void OnEvent<TEvt>(this VisualElement element, EventCallback<TEvt> callback) where TEvt : EventBase<TEvt>, new() {
-            element.RegisterCallback( callback, TrickleDown.NoTrickleDown );
-        }
-        public static void OnEvent<TEvt, TArg>(this VisualElement element, EventCallback<TEvt, TArg> callback, TArg arg) where TEvt : EventBase<TEvt>, new() {
-            element.RegisterCallback( callback, arg, TrickleDown.NoTrickleDown );
+        public static void OnEvent<T, TArg>(this VisualElement element, EventCallback<T, TArg> callback, TArg arg, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
+            element.RegisterCallback( callback, arg, useTrickleDown );
         }
 
         // OnAttachToPanel
-        public static void OnAttachToPanel(this VisualElement element, EventCallback<AttachToPanelEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnAttachToPanel(this VisualElement element, EventCallback<AttachToPanelEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnDetachFromPanel(this VisualElement element, EventCallback<DetachFromPanelEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnDetachFromPanel(this VisualElement element, EventCallback<DetachFromPanelEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnGeometryChanged
-        public static void OnGeometryChanged(this VisualElement element, EventCallback<GeometryChangedEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnGeometryChanged(this VisualElement element, EventCallback<GeometryChangedEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnFocus
-        public static void OnFocusIn(this VisualElement element, EventCallback<FocusInEvent> callback) {
+        public static void OnFocusIn(this VisualElement element, EventCallback<FocusInEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent immediately before an element gains focus. This event trickles down and bubbles up.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnFocus(this VisualElement element, EventCallback<FocusEvent> callback) {
+        public static void OnFocus(this VisualElement element, EventCallback<FocusEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent immediately after an element has gained focus. This event trickles down (and does not bubbles up).
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnFocusOut(this VisualElement element, EventCallback<FocusOutEvent> callback) {
+        public static void OnFocusOut(this VisualElement element, EventCallback<FocusOutEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent immediately before an element loses focus. This event trickles down and bubbles up.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnMouse
-        public static void OnMouseOver(this VisualElement element, EventCallback<MouseOverEvent> callback) {
+        public static void OnMouseOver(this VisualElement element, EventCallback<MouseOverEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent when the mouse pointer enters an element.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnMouseOut(this VisualElement element, EventCallback<MouseOutEvent> callback) {
+        public static void OnMouseOut(this VisualElement element, EventCallback<MouseOutEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent when the mouse pointer exits an element.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnMouse
-        public static void OnMouseEnter(this VisualElement element, EventCallback<MouseEnterEvent> callback) {
+        public static void OnMouseEnter(this VisualElement element, EventCallback<MouseEnterEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent when the mouse pointer enters an element or one of its descendent elements.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnMouseLeave(this VisualElement element, EventCallback<MouseLeaveEvent> callback) {
+        public static void OnMouseLeave(this VisualElement element, EventCallback<MouseLeaveEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             // Event sent when the mouse pointer exits an element and all its descendent elements.
-            element.RegisterCallback( callback );
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnMouse
-        public static void OnMouseDown(this VisualElement element, EventCallback<MouseDownEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnMouseDown(this VisualElement element, EventCallback<MouseDownEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnMouseUp(this VisualElement element, EventCallback<MouseUpEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnMouseUp(this VisualElement element, EventCallback<MouseUpEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnMouseMove(this VisualElement element, EventCallback<MouseMoveEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnMouseMove(this VisualElement element, EventCallback<MouseMoveEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnClick
-        public static void OnClick(this VisualElement element, EventCallback<ClickEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnClick(this VisualElement element, EventCallback<ClickEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnChange
-        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T>> callback) {
-            element.RegisterCallback( callback );
+        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnChange<T>(this BaseField<T> element, EventCallback<ChangeEvent<T>> callback) {
-            element.RegisterCallback( callback );
+        public static void OnChange<T>(this BaseField<T> element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnSubmit
-        public static void OnSubmit(this VisualElement element, EventCallback<NavigationSubmitEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnSubmit(this VisualElement element, EventCallback<NavigationSubmitEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnCancel(this VisualElement element, EventCallback<NavigationCancelEvent> callback) {
-            element.RegisterCallback( callback );
+        public static void OnCancel(this VisualElement element, EventCallback<NavigationCancelEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            element.RegisterCallback( callback, useTrickleDown );
         }
 
     }
