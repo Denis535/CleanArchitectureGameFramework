@@ -93,6 +93,15 @@ namespace UnityEngine.Framework.UI {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
         }
 
+        // OnChangeAny
+        public static void OnChangeAny(this VisualElementWrapper wrapper, EventCallback<IChangeEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<string?>>( callback, useTrickleDown );
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<object?>>( callback, useTrickleDown );
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<int?>>( callback, useTrickleDown );
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<float?>>( callback, useTrickleDown );
+            wrapper.VisualElement.RegisterCallback<ChangeEvent<bool?>>( callback, useTrickleDown );
+        }
+
         // OnSubmit
         public static void OnSubmit(this VisualElementWrapper wrapper, EventCallback<NavigationSubmitEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
