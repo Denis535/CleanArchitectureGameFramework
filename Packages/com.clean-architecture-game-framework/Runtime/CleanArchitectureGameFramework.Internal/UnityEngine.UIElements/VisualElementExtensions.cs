@@ -167,10 +167,10 @@ namespace UnityEngine.UIElements {
         }
 
         // OnChange
-        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
             element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnChange<T>(this BaseField<T> element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+        public static void OnChange<T>(this BaseField<T?> element, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
             element.RegisterCallback( callback, useTrickleDown );
         }
 
