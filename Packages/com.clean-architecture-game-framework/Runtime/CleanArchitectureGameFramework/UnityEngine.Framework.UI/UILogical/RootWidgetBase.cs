@@ -17,9 +17,9 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnAttach
-        public override void OnAttach() {
+        public override void OnAttach(object? argument) {
         }
-        public override void OnDetach() {
+        public override void OnDetach(object? argument) {
         }
 
         // ShowWidget
@@ -94,6 +94,14 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             base.Dispose();
+        }
+
+        // OnAttach
+        public override void OnAttach(object? argument) {
+            base.OnAttach( argument );
+        }
+        public override void OnDetach(object? argument) {
+            base.OnDetach( argument );
         }
 
         // ShowWidget

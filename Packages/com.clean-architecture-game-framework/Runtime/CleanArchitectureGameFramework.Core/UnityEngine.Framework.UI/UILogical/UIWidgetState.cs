@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using UnityEngine;
 
     public enum UIWidgetState {
         // Inactive
@@ -12,6 +13,6 @@ namespace UnityEngine.Framework.UI {
         Attached,
         Detaching,
         // Inactive
-        Detached,
+        Detached
     }
 }

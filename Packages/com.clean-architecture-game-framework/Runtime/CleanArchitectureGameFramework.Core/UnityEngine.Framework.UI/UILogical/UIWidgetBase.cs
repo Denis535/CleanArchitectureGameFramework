@@ -30,12 +30,12 @@ namespace UnityEngine.Framework.UI {
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         protected internal UIViewBase? View => (this as IUIViewable)?.View;
         // Screen
+        public UIScreenBase? Screen { get; private set; }
         public UIWidgetState State { get; private set; } = UIWidgetState.Unattached;
         [MemberNotNullWhen( true, "Screen" )] public bool IsAttached => State is UIWidgetState.Attached;
         [MemberNotNullWhen( true, "Screen" )] public bool IsAttaching => State is UIWidgetState.Attaching;
         [MemberNotNullWhen( true, "Screen" )] public bool IsDetaching => State is UIWidgetState.Detaching;
         [MemberNotNullWhen( false, "Screen" )] public bool IsNonAttached => State is UIWidgetState.Unattached or UIWidgetState.Detached;
-        public UIScreenBase? Screen { get; private set; }
         // Parent
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase? Parent { get; internal set; }
@@ -74,21 +74,21 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnAttach
-        public virtual void OnBeforeAttach() {
+        public virtual void OnBeforeAttach(object? argument) {
             OnBeforeAttachEvent?.Invoke();
             Parent?.OnBeforeDescendantAttach( this );
         }
-        public abstract void OnAttach();
-        public virtual void OnAfterAttach() {
+        public abstract void OnAttach(object? argument);
+        public virtual void OnAfterAttach(object? argument) {
             OnAfterAttachEvent?.Invoke();
             Parent?.OnAfterDescendantAttach( this );
         }
-        public virtual void OnBeforeDetach() {
+        public virtual void OnBeforeDetach(object? argument) {
             OnBeforeDetachEvent?.Invoke();
             Parent?.OnBeforeDescendantDetach( this );
         }
-        public abstract void OnDetach();
-        public virtual void OnAfterDetach() {
+        public abstract void OnDetach(object? argument);
+        public virtual void OnAfterDetach(object? argument) {
             OnAfterDetachEvent?.Invoke();
             Parent?.OnAfterDescendantDetach( this );
         }
@@ -122,7 +122,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        protected internal virtual void __AttachChild__(UIWidgetBase child) {
+        protected internal virtual void __AttachChild__(UIWidgetBase child, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Object.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
@@ -130,17 +130,21 @@ namespace UnityEngine.Framework.UI {
                 Children_.Add( child );
                 child.Parent = this;
                 if (IsAttached) {
-                    AttachToScreen( child, Screen );
+                    AttachToScreen( child, Screen, argument );
+                } else {
+                    Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
                 }
             }
         }
-        protected internal virtual void __DetachChild__(UIWidgetBase child) {
+        protected internal virtual void __DetachChild__(UIWidgetBase child, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Object.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             using (@lock.Enter()) {
                 if (IsAttached) {
-                    DetachFromScreen( child, Screen );
+                    DetachFromScreen( child, Screen, argument );
+                } else {
+                    Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
                 }
                 child.Parent = null;
                 Children_.Remove( child );
@@ -152,43 +156,47 @@ namespace UnityEngine.Framework.UI {
 
         // Helpers
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        internal static void AttachToScreen(UIWidgetBase widget, UIScreenBase screen) {
+        internal static void AttachToScreen(UIWidgetBase widget, UIScreenBase screen, object? argument) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be non-attached" ).Valid( widget.IsNonAttached );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == null );
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
-            widget.State = UIWidgetState.Attaching;
-            widget.Screen = screen;
-            widget.OnBeforeAttach();
+            widget.OnBeforeAttach( argument );
             {
-                widget.OnAttach();
-                widget.Parent?.ShowWidget( widget );
-                foreach (var child in widget.Children) {
-                    AttachToScreen( child, screen );
+                widget.Screen = screen;
+                widget.State = UIWidgetState.Attaching;
+                {
+                    widget.OnAttach( argument );
+                    widget.Parent?.ShowWidget( widget );
+                    foreach (var child in widget.Children) {
+                        AttachToScreen( child, screen, argument );
+                    }
                 }
+                widget.State = UIWidgetState.Attached;
             }
-            widget.OnAfterAttach();
-            widget.State = UIWidgetState.Attached;
+            widget.OnAfterAttach( argument );
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        internal static void DetachFromScreen(UIWidgetBase widget, UIScreenBase screen) {
+        internal static void DetachFromScreen(UIWidgetBase widget, UIScreenBase screen, object? argument) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be attached" ).Valid( widget.IsAttached );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen != null );
             Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == screen );
             Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
-            widget.State = UIWidgetState.Detaching;
-            widget.OnBeforeDetach();
+            widget.OnBeforeDetach( argument );
             {
-                foreach (var child in widget.Children.Reverse()) {
-                    DetachFromScreen( child, screen );
+                widget.State = UIWidgetState.Detaching;
+                {
+                    foreach (var child in widget.Children.Reverse()) {
+                        DetachFromScreen( child, screen, argument );
+                    }
+                    widget.Parent?.HideWidget( widget );
+                    widget.OnDetach( argument );
                 }
-                widget.Parent?.HideWidget( widget );
-                widget.OnDetach();
+                widget.State = UIWidgetState.Detached;
+                widget.Screen = null;
             }
-            widget.OnAfterDetach();
-            widget.Screen = null;
-            widget.State = UIWidgetState.Detached;
+            widget.OnAfterDetach( argument );
         }
 
     }

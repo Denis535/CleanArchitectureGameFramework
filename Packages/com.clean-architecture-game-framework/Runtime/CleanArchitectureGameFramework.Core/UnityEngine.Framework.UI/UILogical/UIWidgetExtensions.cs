@@ -10,37 +10,37 @@ namespace UnityEngine.Framework.UI {
     public static class UIWidgetExtensions {
 
         // AttachChild
-        public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child) {
+        public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Object.Message( $"Widget {widget} must have no child {child} widget" ).Valid( !widget.Children.Contains( child ) );
-            widget.__AttachChild__( child );
+            widget.__AttachChild__( child, argument );
         }
 
         // DetachSelf
-        public static void DetachSelf(this UIWidgetBase widget) {
+        public static void DetachSelf(this UIWidgetBase widget, object? argument) {
             Assert.Object.Message( $"Widget {widget} must have parent or must be attached" ).Valid( widget.Parent != null || widget.IsAttached );
             if (widget.Parent != null) {
-                widget.Parent.DetachChild( widget );
+                widget.Parent.DetachChild( widget, argument );
             } else {
-                widget.Screen!.DetachWidget( widget );
+                widget.Screen!.DetachWidget( widget, argument );
             }
         }
 
         // DetachChild
-        public static void DetachChild<T>(this UIWidgetBase widget) where T : UIWidgetBase {
+        public static void DetachChild<T>(this UIWidgetBase widget, object? argument) where T : UIWidgetBase {
             Assert.Object.Message( $"Widget {widget} must have child {typeof( T )} widget" ).Valid( widget.Children.OfType<T>().Any() );
-            widget.__DetachChild__( widget.Children.OfType<T>().Last() );
+            widget.__DetachChild__( widget.Children.OfType<T>().Last(), argument );
         }
-        public static void DetachChild(this UIWidgetBase widget, UIWidgetBase child) {
+        public static void DetachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Object.Message( $"Widget {widget} must have child {child} widget" ).Valid( widget.Children.Contains( child ) );
-            widget.__DetachChild__( child );
+            widget.__DetachChild__( child, argument );
         }
 
         // DetachChildren
-        public static void DetachChildren(this UIWidgetBase widget) {
+        public static void DetachChildren(this UIWidgetBase widget, object? argument) {
             foreach (var child in widget.Children.Reverse()) {
-                widget.__DetachChild__( child );
+                widget.__DetachChild__( child, argument );
             }
         }
 
