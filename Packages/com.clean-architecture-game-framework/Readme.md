@@ -46,3 +46,6 @@ This class represents the scene's entity (independent entity or player's avatar)
 This class responsible for visual and audible aspects.
 **EntityBody**
 This class responsible for physical aspects.
+
+# Link
+- https://assetstore.unity.com/publishers/90787
