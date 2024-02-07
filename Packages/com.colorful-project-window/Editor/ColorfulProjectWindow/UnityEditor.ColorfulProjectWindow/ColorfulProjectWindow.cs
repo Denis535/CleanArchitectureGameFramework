@@ -69,13 +69,24 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         // Helpers
         private static void DrawItem(Rect rect, Color color, int depth) {
-            rect.x -= 16;
-            rect.width = 16;
-            color = depth switch {
-                0 => color,
-                _ => Darken( color, 2.5f ),
-            };
-            DrawRect( rect, color );
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+                color = depth switch {
+                    0 => color,
+                    _ => Darken( color, 2.5f ),
+                };
+                DrawRect( rect, color );
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+                color = depth switch {
+                    0 => color,
+                    _ => Darken( color, 2.5f ),
+                };
+                DrawRect( rect, color );
+            }
         }
         private static void DrawRect(Rect rect, Color color) {
             var prev = GUI.color;
