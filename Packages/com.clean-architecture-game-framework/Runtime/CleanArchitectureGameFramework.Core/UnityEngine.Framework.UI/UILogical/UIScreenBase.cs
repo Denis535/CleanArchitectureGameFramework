@@ -53,29 +53,32 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // Helpers/AddView
-        protected static void AddView(UIDocument document, VisualElement view) {
+        // Helpers/AddVisualElement
+        protected static void AddVisualElement(UIDocument document, VisualElement element) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
             Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Add( view );
+            Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
+            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
+            document.rootVisualElement.Add( element );
         }
-        protected static void AddViewIfNeeded(UIDocument document, VisualElement view) {
+        protected static void AddVisualElementIfNeeded(UIDocument document, VisualElement element) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
             Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            if (!document.rootVisualElement.Contains( view )) {
-                document.rootVisualElement.Add( view );
+            Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
+            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
+            if (!document.rootVisualElement.Contains( element )) {
+                document.rootVisualElement.Add( element );
             }
         }
-        protected static void RemoveView(UIDocument document, VisualElement view) {
+        protected static void RemoveVisualElement(UIDocument document, VisualElement element) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
             Assert.Argument.Message( $"Argument 'document' {document} must be awakened" ).Valid( document.didAwake );
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Remove( view );
+            Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
+            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
+            document.rootVisualElement.Remove( element );
         }
 
     }

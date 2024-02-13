@@ -31,46 +31,46 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        protected static void Focus(VisualElement view) {
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            Assert.Object.Message( $"View {view} must be attached" ).Valid( view!.panel != null );
-            if (HasFocusedElement( view )) {
+        protected static void Focus(VisualElement element) {
+            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( element != null );
+            Assert.Object.Message( $"Element {element} must be attached" ).Valid( element!.panel != null );
+            if (HasFocusedElement( element )) {
                 return;
             }
-            if (LoadFocusedElement( view )) {
+            if (LoadFocusedElement( element )) {
                 return;
             }
-            if (view.focusable) {
-                view.Focus();
+            if (element.focusable) {
+                element.Focus();
             } else {
-                view.focusable = true;
-                view.delegatesFocus = true;
-                view.Focus();
-                view.delegatesFocus = false;
-                view.focusable = false;
+                element.focusable = true;
+                element.delegatesFocus = true;
+                element.Focus();
+                element.delegatesFocus = false;
+                element.focusable = false;
             }
         }
-        protected static void SaveFocus(VisualElement view) {
-            SaveFocusedElement( view, GetFocusedElement( view ) );
+        protected static void SaveFocus(VisualElement element) {
+            SaveFocusedElement( element, GetFocusedElement( element ) );
         }
         // Helpers
-        private static bool HasFocusedElement(VisualElement view) {
-            var focusedElement = (VisualElement) view.focusController.focusedElement;
-            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return true;
+        private static bool HasFocusedElement(VisualElement element) {
+            var focusedElement = (VisualElement) element.focusController.focusedElement;
+            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return true;
             return false;
         }
-        private static VisualElement? GetFocusedElement(VisualElement view) {
-            view.IsAncestorOf( view );
-            var focusedElement = (VisualElement) view.focusController.focusedElement;
-            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return focusedElement;
+        private static VisualElement? GetFocusedElement(VisualElement element) {
+            element.IsAncestorOf( element );
+            var focusedElement = (VisualElement) element.focusController.focusedElement;
+            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        private static void SaveFocusedElement(VisualElement view, VisualElement? focusedElement) {
-            view.userData = focusedElement;
+        private static void SaveFocusedElement(VisualElement element, VisualElement? focusedElement) {
+            element.userData = focusedElement;
         }
-        private static bool LoadFocusedElement(VisualElement view) {
-            var focusedElement = (VisualElement?) view.userData;
-            view.userData = null;
+        private static bool LoadFocusedElement(VisualElement element) {
+            var focusedElement = (VisualElement?) element.userData;
+            element.userData = null;
             if (focusedElement != null) {
                 focusedElement.Focus();
                 return true;
