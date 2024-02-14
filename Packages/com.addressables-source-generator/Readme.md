@@ -37,5 +37,5 @@ new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableA
 ## LabelsSourceGenerator
 - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
 
-# Link
+# Links
 - https://assetstore.unity.com/publishers/90787

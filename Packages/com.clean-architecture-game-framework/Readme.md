@@ -47,5 +47,5 @@ This class responsible for visual and audible aspects.
 **EntityBody**
 This class responsible for physical aspects.
 
-# Link
+# Links
 - https://assetstore.unity.com/publishers/90787

@@ -12,7 +12,7 @@ This identifies special folders according to the following rules:
 Just install this package.
 
 # Setup
-You can setup colors in 'Preferences/Colorful Project Window'.
+You can setup the colors in the 'Preferences/Colorful Project Window'.
 
-# Link
+# Links
 - https://assetstore.unity.com/publishers/90787
