@@ -21,7 +21,7 @@ this class represents the logical (business) unit of visual interface. This cont
 this class represents the visual unit of visual interface.
 This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
 - **UIRouter** -
-This class is responsible for an application state.
+this class is responsible for an application state.
 
 ## Framework.App
 - **Application** -
