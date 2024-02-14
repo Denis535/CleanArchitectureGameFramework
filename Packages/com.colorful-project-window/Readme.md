@@ -14,5 +14,5 @@ Just install this package.
 # Setup
 You can setup colors in 'Preferences/Colorful Project Window'.
 
-# Link
+# Links
 - https://assetstore.unity.com/publishers/90787
