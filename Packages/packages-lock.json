@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.denis535.addressables-source-generator": {
-      "version": "file:com.denis535..addressables-source-generator",
+      "version": "file:com.denis535.addressables-source-generator",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -19,7 +19,7 @@
       }
     },
     "com.denis535.colorful-project-window": {
-      "version": "file:com.denis535..colorful-project-window",
+      "version": "file:com.denis535.colorful-project-window",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
