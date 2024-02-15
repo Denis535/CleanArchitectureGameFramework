@@ -37,7 +37,7 @@ This class represents the world.
 - **WorldView** -
 This class responsible for visual and audible aspects.
 - **Entity** -
-This class represents the scene's entity (player's avatar, AI agent or independent object).
+This class represents the scene's entity (player's avatar, AI agent or any object).
 - **EntityView** -
 This class responsible for visual and audible aspects.
 - **EntityBody** -
