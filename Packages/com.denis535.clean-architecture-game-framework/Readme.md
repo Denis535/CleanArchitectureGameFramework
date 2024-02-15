@@ -46,9 +46,8 @@ This class responsible for visual and audible aspects.
 This class responsible for physical aspects.
 
 # Media
-[![Now in Android: 55]
-(https://i.ytimg.com/vi/Hc79sDi3f0U/maxresdefault.jpg)]
-([https://www.youtube.com/watch?v=Hc79sDi3f0U "Now in Android: 55"](https://youtu.be/lva7KKOQ71k))
+[![YouTube](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/lva7KKOQ71k)
+
 
 # Links
 - https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.clean-architecture-game-framework
