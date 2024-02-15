@@ -7,19 +7,24 @@ This framework contains the classes defining the architecture of your game.
 ## Framework
 **IDependencyContainer**
 This interface allows you to resolve your dependencies.
+
 **Program**
 This class is responsible for a startup and global logic.
 
 ## Framework.UI
 **UIAudioTheme**
 This class responsible for the audio theme.
+
 **UIScreen**
 This class responsible for the user interface. The user interface consists of hierarchy of logical units and hierarchy of visual units.
+
 **UIWidget**
 This class represents the logical (business) unit of visual interface. This contains a business logic. And also this may contain (or not contain) the view.
+
 **UIView**
 This class represents the visual unit of visual interface.
 This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
+
 **UIRouter**
 This class is responsible for an application state.
 
@@ -32,16 +37,22 @@ This class responsible for a global values.
 ## Framework.Entities
 **Game**
 This class represents the game rules and states.
+
 **Player**
 This class represents the player rules and states.
+
 **World**
 This class represents the world.
+
 **WorldView**
 This class responsible for visual and audible aspects.
+
 **Entity**
 This class represents the scene's entity (independent entity or player's avatar).
+
 **EntityView**
 This class responsible for visual and audible aspects.
+
 **EntityBody**
 This class responsible for physical aspects.
 
@@ -53,7 +64,6 @@ This class responsible for physical aspects.
 ![CleanArchitectureGameTemplate-638435363835706904](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/94937e69-2729-46ba-8692-d20589c524d4)
 ![CleanArchitectureGameTemplate-638435363985585039](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/bc7930b2-bd16-4961-807b-390ca72d7dc8)
 ![CleanArchitectureGameTemplate-638435364085742612](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/d030fa10-3643-4912-810b-b43e08033585)
-
 ![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/c02726e0-ff87-42e3-85ff-f870217a151e)
 ![2](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/9319a8e7-26fb-48e7-aa2a-0e58b96c9074)
 
