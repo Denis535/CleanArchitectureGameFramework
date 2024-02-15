@@ -22,7 +22,7 @@ namespace UnityEngine.AddressableAssets {
 
 # How to use it
 The first way is to create the 'AddressablesSourceGenerator' asset and press the 'Generate' button in the inspector. It will generate the 'R.cs' and 'L.cs' files next to your asset. 
-The second way is to write the script that will generate the 'R.cs' and 'L.cs' files:
+The second way is to use the 'ResourcesSourceGenerator' and 'LabelsSourceGenerator':
 ```
 var settings = AddressableAssetSettingsDefaultObject.Settings;
 new ResourcesSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R" );
