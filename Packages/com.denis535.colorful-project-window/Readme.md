@@ -1,5 +1,5 @@
 # Overview
-This package makes the project window much more convenient. This paints the special folders (modules, assets, resources and sources) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
+This package makes the project window much more convenient. This highlights the special folders (modules, assets, resources and sources) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
 
 # How it works
 This identifies special folders according to the following rules:
