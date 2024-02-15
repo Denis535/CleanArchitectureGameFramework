@@ -30,12 +30,12 @@ new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableA
 ```
 
 # Reference
-**AddressablesSourceGenerator**
-``void Generate()``
-**ResourcesSourceGenerator**
-``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
-**LabelsSourceGenerator**
-``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
+- **AddressablesSourceGenerator**
+    - ``void Generate()``
+- **ResourcesSourceGenerator**
+    - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
+- **LabelsSourceGenerator**
+    - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
 
 # Links
 - https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.addressables-source-generator
