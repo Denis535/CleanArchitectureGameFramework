@@ -46,4 +46,5 @@ this class responsible for visual and audible aspects.
 this class responsible for physical aspects.
 
 # Links
+- https://github.com/Denis535/CleanArchitectureGameFramework
 - https://assetstore.unity.com/publishers/90787

@@ -15,4 +15,5 @@ Just install this package.
 You can setup the colors in the 'Preferences/Colorful Project Window'.
 
 # Links
+- https://github.com/Denis535/CleanArchitectureGameFramework
 - https://assetstore.unity.com/publishers/90787

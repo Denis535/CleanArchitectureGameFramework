@@ -1,15 +1,15 @@
 {
   "dependencies": {
-    "com.addressables-source-generator": {
-      "version": "file:com.addressables-source-generator",
+    "com.denis535.addressables-source-generator": {
+      "version": "file:com.denis535..addressables-source-generator",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
         "com.unity.addressables": "1.0.0"
       }
     },
-    "com.clean-architecture-game-framework": {
-      "version": "file:com.clean-architecture-game-framework",
+    "com.denis535.clean-architecture-game-framework": {
+      "version": "file:com.denis535.clean-architecture-game-framework",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -18,8 +18,8 @@
         "com.unity.modules.uielements": "1.0.0"
       }
     },
-    "com.colorful-project-window": {
-      "version": "file:com.colorful-project-window",
+    "com.denis535.colorful-project-window": {
+      "version": "file:com.denis535..colorful-project-window",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

@@ -1,11 +1,11 @@
 {
-    "name": "com.colorful-project-window",
+    "name": "com.denis535.colorful-project-window",
     "displayName": "Colorful Project Window",
     "version": "1.0.0",
     "description": "This package makes the project window much more convenient.",
     "author": {
         "name": "Denis535",
-        "url": "https://assetstore.unity.com/publishers/90787"
+        "url": "https://github.com/Denis535/CleanArchitectureGameFramework"
     },
     "unity": "2023.2",
     "dependencies": {
