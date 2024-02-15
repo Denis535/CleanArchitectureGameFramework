@@ -5,56 +5,44 @@ This package provides you with the architecture game framework that helping you 
 This framework contains the classes defining the architecture of your game.
 
 ## Framework
-**IDependencyContainer**
+- **IDependencyContainer**
 This interface allows you to resolve your dependencies.
-
-**Program**
+- **Program**
 This class is responsible for a startup and global logic.
 
 ## Framework.UI
-**UIAudioTheme**
+- **UIAudioTheme**
 This class responsible for the audio theme.
-
-**UIScreen**
+- **UIScreen**
 This class responsible for the user interface. The user interface consists of hierarchy of logical units and hierarchy of visual units.
-
-**UIWidget**
+- **UIWidget**
 This class represents the logical (business) unit of visual interface. This contains a business logic. And also this may contain (or not contain) the view.
-
-**UIView**
+- **UIView**
 This class represents the visual unit of visual interface.
 This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
-
-**UIRouter**
+- **UIRouter**
 This class is responsible for an application state.
 
 ## Framework.App
-**Application**
+- **Application**
 This class represents the application.
-
-**Globals**
+- **Globals**
 This class responsible for a global values.
 
 ## Framework.Entities
-**Game**
+- **Game**
 This class represents the game rules and states.
-
-**Player**
+- **Player**
 This class represents the player rules and states.
-
-**World**
+- **World**
 This class represents the world.
-
-**WorldView**
+- **WorldView**
 This class responsible for visual and audible aspects.
-
-**Entity**
+- **Entity**
 This class represents the scene's entity (independent entity or player's avatar).
-
-**EntityView**
+- **EntityView**
 This class responsible for visual and audible aspects.
-
-**EntityBody**
+- **EntityBody**
 This class responsible for physical aspects.
 
 # Media
