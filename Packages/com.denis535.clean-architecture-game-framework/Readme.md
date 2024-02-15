@@ -31,6 +31,7 @@ This class is responsible for an application state.
 ## Framework.App
 **Application**
 This class represents the application.
+
 **Globals**
 This class responsible for a global values.
 
