@@ -45,6 +45,10 @@ This class responsible for visual and audible aspects.
 **EntityBody**
 This class responsible for physical aspects.
 
+# Media
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=lva7KKOQ71k)
+https://youtu.be/lva7KKOQ71k
+
 # Links
 - https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.clean-architecture-game-framework
 - https://openupm.com/packages/com.denis535.clean-architecture-game-framework
