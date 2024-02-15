@@ -46,7 +46,7 @@ This class responsible for visual and audible aspects.
 This class responsible for physical aspects.
 
 # Media
-[![YouTube](https://i9.ytimg.com/vi_webp/lva7KKOQ71k/mq1.webp?sqp=CKSTuK4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGDUgZSgPMA8=&rs=AOn4CLChxbWgI5gYnTqFG1RchrL5BxLuuA)](https://youtu.be/lva7KKOQ71k)
+[![YouTube](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/lva7KKOQ71k)
 ![CleanArchitectureGameTemplate-638435366808871653](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/c7992481-8d3f-4a4f-b601-8a471ffaca31)
 ![CleanArchitectureGameTemplate-638435364085742612](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/d030fa10-3643-4912-810b-b43e08033585)
 ![CleanArchitectureGameTemplate-638435363985585039](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/bc7930b2-bd16-4961-807b-390ca72d7dc8)
