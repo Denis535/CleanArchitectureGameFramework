@@ -2,8 +2,6 @@
 This package provides you with the architecture game framework that helping you to develop your project following the best practices (like Clean Architecture and Uber Ribs).
 
 # Reference
-This framework contains the classes defining the architecture of your game.
-
 ## Framework
 - **IDependencyContainer** -
 This interface allows you to resolve your dependencies.
