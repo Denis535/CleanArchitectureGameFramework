@@ -21,6 +21,6 @@ You can setup the colors in the 'Preferences/Colorful Project Window'.
 
 # Links
 - https://denis535.github.io
-- https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.colorful-project-window
-- https://openupm.com/packages/com.denis535.colorful-project-window
+- https://openupm.com/packages/?sort=downloads&q=denis535
 - https://assetstore.unity.com/publishers/90787
+- https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.colorful-project-window

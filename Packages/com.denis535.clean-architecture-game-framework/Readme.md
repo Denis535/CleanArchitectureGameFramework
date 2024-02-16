@@ -56,6 +56,6 @@ This class responsible for physical aspects.
 
 # Links
 - https://denis535.github.io
-- https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.clean-architecture-game-framework
-- https://openupm.com/packages/com.denis535.clean-architecture-game-framework
+- https://openupm.com/packages/?sort=downloads&q=denis535
 - https://assetstore.unity.com/publishers/90787
+- https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.clean-architecture-game-framework
