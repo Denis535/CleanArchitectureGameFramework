@@ -6,42 +6,44 @@ This package provides you with the architecture game framework that helping you 
 - **IDependencyContainer** -
 This interface allows you to resolve your dependencies.
 - **Program** -
-This class is responsible for a startup and global logic.
+This class is responsible for the startup and global logic.
 
 ## Framework.UI
 - **UIAudioTheme** -
-This class responsible for the audio theme.
+This class is responsible for the audio theme.
 - **UIScreen** -
-This class responsible for the user interface. The user interface consists of hierarchy of logical units and hierarchy of visual units.
+This class is responsible for the user interface.
+The user interface consists of the hierarchy of logical (business) units and the hierarchy of visual units.
 - **UIWidget** -
-This class represents the logical (business) unit of visual interface. This contains a business logic. And also this may contain (or not contain) the view.
+This class is responsible for the business logic of ui unit.
+This may contain (or not contain) the view.
 - **UIView** -
-This class represents the visual unit of visual interface.
+This class is responsible for the visual (view) logic of ui unit.
 This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
 - **UIRouter** -
-This class is responsible for an application state.
+This class is responsible for the application state.
 
 ## Framework.App
 - **Application** -
-This class represents the application.
+This class is responsible for the application logic.
 - **Globals** -
-This class responsible for a global values.
+This class provides you with the global values.
 
 ## Framework.Entities
 - **Game** -
-This class represents the game rules and states.
+This class is responsible for the game rules and states.
 - **Player** -
-This class represents the player rules and states.
+This class is responsible for the player rules and states.
 - **World** -
-This class represents the world.
+This class is responsible for the world.
 - **WorldView** -
-This class responsible for visual and audible aspects.
+This class is responsible for the world's visual and audible aspects.
 - **Entity** -
-This class represents the scene's entity (player's avatar, AI agent or any object).
+This class is responsible for the scene's entity (player's avatar, AI agent or any other object).
 - **EntityView** -
-This class responsible for visual and audible aspects.
+This class is responsible for the entity's visual and audible aspects.
 - **EntityBody** -
-This class responsible for physical aspects.
+This class is responsible for the entity's physical aspects.
 
 # Media
 [![YouTube](https://img.youtube.com/vi/lva7KKOQ71k/0.jpg)](https://youtu.be/lva7KKOQ71k)
