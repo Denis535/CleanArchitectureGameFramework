@@ -18,7 +18,7 @@ namespace UnityEngine.Framework.UI {
             if (EditorApplication.isPlaying) {
                 LabelField( "Clip", $"{Target.Clip?.name ?? "Null"} ({Target.Clip?.length ?? 0})" );
                 LabelField( "IsPlaying", Target.IsPlaying.ToString() );
-                LabelField( "IsPausing", Target.IsPausing.ToString() );
+                LabelField( "IsPaused", Target.IsPaused.ToString() );
                 LabelField( "Time", Target.Time.ToString() );
                 LabelField( "Volume", Target.Volume.ToString() );
                 LabelField( "Mute", Target.Mute.ToString() );

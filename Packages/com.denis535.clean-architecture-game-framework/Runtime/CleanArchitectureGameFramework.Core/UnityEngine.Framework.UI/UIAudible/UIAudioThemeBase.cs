@@ -11,11 +11,11 @@ namespace UnityEngine.Framework.UI {
 
         // Globals
         protected AudioSource AudioSource { get; set; } = default!;
-        // AudioSource
+        // Clip
         public AudioClip? Clip => AudioSource.clip;
         public bool IsPlaying { get; private set; }
-        public bool IsPausing { get; private set; }
-        public bool IsUnPausing => !IsPausing;
+        public bool IsPaused { get; private set; }
+        public bool IsUnPaused => !IsPaused;
         public float Time { get => AudioSource.time; set => AudioSource.time = value; }
         public float Volume { get => AudioSource.volume; set => AudioSource.volume = value; }
         public bool Mute { get => AudioSource.mute; set => AudioSource.mute = value; }
@@ -28,27 +28,41 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Play
+        public void SetPlaying(bool value) {
+            if (value) {
+                Play( AudioSource.clip );
+            } else {
+                Stop();
+            }
+        }
         public void Play(AudioClip clip) {
-            IsPlaying = true;
             AudioSource.clip = clip;
             AudioSource.Play();
+            IsPlaying = true;
         }
         public void Stop() {
-            IsPlaying = false;
             AudioSource.Stop();
             AudioSource.clip = null;
+            IsPlaying = false;
         }
 
         // Pause
+        public void SetPaused(bool value) {
+            if (value) {
+                Pause();
+            } else {
+                UnPause();
+            }
+        }
         public void Pause() {
-            if (IsPausing) return;
-            IsPausing = true;
+            if (IsPaused) return;
             AudioSource.Pause();
+            IsPaused = true;
         }
         public void UnPause() {
-            if (!IsPausing) return;
-            IsPausing = false;
+            if (!IsPaused) return;
             AudioSource.UnPause();
+            IsPaused = false;
         }
 
         // Helpers
