@@ -7,15 +7,18 @@ namespace UnityEngine {
 
     public class ValueTracker<T> {
 
+        private readonly Func<T> getter;
         private Option<T> Value { get; set; }
 
         // Constructor
-        public ValueTracker() {
-            Value = default;
+        public ValueTracker(Func<T> getter) {
+            this.getter = getter;
+            this.Value = default;
         }
 
         // IsChanged
-        public bool IsChanged(T value) {
+        public bool IsChanged() {
+            var value = getter();
             if (!Value.Equals( value )) {
                 Value = new Option<T>( value );
                 return true;
@@ -23,7 +26,8 @@ namespace UnityEngine {
                 return false;
             }
         }
-        public bool IsChanged(T value, out T newValue) {
+        public bool IsChanged(out T newValue) {
+            var value = getter();
             if (!Value.Equals( value )) {
                 Value = new Option<T>( value );
                 newValue = Value.Value;
@@ -33,7 +37,8 @@ namespace UnityEngine {
                 return false;
             }
         }
-        public bool IsChanged(T value, out T newValue, out Option<T> prevValue) {
+        public bool IsChanged(out T newValue, out Option<T> prevValue) {
+            var value = getter();
             if (!Value.Equals( value )) {
                 prevValue = Value;
                 Value = new Option<T>( value );
