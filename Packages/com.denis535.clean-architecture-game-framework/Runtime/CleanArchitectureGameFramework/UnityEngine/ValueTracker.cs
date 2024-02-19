@@ -8,7 +8,7 @@ namespace UnityEngine {
     public class ValueTracker<T> {
 
         private readonly Func<T> getter;
-        private Option<T> Value { get; set; }
+        public Option<T> Value { get; set; }
 
         // Constructor
         public ValueTracker(Func<T> getter) {
