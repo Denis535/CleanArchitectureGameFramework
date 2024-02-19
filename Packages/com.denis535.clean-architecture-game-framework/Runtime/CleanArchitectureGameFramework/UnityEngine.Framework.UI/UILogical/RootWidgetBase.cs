@@ -33,7 +33,7 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         protected static void Focus(VisualElement element) {
             Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( element != null );
-            Assert.Object.Message( $"Element {element} must be attached" ).Valid( element!.panel != null );
+            Assert.Operation.Message( $"Element {element} must be attached" ).Valid( element!.panel != null );
             if (HasFocusedElement( element )) {
                 return;
             }

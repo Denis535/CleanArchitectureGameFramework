@@ -12,13 +12,13 @@ namespace UnityEngine.Framework.UI {
         // AttachChild
         public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {widget} must have no child {child} widget" ).Valid( !widget.Children.Contains( child ) );
+            Assert.Operation.Message( $"Widget {widget} must have no child {child} widget" ).Valid( !widget.Children.Contains( child ) );
             widget.__AttachChild__( child, argument );
         }
 
         // DetachSelf
         public static void DetachSelf(this UIWidgetBase widget, object? argument = null) {
-            Assert.Object.Message( $"Widget {widget} must have parent or must be attached" ).Valid( widget.Parent != null || widget.IsAttached );
+            Assert.Operation.Message( $"Widget {widget} must have parent or must be attached" ).Valid( widget.Parent != null || widget.IsAttached );
             if (widget.Parent != null) {
                 widget.Parent.DetachChild( widget, argument );
             } else {
@@ -28,12 +28,12 @@ namespace UnityEngine.Framework.UI {
 
         // DetachChild
         public static void DetachChild<T>(this UIWidgetBase widget, object? argument = null) where T : UIWidgetBase {
-            Assert.Object.Message( $"Widget {widget} must have child {typeof( T )} widget" ).Valid( widget.Children.OfType<T>().Any() );
+            Assert.Operation.Message( $"Widget {widget} must have child {typeof( T )} widget" ).Valid( widget.Children.OfType<T>().Any() );
             widget.__DetachChild__( widget.Children.OfType<T>().Last(), argument );
         }
         public static void DetachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {widget} must have child {child} widget" ).Valid( widget.Children.Contains( child ) );
+            Assert.Operation.Message( $"Widget {widget} must have child {child} widget" ).Valid( widget.Children.Contains( child ) );
             widget.__DetachChild__( child, argument );
         }
 

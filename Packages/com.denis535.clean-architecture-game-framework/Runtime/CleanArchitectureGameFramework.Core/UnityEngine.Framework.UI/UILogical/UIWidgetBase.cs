@@ -63,7 +63,7 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void Dispose() {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
-            Assert.Object.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
+            Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
                 if (child.DisposeAutomatically) {
                     child.Dispose();
@@ -125,7 +125,7 @@ namespace UnityEngine.Framework.UI {
         protected internal virtual void __AttachChild__(UIWidgetBase child, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
+            Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             using (@lock.Enter()) {
                 Children_.Add( child );
                 child.Parent = this;
@@ -139,7 +139,7 @@ namespace UnityEngine.Framework.UI {
         protected internal virtual void __DetachChild__(UIWidgetBase child, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Object.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
+            Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             using (@lock.Enter()) {
                 if (IsAttached) {
                     DetachFromScreen( child, Screen, argument );
@@ -211,7 +211,7 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
-            Assert.Object.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
+            Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             View.Dispose();
             base.Dispose();
         }

@@ -27,7 +27,7 @@ namespace UnityEngine.Framework.UI {
         protected internal virtual void __AttachWidget__(UIWidgetBase widget, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
-            Assert.Object.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
+            Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             using (@lock.Enter()) {
                 Widget = widget;
                 widget.Parent = null;
@@ -39,8 +39,8 @@ namespace UnityEngine.Framework.UI {
         protected internal virtual void __DetachWidget__(UIWidgetBase widget, object? argument) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
-            Assert.Object.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
-            Assert.Object.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
+            Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
+            Assert.Operation.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
             using (@lock.Enter()) {
                 if (true) {
                     UIWidgetBase.DetachFromScreen( Widget, this, argument );

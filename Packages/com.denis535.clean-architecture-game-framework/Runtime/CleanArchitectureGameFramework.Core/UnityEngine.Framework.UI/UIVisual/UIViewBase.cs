@@ -19,7 +19,7 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
-            Assert.Object.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
+            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
             IsDisposed = true;
             if (VisualElement.visualTreeAssetSource != null) Addressables2.Release( VisualElement.visualTreeAssetSource );
         }
