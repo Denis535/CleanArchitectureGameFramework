@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
     [CustomEditor( typeof( UIAudioThemeBase ), true )]
     public class UIAudioThemeEditor : Editor {
 
-        public UIAudioThemeBase Target => (UIAudioThemeBase) target;
+        private UIAudioThemeBase Target => (UIAudioThemeBase) target;
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {

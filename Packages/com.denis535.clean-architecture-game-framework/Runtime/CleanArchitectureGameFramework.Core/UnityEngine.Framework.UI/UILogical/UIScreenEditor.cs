@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.UI {
     [CustomEditor( typeof( UIScreenBase ), true )]
     public class UIScreenEditor : Editor {
 
-        public UIScreenBase Target => (UIScreenBase) target;
+        private UIScreenBase Target => (UIScreenBase) target;
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {

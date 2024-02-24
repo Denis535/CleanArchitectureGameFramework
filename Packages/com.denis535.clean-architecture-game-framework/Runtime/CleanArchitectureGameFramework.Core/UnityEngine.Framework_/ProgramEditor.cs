@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 #nullable enable
 namespace UnityEngine.Framework {
     using System;
@@ -13,13 +14,22 @@ namespace UnityEngine.Framework {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             using (new GUILayout.VerticalScope( GUI.skin.box )) {
-                EditorGUILayout.SelectableLabel( "If you want to support me, please rate my packages:" );
-                EditorGUILayout.LinkButton( "https://denis535.github.io" );
-                EditorGUILayout.LinkButton( "https://openupm.com/packages/?sort=downloads&q=denis535" );
-                EditorGUILayout.LinkButton( "https://assetstore.unity.com/publishers/90787" );
-                EditorGUILayout.LinkButton( "https://denis535.itch.io/" );
+                if (EditorGUILayout.LinkButton( "denis535.github.io" )) {
+                    Application.OpenURL( "https://denis535.github.io" );
+                }
+                if (EditorGUILayout.LinkButton( "openupm.com" )) {
+                    Application.OpenURL( "https://openupm.com/packages/?sort=downloads&q=denis535" );
+                }
+                if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) {
+                    Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
+                }
+                if (EditorGUILayout.LinkButton( "itch.io" )) {
+                    Application.OpenURL( "https://denis535.itch.io/" );
+                }
+                EditorGUILayout.SelectableLabel( "If you want to support me, please rate my packages." );
             }
         }
 
     }
 }
+#endif
