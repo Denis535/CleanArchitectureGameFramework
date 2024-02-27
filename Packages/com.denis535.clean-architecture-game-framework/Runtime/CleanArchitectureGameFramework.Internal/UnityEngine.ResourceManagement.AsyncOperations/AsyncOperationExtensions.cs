@@ -17,7 +17,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // GetResult
         public static T GetResult<T>(this AsyncOperationBase<T> operation) {
             operation.WaitForCompletion();
-            return operation.Result;
+            return operation.Result ?? throw new Exception( $"Result of AsyncOperation {operation} is null" );
         }
 
         // Wait/Async
@@ -47,7 +47,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                     cancellationToken.ThrowIfCancellationRequested();
                 }
                 onComplete?.Invoke( operation );
-                return operation.Result;
+                return operation.Result ?? throw new Exception( $"Result of AsyncOperation {operation} is null" );
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( operation );
                 throw;

@@ -35,10 +35,10 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
 
         // GetResult
         public static object GetResult(this AsyncOperationHandle handle) {
-            return handle.WaitForCompletion();
+            return handle.WaitForCompletion() ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
         }
         public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
-            return handle.WaitForCompletion();
+            return handle.WaitForCompletion() ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
         }
 
         // Wait/Async
@@ -72,7 +72,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // GetResult/Async
         public static Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null, Action<Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken );
+                var result = handle.Task.WaitAsync( cancellationToken ) ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
                 onComplete?.Invoke( handle );
                 return result;
             } catch (OperationCanceledException) {
@@ -85,7 +85,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         }
         public static Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null, Action<Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken );
+                var result = handle.Task.WaitAsync( cancellationToken ) ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
                 onComplete?.Invoke( handle );
                 return result;
             } catch (OperationCanceledException) {

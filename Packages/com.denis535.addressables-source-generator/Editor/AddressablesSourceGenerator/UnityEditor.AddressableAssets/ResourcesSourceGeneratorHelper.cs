@@ -29,27 +29,18 @@ namespace UnityEditor.AddressableAssets {
         private static string[] GetPath(AddressableAssetEntry entry) {
             if (entry.IsAsset()) {
                 if (entry.IsMainAsset()) {
-                    var dir = GetDir( entry );
-                    var name = GetName( entry );
-                    return dir.Append( name ).ToArray();
+                    var address = Path.ChangeExtension( entry.address, null );
+                    if (address.Contains( " #" )) address = address.Substring( 0, address.IndexOf( " #" ) );
+                    if (address.Contains( " @" )) address = address.Substring( 0, address.IndexOf( " @" ) );
+                    return address.Split( '/', '\\', '.' );
                 } else {
-                    var dir = GetDir( entry.ParentEntry );
-                    var name = GetName( entry.ParentEntry );
-                    var name2 = entry.TargetAsset.name;
-                    return dir.Append( name + "__" + name2 ).ToArray();
+                    var result = GetPath( entry.ParentEntry );
+                    result[ ^1 ] += "__" + entry.TargetAsset.name;
+                    return result;
                 }
             } else {
                 throw new NotSupportedException( $"Entry {entry} is not supported" );
             }
-        }
-        private static string[] GetDir(AddressableAssetEntry entry) {
-            return Path.GetDirectoryName( entry.address ).Split( '/', '\\', '.' );
-        }
-        private static string GetName(AddressableAssetEntry entry) {
-            var name = Path.GetFileNameWithoutExtension( entry.address );
-            if (name.Contains( " #" )) name = name.Substring( 0, name.IndexOf( " #" ) );
-            if (name.Contains( " @" )) name = name.Substring( 0, name.IndexOf( " @" ) );
-            return name;
         }
 
         // IsAsset
