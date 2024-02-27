@@ -26,73 +26,83 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         }
 
         // Wait
-        public static void Wait(this AsyncOperationHandle handle) {
-            handle.WaitForCompletion();
+        public static void Wait(this AsyncOperationHandle handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
+            try {
+                handle.WaitForCompletion();
+                onComplete?.Invoke( handle );
+            } catch (Exception ex) {
+                onError?.Invoke( handle, ex );
+                throw;
+            }
         }
-        public static void Wait<T>(this AsyncOperationHandle<T> handle) {
-            handle.WaitForCompletion();
+        public static void Wait<T>(this AsyncOperationHandle<T> handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
+            try {
+                handle.WaitForCompletion();
+                onComplete?.Invoke( handle );
+            } catch (Exception ex) {
+                onError?.Invoke( handle, ex );
+                throw;
+            }
+        }
+        // Wait/Async
+        public static async Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
+            try {
+                await handle.Task.WaitAsync( cancellationToken );
+                onComplete?.Invoke( handle );
+            } catch (Exception ex) {
+                onError?.Invoke( handle, ex );
+                throw;
+            }
+        }
+        public static async Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>, Exception>? onError = null) {
+            try {
+                await handle.Task.WaitAsync( cancellationToken );
+                onComplete?.Invoke( handle );
+            } catch (Exception ex) {
+                onError?.Invoke( handle, ex );
+                throw;
+            }
         }
 
         // GetResult
-        public static object GetResult(this AsyncOperationHandle handle) {
-            return handle.WaitForCompletion() ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
-        }
-        public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
-            return handle.WaitForCompletion() ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
-        }
-
-        // Wait/Async
-        public static Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null, Action<Exception>? onError = null) {
+        public static object GetResult(this AsyncOperationHandle handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken );
+                handle.WaitForCompletion();
                 onComplete?.Invoke( handle );
-                return result;
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( handle );
-                throw;
+                return handle.Result;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( handle, ex );
                 throw;
             }
         }
-        public static Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null, Action<Exception>? onError = null) {
+        public static T GetResult<T>(this AsyncOperationHandle<T> handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken );
+                handle.WaitForCompletion();
                 onComplete?.Invoke( handle );
-                return result;
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( handle );
-                throw;
+                return handle.Result;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( handle, ex );
                 throw;
             }
         }
-
         // GetResult/Async
-        public static Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null, Action<Exception>? onError = null) {
+        public static async Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken ) ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
+                await handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
-                return result;
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( handle );
-                throw;
+                return handle.Result;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( handle, ex );
                 throw;
             }
         }
-        public static Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null, Action<Exception>? onError = null) {
+        public static async Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>, Exception>? onError = null) {
             try {
-                var result = handle.Task.WaitAsync( cancellationToken ) ?? throw new Exception( $"Result of AsyncOperationHandle {handle} is null" );
+                await handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
-                return result;
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( handle );
-                throw;
+                return handle.Result;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( handle, ex );
                 throw;
             }
         }

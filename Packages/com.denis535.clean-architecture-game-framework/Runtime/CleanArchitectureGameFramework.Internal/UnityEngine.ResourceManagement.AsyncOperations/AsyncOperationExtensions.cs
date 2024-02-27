@@ -10,18 +10,17 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
     public static class AsyncOperationExtensions {
 
         // Wait
-        public static void Wait<T>(this AsyncOperationBase<T> operation) {
-            operation.WaitForCompletion();
+        public static void Wait<T>(this AsyncOperationBase<T> operation, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
+            try {
+                operation.WaitForCompletion();
+                onComplete?.Invoke( operation );
+            } catch (Exception ex) {
+                onError?.Invoke( operation, ex );
+                throw;
+            }
         }
-
-        // GetResult
-        public static T GetResult<T>(this AsyncOperationBase<T> operation) {
-            operation.WaitForCompletion();
-            return operation.Result ?? throw new Exception( $"Result of AsyncOperation {operation} is null" );
-        }
-
         // Wait/Async
-        public static async Task WaitAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null, Action<Exception>? onError = null) {
+        public static async Task WaitAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
             try {
                 cancellationToken.ThrowIfCancellationRequested();
                 while (operation.IsRunning) {
@@ -29,17 +28,25 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                     cancellationToken.ThrowIfCancellationRequested();
                 }
                 onComplete?.Invoke( operation );
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( operation );
-                throw;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( operation, ex );
                 throw;
             }
         }
 
+        // GetResult
+        public static T GetResult<T>(this AsyncOperationBase<T> operation, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
+            try {
+                operation.WaitForCompletion();
+                onComplete?.Invoke( operation );
+                return operation.Result;
+            } catch (Exception ex) {
+                onError?.Invoke( operation, ex );
+                throw;
+            }
+        }
         // GetResult/Async
-        public static async Task<T> GetResultAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null, Action<Exception>? onError = null) {
+        public static async Task<T> GetResultAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
             try {
                 cancellationToken.ThrowIfCancellationRequested();
                 while (operation.IsRunning) {
@@ -47,12 +54,9 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                     cancellationToken.ThrowIfCancellationRequested();
                 }
                 onComplete?.Invoke( operation );
-                return operation.Result ?? throw new Exception( $"Result of AsyncOperation {operation} is null" );
-            } catch (OperationCanceledException) {
-                onCancel?.Invoke( operation );
-                throw;
+                return operation.Result;
             } catch (Exception ex) {
-                onError?.Invoke( ex );
+                onError?.Invoke( operation, ex );
                 throw;
             }
         }
