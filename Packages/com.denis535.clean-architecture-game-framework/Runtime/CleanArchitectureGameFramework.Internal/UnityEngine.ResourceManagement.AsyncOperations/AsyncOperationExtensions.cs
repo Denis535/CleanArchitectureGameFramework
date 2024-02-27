@@ -21,7 +21,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         }
 
         // Wait/Async
-        public static async Task WaitAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null) {
+        public static async Task WaitAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 cancellationToken.ThrowIfCancellationRequested();
                 while (operation.IsRunning) {
@@ -32,11 +32,14 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( operation );
                 throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
+                throw;
             }
         }
 
         // GetResult/Async
-        public static async Task<T> GetResultAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null) {
+        public static async Task<T> GetResultAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 cancellationToken.ThrowIfCancellationRequested();
                 while (operation.IsRunning) {
@@ -47,6 +50,9 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                 return operation.Result;
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( operation );
+                throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
                 throw;
             }
         }

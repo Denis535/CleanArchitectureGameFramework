@@ -42,7 +42,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         }
 
         // Wait/Async
-        public static Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null) {
+        public static Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 var result = handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
@@ -50,21 +50,27 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( handle );
                 throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
+                throw;
             }
         }
-        public static Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null) {
+        public static Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 var result = handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
                 return result;
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( handle );
+                throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
                 throw;
             }
         }
 
         // GetResult/Async
-        public static Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null) {
+        public static Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 var result = handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
@@ -72,15 +78,21 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( handle );
                 throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
+                throw;
             }
         }
-        public static Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null) {
+        public static Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>>? onCancel = null, Action<Exception>? onError = null) {
             try {
                 var result = handle.Task.WaitAsync( cancellationToken );
                 onComplete?.Invoke( handle );
                 return result;
             } catch (OperationCanceledException) {
                 onCancel?.Invoke( handle );
+                throw;
+            } catch (Exception ex) {
+                onError?.Invoke( ex );
                 throw;
             }
         }
