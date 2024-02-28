@@ -29,7 +29,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static void Wait(this AsyncOperationHandle handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 handle.WaitForCompletion();
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
             } catch (Exception ex) {
                 onError?.Invoke( handle, ex );
@@ -39,7 +39,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static void Wait<T>(this AsyncOperationHandle<T> handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 handle.WaitForCompletion();
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
             } catch (Exception ex) {
                 onError?.Invoke( handle, ex );
@@ -50,7 +50,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static async Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 await handle.Task.WaitAsync( cancellationToken );
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
             } catch (Exception ex) {
                 onError?.Invoke( handle, ex );
@@ -60,7 +60,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static async Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>, Exception>? onError = null) {
             try {
                 await handle.Task.WaitAsync( cancellationToken );
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
             } catch (Exception ex) {
                 onError?.Invoke( handle, ex );
@@ -72,7 +72,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static object GetResult(this AsyncOperationHandle handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 handle.WaitForCompletion();
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
                 return handle.Result;
             } catch (Exception ex) {
@@ -83,7 +83,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static T GetResult<T>(this AsyncOperationHandle<T> handle, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 handle.WaitForCompletion();
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
                 return handle.Result;
             } catch (Exception ex) {
@@ -95,7 +95,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static async Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken, Action<AsyncOperationHandle>? onComplete = null, Action<AsyncOperationHandle, Exception>? onError = null) {
             try {
                 await handle.Task.WaitAsync( cancellationToken );
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
                 return handle.Result;
             } catch (Exception ex) {
@@ -106,7 +106,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static async Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken, Action<AsyncOperationHandle<T>>? onComplete = null, Action<AsyncOperationHandle<T>, Exception>? onError = null) {
             try {
                 await handle.Task.WaitAsync( cancellationToken );
-                if (handle.OperationException != null) throw handle.OperationException;
+                if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
                 onComplete?.Invoke( handle );
                 return handle.Result;
             } catch (Exception ex) {
