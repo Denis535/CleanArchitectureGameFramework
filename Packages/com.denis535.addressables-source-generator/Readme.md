@@ -38,9 +38,12 @@ new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableA
     - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
 
 # Media
-![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/a0cf834c-30cb-450b-bbc8-e3f5659b1950)
-![2](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/5c1d0ac7-c94d-4c06-bf03-75817e6294f7)
-![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/44e22d4f-58d4-4df0-92c7-4bc5f4ebe5f9)
+- ![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/a0cf834c-30cb-450b-bbc8-e3f5659b1950)
+- ![2](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/5c1d0ac7-c94d-4c06-bf03-75817e6294f7)
+- ![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/44e22d4f-58d4-4df0-92c7-4bc5f4ebe5f9)
+
+# Example
+- https://denis535.github.io/#clean-architecture-game-template
 
 # Links
 - https://denis535.github.io
