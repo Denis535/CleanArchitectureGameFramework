@@ -132,7 +132,7 @@ namespace UnityEngine.Framework.UI {
                 if (IsAttached) {
                     AttachToScreen( child, Screen, argument );
                 } else {
-                    Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
+                    Assert.Operation.Message( $"You are trying to attach child {child} with argument {argument}, but widget {this} must be attached" ).Valid( argument == null );
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace UnityEngine.Framework.UI {
                 if (IsAttached) {
                     DetachFromScreen( child, Screen, argument );
                 } else {
-                    Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
+                    Assert.Operation.Message( $"You are trying to detach child {child} with argument {argument}, but widget {this} must be attached" ).Valid( argument == null );
                 }
                 child.Parent = null;
                 Children_.Remove( child );
