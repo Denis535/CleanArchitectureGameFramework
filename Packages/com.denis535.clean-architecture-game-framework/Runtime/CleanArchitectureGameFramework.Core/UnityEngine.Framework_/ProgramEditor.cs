@@ -17,16 +17,19 @@ namespace UnityEngine.Framework {
                 if (EditorGUILayout.LinkButton( "denis535.github.io" )) {
                     Application.OpenURL( "https://denis535.github.io" );
                 }
-                if (EditorGUILayout.LinkButton( "openupm.com" )) {
-                    Application.OpenURL( "https://openupm.com/packages/?sort=downloads&q=denis535" );
-                }
                 if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) {
                     Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
                 }
                 if (EditorGUILayout.LinkButton( "itch.io" )) {
                     Application.OpenURL( "https://denis535.itch.io/" );
                 }
-                EditorGUILayout.SelectableLabel( "If you want to support me, please rate my packages." );
+                if (EditorGUILayout.LinkButton( "openupm.com" )) {
+                    Application.OpenURL( "https://openupm.com/packages/?sort=downloads&q=denis535" );
+                }
+                if (EditorGUILayout.LinkButton( "youtube.com" )) {
+                    Application.OpenURL( "https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg" );
+                }
+                EditorGUILayout.SelectableLabel( "If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos." );
             }
         }
 

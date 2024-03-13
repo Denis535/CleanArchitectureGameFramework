@@ -48,6 +48,10 @@ new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableA
 
 # Links
 - https://denis535.github.io
-- https://openupm.com/packages/?sort=downloads&q=denis535
 - https://assetstore.unity.com/publishers/90787
-- https://github.com/Denis535/CleanArchitectureGameFramework/tree/master/Packages/com.denis535.addressables-source-generator
+- https://denis535.itch.io/
+- https://openupm.com/packages/?sort=downloads&q=denis535
+- https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
+
+# If you want to support me
+If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos.
