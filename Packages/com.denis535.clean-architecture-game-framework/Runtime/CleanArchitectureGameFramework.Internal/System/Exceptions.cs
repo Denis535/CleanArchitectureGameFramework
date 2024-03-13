@@ -6,18 +6,6 @@ namespace System {
     using System.Linq;
 
     public static class Exceptions {
-        //internal static class Argument {
-        //    public static ArgumentException Invalid(FormattableString? message) => Exception<ArgumentException>( message?.GetDisplayString() );
-        //    public static ArgumentOutOfRangeException OutOfRange(FormattableString? message) => Exception<ArgumentOutOfRangeException>( message?.GetDisplayString() );
-        //    public static ArgumentNullException Null(FormattableString? message) => Exception<ArgumentNullException>( message?.GetDisplayString() );
-        //}
-        //internal static class Operation {
-        //    public static InvalidOperationException Invalid(FormattableString? message) => Exception<InvalidOperationException>( message?.GetDisplayString() );
-        //}
-        //internal static class Object {
-        //    public static ObjectInvalidException Invalid(FormattableString? message) => Exception<ObjectInvalidException>( message?.GetDisplayString() );
-        //    public static ObjectDisposedException Disposed(FormattableString? message) => Exception<ObjectDisposedException>( message?.GetDisplayString() );
-        //}
         public static class Internal {
             public static Exception Exception(FormattableString? message) => Exception<Exception>( message?.GetDisplayString() );
             public static NullReferenceException NullReference(FormattableString? message) => Exception<NullReferenceException>( message?.GetDisplayString() );
@@ -46,11 +34,11 @@ namespace System {
         }
 
     }
-    // ObjectInvalidException
-    public class ObjectInvalidException : InvalidOperationException {
-        public ObjectInvalidException(string message) : base( message ) {
+    // ObjectNotInitializedException
+    public class ObjectNotInitializedException : InvalidOperationException {
+        public ObjectNotInitializedException(string message) : base( message ) {
         }
-        public ObjectInvalidException(string message, Exception? innerException) : base( message, innerException ) {
+        public ObjectNotInitializedException(string message, Exception? innerException) : base( message, innerException ) {
         }
     }
 }

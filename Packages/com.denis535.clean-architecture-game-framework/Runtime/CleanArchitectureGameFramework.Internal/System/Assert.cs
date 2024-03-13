@@ -57,8 +57,8 @@ namespace System {
 
         // Object
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static void Valid(this Message<Object> message, [DoesNotReturnIf( false )] bool isValid) {
-            if (!isValid) throw Exceptions.Exception<ObjectInvalidException>( message.ToString() );
+        public static void Initialized(this Message<Object> message, [DoesNotReturnIf( false )] bool isValid) {
+            if (!isValid) throw Exceptions.Exception<ObjectNotInitializedException>( message.ToString() );
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static void Alive(this Message<Object> message, [DoesNotReturnIf( false )] bool isValid) {

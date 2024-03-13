@@ -153,7 +153,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public TextFieldWrapper(BaseField<string?> visualElement) : base( visualElement ) {
-            Assert.Object.Message( $"TextWrapper {this} is invalid" ).Valid( this is TextFieldWrapper<string> );
+            Assert.Operation.Message( $"TextWrapper {this} is invalid" ).Valid( this is TextFieldWrapper<string> );
         }
 
     }
@@ -222,7 +222,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public ToggleFieldWrapper(Toggle visualElement) : base( visualElement ) {
-            Assert.Object.Message( $"ToggleWrapper {this} is invalid" ).Valid( this is ToggleFieldWrapper<bool> );
+            Assert.Operation.Message( $"ToggleWrapper {this} is invalid" ).Valid( this is ToggleFieldWrapper<bool> );
         }
 
     }
