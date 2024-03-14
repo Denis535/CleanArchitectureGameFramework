@@ -1,9 +1,15 @@
 # Overview
-This package is addition to Addressables giving you the ability to reference assets in a very convenient way with compile-time checking. For example: 'R.MyProject.Scenes.GameScene' or 'L.Scene'.
+This package is addition to Addressables giving you the ability to reference assets in a very convenient way with compile-time checking.
 
-# How it works
-This takes a list of all addressable assets and generates the source code with all asset addresses and labels constants.
-For example:
+# How to use it
+## How to generate source code
+You should create the 'AddressablesSourceGenerator' asset and press the 'Generate' button in the inspector. Or you can do it manually:
+```
+var settings = AddressableAssetSettingsDefaultObject.Settings;
+new ResourcesSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R" );
+new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/L.cs", "UnityEngine.AddressableAssets", "L" );
+```
+It will generate the 'R' and 'L' classes:
 ```
 namespace UnityEngine.AddressableAssets {
     public static class @R {
@@ -21,22 +27,22 @@ namespace UnityEngine.AddressableAssets {
 }
 ```
 
-# How to use it
-The first way is to create the 'AddressablesSourceGenerator' asset and press the 'Generate' button in the inspector. It will generate the 'R.cs' and 'L.cs' files next to your asset. 
-The second way is to use the 'ResourcesSourceGenerator' and 'LabelsSourceGenerator':
+## How to use generated source code
+Now you can referencing your assets very easily:
 ```
-var settings = AddressableAssetSettingsDefaultObject.Settings;
-new ResourcesSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R" );
-new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/L.cs", "UnityEngine.AddressableAssets", "L" );
+var address = R.MyProject.Scenes.MainScene;
+var label = L.Scene;
 ```
 
 # Reference
-- **AddressablesSourceGenerator**
-    - ``void Generate()``
-- **ResourcesSourceGenerator**
-    - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
-- **LabelsSourceGenerator**
-    - ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
+## AddressablesSourceGenerator
+- ``void Generate()``
+
+## ResourcesSourceGenerator
+- ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
+
+## LabelsSourceGenerator
+- ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string name)``
 
 # Media
 - ![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/a0cf834c-30cb-450b-bbc8-e3f5659b1950)
