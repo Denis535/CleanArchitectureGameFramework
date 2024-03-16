@@ -14,7 +14,7 @@ This module contains utilities and helpers.
 
 ## Namespaces
 ### Framework
-This namespace represents the root module of your project.
+This namespace represents the root module.
 
 **IDependencyContainer** -
 This interface allows you to resolve your dependencies.
@@ -23,7 +23,7 @@ This interface allows you to resolve your dependencies.
 This class is responsible for the startup and global logic.
 
 ### Framework.UI
-This namespace represents the presentation (user interface) module of your project.
+This namespace represents the presentation (user interface) module.
 
 **UIAudioTheme** -
 This class is responsible for the audio theme.
@@ -43,7 +43,7 @@ This just contains the VisualElement, so it's essentially a wrapper for VisualEl
 This class is responsible for the application state.
 
 ### Framework.App
-This namespace represents the application module of your project.
+This namespace represents the application module.
 
 **Application** -
 This class is responsible for the application logic.
@@ -52,7 +52,7 @@ This class is responsible for the application logic.
 This class provides you with the global values.
 
 ### Framework.Entities
-This namespace represents the domain (entities) module of your project.
+This namespace represents the domain (entities) module.
 
 **Game** -
 This class is responsible for the game rules and states.
