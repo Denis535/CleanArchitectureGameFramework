@@ -16,8 +16,8 @@ This module contains utilities and helpers.
 ### Framework
 This namespace represents the root module of your project.
 
-**IDependencyContainer**
-- This interface allows you to resolve your dependencies.
+**IDependencyContainer** -
+This interface allows you to resolve your dependencies.
 
 **Program** - This class is responsible for the startup and global logic.
 
