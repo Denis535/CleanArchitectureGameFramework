@@ -19,11 +19,9 @@ You can setup the colors in the 'Preferences/Colorful Project Window'.
 - ![2](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/74f55fd5-39f9-4b1b-a662-71d52e02cae0)
 - ![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/e3a77f0e-1c00-4382-b9df-bd3313dfc305)
 
-# Example
-- https://denis535.github.io/#clean-architecture-game-template
-
 # Links
 - https://denis535.github.io
+- https://github.com/Denis535/CleanArchitectureGameFramework/
 - https://assetstore.unity.com/publishers/90787
 - https://denis535.itch.io/
 - https://openupm.com/packages/?sort=downloads&q=denis535

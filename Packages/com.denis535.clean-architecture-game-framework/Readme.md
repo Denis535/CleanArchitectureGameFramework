@@ -7,8 +7,10 @@ This package contains classes that define the entire architecture of your game p
 ## Assemblies
 ### CleanArchitectureGameFramework
 This module contains additional classes.
+
 ### CleanArchitectureGameFramework.Core
 This module contains main classes.
+
 ### CleanArchitectureGameFramework.Internal
 This module contains utilities and helpers.
 
@@ -80,6 +82,7 @@ This class is responsible for the entity's physical aspects.
 
 # Links
 - https://denis535.github.io
+- https://github.com/Denis535/CleanArchitectureGameFramework/
 - https://assetstore.unity.com/publishers/90787
 - https://denis535.itch.io/
 - https://openupm.com/packages/?sort=downloads&q=denis535

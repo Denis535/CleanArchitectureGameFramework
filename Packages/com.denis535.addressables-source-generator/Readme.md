@@ -49,11 +49,9 @@ var label = L.Scene;
 - ![2](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/5c1d0ac7-c94d-4c06-bf03-75817e6294f7)
 - ![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/44e22d4f-58d4-4df0-92c7-4bc5f4ebe5f9)
 
-# Example
-- https://denis535.github.io/#clean-architecture-game-template
-
 # Links
 - https://denis535.github.io
+- https://github.com/Denis535/CleanArchitectureGameFramework/
 - https://assetstore.unity.com/publishers/90787
 - https://denis535.itch.io/
 - https://openupm.com/packages/?sort=downloads&q=denis535

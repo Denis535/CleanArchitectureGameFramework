@@ -17,6 +17,9 @@ namespace UnityEngine.Framework {
                 if (EditorGUILayout.LinkButton( "denis535.github.io" )) {
                     Application.OpenURL( "https://denis535.github.io" );
                 }
+                if (EditorGUILayout.LinkButton( "github.com" )) {
+                    Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework/" );
+                }
                 if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) {
                     Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
                 }
