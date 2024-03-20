@@ -80,6 +80,9 @@ This class is responsible for the entity's physical aspects.
 # Media
 - [![YouTube](https://img.youtube.com/vi/JQobAqfakJQ/0.jpg)](https://youtu.be/JQobAqfakJQ)
 
+# Example
+- https://denis535.github.io/#clean-architecture-game-template
+
 # Links
 - https://denis535.github.io
 - https://github.com/Denis535/CleanArchitectureGameFramework/
