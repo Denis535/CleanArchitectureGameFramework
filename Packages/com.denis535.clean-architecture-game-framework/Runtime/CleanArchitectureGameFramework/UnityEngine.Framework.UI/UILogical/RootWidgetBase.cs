@@ -37,8 +37,9 @@ namespace UnityEngine.Framework.UI {
             if (HasFocusedElement( element )) {
                 return;
             }
-            LoadFocusedElement( element )?.Focus();
-            if (HasFocusedElement( element )) {
+            var focusedElement = LoadFocusedElement( element );
+            if (focusedElement != null) {
+                focusedElement.Focus();
                 return;
             }
             if (element.focusable) {
@@ -66,9 +67,7 @@ namespace UnityEngine.Framework.UI {
             return null;
         }
         private static VisualElement? LoadFocusedElement(VisualElement element) {
-            var focusedElement = (VisualElement?) element.userData;
-            element.userData = null;
-            return focusedElement;
+            return (VisualElement?) element.userData;
         }
 
     }
