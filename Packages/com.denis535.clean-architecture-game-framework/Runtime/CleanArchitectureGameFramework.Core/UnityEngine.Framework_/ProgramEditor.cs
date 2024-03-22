@@ -13,7 +13,12 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
-            using (new GUILayout.VerticalScope( GUI.skin.box )) {
+            using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
+                EditorGUILayout.LabelField( "Overview", EditorStyles.boldLabel );
+                EditorGUILayout.LabelField( "This framework helping you to develop your project following the best practices." );
+                EditorGUILayout.Separator();
+
+                EditorGUILayout.LabelField( "Links", EditorStyles.boldLabel );
                 if (EditorGUILayout.LinkButton( "denis535.github.io" )) {
                     Application.OpenURL( "https://denis535.github.io" );
                 }
@@ -32,7 +37,10 @@ namespace UnityEngine.Framework {
                 if (EditorGUILayout.LinkButton( "GitHub" )) {
                     Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework" );
                 }
-                EditorGUILayout.SelectableLabel( "If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos." );
+                EditorGUILayout.Separator();
+
+                EditorGUILayout.LabelField( "If you want to support me", EditorStyles.boldLabel );
+                EditorGUILayout.LabelField( "If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos." );
             }
         }
 
