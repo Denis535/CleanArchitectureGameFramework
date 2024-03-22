@@ -32,12 +32,13 @@ namespace UnityEngine.Framework.UI {
 
         // Helpers
         protected static void Focus(VisualElement element) {
-            Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( element != null );
-            Assert.Operation.Message( $"Element {element} must be attached" ).Valid( element!.panel != null );
+            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
+            Assert.Argument.Message( $"Argument 'element' must be attached" ).Valid( element.panel != null );
             if (HasFocusedElement( element )) {
                 return;
             }
-            if (LoadFocusedElement( element )) {
+            LoadFocusedElement( element )?.Focus();
+            if (HasFocusedElement( element )) {
                 return;
             }
             if (element.focusable) {
@@ -51,7 +52,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void SaveFocus(VisualElement element) {
-            SaveFocusedElement( element, GetFocusedElement( element ) );
+            element.userData = GetFocusedElement( element );
         }
         // Helpers
         private static bool HasFocusedElement(VisualElement element) {
@@ -60,22 +61,14 @@ namespace UnityEngine.Framework.UI {
             return false;
         }
         private static VisualElement? GetFocusedElement(VisualElement element) {
-            element.IsAncestorOf( element );
             var focusedElement = (VisualElement) element.focusController.focusedElement;
             if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        private static void SaveFocusedElement(VisualElement element, VisualElement? focusedElement) {
-            element.userData = focusedElement;
-        }
-        private static bool LoadFocusedElement(VisualElement element) {
+        private static VisualElement? LoadFocusedElement(VisualElement element) {
             var focusedElement = (VisualElement?) element.userData;
             element.userData = null;
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return true;
-            }
-            return false;
+            return focusedElement;
         }
 
     }
@@ -118,8 +111,8 @@ namespace UnityEngine.Framework.UI {
                     var covered = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
                     if (covered != null) SaveFocus( covered.GetVisualElement()! );
                     RecalcVisibility();
-                    var newWidget = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (newWidget != null) Focus( newWidget.GetVisualElement()! );
+                    var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
+                    if (last != null) Focus( last.GetVisualElement()! );
                 }
             }
         }
@@ -144,25 +137,31 @@ namespace UnityEngine.Framework.UI {
 
         // RecalcVisibility
         protected virtual void RecalcVisibility() {
-            foreach (var widget in Widgets.SkipLast( 1 )) {
+            foreach (var widget in Widgets) {
+                RecalcWidgetVisibility( widget, widget == Widgets.Last() );
+            }
+            foreach (var widget in ModalWidgets) {
+                RecalcModalWidgetVisibility( widget, widget == ModalWidgets.Last() );
+            }
+        }
+        protected virtual void RecalcWidgetVisibility(UIWidgetBase widget, bool isLast) {
+            if (!isLast) {
                 // hide covered widgets
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( false );
-            }
-            if (Widgets.Any()) {
-                // show new widget or unhide uncover widget
-                var widget = Widgets.Last();
+            } else {
+                // show new widget or unhide uncovered widget
                 widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
                 widget.GetVisualElement()!.SetDisplayed( true );
             }
-            foreach (var widget in ModalWidgets.SkipLast( 1 )) {
+        }
+        protected virtual void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isLast) {
+            if (!isLast) {
                 // hide covered widgets
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( false );
-            }
-            if (ModalWidgets.Any()) {
-                // show new widget or unhide uncover widget
-                var widget = ModalWidgets.Last();
+            } else {
+                // show new widget or unhide uncovered widget
                 widget.GetVisualElement()!.SetEnabled( true );
                 widget.GetVisualElement()!.SetDisplayed( true );
             }
