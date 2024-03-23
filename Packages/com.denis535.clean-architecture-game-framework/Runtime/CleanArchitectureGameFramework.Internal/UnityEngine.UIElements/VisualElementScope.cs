@@ -19,12 +19,19 @@ namespace UnityEngine.UIElements {
             stack.Pop();
         }
 
-        public static VisualElementScope operator +(VisualElementScope? scope, VisualElement element) {
-            scope!.VisualElement.Add( element );
+        public void Add(VisualElement element) {
+            VisualElement.Add( element );
+        }
+        public void Remove(VisualElement element) {
+            VisualElement.Remove( element );
+        }
+
+        public static VisualElementScope operator +(VisualElementScope scope, VisualElement element) {
+            scope.VisualElement.Add( element );
             return scope;
         }
-        public static VisualElementScope operator -(VisualElementScope? scope, VisualElement element) {
-            scope!.VisualElement.Remove( element );
+        public static VisualElementScope operator -(VisualElementScope scope, VisualElement element) {
+            scope.VisualElement.Remove( element );
             return scope;
         }
 
@@ -44,8 +51,17 @@ namespace UnityEngine.UIElements {
             return new VisualElementScope<T>( visualElement );
         }
         public static VisualElementScope<T> AsScope<T>(this T visualElement, out T @out) where T : VisualElement {
+            @out = visualElement;
             VisualElementScope.Current?.VisualElement.Add( visualElement );
-            return new VisualElementScope<T>( @out = visualElement );
+            return new VisualElementScope<T>( visualElement );
+        }
+
+        public static void AddToScope<T>(this T visualElement) where T : VisualElement {
+            VisualElementScope.Current!.VisualElement.Add( visualElement );
+        }
+        public static void AddToScope<T>(this T visualElement, out T @out) where T : VisualElement {
+            @out = visualElement;
+            VisualElementScope.Current!.VisualElement.Add( visualElement );
         }
 
     }
