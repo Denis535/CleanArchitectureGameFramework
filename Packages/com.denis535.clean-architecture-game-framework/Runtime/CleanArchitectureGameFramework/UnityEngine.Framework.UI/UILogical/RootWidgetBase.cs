@@ -137,8 +137,8 @@ namespace UnityEngine.Framework.UI {
                 }
             }, TrickleDown.TrickleDown );
             view.Widget.OnEvent<NavigationCancelEvent>( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget ) ?? ((VisualElement) evt.target).GetAncestorsAndSelf().LastOrDefault();
-                var button = widget?.Query<Button>().Where( IsCancel ).First() ?? widget?.Query<Button>().Last();
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
+                var button = widget?.Query<Button>().Where( IsCancel ).First();
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
@@ -147,22 +147,27 @@ namespace UnityEngine.Framework.UI {
             return view;
         }
         private static bool IsWidget(VisualElement element) {
-            if (element.name != null) {
-                return element.name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
+            if (element.enabledInHierarchy) {
+                if (element.name != null) {
+                    return element.name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
+                }
+                return element.GetType().Name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
             }
-            return element.GetType().Name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
+            return false;
         }
-        private static bool IsCancel(Button element) {
-            if (element.name != null) {
-                return element.name is "resume" or "cancel" or "no" or "back" or "exit" or "quit";
-            }
-            if (element.text != null) {
-                return element.text.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
-                       element.text.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
-                       element.text.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
-                       element.text.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
-                       element.text.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
-                       element.text.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
+        private static bool IsCancel(Button button) {
+            if (button.enabledInHierarchy) {
+                if (button.name != null) {
+                    return button.name is "resume" or "cancel" or "no" or "back" or "exit" or "quit";
+                }
+                if (button.text != null) {
+                    return button.text.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.text.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.text.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.text.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.text.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.text.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
+                }
             }
             return false;
         }
