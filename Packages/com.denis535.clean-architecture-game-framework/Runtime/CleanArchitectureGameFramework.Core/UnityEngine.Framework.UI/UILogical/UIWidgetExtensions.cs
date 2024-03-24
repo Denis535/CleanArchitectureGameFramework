@@ -9,6 +9,25 @@ namespace UnityEngine.Framework.UI {
 
     public static class UIWidgetExtensions {
 
+        // IsEnabled
+        public static bool IsEnabledInHierarchy(this UIWidgetBase widget) {
+            return widget.View!.VisualElement.enabledInHierarchy;
+        }
+        public static bool IsEnabledSelf(this UIWidgetBase widget) {
+            return widget.View!.VisualElement.enabledSelf;
+        }
+        public static void SetEnabled(this UIWidgetBase widget, bool value) {
+            widget.View!.VisualElement.SetEnabled( value );
+        }
+
+        // IsDisplayed
+        public static bool IsDisplayed(this UIWidgetBase widget) {
+            return widget.View!.VisualElement.IsDisplayed();
+        }
+        public static void SetDisplayed(this UIWidgetBase widget, bool value) {
+            widget.View!.VisualElement.SetDisplayed( value );
+        }
+
         // AttachChild
         public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
@@ -73,18 +92,22 @@ namespace UnityEngine.Framework.UI {
         }
 
         // GetView
-        public static UIViewBase? GetView(this UIWidgetBase widget) {
+        public static UIViewBase? __GetView__(this UIWidgetBase widget) {
+            // try not to use it
             return widget?.View;
         }
-        public static UIViewBase GetView<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+        public static UIViewBase __GetView__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+            // try not to use it
             return widget.View;
         }
 
         // GetVisualElement
-        public static VisualElement? GetVisualElement(this UIWidgetBase widget) {
+        public static VisualElement? __GetVisualElement__(this UIWidgetBase widget) {
+            // try not to use it
             return widget?.View?.VisualElement;
         }
-        public static VisualElement GetVisualElement<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+        public static VisualElement __GetVisualElement__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+            // try not to use it
             return widget.View.VisualElement;
         }
 

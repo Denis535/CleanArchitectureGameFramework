@@ -12,44 +12,8 @@ namespace UnityEngine.Framework.UI {
         protected internal VisualElement VisualElement { get; }
         VisualElement IVisualElementWrapper.VisualElement => VisualElement;
 
-        public bool IsEnabled {
-            get => VisualElement.enabledSelf;
-            set => VisualElement.SetEnabled( value );
-        }
-        public bool IsDisplayed {
-            get => VisualElement.IsDisplayed();
-            set => VisualElement.SetDisplayed( value );
-        }
-        public bool IsValid {
-            get => VisualElement.IsValid();
-            set => VisualElement.SetValid( value );
-        }
-
-        public IReadOnlyList<string> Classes {
-            get => (IReadOnlyList<string>) VisualElement.GetClasses();
-        }
-
         public VisualElementWrapper(VisualElement visualElement) {
             VisualElement = visualElement;
-        }
-
-        public void AddClass(string @class) {
-            VisualElement.AddToClassList( @class );
-        }
-        public void RemoveClass(string @class) {
-            VisualElement.RemoveFromClassList( @class );
-        }
-        public void ToggleClass(string @class) {
-            VisualElement.ToggleInClassList( @class );
-        }
-        public void EnableClass(string @class, bool isEnabled) {
-            VisualElement.EnableInClassList( @class, isEnabled );
-        }
-        public bool ContainsClass(string @class) {
-            return VisualElement.ClassListContains( @class );
-        }
-        public void ClearClasses() {
-            VisualElement.ClearClassList();
         }
 
     }
@@ -248,6 +212,30 @@ namespace UnityEngine.Framework.UI {
         }
         public bool Contains(VisualElement element) {
             return VisualElement.Contains( element );
+        }
+
+        public void Add(UIViewBase view) {
+            VisualElement.Add( view.VisualElement );
+            OnAddedEvent?.Invoke( view.VisualElement );
+        }
+        public void Remove(UIViewBase view) {
+            VisualElement.Remove( view.VisualElement );
+            OnRemovedEvent?.Invoke( view.VisualElement );
+        }
+        public bool Contains(UIViewBase view) {
+            return VisualElement.Contains( view.VisualElement );
+        }
+
+        public void Add(UIWidgetBase widget) {
+            VisualElement.Add( widget.View!.VisualElement );
+            OnAddedEvent?.Invoke( widget.View!.VisualElement );
+        }
+        public void Remove(UIWidgetBase widget) {
+            VisualElement.Remove( widget.View!.VisualElement );
+            OnRemovedEvent?.Invoke( widget.View!.VisualElement );
+        }
+        public bool Contains(UIWidgetBase widget) {
+            return VisualElement.Contains( widget.View!.VisualElement );
         }
 
         public void OnAdded(Action<VisualElement>? callback) {

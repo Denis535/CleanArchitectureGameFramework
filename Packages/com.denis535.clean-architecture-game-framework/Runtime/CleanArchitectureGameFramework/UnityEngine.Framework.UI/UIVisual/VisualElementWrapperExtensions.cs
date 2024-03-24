@@ -45,6 +45,56 @@ namespace UnityEngine.Framework.UI {
             return new SlotWrapper( visualElement );
         }
 
+        // IsEnabled
+        public static bool IsEnabledInHierarchy(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement.enabledInHierarchy;
+        }
+        public static bool IsEnabledSelf(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement.enabledSelf;
+        }
+        public static void SetEnabled(this VisualElementWrapper wrapper, bool value) {
+            wrapper.VisualElement.SetEnabled( value );
+        }
+
+        // IsDisplayed
+        public static bool IsDisplayed(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement.IsDisplayed();
+        }
+        public static void SetDisplayed(this VisualElementWrapper wrapper, bool value) {
+            wrapper.VisualElement.SetDisplayed( value );
+        }
+
+        // IsValid
+        public static bool IsValid(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement.IsValid();
+        }
+        public static void SetValid(this VisualElementWrapper wrapper, bool value) {
+            wrapper.VisualElement.SetValid( value );
+        }
+
+        // GetClasses
+        public static IReadOnlyList<string> GetClasses(this VisualElementWrapper wrapper) {
+            return (IReadOnlyList<string>) wrapper.VisualElement.GetClasses();
+        }
+        public static void AddClass(this VisualElementWrapper wrapper, string @class) {
+            wrapper.VisualElement.AddToClassList( @class );
+        }
+        public static void RemoveClass(this VisualElementWrapper wrapper, string @class) {
+            wrapper.VisualElement.RemoveFromClassList( @class );
+        }
+        public static void ToggleClass(this VisualElementWrapper wrapper, string @class) {
+            wrapper.VisualElement.ToggleInClassList( @class );
+        }
+        public static void EnableClass(this VisualElementWrapper wrapper, string @class, bool isEnabled) {
+            wrapper.VisualElement.EnableInClassList( @class, isEnabled );
+        }
+        public static bool ContainsClass(this VisualElementWrapper wrapper, string @class) {
+            return wrapper.VisualElement.ClassListContains( @class );
+        }
+        public static void ClearClasses(this VisualElementWrapper wrapper) {
+            wrapper.VisualElement.ClearClassList();
+        }
+
         // OnEvent
         public static void OnEvent<T>(this VisualElementWrapper wrapper, EventCallback<T> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
@@ -111,10 +161,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // GetVisualElement
-        public static VisualElement GetVisualElement(this VisualElementWrapper wrapper) {
+        public static VisualElement __GetVisualElement__(this VisualElementWrapper wrapper) {
+            // try not to use it
             return wrapper.VisualElement;
         }
-        public static T GetVisualElement<T>(this VisualElementWrapper<T> wrapper) where T : VisualElement {
+        public static T __GetVisualElement__<T>(this VisualElementWrapper<T> wrapper) where T : VisualElement {
+            // try not to use it
             return wrapper.VisualElement;
         }
 

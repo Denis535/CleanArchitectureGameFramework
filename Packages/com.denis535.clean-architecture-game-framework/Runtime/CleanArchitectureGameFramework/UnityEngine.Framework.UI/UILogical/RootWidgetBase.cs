@@ -34,7 +34,7 @@ namespace UnityEngine.Framework.UI {
     public class RootWidget : RootWidgetBase<RootWidgetView> {
 
         // View
-        protected override RootWidgetView View { get; }
+        protected internal override RootWidgetView View { get; }
         private List<UIWidgetBase> Widgets_ { get; } = new List<UIWidgetBase>();
         private List<UIWidgetBase> ModalWidgets_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Widgets => Widgets_;
@@ -61,17 +61,17 @@ namespace UnityEngine.Framework.UI {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     ModalWidgets_.Add( widget );
-                    View.ModalWidgetSlot.Add( widget.GetVisualElement()! );
+                    View.ModalWidgetSlot.Add( widget );
                 } else {
                     Widgets_.Add( widget );
-                    View.WidgetSlot.Add( widget.GetVisualElement()! );
+                    View.WidgetSlot.Add( widget );
                 }
                 {
                     var prev = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
-                    if (prev != null) prev.GetVisualElement()!.SaveFocus();
+                    if (prev != null) prev.__GetVisualElement__()!.SaveFocus();
                     RecalcVisibility();
                     var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (last != null) last.GetVisualElement()!.LoadFocus();
+                    if (last != null) last.__GetVisualElement__()!.LoadFocus();
                 }
             }
         }
@@ -80,16 +80,16 @@ namespace UnityEngine.Framework.UI {
                 if (widget.IsModal()) {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
                     ModalWidgets_.Remove( widget );
-                    View.ModalWidgetSlot.Remove( widget.GetVisualElement()! );
+                    View.ModalWidgetSlot.Remove( widget );
                 } else {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == Widgets.LastOrDefault() );
                     Widgets_.Remove( widget );
-                    View.WidgetSlot.Remove( widget.GetVisualElement()! );
+                    View.WidgetSlot.Remove( widget );
                 }
                 {
                     RecalcVisibility();
                     var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (last != null) last.GetVisualElement()!.LoadFocus();
+                    if (last != null) last.__GetVisualElement__()!.LoadFocus();
                 }
             }
         }
@@ -106,23 +106,23 @@ namespace UnityEngine.Framework.UI {
         protected virtual void RecalcWidgetVisibility(UIWidgetBase widget, bool isLast) {
             if (!isLast) {
                 // hide covered widgets
-                widget.GetVisualElement()!.SetEnabled( true );
-                widget.GetVisualElement()!.SetDisplayed( false );
+                widget.SetEnabled( true );
+                widget.SetDisplayed( false );
             } else {
                 // show new widget or unhide uncovered widget
-                widget.GetVisualElement()!.SetEnabled( !ModalWidgets.Any() );
-                widget.GetVisualElement()!.SetDisplayed( true );
+                widget.SetEnabled( !ModalWidgets.Any() );
+                widget.SetDisplayed( true );
             }
         }
         protected virtual void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isLast) {
             if (!isLast) {
                 // hide covered widgets
-                widget.GetVisualElement()!.SetEnabled( true );
-                widget.GetVisualElement()!.SetDisplayed( false );
+                widget.SetEnabled( true );
+                widget.SetDisplayed( false );
             } else {
                 // show new widget or unhide uncovered widget
-                widget.GetVisualElement()!.SetEnabled( true );
-                widget.GetVisualElement()!.SetDisplayed( true );
+                widget.SetEnabled( true );
+                widget.SetDisplayed( true );
             }
         }
 

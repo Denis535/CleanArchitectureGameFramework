@@ -1,4 +1,4 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo( "Unity.Extensions" )]
-[assembly: InternalsVisibleTo( "Unity.Extensions.Core" )]
+[assembly: InternalsVisibleTo( "CleanArchitectureGameFramework.Core" )]
+[assembly: InternalsVisibleTo( "CleanArchitectureGameFramework" )]
