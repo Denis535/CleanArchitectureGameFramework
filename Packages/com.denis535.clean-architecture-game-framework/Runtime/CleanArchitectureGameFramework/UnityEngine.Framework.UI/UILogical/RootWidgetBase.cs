@@ -30,46 +30,6 @@ namespace UnityEngine.Framework.UI {
             base.HideWidget( widget );
         }
 
-        // Helpers
-        protected static void Focus(VisualElement element) {
-            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
-            Assert.Argument.Message( $"Argument 'element' must be attached" ).Valid( element.panel != null );
-            if (HasFocusedElement( element )) {
-                return;
-            }
-            var focusedElement = LoadFocusedElement( element );
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return;
-            }
-            if (element.focusable) {
-                element.Focus();
-            } else {
-                element.focusable = true;
-                element.delegatesFocus = true;
-                element.Focus();
-                element.delegatesFocus = false;
-                element.focusable = false;
-            }
-        }
-        protected static void SaveFocus(VisualElement element) {
-            element.userData = GetFocusedElement( element );
-        }
-        // Helpers
-        private static bool HasFocusedElement(VisualElement element) {
-            var focusedElement = (VisualElement) element.focusController.focusedElement;
-            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return true;
-            return false;
-        }
-        private static VisualElement? GetFocusedElement(VisualElement element) {
-            var focusedElement = (VisualElement) element.focusController.focusedElement;
-            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
-            return null;
-        }
-        private static VisualElement? LoadFocusedElement(VisualElement element) {
-            return (VisualElement?) element.userData;
-        }
-
     }
     public class RootWidget : RootWidgetBase<RootWidgetView> {
 
@@ -107,11 +67,11 @@ namespace UnityEngine.Framework.UI {
                     View.WidgetSlot.Add( widget.GetVisualElement()! );
                 }
                 {
-                    var covered = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
-                    if (covered != null) SaveFocus( covered.GetVisualElement()! );
+                    var prev = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
+                    if (prev != null) prev.GetVisualElement()!.SaveFocus();
                     RecalcVisibility();
                     var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (last != null) Focus( last.GetVisualElement()! );
+                    if (last != null) last.GetVisualElement()!.LoadFocus();
                 }
             }
         }
@@ -128,8 +88,8 @@ namespace UnityEngine.Framework.UI {
                 }
                 {
                     RecalcVisibility();
-                    var uncovered = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (uncovered != null) Focus( uncovered.GetVisualElement()! );
+                    var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
+                    if (last != null) last.GetVisualElement()!.LoadFocus();
                 }
             }
         }

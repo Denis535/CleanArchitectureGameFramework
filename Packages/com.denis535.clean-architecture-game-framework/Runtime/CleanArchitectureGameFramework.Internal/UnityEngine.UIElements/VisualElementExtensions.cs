@@ -71,6 +71,40 @@ namespace UnityEngine.UIElements {
             return element;
         }
 
+        // SaveFocus
+        public static void SaveFocus(this VisualElement element) {
+            SaveFocusedElement( element, GetFocusedElement( element ) );
+        }
+        public static void LoadFocus(this VisualElement element) {
+            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
+            Assert.Argument.Message( $"Argument 'element' must be attached" ).Valid( element.panel != null );
+            var focusedElement = LoadFocusedElement( element );
+            if (focusedElement != null) {
+                focusedElement.Focus();
+                return;
+            }
+            if (element.focusable) {
+                element.Focus();
+            } else {
+                element.focusable = true;
+                element.delegatesFocus = true;
+                element.Focus();
+                element.delegatesFocus = false;
+                element.focusable = false;
+            }
+        }
+        private static VisualElement? GetFocusedElement(VisualElement element) {
+            var focusedElement = (VisualElement) element.focusController.focusedElement;
+            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
+            return null;
+        }
+        private static void SaveFocusedElement(VisualElement element, VisualElement? focusedElement) {
+            element.userData = focusedElement;
+        }
+        private static VisualElement? LoadFocusedElement(VisualElement element) {
+            return (VisualElement?) element.userData;
+        }
+
         // FindElement
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
