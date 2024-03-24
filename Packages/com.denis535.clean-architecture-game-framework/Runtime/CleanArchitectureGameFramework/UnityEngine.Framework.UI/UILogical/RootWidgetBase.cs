@@ -130,26 +130,47 @@ namespace UnityEngine.Framework.UI {
         private static RootWidgetView CreateView() {
             var view = new RootWidgetView();
             view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
-                if (evt.target is Button button) {
-                    using (var click = ClickEvent.GetPooled()) {
-                        click.target = button;
-                        button.SendEvent( click );
-                    }
+                var button = (Button?) evt.target;
+                if (button != null) {
+                    Click( button );
                     evt.StopPropagation();
                 }
             }, TrickleDown.TrickleDown );
             view.Widget.OnEvent<NavigationCancelEvent>( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( i => i.GetType().Name.Contains( "Widget" ) );
-                var button = widget?.Query<Button>().Where( i => i.name is "resume" or "cancel" or "cancellation" or "back" or "no" or "quit" ).First();
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget ) ?? ((VisualElement) evt.target).GetAncestorsAndSelf().LastOrDefault();
+                var button = widget?.Query<Button>().Where( IsCancel ).First() ?? widget?.Query<Button>().Last();
                 if (button != null) {
-                    using (var click = ClickEvent.GetPooled()) {
-                        click.target = button;
-                        button.SendEvent( click );
-                    }
+                    Click( button );
                     evt.StopPropagation();
                 }
             }, TrickleDown.TrickleDown );
             return view;
+        }
+        private static bool IsWidget(VisualElement element) {
+            if (element.name != null) {
+                return element.name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
+            }
+            return element.GetType().Name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
+        }
+        private static bool IsCancel(Button element) {
+            if (element.name != null) {
+                return element.name is "resume" or "cancel" or "no" or "back" or "exit" or "quit";
+            }
+            if (element.text != null) {
+                return element.text.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
+                       element.text.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
+                       element.text.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
+                       element.text.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
+                       element.text.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
+                       element.text.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
+            }
+            return false;
+        }
+        private static void Click(Button button) {
+            using (var click = ClickEvent.GetPooled()) {
+                click.target = button;
+                button.SendEvent( click );
+            }
         }
 
     }
