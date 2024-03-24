@@ -73,11 +73,10 @@ namespace UnityEngine.UIElements {
 
         // SaveFocus
         public static void SaveFocus(this VisualElement element) {
-            SaveFocusedElement( element, GetFocusedElement( element ) );
+            var focusedElement = GetFocusedElement( element );
+            SaveFocusedElement( element, focusedElement );
         }
         public static void LoadFocus(this VisualElement element) {
-            Assert.Argument.Message( $"Argument 'element' must be non-null" ).NotNull( element != null );
-            Assert.Argument.Message( $"Argument 'element' must be attached" ).Valid( element.panel != null );
             var focusedElement = LoadFocusedElement( element );
             if (focusedElement != null) {
                 focusedElement.Focus();

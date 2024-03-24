@@ -139,7 +139,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }, TrickleDown.TrickleDown );
             view.Widget.OnEvent<NavigationCancelEvent>( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( i => i.name.Contains( "widget" ) );
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( i => i.GetType().Name.Contains( "Widget" ) );
                 var button = widget?.Query<Button>().Where( i => i.name is "resume" or "cancel" or "cancellation" or "back" or "no" or "quit" ).First();
                 if (button != null) {
                     using (var click = ClickEvent.GetPooled()) {
