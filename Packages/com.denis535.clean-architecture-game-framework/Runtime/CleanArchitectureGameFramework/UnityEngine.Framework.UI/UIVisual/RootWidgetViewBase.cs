@@ -10,8 +10,8 @@ namespace UnityEngine.Framework.UI {
 
         // VisualElement
         public abstract ElementWrapper Widget { get; }
-        public abstract ViewListWrapper<UIViewBase> WidgetList { get; }
-        public abstract ViewListWrapper<UIViewBase> ModalWidgetList { get; }
+        public abstract WidgetListWrapper<UIWidgetBase> WidgetList { get; }
+        public abstract WidgetListWrapper<UIWidgetBase> ModalWidgetList { get; }
 
         // Constructor
         public RootWidgetViewBase() {
@@ -26,15 +26,15 @@ namespace UnityEngine.Framework.UI {
         // VisualElement
         protected internal override VisualElement VisualElement { get; }
         public override ElementWrapper Widget { get; }
-        public override ViewListWrapper<UIViewBase> WidgetList { get; }
-        public override ViewListWrapper<UIViewBase> ModalWidgetList { get; }
+        public override WidgetListWrapper<UIWidgetBase> WidgetList { get; }
+        public override WidgetListWrapper<UIWidgetBase> ModalWidgetList { get; }
 
         // Constructor
         public RootWidgetView() {
-            VisualElement = CreateVisualElement( out var widget, out var widgetSlot, out var modalWidgetSlot );
+            VisualElement = CreateVisualElement( out var widget, out var widgetList, out var modalWidgetList );
             Widget = widget.Wrap();
-            WidgetList = widgetSlot.AsViewList<UIViewBase>();
-            ModalWidgetList = modalWidgetSlot.AsViewList<UIViewBase>();
+            WidgetList = widgetList.AsWidgetList<UIWidgetBase>();
+            ModalWidgetList = modalWidgetList.AsWidgetList<UIWidgetBase>();
         }
         public override void Dispose() {
             base.Dispose();
