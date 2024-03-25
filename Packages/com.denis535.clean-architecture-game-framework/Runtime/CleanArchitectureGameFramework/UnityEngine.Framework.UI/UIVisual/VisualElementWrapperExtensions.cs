@@ -40,9 +40,19 @@ namespace UnityEngine.Framework.UI {
             return new ToggleFieldWrapper<bool>( visualElement );
         }
 
-        // AsSlot
-        public static SlotWrapper<TView> AsSlot<TView>(this VisualElement visualElement) where TView : UIViewBase {
-            return new SlotWrapper<TView>( visualElement );
+        // AsViewSlot
+        public static ViewSlotWrapper<TView> AsViewSlot<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
+            return new ViewSlotWrapper<TView>( visualElement );
+        }
+
+        // AsViewList
+        public static ViewListWrapper<TView> AsViewList<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
+            return new ViewListWrapper<TView>( visualElement );
+        }
+
+        // AsViewStack
+        public static ViewStackWrapper<TView> AsViewStack<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
+            return new ViewStackWrapper<TView>( visualElement );
         }
 
     }

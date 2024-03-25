@@ -10,8 +10,8 @@ namespace UnityEngine.Framework.UI {
 
         // VisualElement
         public abstract ElementWrapper Widget { get; }
-        public abstract SlotWrapper<UIViewBase> WidgetSlot { get; }
-        public abstract SlotWrapper<UIViewBase> ModalWidgetSlot { get; }
+        public abstract ViewListWrapper<UIViewBase> WidgetList { get; }
+        public abstract ViewListWrapper<UIViewBase> ModalWidgetList { get; }
 
         // Constructor
         public RootWidgetViewBase() {
@@ -26,39 +26,39 @@ namespace UnityEngine.Framework.UI {
         // VisualElement
         protected internal override VisualElement VisualElement { get; }
         public override ElementWrapper Widget { get; }
-        public override SlotWrapper<UIViewBase> WidgetSlot { get; }
-        public override SlotWrapper<UIViewBase> ModalWidgetSlot { get; }
+        public override ViewListWrapper<UIViewBase> WidgetList { get; }
+        public override ViewListWrapper<UIViewBase> ModalWidgetList { get; }
 
         // Constructor
         public RootWidgetView() {
             VisualElement = CreateVisualElement( out var widget, out var widgetSlot, out var modalWidgetSlot );
             Widget = widget.Wrap();
-            WidgetSlot = widgetSlot.AsSlot<UIViewBase>();
-            ModalWidgetSlot = modalWidgetSlot.AsSlot<UIViewBase>();
+            WidgetList = widgetSlot.AsViewList<UIViewBase>();
+            ModalWidgetList = modalWidgetSlot.AsViewList<UIViewBase>();
         }
         public override void Dispose() {
             base.Dispose();
         }
 
         // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement widgetSlot, out VisualElement modalWidgetSlot) {
+        protected static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement widgetList, out VisualElement modalWidgetList) {
             widget = new VisualElement();
             widget.name = "root-widget";
             widget.AddToClassList( "root-widget" );
             widget.pickingMode = PickingMode.Ignore;
             {
-                widgetSlot = new VisualElement();
-                widgetSlot.name = "widget-slot";
-                widgetSlot.AddToClassList( "widget-slot" );
-                widgetSlot.pickingMode = PickingMode.Ignore;
-                widget.Add( widgetSlot );
+                widgetList = new VisualElement();
+                widgetList.name = "widget-list";
+                widgetList.AddToClassList( "widget-list" );
+                widgetList.pickingMode = PickingMode.Ignore;
+                widget.Add( widgetList );
             }
             {
-                modalWidgetSlot = new VisualElement();
-                modalWidgetSlot.name = "modal-widget-slot";
-                modalWidgetSlot.AddToClassList( "modal-widget-slot" );
-                modalWidgetSlot.pickingMode = PickingMode.Ignore;
-                widget.Add( modalWidgetSlot );
+                modalWidgetList = new VisualElement();
+                modalWidgetList.name = "modal-widget-list";
+                modalWidgetList.AddToClassList( "modal-widget-list" );
+                modalWidgetList.pickingMode = PickingMode.Ignore;
+                widget.Add( modalWidgetList );
             }
             return widget;
         }

@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class VisualElementWrapper<T> : IVisualElementWrapper<T> where T : VisualElement {
+    public abstract class VisualElementWrapper<T> : IVisualElementWrapper<T> where T : notnull, VisualElement {
 
         protected T VisualElement { get; }
         T IVisualElementWrapper<T>.VisualElement => VisualElement;
@@ -181,13 +181,34 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    // Slot
-    public class SlotWrapper<TView> : VisualElementWrapper<VisualElement> where TView : UIViewBase {
+    // ViewSlot
+    public class ViewSlotWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
 
-        private List<TView> Views_ { get; } = new List<TView>( 1 );
+        public TView? View { get; private set; }
+
+        public ViewSlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        }
+
+        public void Set(TView view) {
+            Clear();
+            View = view;
+            VisualElement.Add( view.VisualElement );
+        }
+        public void Clear() {
+            if (View != null) {
+                VisualElement.Remove( View.VisualElement );
+                View = null;
+            }
+        }
+
+    }
+    // ViewList
+    public class ViewListWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
+
+        private List<TView> Views_ { get; } = new List<TView>();
         public IReadOnlyList<TView> Views => Views_;
 
-        public SlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ViewListWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Add(TView view) {
@@ -195,23 +216,52 @@ namespace UnityEngine.Framework.UI {
             VisualElement.Add( view.VisualElement );
         }
         public void Remove(TView view) {
-            Views_.Remove( view );
             VisualElement.Remove( view.VisualElement );
+            Views_.Remove( view );
         }
         public bool Contains(TView view) {
             return Views_.Contains( view );
         }
+        public void Clear() {
+            foreach (var view in Views_) {
+                VisualElement.Remove( view.VisualElement );
+            }
+            Views_.Clear();
+        }
 
-        public void Add(UIWidgetBase<TView> widget) {
-            Views_.Add( widget.View );
-            VisualElement.Add( widget.View.VisualElement );
+    }
+    // ViewStack
+    public class ViewStackWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
+
+        private Stack<TView> Views_ { get; } = new Stack<TView>();
+        public IReadOnlyCollection<TView> Views => Views_;
+
+        public ViewStackWrapper(VisualElement visualElement) : base( visualElement ) {
         }
-        public void Remove(UIWidgetBase<TView> widget) {
-            Views_.Remove( widget.View );
-            VisualElement.Remove( widget.View.VisualElement );
+
+        public void Push(TView view) {
+            if (Views_.TryPeek( out var top )) {
+                top.SetEnabled( false );
+                top.SetDisplayed( false );
+            }
+            Views_.Push( view );
+            VisualElement.Add( view.VisualElement );
         }
-        public bool Contains(UIWidgetBase<TView> widget) {
-            return Views_.Contains( widget.View );
+        public void Pop() {
+            VisualElement.Remove( Views_.Peek().VisualElement );
+            Views_.Pop();
+            if (Views_.TryPeek( out var top )) {
+                top.SetEnabled( true );
+                top.SetDisplayed( true );
+            }
+        }
+        public bool Contains(TView view) {
+            return Views_.Contains( view );
+        }
+        public void Clear() {
+            while (Views_.TryPop( out var view )) {
+                VisualElement.Remove( view.VisualElement );
+            }
         }
 
     }
