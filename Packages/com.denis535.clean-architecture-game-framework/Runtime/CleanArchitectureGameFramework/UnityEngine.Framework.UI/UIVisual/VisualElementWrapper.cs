@@ -182,34 +182,24 @@ namespace UnityEngine.Framework.UI {
 
     }
     // Slot
-    public class SlotWrapper : VisualElementWrapper<VisualElement> {
+    public class SlotWrapper<TView> : VisualElementWrapper<VisualElement> where TView : UIViewBase {
 
-        public IEnumerable<VisualElement> Children => VisualElement.Children();
-        public IEnumerable<VisualElement> Descendants => VisualElement.GetDescendants();
-        public IEnumerable<VisualElement> DescendantsAndSelf => VisualElement.GetDescendantsAndSelf();
-        public event Action<VisualElement>? OnAddedEvent; // todo: remove it
-        public event Action<VisualElement>? OnRemovedEvent;
+        private List<TView> Views_ { get; } = new List<TView>();
+        public IReadOnlyList<TView> Views => Views_;
 
         public SlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Add(VisualElement element) {
-            VisualElement.Add( element );
-            OnAddedEvent?.Invoke( element );
+        public void Add(TView view) {
+            Views_.Add( view );
+            VisualElement.Add( view.VisualElement );
         }
-        public void Remove(VisualElement element) {
-            VisualElement.Remove( element );
-            OnRemovedEvent?.Invoke( element );
+        public void Remove(TView view) {
+            Views_.Remove( view );
+            VisualElement.Remove( view.VisualElement );
         }
-        public bool Contains(VisualElement element) {
-            return VisualElement.Contains( element );
-        }
-
-        public void OnAdded(Action<VisualElement>? callback) {
-            OnAddedEvent += callback;
-        }
-        public void OnRemoved(Action<VisualElement>? callback) {
-            OnRemovedEvent += callback;
+        public bool Contains(TView view) {
+            return Views_.Contains( view );
         }
 
     }

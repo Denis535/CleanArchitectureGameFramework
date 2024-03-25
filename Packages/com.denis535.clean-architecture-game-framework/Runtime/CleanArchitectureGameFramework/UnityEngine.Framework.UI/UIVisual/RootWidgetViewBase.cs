@@ -10,8 +10,8 @@ namespace UnityEngine.Framework.UI {
 
         // VisualElement
         public abstract ElementWrapper Widget { get; }
-        public abstract SlotWrapper WidgetSlot { get; }
-        public abstract SlotWrapper ModalWidgetSlot { get; }
+        public abstract SlotWrapper<UIViewBase> WidgetSlot { get; }
+        public abstract SlotWrapper<UIViewBase> ModalWidgetSlot { get; }
 
         // Constructor
         public RootWidgetViewBase() {
@@ -26,15 +26,15 @@ namespace UnityEngine.Framework.UI {
         // VisualElement
         protected internal override VisualElement VisualElement { get; }
         public override ElementWrapper Widget { get; }
-        public override SlotWrapper WidgetSlot { get; }
-        public override SlotWrapper ModalWidgetSlot { get; }
+        public override SlotWrapper<UIViewBase> WidgetSlot { get; }
+        public override SlotWrapper<UIViewBase> ModalWidgetSlot { get; }
 
         // Constructor
         public RootWidgetView() {
             VisualElement = CreateVisualElement( out var widget, out var widgetSlot, out var modalWidgetSlot );
             Widget = widget.Wrap();
-            WidgetSlot = widgetSlot.AsSlot();
-            ModalWidgetSlot = modalWidgetSlot.AsSlot();
+            WidgetSlot = widgetSlot.AsSlot<UIViewBase>();
+            ModalWidgetSlot = modalWidgetSlot.AsSlot<UIViewBase>();
         }
         public override void Dispose() {
             base.Dispose();

@@ -61,10 +61,10 @@ namespace UnityEngine.Framework.UI {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     ModalWidgets_.Add( widget );
-                    View.ModalWidgetSlot.Add( widget );
+                    View.ModalWidgetSlot.Add( widget.View );
                 } else {
                     Widgets_.Add( widget );
-                    View.WidgetSlot.Add( widget );
+                    View.WidgetSlot.Add( widget.View );
                 }
                 {
                     var prev = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
@@ -80,11 +80,11 @@ namespace UnityEngine.Framework.UI {
                 if (widget.IsModal()) {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
                     ModalWidgets_.Remove( widget );
-                    View.ModalWidgetSlot.Remove( widget );
+                    View.ModalWidgetSlot.Remove( widget.View );
                 } else {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == Widgets.LastOrDefault() );
                     Widgets_.Remove( widget );
-                    View.WidgetSlot.Remove( widget );
+                    View.WidgetSlot.Remove( widget.View );
                 }
                 {
                     RecalcVisibility();

@@ -41,8 +41,8 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AsSlot
-        public static SlotWrapper AsSlot(this VisualElement visualElement) {
-            return new SlotWrapper( visualElement );
+        public static SlotWrapper<TView> AsSlot<TView>(this VisualElement visualElement) where TView : UIViewBase {
+            return new SlotWrapper<TView>( visualElement );
         }
 
     }
@@ -96,28 +96,6 @@ namespace UnityEngine.Framework.UI {
         }
         public static void ClearClasses(this IVisualElementWrapper<VisualElement> wrapper) {
             wrapper.VisualElement.ClearClassList();
-        }
-
-        // Add
-        public static void Add(this SlotWrapper wrapper, UIViewBase view) {
-            wrapper.Add( view.VisualElement );
-        }
-        public static void Remove(this SlotWrapper wrapper, UIViewBase view) {
-            wrapper.Remove( view.VisualElement );
-        }
-        public static bool Contains(this SlotWrapper wrapper, UIViewBase view) {
-            return wrapper.Contains( view.VisualElement );
-        }
-
-        // Add
-        public static void Add(this SlotWrapper wrapper, UIWidgetBase widget) {
-            wrapper.Add( widget.View!.VisualElement );
-        }
-        public static void Remove(this SlotWrapper wrapper, UIWidgetBase widget) {
-            wrapper.Remove( widget.View!.VisualElement );
-        }
-        public static bool Contains(this SlotWrapper wrapper, UIWidgetBase widget) {
-            return wrapper.Contains( widget.View!.VisualElement );
         }
 
         // OnEvent
