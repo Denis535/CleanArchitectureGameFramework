@@ -7,22 +7,13 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class VisualElementWrapper : IVisualElementWrapper {
+    public abstract class VisualElementWrapper<T> : IVisualElementWrapper<T> where T : VisualElement {
 
-        protected internal VisualElement VisualElement { get; }
-        VisualElement IVisualElementWrapper.VisualElement => VisualElement;
-
-        public VisualElementWrapper(VisualElement visualElement) {
-            VisualElement = visualElement;
-        }
-
-    }
-    public abstract class VisualElementWrapper<T> : VisualElementWrapper, IVisualElementWrapper<T> where T : VisualElement {
-
-        protected internal new T VisualElement => (T) base.VisualElement;
+        protected T VisualElement { get; }
         T IVisualElementWrapper<T>.VisualElement => VisualElement;
 
-        public VisualElementWrapper(T visualElement) : base( visualElement ) {
+        public VisualElementWrapper(T visualElement) {
+            VisualElement = visualElement;
         }
 
     }

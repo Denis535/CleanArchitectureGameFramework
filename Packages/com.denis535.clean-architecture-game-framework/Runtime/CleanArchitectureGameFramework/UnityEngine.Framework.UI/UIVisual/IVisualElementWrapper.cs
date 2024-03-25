@@ -6,10 +6,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public interface IVisualElementWrapper {
-        internal VisualElement VisualElement { get; }
-    }
-    public interface IVisualElementWrapper<out T> : IVisualElementWrapper where T : VisualElement {
-        internal new T VisualElement { get; }
+    public interface IVisualElementWrapper<out T> where T : VisualElement {
+        internal T VisualElement { get; }
     }
 }
