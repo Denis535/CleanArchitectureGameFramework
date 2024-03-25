@@ -202,5 +202,17 @@ namespace UnityEngine.Framework.UI {
             return Views_.Contains( view );
         }
 
+        public void Add(UIWidgetBase<TView> widget) {
+            Views_.Add( widget.View );
+            VisualElement.Add( widget.View.VisualElement );
+        }
+        public void Remove(UIWidgetBase<TView> widget) {
+            Views_.Remove( widget.View );
+            VisualElement.Remove( widget.View.VisualElement );
+        }
+        public bool Contains(UIWidgetBase<TView> widget) {
+            return Views_.Contains( widget.View );
+        }
+
     }
 }

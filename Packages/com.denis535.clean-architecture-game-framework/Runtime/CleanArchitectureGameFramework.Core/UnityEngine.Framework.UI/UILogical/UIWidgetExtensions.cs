@@ -104,19 +104,9 @@ namespace UnityEngine.Framework.UI {
             // try not to use it
             return widget?.View;
         }
-        public static UIViewBase __GetView__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
+        public static T __GetView__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
             // try not to use it
             return widget.View;
-        }
-
-        // GetVisualElement
-        public static VisualElement? __GetVisualElement__(this UIWidgetBase widget) {
-            // try not to use it
-            return widget?.View?.VisualElement;
-        }
-        public static VisualElement __GetVisualElement__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
-            // try not to use it
-            return widget.View.VisualElement;
         }
 
     }
