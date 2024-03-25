@@ -181,15 +181,35 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    // ViewSlot
-    public class ViewSlotWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
+    // Slot
+    public class WidgetSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
 
-        public TView? View { get; private set; }
+        public T? Widget { get; private set; }
+
+        public WidgetSlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        }
+
+        public void Set(T widget) {
+            Clear();
+            Widget = widget;
+            VisualElement.Add( widget.View!.VisualElement );
+        }
+        public void Clear() {
+            if (Widget != null) {
+                VisualElement.Remove( Widget.View!.VisualElement );
+                Widget = null;
+            }
+        }
+
+    }
+    public class ViewSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
+
+        public T? View { get; private set; }
 
         public ViewSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Set(TView view) {
+        public void Set(T view) {
             Clear();
             View = view;
             VisualElement.Add( view.VisualElement );
@@ -202,24 +222,51 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    // ViewList
-    public class ViewListWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
+    // List
+    public class WidgetListWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
 
-        private List<TView> Views_ { get; } = new List<TView>();
-        public IReadOnlyList<TView> Views => Views_;
+        private List<T> Widgets_ { get; } = new List<T>();
+        public IReadOnlyList<T> Widgets => Widgets_;
+
+        public WidgetListWrapper(VisualElement visualElement) : base( visualElement ) {
+        }
+
+        public void Add(T widget) {
+            Widgets_.Add( widget );
+            VisualElement.Add( widget.View!.VisualElement );
+        }
+        public void Remove(T widget) {
+            VisualElement.Remove( widget.View!.VisualElement );
+            Widgets_.Remove( widget );
+        }
+        public bool Contains(T widget) {
+            return Widgets_.Contains( widget );
+        }
+        public void Clear() {
+            foreach (var widget in Widgets_) {
+                VisualElement.Remove( widget.View!.VisualElement );
+            }
+            Widgets_.Clear();
+        }
+
+    }
+    public class ViewListWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
+
+        private List<T> Views_ { get; } = new List<T>();
+        public IReadOnlyList<T> Views => Views_;
 
         public ViewListWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Add(TView view) {
+        public void Add(T view) {
             Views_.Add( view );
             VisualElement.Add( view.VisualElement );
         }
-        public void Remove(TView view) {
+        public void Remove(T view) {
             VisualElement.Remove( view.VisualElement );
             Views_.Remove( view );
         }
-        public bool Contains(TView view) {
+        public bool Contains(T view) {
             return Views_.Contains( view );
         }
         public void Clear() {
@@ -230,16 +277,50 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    // ViewStack
-    public class ViewStackWrapper<TView> : VisualElementWrapper<VisualElement> where TView : notnull, UIViewBase {
+    // Stack
+    public class WidgetStackWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
 
-        private Stack<TView> Views_ { get; } = new Stack<TView>();
-        public IReadOnlyCollection<TView> Views => Views_;
+        private Stack<T> Widgets_ { get; } = new Stack<T>();
+        public IReadOnlyCollection<T> Widgets => Widgets_;
+
+        public WidgetStackWrapper(VisualElement visualElement) : base( visualElement ) {
+        }
+
+        public void Push(T widget) {
+            if (Widgets_.TryPeek( out var top )) {
+                top.SetEnabled( false );
+                top.SetDisplayed( false );
+            }
+            Widgets_.Push( widget );
+            VisualElement.Add( widget.View!.VisualElement );
+        }
+        public void Pop() {
+            VisualElement.Remove( Widgets_.Peek().View!.VisualElement );
+            Widgets_.Pop();
+            if (Widgets_.TryPeek( out var top )) {
+                top.SetEnabled( true );
+                top.SetDisplayed( true );
+            }
+        }
+        public bool Contains(T widget) {
+            return Widgets_.Contains( widget );
+        }
+        public void Clear() {
+            while (Widgets_.TryPop( out var widget )) {
+                VisualElement.Remove( widget.View!.VisualElement );
+            }
+        }
+
+    }
+    public class ViewStackWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
+
+        private Stack<T> Views_ { get; } = new Stack<T>();
+        public IReadOnlyCollection<T> Views => Views_;
 
         public ViewStackWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Push(TView view) {
+        public void Push(T view) {
             if (Views_.TryPeek( out var top )) {
                 top.SetEnabled( false );
                 top.SetDisplayed( false );
@@ -255,7 +336,7 @@ namespace UnityEngine.Framework.UI {
                 top.SetDisplayed( true );
             }
         }
-        public bool Contains(TView view) {
+        public bool Contains(T view) {
             return Views_.Contains( view );
         }
         public void Clear() {

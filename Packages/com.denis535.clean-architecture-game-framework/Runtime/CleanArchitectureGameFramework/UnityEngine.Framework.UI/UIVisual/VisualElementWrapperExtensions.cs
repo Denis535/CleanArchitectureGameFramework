@@ -40,19 +40,28 @@ namespace UnityEngine.Framework.UI {
             return new ToggleFieldWrapper<bool>( visualElement );
         }
 
-        // AsViewSlot
-        public static ViewSlotWrapper<TView> AsViewSlot<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
-            return new ViewSlotWrapper<TView>( visualElement );
+        // AsSlot
+        public static WidgetSlotWrapper<T> AsWidgetSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
+            return new WidgetSlotWrapper<T>( visualElement );
+        }
+        public static ViewSlotWrapper<T> AsViewSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewSlotWrapper<T>( visualElement );
         }
 
-        // AsViewList
-        public static ViewListWrapper<TView> AsViewList<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
-            return new ViewListWrapper<TView>( visualElement );
+        // AsList
+        public static WidgetListWrapper<T> AsWidgetList<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
+            return new WidgetListWrapper<T>( visualElement );
+        }
+        public static ViewListWrapper<T> AsViewList<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewListWrapper<T>( visualElement );
         }
 
-        // AsViewStack
-        public static ViewStackWrapper<TView> AsViewStack<TView>(this VisualElement visualElement) where TView : notnull, UIViewBase {
-            return new ViewStackWrapper<TView>( visualElement );
+        // AsStack
+        public static WidgetStackWrapper<T> AsWidgetStack<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
+            return new WidgetStackWrapper<T>( visualElement );
+        }
+        public static ViewStackWrapper<T> AsViewStack<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewStackWrapper<T>( visualElement );
         }
 
     }
