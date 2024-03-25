@@ -48,20 +48,20 @@ namespace UnityEngine.Framework.UI {
             return new ViewSlotWrapper<T>( visualElement );
         }
 
-        // AsList
-        public static WidgetListWrapper<T> AsWidgetList<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
-            return new WidgetListWrapper<T>( visualElement );
+        // AsListSlot
+        public static WidgetListSlotWrapper<T> AsWidgetListSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
+            return new WidgetListSlotWrapper<T>( visualElement );
         }
-        public static ViewListWrapper<T> AsViewList<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
-            return new ViewListWrapper<T>( visualElement );
+        public static ViewListSlotWrapper<T> AsViewListSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewListSlotWrapper<T>( visualElement );
         }
 
-        // AsStack
-        public static WidgetStackWrapper<T> AsWidgetStack<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
-            return new WidgetStackWrapper<T>( visualElement );
+        // AsStackSlot
+        public static WidgetStackSlotWrapper<T> AsWidgetStackSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
+            return new WidgetStackSlotWrapper<T>( visualElement );
         }
-        public static ViewStackWrapper<T> AsViewStack<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
-            return new ViewStackWrapper<T>( visualElement );
+        public static ViewStackSlotWrapper<T> AsViewStackSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewStackSlotWrapper<T>( visualElement );
         }
 
     }

@@ -192,11 +192,17 @@ namespace UnityEngine.Framework.UI {
         public void Set(T widget) {
             Clear();
             Widget = widget;
-            VisualElement.Add( widget.View!.VisualElement );
+            VisualElement.Add( widget );
+        }
+        public bool Contains(T widget) {
+            return Widget == widget;
+        }
+        public bool Any() {
+            return Widget != null;
         }
         public void Clear() {
             if (Widget != null) {
-                VisualElement.Remove( Widget.View!.VisualElement );
+                VisualElement.Remove( Widget );
                 Widget = null;
             }
         }
@@ -212,78 +218,90 @@ namespace UnityEngine.Framework.UI {
         public void Set(T view) {
             Clear();
             View = view;
-            VisualElement.Add( view.VisualElement );
+            VisualElement.Add( view );
+        }
+        public bool Contains(T view) {
+            return View == view;
+        }
+        public bool Any() {
+            return View != null;
         }
         public void Clear() {
             if (View != null) {
-                VisualElement.Remove( View.VisualElement );
+                VisualElement.Remove( View );
                 View = null;
             }
         }
 
     }
-    // List
-    public class WidgetListWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
+    // ListSlot
+    public class WidgetListSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
 
         private List<T> Widgets_ { get; } = new List<T>();
         public IReadOnlyList<T> Widgets => Widgets_;
 
-        public WidgetListWrapper(VisualElement visualElement) : base( visualElement ) {
+        public WidgetListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Add(T widget) {
             Widgets_.Add( widget );
-            VisualElement.Add( widget.View!.VisualElement );
+            VisualElement.Add( widget );
         }
         public void Remove(T widget) {
-            VisualElement.Remove( widget.View!.VisualElement );
+            VisualElement.Remove( widget );
             Widgets_.Remove( widget );
         }
         public bool Contains(T widget) {
             return Widgets_.Contains( widget );
         }
+        public bool Any() {
+            return Widgets_.Any();
+        }
         public void Clear() {
             foreach (var widget in Widgets_) {
-                VisualElement.Remove( widget.View!.VisualElement );
+                VisualElement.Remove( widget );
             }
             Widgets_.Clear();
         }
 
     }
-    public class ViewListWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
+    public class ViewListSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
 
         private List<T> Views_ { get; } = new List<T>();
         public IReadOnlyList<T> Views => Views_;
 
-        public ViewListWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ViewListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Add(T view) {
             Views_.Add( view );
-            VisualElement.Add( view.VisualElement );
+            VisualElement.Add( view );
         }
         public void Remove(T view) {
-            VisualElement.Remove( view.VisualElement );
+            VisualElement.Remove( view );
             Views_.Remove( view );
         }
         public bool Contains(T view) {
             return Views_.Contains( view );
         }
+        public bool Any() {
+            return Views_.Any();
+        }
         public void Clear() {
             foreach (var view in Views_) {
-                VisualElement.Remove( view.VisualElement );
+                VisualElement.Remove( view );
             }
             Views_.Clear();
         }
 
     }
-    // Stack
-    public class WidgetStackWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
+    // StackSlot
+    public class WidgetStackSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIWidgetBase {
 
         private Stack<T> Widgets_ { get; } = new Stack<T>();
         public IReadOnlyCollection<T> Widgets => Widgets_;
 
-        public WidgetStackWrapper(VisualElement visualElement) : base( visualElement ) {
+        public WidgetStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Push(T widget) {
@@ -292,10 +310,10 @@ namespace UnityEngine.Framework.UI {
                 top.SetDisplayed( false );
             }
             Widgets_.Push( widget );
-            VisualElement.Add( widget.View!.VisualElement );
+            VisualElement.Add( widget );
         }
         public void Pop() {
-            VisualElement.Remove( Widgets_.Peek().View!.VisualElement );
+            VisualElement.Remove( Widgets_.Peek() );
             Widgets_.Pop();
             if (Widgets_.TryPeek( out var top )) {
                 top.SetEnabled( true );
@@ -305,19 +323,22 @@ namespace UnityEngine.Framework.UI {
         public bool Contains(T widget) {
             return Widgets_.Contains( widget );
         }
+        public bool Any() {
+            return Widgets_.Any();
+        }
         public void Clear() {
             while (Widgets_.TryPop( out var widget )) {
-                VisualElement.Remove( widget.View!.VisualElement );
+                VisualElement.Remove( widget );
             }
         }
 
     }
-    public class ViewStackWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
+    public class ViewStackSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
 
         private Stack<T> Views_ { get; } = new Stack<T>();
         public IReadOnlyCollection<T> Views => Views_;
 
-        public ViewStackWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ViewStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
         public void Push(T view) {
@@ -326,10 +347,10 @@ namespace UnityEngine.Framework.UI {
                 top.SetDisplayed( false );
             }
             Views_.Push( view );
-            VisualElement.Add( view.VisualElement );
+            VisualElement.Add( view );
         }
         public void Pop() {
-            VisualElement.Remove( Views_.Peek().VisualElement );
+            VisualElement.Remove( Views_.Peek() );
             Views_.Pop();
             if (Views_.TryPeek( out var top )) {
                 top.SetEnabled( true );
@@ -339,9 +360,12 @@ namespace UnityEngine.Framework.UI {
         public bool Contains(T view) {
             return Views_.Contains( view );
         }
+        public bool Any() {
+            return Views_.Any();
+        }
         public void Clear() {
             while (Views_.TryPop( out var view )) {
-                VisualElement.Remove( view.VisualElement );
+                VisualElement.Remove( view );
             }
         }
 
