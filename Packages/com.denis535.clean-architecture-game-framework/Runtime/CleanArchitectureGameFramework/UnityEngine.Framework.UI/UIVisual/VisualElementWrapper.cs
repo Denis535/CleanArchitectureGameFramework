@@ -184,7 +184,7 @@ namespace UnityEngine.Framework.UI {
     // Slot
     public class SlotWrapper<TView> : VisualElementWrapper<VisualElement> where TView : UIViewBase {
 
-        private List<TView> Views_ { get; } = new List<TView>();
+        private List<TView> Views_ { get; } = new List<TView>( 1 );
         public IReadOnlyList<TView> Views => Views_;
 
         public SlotWrapper(VisualElement visualElement) : base( visualElement ) {

@@ -22,12 +22,34 @@ namespace UnityEngine.Framework.UI {
         public override void OnDetach(object? argument) {
         }
 
-        // ShowWidget
-        protected override void ShowWidget(UIWidgetBase widget) {
-            base.ShowWidget( widget );
+        // OnBeforeDescendantAttach
+        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantAttach( descendant );
         }
-        protected override void HideWidget(UIWidgetBase widget) {
-            base.HideWidget( widget );
+        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
+            base.OnAfterDescendantAttach( descendant );
+        }
+        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantDetach( descendant );
+        }
+        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
+            base.OnAfterDescendantDetach( descendant );
+        }
+
+        // AttachChild
+        protected internal override void __AttachChild__(UIWidgetBase child, object? argument) {
+            base.__AttachChild__( child, argument );
+        }
+        protected internal override void __DetachChild__(UIWidgetBase child, object? argument) {
+            base.__DetachChild__( child, argument );
+        }
+
+        // ShowDescendantWidget
+        protected override void ShowDescendantWidget(UIWidgetBase widget) {
+            base.ShowDescendantWidget( widget );
+        }
+        protected override void HideDescendantWidget(UIWidgetBase widget) {
+            base.HideDescendantWidget( widget );
         }
 
     }
@@ -56,8 +78,30 @@ namespace UnityEngine.Framework.UI {
             base.OnDetach( argument );
         }
 
-        // ShowWidget
-        protected override void ShowWidget(UIWidgetBase widget) {
+        // OnBeforeDescendantAttach
+        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantAttach( descendant );
+        }
+        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
+            base.OnAfterDescendantAttach( descendant );
+        }
+        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
+            base.OnBeforeDescendantDetach( descendant );
+        }
+        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
+            base.OnAfterDescendantDetach( descendant );
+        }
+
+        // AttachChild
+        protected internal override void __AttachChild__(UIWidgetBase child, object? argument) {
+            base.__AttachChild__( child, argument );
+        }
+        protected internal override void __DetachChild__(UIWidgetBase child, object? argument) {
+            base.__DetachChild__( child, argument );
+        }
+
+        // ShowDescendantWidget
+        protected override void ShowDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     ModalWidgets_.Add( widget );
@@ -75,7 +119,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected override void HideWidget(UIWidgetBase widget) {
+        protected override void HideDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == ModalWidgets.LastOrDefault() );
@@ -127,7 +171,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        private static RootWidgetView CreateView() {
+        protected virtual RootWidgetView CreateView() {
             var view = new RootWidgetView();
             view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
                 var button = (Button?) evt.target;
@@ -146,7 +190,7 @@ namespace UnityEngine.Framework.UI {
             }, TrickleDown.TrickleDown );
             return view;
         }
-        private static bool IsWidget(VisualElement element) {
+        protected static bool IsWidget(VisualElement element) {
             if (element.enabledInHierarchy) {
                 if (element.name != null) {
                     return element.name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
@@ -155,7 +199,7 @@ namespace UnityEngine.Framework.UI {
             }
             return false;
         }
-        private static bool IsCancel(Button button) {
+        protected static bool IsCancel(Button button) {
             if (button.enabledInHierarchy) {
                 if (button.name != null) {
                     return button.name is "resume" or "cancel" or "no" or "back" or "exit" or "quit";
@@ -171,7 +215,7 @@ namespace UnityEngine.Framework.UI {
             }
             return false;
         }
-        private static void Click(Button button) {
+        protected static void Click(Button button) {
             using (var click = ClickEvent.GetPooled()) {
                 click.target = button;
                 button.SendEvent( click );

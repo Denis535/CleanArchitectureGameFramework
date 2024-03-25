@@ -111,16 +111,6 @@ namespace UnityEngine.Framework.UI {
             Parent?.OnAfterDescendantDetach( descendant );
         }
 
-        // ShowWidget
-        protected virtual void ShowWidget(UIWidgetBase widget) {
-            Assert.Operation.Message( $"Can not show widget: {widget}" ).Valid( Parent != null );
-            Parent.ShowWidget( widget );
-        }
-        protected virtual void HideWidget(UIWidgetBase widget) {
-            Assert.Operation.Message( $"Can not hide widget: {widget}" ).Valid( Parent != null );
-            Parent.HideWidget( widget );
-        }
-
         // AttachChild
         protected internal virtual void __AttachChild__(UIWidgetBase child, object? argument) {
             // You can override it but you should not directly call this method
@@ -154,6 +144,16 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
+        // ShowDescendantWidget
+        protected virtual void ShowDescendantWidget(UIWidgetBase widget) {
+            Assert.Operation.Message( $"Can not show descendant widget: {widget}" ).Valid( Parent != null );
+            Parent.ShowDescendantWidget( widget );
+        }
+        protected virtual void HideDescendantWidget(UIWidgetBase widget) {
+            Assert.Operation.Message( $"Can not hide descendant widget: {widget}" ).Valid( Parent != null );
+            Parent.HideDescendantWidget( widget );
+        }
+
         // Helpers
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         internal static void AttachToScreen(UIWidgetBase widget, UIScreenBase screen, object? argument) {
@@ -167,7 +167,7 @@ namespace UnityEngine.Framework.UI {
                 widget.State = UIWidgetState.Attaching;
                 {
                     widget.OnAttach( argument );
-                    widget.Parent?.ShowWidget( widget );
+                    widget.Parent?.ShowDescendantWidget( widget );
                     foreach (var child in widget.Children) {
                         AttachToScreen( child, screen, argument );
                     }
@@ -190,7 +190,7 @@ namespace UnityEngine.Framework.UI {
                     foreach (var child in widget.Children.Reverse()) {
                         DetachFromScreen( child, screen, argument );
                     }
-                    widget.Parent?.HideWidget( widget );
+                    widget.Parent?.HideDescendantWidget( widget );
                     widget.OnDetach( argument );
                 }
                 widget.State = UIWidgetState.Detached;
