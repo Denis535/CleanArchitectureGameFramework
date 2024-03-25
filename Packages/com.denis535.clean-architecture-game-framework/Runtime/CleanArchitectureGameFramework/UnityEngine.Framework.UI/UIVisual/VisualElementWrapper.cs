@@ -193,10 +193,10 @@ namespace UnityEngine.Framework.UI {
     // Slot
     public class SlotWrapper : VisualElementWrapper<VisualElement> {
 
-        public IReadOnlyList<VisualElement> Children {
-            get => (IReadOnlyList<VisualElement>) VisualElement.Children();
-        }
-        public event Action<VisualElement>? OnAddedEvent;
+        public IEnumerable<VisualElement> Children => VisualElement.Children();
+        public IEnumerable<VisualElement> Descendants => VisualElement.GetDescendants();
+        public IEnumerable<VisualElement> DescendantsAndSelf => VisualElement.GetDescendantsAndSelf();
+        public event Action<VisualElement>? OnAddedEvent; // todo: remove it
         public event Action<VisualElement>? OnRemovedEvent;
 
         public SlotWrapper(VisualElement visualElement) : base( visualElement ) {
@@ -212,30 +212,6 @@ namespace UnityEngine.Framework.UI {
         }
         public bool Contains(VisualElement element) {
             return VisualElement.Contains( element );
-        }
-
-        public void Add(UIViewBase view) {
-            VisualElement.Add( view.VisualElement );
-            OnAddedEvent?.Invoke( view.VisualElement );
-        }
-        public void Remove(UIViewBase view) {
-            VisualElement.Remove( view.VisualElement );
-            OnRemovedEvent?.Invoke( view.VisualElement );
-        }
-        public bool Contains(UIViewBase view) {
-            return VisualElement.Contains( view.VisualElement );
-        }
-
-        public void Add(UIWidgetBase widget) {
-            VisualElement.Add( widget.View!.VisualElement );
-            OnAddedEvent?.Invoke( widget.View!.VisualElement );
-        }
-        public void Remove(UIWidgetBase widget) {
-            VisualElement.Remove( widget.View!.VisualElement );
-            OnRemovedEvent?.Invoke( widget.View!.VisualElement );
-        }
-        public bool Contains(UIWidgetBase widget) {
-            return VisualElement.Contains( widget.View!.VisualElement );
         }
 
         public void OnAdded(Action<VisualElement>? callback) {

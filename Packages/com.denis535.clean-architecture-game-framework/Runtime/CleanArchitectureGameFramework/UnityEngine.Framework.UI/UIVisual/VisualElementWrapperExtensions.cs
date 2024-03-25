@@ -95,6 +95,28 @@ namespace UnityEngine.Framework.UI {
             wrapper.VisualElement.ClearClassList();
         }
 
+        // Add
+        public static void Add(this SlotWrapper wrapper, UIViewBase view) {
+            wrapper.Add( view.VisualElement );
+        }
+        public static void Remove(this SlotWrapper wrapper, UIViewBase view) {
+            wrapper.Remove( view.VisualElement );
+        }
+        public static bool Contains(this SlotWrapper wrapper, UIViewBase view) {
+            return wrapper.Contains( view.VisualElement );
+        }
+
+        // Add
+        public static void Add(this SlotWrapper wrapper, UIWidgetBase widget) {
+            wrapper.Add( widget.View!.VisualElement );
+        }
+        public static void Remove(this SlotWrapper wrapper, UIWidgetBase widget) {
+            wrapper.Remove( widget.View!.VisualElement );
+        }
+        public static bool Contains(this SlotWrapper wrapper, UIWidgetBase widget) {
+            return wrapper.Contains( widget.View!.VisualElement );
+        }
+
         // OnEvent
         public static void OnEvent<T>(this VisualElementWrapper wrapper, EventCallback<T> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );

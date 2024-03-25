@@ -28,6 +28,14 @@ namespace UnityEngine.Framework.UI {
             widget.View!.VisualElement.SetDisplayed( value );
         }
 
+        // IsValid
+        public static bool IsValid(this UIWidgetBase widget) {
+            return widget.View!.VisualElement.IsValid();
+        }
+        public static void SetValid(this UIWidgetBase widget, bool value) {
+            widget.View!.VisualElement.SetValid( value );
+        }
+
         // AttachChild
         public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );

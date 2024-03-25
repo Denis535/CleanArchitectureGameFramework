@@ -68,10 +68,10 @@ namespace UnityEngine.Framework.UI {
                 }
                 {
                     var prev = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).SkipLast( 1 ).LastOrDefault();
-                    if (prev != null) prev.__GetVisualElement__()!.SaveFocus();
+                    if (prev != null) prev.View!.VisualElement.SaveFocus();
                     RecalcVisibility();
                     var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (last != null) last.__GetVisualElement__()!.LoadFocus();
+                    if (last != null) last.View!.VisualElement.LoadFocus();
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace UnityEngine.Framework.UI {
                 {
                     RecalcVisibility();
                     var last = (UIWidgetBase?) Widgets.Concat( ModalWidgets ).LastOrDefault();
-                    if (last != null) last.__GetVisualElement__()!.LoadFocus();
+                    if (last != null) last.View!.VisualElement.LoadFocus();
                 }
             }
         }

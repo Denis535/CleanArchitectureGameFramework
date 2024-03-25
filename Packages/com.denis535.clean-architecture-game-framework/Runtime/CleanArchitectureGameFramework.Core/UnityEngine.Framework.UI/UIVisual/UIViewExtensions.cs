@@ -27,6 +27,14 @@ namespace UnityEngine.Framework.UI {
             view.VisualElement.SetDisplayed( value );
         }
 
+        // IsValid
+        public static bool IsValid(this UIViewBase view) {
+            return view.VisualElement.IsValid();
+        }
+        public static void SetValid(this UIViewBase view, bool value) {
+            view.VisualElement.SetValid( value );
+        }
+
         // GetVisualElement
         public static VisualElement __GetVisualElement__(this UIViewBase view) {
             // try not to use it

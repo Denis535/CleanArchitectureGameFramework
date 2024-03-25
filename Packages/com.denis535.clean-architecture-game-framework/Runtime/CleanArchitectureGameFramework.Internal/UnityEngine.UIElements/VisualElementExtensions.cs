@@ -71,17 +71,8 @@ namespace UnityEngine.UIElements {
             return element;
         }
 
-        // SaveFocus
-        public static void SaveFocus(this VisualElement element) {
-            var focusedElement = GetFocusedElement( element );
-            SaveFocusedElement( element, focusedElement );
-        }
-        public static void LoadFocus(this VisualElement element) {
-            var focusedElement = LoadFocusedElement( element );
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return;
-            }
+        // Focus
+        public static void Focus2(this VisualElement element) {
             if (element.focusable) {
                 element.Focus();
             } else {
@@ -90,6 +81,18 @@ namespace UnityEngine.UIElements {
                 element.Focus();
                 element.delegatesFocus = false;
                 element.focusable = false;
+            }
+        }
+        public static void SaveFocus(this VisualElement element) {
+            var focusedElement = GetFocusedElement( element );
+            SaveFocusedElement( element, focusedElement );
+        }
+        public static void LoadFocus(this VisualElement element) {
+            var focusedElement = LoadFocusedElement( element );
+            if (focusedElement != null) {
+                focusedElement.Focus();
+            } else {
+                element.Focus2();
             }
         }
         private static VisualElement? GetFocusedElement(VisualElement element) {
