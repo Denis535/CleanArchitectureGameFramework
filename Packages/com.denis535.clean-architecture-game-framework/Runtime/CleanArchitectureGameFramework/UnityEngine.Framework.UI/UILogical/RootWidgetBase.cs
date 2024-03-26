@@ -139,7 +139,7 @@ namespace UnityEngine.Framework.UI {
         protected static RootWidgetView CreateView() {
             var view = new RootWidgetView();
             view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
-                var button = (Button?) evt.target;
+                var button = evt.target as Button;
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
