@@ -158,7 +158,7 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         protected static void RecalcVisibility(RootWidgetViewBase view) {
             foreach (var widget in view.WidgetSlot.Widgets) {
-                RecalcWidgetVisibility( widget, widget == view.WidgetSlot.Widgets.Last(), view.ModalWidgetSlot.Any() );
+                RecalcWidgetVisibility( widget, widget == view.WidgetSlot.Widgets.Last(), view.ModalWidgetSlot.Widgets.Any() );
             }
             foreach (var widget in view.ModalWidgetSlot.Widgets) {
                 RecalcModalWidgetVisibility( widget, widget == view.ModalWidgetSlot.Widgets.Last() );
