@@ -52,8 +52,6 @@ namespace UnityEngine.UIElements {
             callback( element.style );
             return element;
         }
-
-        // SetUp
         public static T Text<T>(this T element, string? text) where T : TextElement {
             element.text = text;
             return element;
@@ -62,8 +60,6 @@ namespace UnityEngine.UIElements {
             element.userData = userData;
             return element;
         }
-
-        // SetUp
         public static T Children<T>(this T element, params VisualElement?[] children) where T : VisualElement {
             foreach (var child in children) {
                 element.Add( child );
@@ -84,26 +80,31 @@ namespace UnityEngine.UIElements {
             }
         }
         public static void SaveFocus(this VisualElement element) {
-            var focusedElement = GetFocusedElement( element );
-            SaveFocusedElement( element, focusedElement );
+            var focusedElement = element.GetFocusedElement();
+            element.SaveFocusedElement( focusedElement );
         }
         public static void LoadFocus(this VisualElement element) {
-            var focusedElement = LoadFocusedElement( element );
+            var focusedElement = element.LoadFocusedElement();
             if (focusedElement != null) {
                 focusedElement.Focus();
             } else {
                 element.Focus2();
             }
         }
-        private static VisualElement? GetFocusedElement(VisualElement element) {
+        public static bool HasFocusedElement(this VisualElement element) {
+            var focusedElement = (VisualElement) element.focusController.focusedElement;
+            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return true;
+            return false;
+        }
+        public static VisualElement? GetFocusedElement(this VisualElement element) {
             var focusedElement = (VisualElement) element.focusController.focusedElement;
             if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        private static void SaveFocusedElement(VisualElement element, VisualElement? focusedElement) {
+        public static void SaveFocusedElement(this VisualElement element, VisualElement? focusedElement) {
             element.userData = focusedElement;
         }
-        private static VisualElement? LoadFocusedElement(VisualElement element) {
+        public static VisualElement? LoadFocusedElement(this VisualElement element) {
             return (VisualElement?) element.userData;
         }
 
