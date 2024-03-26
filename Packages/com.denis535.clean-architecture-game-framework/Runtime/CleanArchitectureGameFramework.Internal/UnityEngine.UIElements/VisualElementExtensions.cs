@@ -87,8 +87,6 @@ namespace UnityEngine.UIElements {
             var focusedElement = element.LoadFocusedElement();
             if (focusedElement != null) {
                 focusedElement.Focus();
-            } else {
-                element.Focus2();
             }
         }
         public static bool HasFocusedElement(this VisualElement element) {

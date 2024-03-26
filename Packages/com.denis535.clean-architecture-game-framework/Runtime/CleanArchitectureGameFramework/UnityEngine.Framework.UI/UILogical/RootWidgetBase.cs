@@ -53,16 +53,19 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public class RootWidget : RootWidgetBase<RootWidgetView> {
+    public class RootWidget : RootWidgetBase<RootWidgetViewBase> {
 
         // View
-        protected internal override RootWidgetView View { get; }
+        protected internal override RootWidgetViewBase View { get; }
         public IReadOnlyList<UIWidgetBase> Widgets => View.WidgetSlot.Widgets;
         public IReadOnlyList<UIWidgetBase> ModalWidgets => View.ModalWidgetSlot.Widgets;
 
         // Constructor
         public RootWidget() {
             View = CreateView();
+        }
+        public RootWidget(RootWidgetViewBase view) {
+            View = view;
         }
         public override void Dispose() {
             base.Dispose();
@@ -109,9 +112,9 @@ namespace UnityEngine.Framework.UI {
                 {
                     var prev = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).SkipLast( 1 ).LastOrDefault();
                     if (prev != null) prev.View!.VisualElement.SaveFocus();
-                    RecalcVisibility();
+                    RecalcVisibility( View );
                     var last = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
-                    if (last != null) last.View!.VisualElement.LoadFocus();
+                    if (last != null) last.View!.VisualElement.Focus2();
                 }
             }
         }
@@ -125,47 +128,15 @@ namespace UnityEngine.Framework.UI {
                     View.WidgetSlot.Remove( widget );
                 }
                 {
-                    RecalcVisibility();
+                    RecalcVisibility( View );
                     var last = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
                     if (last != null) last.View!.VisualElement.LoadFocus();
                 }
             }
         }
 
-        // RecalcVisibility
-        protected virtual void RecalcVisibility() {
-            foreach (var widget in View.WidgetSlot.Widgets) {
-                RecalcWidgetVisibility( widget, widget == View.WidgetSlot.Widgets.Last() );
-            }
-            foreach (var widget in View.ModalWidgetSlot.Widgets) {
-                RecalcModalWidgetVisibility( widget, widget == View.ModalWidgetSlot.Widgets.Last() );
-            }
-        }
-        protected virtual void RecalcWidgetVisibility(UIWidgetBase widget, bool isLast) {
-            if (!isLast) {
-                // hide covered widgets
-                widget.SetEnabled( true );
-                widget.SetDisplayed( false );
-            } else {
-                // show new widget or unhide uncovered widget
-                widget.SetEnabled( !View.ModalWidgetSlot.Any() );
-                widget.SetDisplayed( true );
-            }
-        }
-        protected virtual void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isLast) {
-            if (!isLast) {
-                // hide covered widgets
-                widget.SetEnabled( true );
-                widget.SetDisplayed( false );
-            } else {
-                // show new widget or unhide uncovered widget
-                widget.SetEnabled( true );
-                widget.SetDisplayed( true );
-            }
-        }
-
         // Helpers
-        protected virtual RootWidgetView CreateView() {
+        protected static RootWidgetView CreateView() {
             var view = new RootWidgetView();
             view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
                 var button = (Button?) evt.target;
@@ -178,12 +149,45 @@ namespace UnityEngine.Framework.UI {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
                 var button = widget?.Query<Button>().Where( IsCancel ).First();
                 if (button != null) {
+                    button.Focus();
                     Click( button );
                     evt.StopPropagation();
                 }
             }, TrickleDown.TrickleDown );
             return view;
         }
+        // Helpers
+        protected static void RecalcVisibility(RootWidgetViewBase view) {
+            foreach (var widget in view.WidgetSlot.Widgets) {
+                RecalcWidgetVisibility( widget, widget == view.WidgetSlot.Widgets.Last(), view.ModalWidgetSlot.Any() );
+            }
+            foreach (var widget in view.ModalWidgetSlot.Widgets) {
+                RecalcModalWidgetVisibility( widget, widget == view.ModalWidgetSlot.Widgets.Last() );
+            }
+        }
+        private static void RecalcWidgetVisibility(UIWidgetBase widget, bool isVisible, bool hasModalWidgets) {
+            if (!isVisible) {
+                // hide covered widgets
+                widget.SetEnabled( false );
+                widget.SetDisplayed( false );
+            } else {
+                // show new widget or unhide uncovered widget
+                widget.SetEnabled( !hasModalWidgets );
+                widget.SetDisplayed( true );
+            }
+        }
+        private static void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isVisible) {
+            if (!isVisible) {
+                // hide covered widgets
+                widget.SetEnabled( false );
+                widget.SetDisplayed( false );
+            } else {
+                // show new widget or unhide uncovered widget
+                widget.SetEnabled( true );
+                widget.SetDisplayed( true );
+            }
+        }
+        // Helpers
         protected static bool IsWidget(VisualElement element) {
             if (element.enabledInHierarchy) {
                 if (element.name != null) {
