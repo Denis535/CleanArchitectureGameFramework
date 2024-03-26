@@ -189,9 +189,6 @@ namespace UnityEngine.Framework.UI {
         public WidgetSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return Widget != null;
-        }
         public void Add(T widget) {
             Assert.Operation.Message( $"Slot must have no widget" ).Valid( Widget == null );
             Widget = widget;
@@ -203,9 +200,6 @@ namespace UnityEngine.Framework.UI {
             Widget = null;
             VisualElement.Remove( widget );
         }
-        public bool Contains(T widget) {
-            return Widget == widget;
-        }
 
     }
     public class ViewSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
@@ -215,9 +209,6 @@ namespace UnityEngine.Framework.UI {
         public ViewSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return View != null;
-        }
         public void Add(T view) {
             Assert.Operation.Message( $"Slot must have no view" ).Valid( View == null );
             View = view;
@@ -228,9 +219,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( View == view );
             View = null;
             VisualElement.Remove( view );
-        }
-        public bool Contains(T view) {
-            return View == view;
         }
 
     }
@@ -243,9 +231,6 @@ namespace UnityEngine.Framework.UI {
         public WidgetListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return Widgets_.Any();
-        }
         public void Add(T widget) {
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             Widgets_.Add( widget );
@@ -256,9 +241,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widgets_.Contains( widget ) );
             Widgets_.Remove( widget );
             VisualElement.Remove( widget );
-        }
-        public bool Contains(T widget) {
-            return Widgets_.Contains( widget );
         }
         public void Clear() {
             foreach (var widget in Widgets_) {
@@ -276,9 +258,6 @@ namespace UnityEngine.Framework.UI {
         public ViewListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return Views_.Any();
-        }
         public void Add(T view) {
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             Views_.Add( view );
@@ -289,9 +268,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( Views_.Contains( view ) );
             Views_.Remove( view );
             VisualElement.Remove( view );
-        }
-        public bool Contains(T view) {
-            return Views_.Contains( view );
         }
         public void Clear() {
             foreach (var view in Views_) {
@@ -310,9 +286,6 @@ namespace UnityEngine.Framework.UI {
         public WidgetStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return Widgets_.Any();
-        }
         public void Push(T widget) {
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             if (Widgets_.TryPeek( out var top )) {
@@ -337,9 +310,6 @@ namespace UnityEngine.Framework.UI {
             }
             return result;
         }
-        public bool Contains(T widget) {
-            return Widgets_.Contains( widget );
-        }
 
     }
     public class ViewStackSlotWrapper<T> : VisualElementWrapper<VisualElement> where T : notnull, UIViewBase {
@@ -350,9 +320,6 @@ namespace UnityEngine.Framework.UI {
         public ViewStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public bool Any() {
-            return Views_.Any();
-        }
         public void Push(T view) {
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             if (Views_.TryPeek( out var top )) {
@@ -376,9 +343,6 @@ namespace UnityEngine.Framework.UI {
                 top.SetDisplayed( true );
             }
             return result;
-        }
-        public bool Contains(T view) {
-            return Views_.Contains( view );
         }
 
     }

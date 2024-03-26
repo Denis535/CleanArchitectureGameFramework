@@ -149,7 +149,6 @@ namespace UnityEngine.Framework.UI {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
                 var button = widget?.Query<Button>().Where( IsCancel ).First();
                 if (button != null) {
-                    button.Focus();
                     Click( button );
                     evt.StopPropagation();
                 }
@@ -165,7 +164,7 @@ namespace UnityEngine.Framework.UI {
                 RecalcModalWidgetVisibility( widget, widget == view.ModalWidgetSlot.Widgets.Last() );
             }
         }
-        private static void RecalcWidgetVisibility(UIWidgetBase widget, bool isVisible, bool hasModalWidgets) {
+        protected static void RecalcWidgetVisibility(UIWidgetBase widget, bool isVisible, bool hasModalWidgets) {
             if (!isVisible) {
                 // hide covered widgets
                 widget.SetEnabled( false );
@@ -176,7 +175,7 @@ namespace UnityEngine.Framework.UI {
                 widget.SetDisplayed( true );
             }
         }
-        private static void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isVisible) {
+        protected static void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isVisible) {
             if (!isVisible) {
                 // hide covered widgets
                 widget.SetEnabled( false );
