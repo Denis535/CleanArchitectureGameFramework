@@ -189,22 +189,22 @@ namespace UnityEngine.Framework.UI {
         public WidgetSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Set(T widget) {
-            Clear();
+        public void Add(T widget) {
+            Assert.Operation.Message( $"Slot must have no widget" ).Valid( Widget == null );
             Widget = widget;
             VisualElement.Add( widget );
         }
-        public bool Contains(T widget) {
-            return Widget == widget;
+        public void Remove(T widget) {
+            Assert.Operation.Message( $"Slot must have widget" ).Valid( Widget != null );
+            Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widget == widget );
+            Widget = null;
+            VisualElement.Remove( widget );
         }
         public bool Any() {
             return Widget != null;
         }
-        public void Clear() {
-            if (Widget != null) {
-                VisualElement.Remove( Widget );
-                Widget = null;
-            }
+        public bool Contains(T widget) {
+            return Widget == widget;
         }
 
     }
@@ -215,22 +215,22 @@ namespace UnityEngine.Framework.UI {
         public ViewSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Set(T view) {
-            Clear();
+        public void Add(T view) {
+            Assert.Operation.Message( $"Slot must have no view" ).Valid( View == null );
             View = view;
             VisualElement.Add( view );
         }
-        public bool Contains(T view) {
-            return View == view;
+        public void Remove(T view) {
+            Assert.Operation.Message( $"Slot must have view" ).Valid( View != null );
+            Assert.Operation.Message( $"Slot must have {view} view" ).Valid( View == view );
+            View = null;
+            VisualElement.Remove( view );
         }
         public bool Any() {
             return View != null;
         }
-        public void Clear() {
-            if (View != null) {
-                VisualElement.Remove( View );
-                View = null;
-            }
+        public bool Contains(T view) {
+            return View == view;
         }
 
     }
@@ -244,18 +244,21 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Add(T widget) {
+            Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             Widgets_.Add( widget );
             VisualElement.Add( widget );
         }
         public void Remove(T widget) {
-            VisualElement.Remove( widget );
+            Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
+            Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widgets_.Contains( widget ) );
             Widgets_.Remove( widget );
-        }
-        public bool Contains(T widget) {
-            return Widgets_.Contains( widget );
+            VisualElement.Remove( widget );
         }
         public bool Any() {
             return Widgets_.Any();
+        }
+        public bool Contains(T widget) {
+            return Widgets_.Contains( widget );
         }
         public void Clear() {
             foreach (var widget in Widgets_) {
@@ -274,18 +277,21 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Add(T view) {
+            Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             Views_.Add( view );
             VisualElement.Add( view );
         }
         public void Remove(T view) {
-            VisualElement.Remove( view );
+            Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
+            Assert.Operation.Message( $"Slot must have {view} view" ).Valid( Views_.Contains( view ) );
             Views_.Remove( view );
-        }
-        public bool Contains(T view) {
-            return Views_.Contains( view );
+            VisualElement.Remove( view );
         }
         public bool Any() {
             return Views_.Any();
+        }
+        public bool Contains(T view) {
+            return Views_.Contains( view );
         }
         public void Clear() {
             foreach (var view in Views_) {
@@ -305,6 +311,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Push(T widget) {
+            Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             if (Widgets_.TryPeek( out var top )) {
                 top.SetEnabled( false );
                 top.SetDisplayed( false );
@@ -313,23 +320,18 @@ namespace UnityEngine.Framework.UI {
             VisualElement.Add( widget );
         }
         public void Pop() {
-            VisualElement.Remove( Widgets_.Peek() );
-            Widgets_.Pop();
+            Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
+            VisualElement.Remove( Widgets_.Pop() );
             if (Widgets_.TryPeek( out var top )) {
                 top.SetEnabled( true );
                 top.SetDisplayed( true );
             }
         }
-        public bool Contains(T widget) {
-            return Widgets_.Contains( widget );
-        }
         public bool Any() {
             return Widgets_.Any();
         }
-        public void Clear() {
-            while (Widgets_.TryPop( out var widget )) {
-                VisualElement.Remove( widget );
-            }
+        public bool Contains(T widget) {
+            return Widgets_.Contains( widget );
         }
 
     }
@@ -342,6 +344,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Push(T view) {
+            Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             if (Views_.TryPeek( out var top )) {
                 top.SetEnabled( false );
                 top.SetDisplayed( false );
@@ -350,23 +353,18 @@ namespace UnityEngine.Framework.UI {
             VisualElement.Add( view );
         }
         public void Pop() {
-            VisualElement.Remove( Views_.Peek() );
-            Views_.Pop();
+            Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
+            VisualElement.Remove( Views_.Pop() );
             if (Views_.TryPeek( out var top )) {
                 top.SetEnabled( true );
                 top.SetDisplayed( true );
             }
         }
-        public bool Contains(T view) {
-            return Views_.Contains( view );
-        }
         public bool Any() {
             return Views_.Any();
         }
-        public void Clear() {
-            while (Views_.TryPop( out var view )) {
-                VisualElement.Remove( view );
-            }
+        public bool Contains(T view) {
+            return Views_.Contains( view );
         }
 
     }
