@@ -28,11 +28,11 @@ namespace UnityEngine.UIElements {
             View = null;
         }
 
-        internal static void Dispatch(UIViewBase view) {
+        public static void Dispatch(VisualElement target, UIViewBase view) {
             using (var evt = GetPooled()) {
                 evt.View = view;
-                evt.target = view.VisualElement;
-                view.VisualElement.SendEvent( evt );
+                evt.target = target;
+                target.SendEvent( evt );
             }
         }
 
@@ -59,11 +59,11 @@ namespace UnityEngine.UIElements {
             View = null;
         }
 
-        internal static void Dispatch(UIViewBase view) {
+        public static void Dispatch(VisualElement target, UIViewBase view) {
             using (var evt = GetPooled()) {
                 evt.View = view;
-                evt.target = view.VisualElement;
-                view.VisualElement.SendEvent( evt );
+                evt.target = target;
+                target.SendEvent( evt );
             }
         }
 

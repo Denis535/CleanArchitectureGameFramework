@@ -28,11 +28,11 @@ namespace UnityEngine.UIElements {
             Widget = null;
         }
 
-        internal static void Dispatch(UIWidgetBase widget) {
+        public static void Dispatch(VisualElement target, UIWidgetBase widget) {
             using (var evt = GetPooled()) {
                 evt.Widget = widget;
-                evt.target = widget.View!.VisualElement;
-                widget.View!.VisualElement.SendEvent( evt );
+                evt.target = target;
+                target.SendEvent( evt );
             }
         }
 
@@ -59,11 +59,11 @@ namespace UnityEngine.UIElements {
             Widget = null;
         }
 
-        internal static void Dispatch(UIWidgetBase widget) {
+        public static void Dispatch(VisualElement target, UIWidgetBase widget) {
             using (var evt = GetPooled()) {
                 evt.Widget = widget;
-                evt.target = widget.View!.VisualElement;
-                widget.View!.VisualElement.SendEvent( evt );
+                evt.target = target;
+                target.SendEvent( evt );
             }
         }
 
