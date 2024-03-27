@@ -109,13 +109,6 @@ namespace UnityEngine.Framework.UI {
                 } else {
                     View.WidgetSlot.Add( widget );
                 }
-                {
-                    var prev = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).SkipLast( 1 ).LastOrDefault();
-                    if (prev != null) prev.View!.VisualElement.SaveFocus();
-                    RecalcVisibility( View );
-                    var last = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
-                    if (last != null) last.View!.VisualElement.Focus2();
-                }
             }
         }
         protected override void HideDescendantWidget(UIWidgetBase widget) {
@@ -126,11 +119,6 @@ namespace UnityEngine.Framework.UI {
                 } else {
                     Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == View.WidgetSlot.Widgets.LastOrDefault() );
                     View.WidgetSlot.Remove( widget );
-                }
-                {
-                    RecalcVisibility( View );
-                    var last = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
-                    if (last != null) last.View!.VisualElement.LoadFocus();
                 }
             }
         }
@@ -156,37 +144,6 @@ namespace UnityEngine.Framework.UI {
             return view;
         }
         // Helpers
-        protected static void RecalcVisibility(RootWidgetViewBase view) {
-            foreach (var widget in view.WidgetSlot.Widgets) {
-                RecalcWidgetVisibility( widget, widget == view.WidgetSlot.Widgets.Last(), view.ModalWidgetSlot.Widgets.Any() );
-            }
-            foreach (var widget in view.ModalWidgetSlot.Widgets) {
-                RecalcModalWidgetVisibility( widget, widget == view.ModalWidgetSlot.Widgets.Last() );
-            }
-        }
-        protected static void RecalcWidgetVisibility(UIWidgetBase widget, bool isVisible, bool hasModalWidgets) {
-            if (!isVisible) {
-                // hide covered widgets
-                widget.SetEnabled( false );
-                widget.SetDisplayed( false );
-            } else {
-                // show new widget or unhide uncovered widget
-                widget.SetEnabled( !hasModalWidgets );
-                widget.SetDisplayed( true );
-            }
-        }
-        protected static void RecalcModalWidgetVisibility(UIWidgetBase widget, bool isVisible) {
-            if (!isVisible) {
-                // hide covered widgets
-                widget.SetEnabled( false );
-                widget.SetDisplayed( false );
-            } else {
-                // show new widget or unhide uncovered widget
-                widget.SetEnabled( true );
-                widget.SetDisplayed( true );
-            }
-        }
-        // Helpers
         protected static bool IsWidget(VisualElement element) {
             if (element.enabledInHierarchy) {
                 if (element.name != null) {
@@ -199,7 +156,12 @@ namespace UnityEngine.Framework.UI {
         protected static bool IsCancel(Button button) {
             if (button.enabledInHierarchy) {
                 if (button.name != null) {
-                    return button.name is "resume" or "cancel" or "no" or "back" or "exit" or "quit";
+                    return button.name.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.name.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.name.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.name.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.name.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
+                           button.name.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
                 }
                 if (button.text != null) {
                     return button.text.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||

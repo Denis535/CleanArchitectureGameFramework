@@ -189,12 +189,18 @@ namespace UnityEngine.Framework.UI {
         public WidgetSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Add(T widget) {
+        public void Set(T widget) {
+            Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have no widget" ).Valid( Widget == null );
             Widget = widget;
             VisualElement.Add( widget );
         }
-        public void Remove(T widget) {
+        public void Clear() {
+            Assert.Operation.Message( $"Slot must have widget" ).Valid( Widget != null );
+            Clear( Widget );
+        }
+        public void Clear(T widget) {
+            Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widget != null );
             Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widget == widget );
             Widget = null;
@@ -209,12 +215,18 @@ namespace UnityEngine.Framework.UI {
         public ViewSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Add(T view) {
+        public void Set(T view) {
+            Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have no view" ).Valid( View == null );
             View = view;
             VisualElement.Add( view );
         }
-        public void Remove(T view) {
+        public void Clear() {
+            Assert.Operation.Message( $"Slot must have view" ).Valid( View != null );
+            Clear( View );
+        }
+        public void Clear(T view) {
+            Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have view" ).Valid( View != null );
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( View == view );
             View = null;
@@ -232,11 +244,13 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Add(T widget) {
+            Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             Widgets_.Add( widget );
             VisualElement.Add( widget );
         }
         public void Remove(T widget) {
+            Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
             Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widgets_.Contains( widget ) );
             Widgets_.Remove( widget );
@@ -259,11 +273,13 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Add(T view) {
+            Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             Views_.Add( view );
             VisualElement.Add( view );
         }
         public void Remove(T view) {
+            Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( Views_.Contains( view ) );
             Views_.Remove( view );
@@ -287,6 +303,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Push(T widget) {
+            Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
             if (Widgets_.TryPeek( out var last )) {
                 VisualElement.Remove( last );
@@ -324,6 +341,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         public void Push(T view) {
+            Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
             if (Views_.TryPeek( out var last )) {
                 VisualElement.Remove( last );
