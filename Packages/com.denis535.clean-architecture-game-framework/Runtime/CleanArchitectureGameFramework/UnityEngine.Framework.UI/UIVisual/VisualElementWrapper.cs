@@ -288,12 +288,13 @@ namespace UnityEngine.Framework.UI {
 
         public void Push(T widget) {
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
-            if (Widgets_.TryPeek( out var top )) {
-                top.SetEnabled( false );
-                top.SetDisplayed( false );
+            if (Widgets_.TryPeek( out var last )) {
+                VisualElement.Remove( last );
             }
-            Widgets_.Push( widget );
-            VisualElement.Add( widget );
+            {
+                Widgets_.Push( widget );
+                VisualElement.Add( widget );
+            }
         }
         public T Peek() {
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
@@ -302,11 +303,13 @@ namespace UnityEngine.Framework.UI {
         }
         public T Pop() {
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
-            var result = Widgets_.Pop();
-            VisualElement.Remove( result );
-            if (Widgets_.TryPeek( out var top )) {
-                top.SetEnabled( true );
-                top.SetDisplayed( true );
+            var result = default( T );
+            {
+                result = Widgets_.Pop();
+                VisualElement.Remove( result );
+            }
+            if (Widgets_.TryPeek( out var last )) {
+                VisualElement.Add( last );
             }
             return result;
         }
@@ -322,12 +325,13 @@ namespace UnityEngine.Framework.UI {
 
         public void Push(T view) {
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
-            if (Views_.TryPeek( out var top )) {
-                top.SetEnabled( false );
-                top.SetDisplayed( false );
+            if (Views_.TryPeek( out var last )) {
+                VisualElement.Remove( last );
             }
-            Views_.Push( view );
-            VisualElement.Add( view );
+            {
+                Views_.Push( view );
+                VisualElement.Add( view );
+            }
         }
         public T Peek() {
             Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
@@ -336,11 +340,13 @@ namespace UnityEngine.Framework.UI {
         }
         public T Pop() {
             Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
-            var result = Views_.Pop();
-            VisualElement.Remove( result );
-            if (Views_.TryPeek( out var top )) {
-                top.SetEnabled( true );
-                top.SetDisplayed( true );
+            var result = default( T );
+            {
+                result = Views_.Pop();
+                VisualElement.Remove( result );
+            }
+            if (Views_.TryPeek( out var last )) {
+                VisualElement.Add( last );
             }
             return result;
         }
