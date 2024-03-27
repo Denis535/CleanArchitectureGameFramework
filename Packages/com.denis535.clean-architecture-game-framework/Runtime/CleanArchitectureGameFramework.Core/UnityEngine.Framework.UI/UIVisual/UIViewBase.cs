@@ -11,8 +11,8 @@ namespace UnityEngine.Framework.UI {
 
         // System
         public bool IsDisposed { get; private set; }
-        // VisualElement
-        protected internal abstract VisualElement VisualElement { get; }
+        // View
+        protected internal VisualElement VisualElement { get; protected init; } = default!;
 
         // Constructor
         public UIViewBase() {

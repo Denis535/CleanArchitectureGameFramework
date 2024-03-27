@@ -203,7 +203,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
         // View
-        protected internal new TView View { get; init; } = default!;
+        protected internal new TView View { get; protected init; } = default!;
         UIViewBase IUIViewable.View => View;
 
         // Constructor

@@ -23,8 +23,7 @@ namespace UnityEngine.Framework.UI {
     }
     public class RootWidgetView : RootWidgetViewBase {
 
-        // VisualElement
-        protected internal override VisualElement VisualElement { get; }
+        // View
         public override ElementWrapper Widget { get; }
         public override WidgetListSlotWrapper<UIWidgetBase> WidgetSlot { get; }
         public override WidgetListSlotWrapper<UIWidgetBase> ModalWidgetSlot { get; }

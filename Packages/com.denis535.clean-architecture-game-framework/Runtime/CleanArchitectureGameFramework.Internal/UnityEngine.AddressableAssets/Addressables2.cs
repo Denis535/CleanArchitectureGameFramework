@@ -29,9 +29,6 @@ namespace UnityEngine.AddressableAssets {
         public static void Release<T>(AsyncOperationHandle<IList<T>> handle) where T : Object {
             Addressables.Release( handle );
         }
-        public static bool ReleaseInstance(AsyncOperationHandle<GameObject> handle) {
-            return Addressables.ReleaseInstance( handle );
-        }
         public static AsyncOperationHandle<SceneInstance> UnloadSceneAsync(AsyncOperationHandle<SceneInstance> handle) {
             return Addressables.UnloadSceneAsync( handle );
         }
@@ -59,6 +56,11 @@ namespace UnityEngine.AddressableAssets {
         }
         public static AsyncOperationHandle<GameObject> InstantiateAsync(string key, Vector3 position, Quaternion rotation, Transform? parent = null) {
             return Addressables.InstantiateAsync( key, new InstantiationParameters( position, rotation, parent ) );
+        }
+
+        // Release
+        public static bool ReleaseInstance(AsyncOperationHandle<GameObject> handle) {
+            return Addressables.ReleaseInstance( handle );
         }
 
         // Release
