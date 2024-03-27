@@ -16,12 +16,12 @@ namespace UnityEngine.Framework.UI {
         protected CancellationTokenSource? disposeCancellationTokenSource;
 
         // System
-        public static Action<UIViewBase, UIWidgetBase>? InitializeViewDelegate { get; set; } = (UIViewBase view, UIWidgetBase widget) => {
-            view.__GetVisualElement__().OnAttachToPanel( evt => {
-                WidgetAttachEvent.Dispatch( view.VisualElement, widget );
+        public static Action<UIWidgetBase>? InitializeWidgetDelegate { get; set; } = (UIWidgetBase widget) => {
+            widget.View!.VisualElement.OnAttachToPanel( evt => {
+                WidgetAttachEvent.Dispatch( widget.View.VisualElement, widget );
             } );
-            view.__GetVisualElement__().OnDetachFromPanel( evt => {
-                WidgetDetachEvent.Dispatch( view.VisualElement, widget );
+            widget.View!.VisualElement.OnDetachFromPanel( evt => {
+                WidgetDetachEvent.Dispatch( widget.View.VisualElement, widget );
             } );
         };
 
@@ -219,7 +219,7 @@ namespace UnityEngine.Framework.UI {
             get => view;
             protected init {
                 view = value;
-                InitializeViewDelegate?.Invoke( view, this );
+                InitializeWidgetDelegate?.Invoke( this );
             }
         }
         UIViewBase IUIViewable.View => View;

@@ -14,12 +14,12 @@ namespace UnityEngine.Framework.UI {
         private VisualElement visualElement = default!;
 
         // System
-        public static Action<VisualElement, UIViewBase>? InitializeVisualElementDelegate { get; set; } = (VisualElement element, UIViewBase view) => {
-            element.OnAttachToPanel( evt => {
-                ViewAttachEvent.Dispatch( element, view );
+        public static Action<UIViewBase>? InitializeViewDelegate { get; set; } = (UIViewBase view) => {
+            view.VisualElement.OnAttachToPanel( evt => {
+                ViewAttachEvent.Dispatch( view.VisualElement, view );
             } );
-            element.OnDetachFromPanel( evt => {
-                ViewDetachEvent.Dispatch( element, view );
+            view.VisualElement.OnDetachFromPanel( evt => {
+                ViewDetachEvent.Dispatch( view.VisualElement, view );
             } );
         };
 
@@ -39,7 +39,7 @@ namespace UnityEngine.Framework.UI {
             get => visualElement;
             protected init {
                 visualElement = value;
-                InitializeVisualElementDelegate?.Invoke( visualElement, this );
+                InitializeViewDelegate?.Invoke( this );
             }
         }
 
