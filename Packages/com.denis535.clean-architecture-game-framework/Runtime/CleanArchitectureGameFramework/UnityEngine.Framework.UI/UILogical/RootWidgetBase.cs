@@ -109,6 +109,7 @@ namespace UnityEngine.Framework.UI {
 
                 if (widget.IsModal()) {
                     ShowDescendantWidget( View.ModalWidgetSlot, widget );
+                    View.WidgetSlot.SetEnabled( false );
                 } else {
                     ShowDescendantWidget( View.WidgetSlot, widget );
                 }
@@ -121,6 +122,7 @@ namespace UnityEngine.Framework.UI {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     HideDescendantWidget( View.ModalWidgetSlot, widget );
+                    View.WidgetSlot.SetEnabled( !View.ModalWidgetSlot.Widgets.Any() );
                 } else {
                     HideDescendantWidget( View.WidgetSlot, widget );
                 }
