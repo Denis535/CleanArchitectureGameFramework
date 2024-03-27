@@ -9,60 +9,10 @@ namespace UnityEngine.Framework.UI {
     [DefaultExecutionOrder( ScriptExecutionOrders.UIAudioTheme )]
     public abstract class UIAudioThemeBase : MonoBehaviour {
 
-        // Globals
-        protected AudioSource AudioSource { get; set; } = default!;
-        // Clip
-        public AudioClip? Clip => AudioSource.clip;
-        public bool IsPlaying { get; protected set; }
-        public bool IsPaused { get; protected set; }
-        public bool IsUnPaused => !IsPaused;
-        public float Time { get => AudioSource.time; set => AudioSource.time = value; }
-        public float Volume { get => AudioSource.volume; set => AudioSource.volume = value; }
-        public bool Mute { get => AudioSource.mute; set => AudioSource.mute = value; }
-
         // Awake
         public void Awake() {
-            AudioSource = gameObject.RequireComponentInChildren<AudioSource>();
         }
         public void OnDestroy() {
-        }
-
-        // Play
-        protected void SetPlaying(bool value) {
-            if (value) {
-                Play( AudioSource.clip );
-            } else {
-                Stop();
-            }
-        }
-        protected void Play(AudioClip clip) {
-            AudioSource.clip = clip;
-            AudioSource.Play();
-            IsPlaying = true;
-        }
-        protected void Stop() {
-            AudioSource.Stop();
-            AudioSource.clip = null;
-            IsPlaying = false;
-        }
-
-        // Pause
-        protected void SetPaused(bool value) {
-            if (value) {
-                Pause();
-            } else {
-                UnPause();
-            }
-        }
-        protected void Pause() {
-            if (IsPaused) return;
-            AudioSource.Pause();
-            IsPaused = true;
-        }
-        protected void UnPause() {
-            if (!IsPaused) return;
-            AudioSource.UnPause();
-            IsPaused = false;
         }
 
         // Helpers

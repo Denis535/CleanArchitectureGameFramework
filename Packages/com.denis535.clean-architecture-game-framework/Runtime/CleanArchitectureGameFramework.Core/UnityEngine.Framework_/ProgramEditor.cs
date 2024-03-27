@@ -10,6 +10,8 @@ namespace UnityEngine.Framework {
     [CustomEditor( typeof( ProgramBase ), true )]
     public class ProgramEditor : Editor {
 
+        protected ProgramBase Target => (ProgramBase) target;
+
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
@@ -44,6 +46,9 @@ namespace UnityEngine.Framework {
                 EditorGUILayout.LabelField( "If you want to support me", EditorStyles.boldLabel );
                 EditorGUILayout.LabelField( "If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos." );
             }
+        }
+        public override bool RequiresConstantRepaint() {
+            return EditorApplication.isPlaying;
         }
 
     }

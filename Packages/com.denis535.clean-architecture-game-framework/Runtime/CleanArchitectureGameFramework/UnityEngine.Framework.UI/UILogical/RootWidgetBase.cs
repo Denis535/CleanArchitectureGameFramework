@@ -56,7 +56,6 @@ namespace UnityEngine.Framework.UI {
     public class RootWidget : RootWidgetBase<RootWidgetViewBase> {
 
         // View
-        protected internal override RootWidgetViewBase View { get; }
         public IReadOnlyList<UIWidgetBase> Widgets => View.WidgetSlot.Widgets;
         public IReadOnlyList<UIWidgetBase> ModalWidgets => View.ModalWidgetSlot.Widgets;
 
@@ -197,9 +196,9 @@ namespace UnityEngine.Framework.UI {
             return false;
         }
         protected static void Click(Button button) {
-            using (var click = ClickEvent.GetPooled()) {
-                click.target = button;
-                button.SendEvent( click );
+            using (var evt = ClickEvent.GetPooled()) {
+                evt.target = button;
+                button.SendEvent( evt );
             }
         }
 
