@@ -9,10 +9,25 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIViewBase : IDisposable {
 
+        private VisualElement visualElement = default!;
+
         // System
         public bool IsDisposed { get; private set; }
         // View
-        protected internal VisualElement VisualElement { get; protected init; } = default!;
+        protected internal VisualElement VisualElement {
+            get {
+                return visualElement;
+            }
+            protected init {
+                visualElement = value;
+                visualElement.OnAttachToPanel( evt => {
+                    ViewAttachEvent.Dispatch( visualElement );
+                } );
+                visualElement.OnDetachFromPanel( evt => {
+                    ViewDetachEvent.Dispatch( visualElement );
+                } );
+            }
+        }
 
         // Constructor
         public UIViewBase() {
