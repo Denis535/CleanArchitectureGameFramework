@@ -6,11 +6,11 @@ namespace UnityEngine.UIElements {
     using UnityEngine;
     using UnityEngine.Framework.UI;
 
-    public class WidgetAttachEvent : EventBase<WidgetAttachEvent> {
+    public class ViewAttachEvent : EventBase<ViewAttachEvent> {
 
-        public UIWidgetBase? Widget { get; private set; }
+        public UIViewBase? View { get; private set; }
 
-        public WidgetAttachEvent() {
+        public ViewAttachEvent() {
             tricklesDown = true;
             bubbles = true;
         }
@@ -25,23 +25,23 @@ namespace UnityEngine.UIElements {
         }
         protected override void PostDispatch(IPanel panel) {
             base.PostDispatch( panel );
-            Widget = null;
+            View = null;
         }
 
-        internal static void Dispatch(UIWidgetBase widget) {
+        internal static void Dispatch(UIViewBase view) {
             using (var evt = GetPooled()) {
-                evt.Widget = widget;
-                evt.target = widget.View!.VisualElement;
-                widget.View!.VisualElement.SendEvent( evt );
+                evt.View = view;
+                evt.target = view.VisualElement;
+                view.VisualElement.SendEvent( evt );
             }
         }
 
     }
-    public class WidgetDetachEvent : EventBase<WidgetDetachEvent> {
+    public class ViewDetachEvent : EventBase<ViewDetachEvent> {
 
-        public UIWidgetBase? Widget { get; private set; }
+        public UIViewBase? View { get; private set; }
 
-        public WidgetDetachEvent() {
+        public ViewDetachEvent() {
             tricklesDown = true;
             bubbles = true;
         }
@@ -56,14 +56,14 @@ namespace UnityEngine.UIElements {
         }
         protected override void PostDispatch(IPanel panel) {
             base.PostDispatch( panel );
-            Widget = null;
+            View = null;
         }
 
-        internal static void Dispatch(UIWidgetBase widget) {
+        internal static void Dispatch(UIViewBase view) {
             using (var evt = GetPooled()) {
-                evt.Widget = widget;
-                evt.target = widget.View!.VisualElement;
-                widget.View!.VisualElement.SendEvent( evt );
+                evt.View = view;
+                evt.target = view.VisualElement;
+                view.VisualElement.SendEvent( evt );
             }
         }
 

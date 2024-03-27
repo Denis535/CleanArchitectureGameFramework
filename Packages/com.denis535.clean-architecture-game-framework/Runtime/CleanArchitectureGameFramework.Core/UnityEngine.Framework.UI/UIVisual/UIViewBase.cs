@@ -27,7 +27,15 @@ namespace UnityEngine.Framework.UI {
         // View
         protected internal VisualElement VisualElement {
             get => visualElement;
-            protected init => visualElement = value;
+            protected init {
+                visualElement = value;
+                visualElement.OnAttachToPanel( evt => {
+                    ViewAttachEvent.Dispatch( this );
+                } );
+                visualElement.OnDetachFromPanel( evt => {
+                    ViewDetachEvent.Dispatch( this );
+                } );
+            }
         }
 
         // Constructor
