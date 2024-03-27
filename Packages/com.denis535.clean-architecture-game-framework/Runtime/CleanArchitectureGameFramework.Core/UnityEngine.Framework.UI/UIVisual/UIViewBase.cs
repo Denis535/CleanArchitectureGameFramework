@@ -3,30 +3,31 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.UIElements;
 
     public abstract class UIViewBase : IDisposable {
 
+        protected CancellationTokenSource? disposeCancellationTokenSource;
         private VisualElement visualElement = default!;
 
         // System
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed { get; protected set; }
+        public CancellationToken DisposeCancellationToken {
+            get {
+                if (disposeCancellationTokenSource == null) {
+                    disposeCancellationTokenSource = new CancellationTokenSource();
+                    if (IsDisposed) disposeCancellationTokenSource.Cancel();
+                }
+                return disposeCancellationTokenSource.Token;
+            }
+        }
         // View
         protected internal VisualElement VisualElement {
-            get {
-                return visualElement;
-            }
-            protected init {
-                visualElement = value;
-                visualElement.OnAttachToPanel( evt => {
-                    ViewAttachEvent.Dispatch( visualElement );
-                } );
-                visualElement.OnDetachFromPanel( evt => {
-                    ViewDetachEvent.Dispatch( visualElement );
-                } );
-            }
+            get => visualElement;
+            protected init => visualElement = value;
         }
 
         // Constructor
@@ -35,8 +36,9 @@ namespace UnityEngine.Framework.UI {
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
-            IsDisposed = true;
             if (VisualElement.visualTreeAssetSource != null) Addressables2.Release( VisualElement.visualTreeAssetSource );
+            IsDisposed = true;
+            disposeCancellationTokenSource?.Cancel();
         }
 
     }

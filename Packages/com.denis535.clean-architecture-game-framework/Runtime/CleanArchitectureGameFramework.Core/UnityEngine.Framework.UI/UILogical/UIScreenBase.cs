@@ -48,7 +48,7 @@ namespace UnityEngine.Framework.UI {
                 widget.Parent = null;
                 Widget = null;
             }
-            if (widget.DisposeAutomatically) {
+            if (widget.DisposeWhenDetach) {
                 widget.Dispose();
             }
         }

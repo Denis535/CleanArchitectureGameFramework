@@ -8,14 +8,15 @@ namespace UnityEngine.Framework.UI {
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : IUILogicalElement, IDisposable {
 
         private readonly Lock @lock = new Lock();
-        private CancellationTokenSource? disposeCancellationTokenSource;
+        protected CancellationTokenSource? disposeCancellationTokenSource;
 
         // System
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed { get; protected set; }
         public CancellationToken DisposeCancellationToken {
             get {
                 if (disposeCancellationTokenSource == null) {
@@ -25,7 +26,7 @@ namespace UnityEngine.Framework.UI {
                 return disposeCancellationTokenSource.Token;
             }
         }
-        public virtual bool DisposeAutomatically => true;
+        public bool DisposeWhenDetach { get; protected init; } = true;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         protected internal UIViewBase? View => (this as IUIViewable)?.View;
@@ -65,10 +66,9 @@ namespace UnityEngine.Framework.UI {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
-                if (child.DisposeAutomatically) {
-                    child.Dispose();
-                }
+                child.Dispose();
             }
+            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
@@ -139,7 +139,7 @@ namespace UnityEngine.Framework.UI {
                 child.Parent = null;
                 Children_.Remove( child );
             }
-            if (child.DisposeAutomatically) {
+            if (child.DisposeWhenDetach) {
                 child.Dispose();
             }
         }
@@ -202,8 +202,21 @@ namespace UnityEngine.Framework.UI {
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
+        private TView view = default!;
+
         // View
-        protected internal new TView View { get; protected init; } = default!;
+        protected internal new TView View {
+            get => view;
+            protected init {
+                view = value;
+                view.VisualElement.OnAttachToPanel( evt => {
+                    WidgetAttachEvent.Dispatch( this );
+                } );
+                view.VisualElement.OnDetachFromPanel( evt => {
+                    WidgetDetachEvent.Dispatch( this );
+                } );
+            }
+        }
         UIViewBase IUIViewable.View => View;
 
         // Constructor
@@ -212,8 +225,13 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
+            foreach (var child in Children) {
+                child.Dispose();
+            }
+            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             View.Dispose();
-            base.Dispose();
+            IsDisposed = true;
+            disposeCancellationTokenSource?.Cancel();
         }
 
     }
