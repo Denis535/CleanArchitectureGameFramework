@@ -104,23 +104,43 @@ namespace UnityEngine.Framework.UI {
         // ShowDescendantWidget
         protected override void ShowDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
+                var covered = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                if (covered != null) covered.__GetView__()!.__GetVisualElement__().SaveFocus();
+
                 if (widget.IsModal()) {
-                    View.ModalWidgetSlot.Add( widget );
+                    ShowDescendantWidget( View.ModalWidgetSlot, widget );
                 } else {
-                    View.WidgetSlot.Add( widget );
+                    ShowDescendantWidget( View.WidgetSlot, widget );
                 }
+
+                var @new = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                if (@new != null) @new.__GetView__()!.__GetVisualElement__().Focus2();
             }
         }
         protected override void HideDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
-                    Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == View.ModalWidgetSlot.Widgets.LastOrDefault() );
-                    View.ModalWidgetSlot.Remove( widget );
+                    HideDescendantWidget( View.ModalWidgetSlot, widget );
                 } else {
-                    Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == View.WidgetSlot.Widgets.LastOrDefault() );
-                    View.WidgetSlot.Remove( widget );
+                    HideDescendantWidget( View.WidgetSlot, widget );
                 }
+
+                var uncovered = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                if (uncovered != null) uncovered.__GetView__()!.__GetVisualElement__().LoadFocus();
             }
+        }
+
+        // ShowDescendantWidget
+        protected virtual void ShowDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
+            var covered = slot.Widgets.LastOrDefault();
+            if (covered != null) slot.__GetVisualElement__().Remove( covered.__GetView__()!.__GetVisualElement__() );
+            slot.Add( widget );
+        }
+        protected virtual void HideDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
+            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Widgets.LastOrDefault() );
+            slot.Remove( widget );
+            var uncovered = slot.Widgets.LastOrDefault();
+            if (uncovered != null) slot.__GetVisualElement__().Add( uncovered.__GetView__()!.__GetVisualElement__() );
         }
 
         // Helpers
