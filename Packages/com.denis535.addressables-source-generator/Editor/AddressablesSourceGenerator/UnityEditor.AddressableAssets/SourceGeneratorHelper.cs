@@ -64,7 +64,9 @@ namespace UnityEditor.AddressableAssets {
         // Helpers
         private static IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> Sort(IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> items) {
             return items
-                .OrderByDescending( i => i.Key.Equals( "UnityEngine" ) )
+                .OrderByDescending( i => i is KeyValueTreeList<AddressableAssetEntry>.ValueItem )
+
+                .ThenByDescending( i => i.Key.Equals( "UnityEngine" ) )
                 .ThenByDescending( i => i.Key.Equals( "UnityEditor" ) )
 
                 .ThenByDescending( i => i.Key.Equals( "EditorSceneList" ) )
@@ -79,6 +81,7 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "Domain" ) )
                 .ThenByDescending( i => i.Key.Equals( "Entities" ) )
                 .ThenByDescending( i => i.Key.Equals( "Worlds" ) )
+                .ThenByDescending( i => i.Key.Equals( "Levels" ) )
                 .ThenByDescending( i => i.Key.Equals( "Common" ) )
                 .ThenByDescending( i => i.Key.Equals( "Core" ) )
                 .ThenByDescending( i => i.Key.Equals( "Internal" ) )
@@ -100,7 +103,6 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "GameScreen" ) )
                 .ThenByDescending( i => i.Key.Equals( "DebugScreen" ) )
 
-                .ThenByDescending( i => i is KeyValueTreeList<AddressableAssetEntry>.ValueItem )
                 .ThenBy( i => i.Key );
         }
         private static string Escape(string name, string? outer) {
