@@ -84,11 +84,13 @@ namespace UnityEngine.UIElements {
             var focusedElement = element.GetFocusedElement();
             element.SaveFocusedElement( focusedElement );
         }
-        public static void LoadFocus(this VisualElement element) {
+        public static bool LoadFocus(this VisualElement element) {
             var focusedElement = element.LoadFocusedElement();
             if (focusedElement != null) {
                 focusedElement.Focus();
+                return true;
             }
+            return false;
         }
         public static bool HasFocusedElement(this VisualElement element) {
             var focusedElement = (VisualElement) element.focusController.focusedElement;
