@@ -197,14 +197,15 @@ namespace UnityEngine.Framework.UI {
         }
         public void Clear() {
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widget != null );
-            Clear( Widget );
+            VisualElement.Remove( Widget );
+            Widget = null;
         }
         public void Clear(T widget) {
             Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widget != null );
             Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widget == widget );
+            VisualElement.Remove( Widget );
             Widget = null;
-            VisualElement.Remove( widget );
         }
 
     }
@@ -223,14 +224,15 @@ namespace UnityEngine.Framework.UI {
         }
         public void Clear() {
             Assert.Operation.Message( $"Slot must have view" ).Valid( View != null );
-            Clear( View );
+            VisualElement.Remove( View );
+            View = null;
         }
         public void Clear(T view) {
             Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have view" ).Valid( View != null );
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( View == view );
+            VisualElement.Remove( View );
             View = null;
-            VisualElement.Remove( view );
         }
 
     }
@@ -253,8 +255,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
             Assert.Operation.Message( $"Slot must have {widget} widget" ).Valid( Widgets_.Contains( widget ) );
-            Widgets_.Remove( widget );
             VisualElement.Remove( widget );
+            Widgets_.Remove( widget );
         }
         public void Clear() {
             foreach (var widget in Widgets_) {
@@ -282,8 +284,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
             Assert.Operation.Message( $"Slot must have {view} view" ).Valid( Views_.Contains( view ) );
-            Views_.Remove( view );
             VisualElement.Remove( view );
+            Views_.Remove( view );
         }
         public void Clear() {
             foreach (var view in Views_) {
@@ -305,9 +307,7 @@ namespace UnityEngine.Framework.UI {
         public void Push(T widget) {
             Assert.Argument.Message( $"Argument 'widget' must be not null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Slot must have no {widget} widget" ).Valid( !Widgets_.Contains( widget ) );
-            if (Widgets_.TryPeek( out var last )) {
-                VisualElement.Remove( last );
-            }
+            BeforePush( VisualElement, Widgets_ );
             {
                 Widgets_.Push( widget );
                 VisualElement.Add( widget );
@@ -320,15 +320,25 @@ namespace UnityEngine.Framework.UI {
         }
         public T Pop() {
             Assert.Operation.Message( $"Slot must have widget" ).Valid( Widgets_.Any() );
-            var result = default( T );
+            var result = Widgets_.Peek();
             {
-                result = Widgets_.Pop();
                 VisualElement.Remove( result );
+                Widgets_.Pop();
             }
-            if (Widgets_.TryPeek( out var last )) {
-                VisualElement.Add( last );
-            }
+            AfterPop( VisualElement, Widgets_ );
             return result;
+        }
+
+        // helpers
+        private static void BeforePush(VisualElement element, Stack<T> widgets) {
+            if (widgets.TryPeek( out var last )) {
+                element.Remove( last );
+            }
+        }
+        private static void AfterPop(VisualElement element, Stack<T> widgets) {
+            if (widgets.TryPeek( out var last )) {
+                element.Add( last );
+            }
         }
 
     }
@@ -343,9 +353,7 @@ namespace UnityEngine.Framework.UI {
         public void Push(T view) {
             Assert.Argument.Message( $"Argument 'view' must be not null" ).NotNull( view != null );
             Assert.Operation.Message( $"Slot must have no {view} view" ).Valid( !Views_.Contains( view ) );
-            if (Views_.TryPeek( out var last )) {
-                VisualElement.Remove( last );
-            }
+            BeforePush( VisualElement, Views_ );
             {
                 Views_.Push( view );
                 VisualElement.Add( view );
@@ -358,15 +366,25 @@ namespace UnityEngine.Framework.UI {
         }
         public T Pop() {
             Assert.Operation.Message( $"Slot must have view" ).Valid( Views_.Any() );
-            var result = default( T );
+            var result = Views_.Peek();
             {
-                result = Views_.Pop();
                 VisualElement.Remove( result );
+                Views_.Pop();
             }
-            if (Views_.TryPeek( out var last )) {
-                VisualElement.Add( last );
-            }
+            AfterPop( VisualElement, Views_ );
             return result;
+        }
+
+        // helpers
+        private static void BeforePush(VisualElement element, Stack<T> views) {
+            if (views.TryPeek( out var last )) {
+                element.Remove( last );
+            }
+        }
+        private static void AfterPop(VisualElement element, Stack<T> views) {
+            if (views.TryPeek( out var last )) {
+                element.Add( last );
+            }
         }
 
     }
