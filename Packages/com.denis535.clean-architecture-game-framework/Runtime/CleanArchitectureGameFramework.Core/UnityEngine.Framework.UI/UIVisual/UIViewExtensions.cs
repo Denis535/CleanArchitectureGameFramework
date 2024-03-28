@@ -37,7 +37,7 @@ namespace UnityEngine.Framework.UI {
 
         // GetVisualElement
         public static VisualElement __GetVisualElement__(this UIViewBase view) {
-            // try not to use it
+            // try not to use VisualElement outside of it's view
             return view.VisualElement;
         }
 

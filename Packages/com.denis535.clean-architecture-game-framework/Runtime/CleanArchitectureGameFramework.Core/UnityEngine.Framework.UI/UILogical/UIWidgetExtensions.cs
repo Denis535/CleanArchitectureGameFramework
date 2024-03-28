@@ -5,36 +5,8 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public static class UIWidgetExtensions {
-
-        // IsEnabled
-        public static bool IsEnabledInHierarchy(this UIWidgetBase widget) {
-            return widget.View!.VisualElement.enabledInHierarchy;
-        }
-        public static bool IsEnabledSelf(this UIWidgetBase widget) {
-            return widget.View!.VisualElement.enabledSelf;
-        }
-        public static void SetEnabled(this UIWidgetBase widget, bool value) {
-            widget.View!.VisualElement.SetEnabled( value );
-        }
-
-        // IsDisplayed
-        public static bool IsDisplayed(this UIWidgetBase widget) {
-            return widget.View!.VisualElement.IsDisplayed();
-        }
-        public static void SetDisplayed(this UIWidgetBase widget, bool value) {
-            widget.View!.VisualElement.SetDisplayed( value );
-        }
-
-        // IsValid
-        public static bool IsValid(this UIWidgetBase widget) {
-            return widget.View!.VisualElement.IsValid();
-        }
-        public static void SetValid(this UIWidgetBase widget, bool value) {
-            widget.View!.VisualElement.SetValid( value );
-        }
 
         // AttachChild
         public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
@@ -101,11 +73,11 @@ namespace UnityEngine.Framework.UI {
 
         // GetView
         public static UIViewBase? __GetView__(this UIWidgetBase widget) {
-            // try not to use it
+            // try not to use View outside of it's widget
             return widget?.View;
         }
         public static T __GetView__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
-            // try not to use it
+            // try not to use View outside of it's widget
             return widget.View;
         }
 
