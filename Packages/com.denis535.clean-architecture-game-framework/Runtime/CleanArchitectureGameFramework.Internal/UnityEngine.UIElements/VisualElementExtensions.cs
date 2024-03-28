@@ -3,6 +3,7 @@ namespace UnityEngine.UIElements {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using UnityEngine;
 
@@ -128,6 +129,18 @@ namespace UnityEngine.UIElements {
             var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
             Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
             return result;
+        }
+
+        // SendEvent
+        public static void SendEventImmediate(this VisualElement element, EventBase @event) {
+            Assert.Operation.Message( $"Element {element} must be attached" ).Valid( element.IsAttached() );
+            var type = typeof( VisualElement );
+            var method = type.GetMethod( "SendEvent",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly,
+                null,
+                new Type[] { typeof( EventBase ), typeof( Enum ) },
+                null ) ?? throw Exceptions.Internal.Exception( $"Can not find method 'SendEvent'" );
+            method.Invoke( element, new object[] { @event, 2 } );
         }
 
         // OnEvent

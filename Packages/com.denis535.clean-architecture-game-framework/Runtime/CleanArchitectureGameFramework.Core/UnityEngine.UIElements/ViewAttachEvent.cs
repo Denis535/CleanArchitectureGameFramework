@@ -29,10 +29,11 @@ namespace UnityEngine.UIElements {
         }
 
         public static void Dispatch(VisualElement target, UIViewBase view) {
+            Assert.Operation.Message( $"Target {target} must be attached" ).Valid( target.IsAttached() );
             using (var evt = GetPooled()) {
-                evt.View = view;
                 evt.target = target;
-                target.SendEvent( evt );
+                evt.View = view;
+                target.SendEventImmediate( evt );
             }
         }
 
@@ -60,10 +61,11 @@ namespace UnityEngine.UIElements {
         }
 
         public static void Dispatch(VisualElement target, UIViewBase view) {
+            Assert.Operation.Message( $"Target {target} must be attached" ).Valid( target.IsAttached() );
             using (var evt = GetPooled()) {
-                evt.View = view;
                 evt.target = target;
-                target.SendEvent( evt );
+                evt.View = view;
+                target.SendEventImmediate( evt );
             }
         }
 
