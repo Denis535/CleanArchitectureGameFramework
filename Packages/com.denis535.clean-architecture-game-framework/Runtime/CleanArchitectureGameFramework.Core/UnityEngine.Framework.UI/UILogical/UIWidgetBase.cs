@@ -27,7 +27,6 @@ namespace UnityEngine.Framework.UI {
         }
         public bool DisposeWhenDetach { get; protected init; } = true;
         // View
-        public static Action<UIWidgetBase, UIViewBase>? OnViewAssignedEvent { get; set; }
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         protected internal UIViewBase? View => (this as IUIViewable)?.View;
         // Screen
@@ -202,16 +201,8 @@ namespace UnityEngine.Framework.UI {
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
-        private TView view = default!;
-
         // View
-        protected internal new TView View {
-            get => view;
-            protected init {
-                view = value;
-                OnViewAssignedEvent?.Invoke( this, value );
-            }
-        }
+        protected internal new TView View { get; protected init; } = default!;
         UIViewBase IUIViewable.View => View;
 
         // Constructor

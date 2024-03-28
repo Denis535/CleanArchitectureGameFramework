@@ -11,7 +11,6 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIViewBase : IDisposable {
 
         protected CancellationTokenSource? disposeCancellationTokenSource;
-        private VisualElement visualElement = default!;
 
         // System
         public bool IsDisposed { get; protected set; }
@@ -25,14 +24,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // VisualElement
-        public static Action<UIViewBase, VisualElement>? OnVisualElementAssignedEvent { get; set; }
-        protected internal VisualElement VisualElement {
-            get => visualElement;
-            protected init {
-                visualElement = value;
-                OnVisualElementAssignedEvent?.Invoke( this, value );
-            }
-        }
+        protected internal VisualElement VisualElement { get; protected init; } = default!;
 
         // Constructor
         public UIViewBase() {
