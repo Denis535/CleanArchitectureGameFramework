@@ -100,7 +100,7 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "GameScreen" ) )
                 .ThenByDescending( i => i.Key.Equals( "DebugScreen" ) )
 
-                .ThenBy( i => i is KeyValueTreeList<AddressableAssetEntry>.ValueItem )
+                .ThenByDescending( i => i is KeyValueTreeList<AddressableAssetEntry>.ValueItem )
                 .ThenBy( i => i.Key );
         }
         private static string Escape(string name, string? outer) {

@@ -52,9 +52,10 @@ namespace UnityEditor.AddressableAssets {
                     if (name.Contains( " #" )) name = name.Substring( 0, name.IndexOf( " #" ) );
                     return dir.Append( name ).ToArray();
                 } else {
-                    var dir = GetPath( entry.ParentEntry );
-                    var name = entry.TargetAsset.name;
-                    return dir.Append( name ).ToArray();
+                    var path = GetPath( entry.ParentEntry );
+                    var dir = path.SkipLast( 1 );
+                    var name = path.Last() + "_SubAssets";
+                    return dir.Append( name ).Append( entry.TargetAsset.name ).ToArray();
                 }
             } else {
                 throw new NotSupportedException( $"Entry {entry} is not supported" );
