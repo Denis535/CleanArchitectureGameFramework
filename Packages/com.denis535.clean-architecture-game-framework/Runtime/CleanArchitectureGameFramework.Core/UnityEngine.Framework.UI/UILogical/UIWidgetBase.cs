@@ -8,22 +8,11 @@ namespace UnityEngine.Framework.UI {
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : IUILogicalElement, IDisposable {
 
         private readonly Lock @lock = new Lock();
         protected CancellationTokenSource? disposeCancellationTokenSource;
-
-        // System
-        public static Action<UIWidgetBase, UIViewBase>? InitializeDelegate { get; set; } = (UIWidgetBase widget, UIViewBase view) => {
-            view.VisualElement.OnAttachToPanel( evt => {
-                WidgetAttachEvent.Dispatch( view.VisualElement, widget );
-            } );
-            view.VisualElement.OnDetachFromPanel( evt => {
-                WidgetDetachEvent.Dispatch( view.VisualElement, widget );
-            } );
-        };
 
         // System
         public bool IsDisposed { get; protected set; }
@@ -38,6 +27,7 @@ namespace UnityEngine.Framework.UI {
         }
         public bool DisposeWhenDetach { get; protected init; } = true;
         // View
+        public static Action<UIWidgetBase, UIViewBase>? OnViewAssignedEvent { get; set; }
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         protected internal UIViewBase? View => (this as IUIViewable)?.View;
         // Screen
@@ -219,7 +209,7 @@ namespace UnityEngine.Framework.UI {
             get => view;
             protected init {
                 view = value;
-                InitializeDelegate?.Invoke( this, value );
+                OnViewAssignedEvent?.Invoke( this, value );
             }
         }
         UIViewBase IUIViewable.View => View;

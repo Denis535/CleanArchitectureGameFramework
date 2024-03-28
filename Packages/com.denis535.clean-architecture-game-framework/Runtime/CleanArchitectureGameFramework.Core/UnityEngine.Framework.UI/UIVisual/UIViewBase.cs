@@ -14,16 +14,6 @@ namespace UnityEngine.Framework.UI {
         private VisualElement visualElement = default!;
 
         // System
-        public static Action<UIViewBase, VisualElement>? InitializeDelegate { get; set; } = (UIViewBase view, VisualElement element) => {
-            element.OnAttachToPanel( evt => {
-                ViewAttachEvent.Dispatch( element, view );
-            } );
-            element.OnDetachFromPanel( evt => {
-                ViewDetachEvent.Dispatch( element, view );
-            } );
-        };
-
-        // System
         public bool IsDisposed { get; protected set; }
         public CancellationToken DisposeCancellationToken {
             get {
@@ -34,12 +24,13 @@ namespace UnityEngine.Framework.UI {
                 return disposeCancellationTokenSource.Token;
             }
         }
-        // View
+        // VisualElement
+        public static Action<UIViewBase, VisualElement>? OnVisualElementAssignedEvent { get; set; }
         protected internal VisualElement VisualElement {
             get => visualElement;
             protected init {
                 visualElement = value;
-                InitializeDelegate?.Invoke( this, value );
+                OnVisualElementAssignedEvent?.Invoke( this, value );
             }
         }
 
