@@ -13,79 +13,14 @@ namespace UnityEditor.AddressableAssets {
     public class ResourcesSourceGenerator {
 
         // Generate
-        public void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
+        public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
+            var treeList = GetTreeList( GetEntries( settings ).Where( IsSupported ) );
+            Generate( settings, path, @namespace, name, treeList );
+        }
+        public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
             var builder = new StringBuilder();
-            var treeList = ResourcesSourceGeneratorHelper.GetTreeList( settings.GetEntries().Where( IsSupported ) );
-            AppendCompilationUnit( builder, @namespace, name, treeList );
+            builder.AppendCompilationUnit( @namespace, name, treeList );
             WriteText( path, builder.ToString() );
-        }
-
-        // AppendCompilationUnit
-        private void AppendCompilationUnit(StringBuilder builder, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
-            builder.AppendLine( $"namespace {@namespace} {{" );
-            {
-                AppendClass( builder, 1, name, treeList.Items.ToArray() );
-            }
-            builder.AppendLine( "}" );
-        }
-        private void AppendClass(StringBuilder builder, int indent, string name, KeyValueTreeList<AddressableAssetEntry>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{name} {{" );
-            foreach (var item in Sort( items )) {
-                if (item is KeyValueTreeList<AddressableAssetEntry>.ValueItem @const) {
-                    AppendConst( builder, indent + 1, Escape( @const.Key, name ), @const.Value );
-                } else
-                if (item is KeyValueTreeList<AddressableAssetEntry>.ListItem @class) {
-                    AppendClass( builder, indent + 1, Escape( @class.Key, name ), @class.Items.ToArray() );
-                }
-            }
-            builder.AppendIndent( indent ).AppendLine( "}" );
-        }
-        private void AppendConst(StringBuilder builder, int indent, string name, AddressableAssetEntry value) {
-            if (value.IsAsset()) {
-                builder.AppendIndent( indent ).AppendLine( $"public const string @{name} = \"{value.address}\";" );
-            } else {
-                throw new NotSupportedException( $"Entry {value} is not supported" );
-            }
-        }
-
-        // Sort
-        protected virtual IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> Sort(IEnumerable<KeyValueTreeList<AddressableAssetEntry>.Item> items) {
-            return items
-                .OrderByDescending( i => i.Key.Equals( "UnityEngine" ) )
-                .ThenByDescending( i => i.Key.Equals( "UnityEditor" ) )
-
-                .ThenByDescending( i => i.Key.Equals( "EditorSceneList" ) )
-                .ThenByDescending( i => i.Key.Equals( "Resources" ) )
-
-                .ThenByDescending( i => i.Key.Equals( "Project" ) )
-                .ThenByDescending( i => i.Key.Equals( "Presentation" ) )
-                .ThenByDescending( i => i.Key.Equals( "UI" ) )
-                .ThenByDescending( i => i.Key.Equals( "GUI" ) )
-                .ThenByDescending( i => i.Key.Equals( "Application" ) )
-                .ThenByDescending( i => i.Key.Equals( "App" ) )
-                .ThenByDescending( i => i.Key.Equals( "Domain" ) )
-                .ThenByDescending( i => i.Key.Equals( "Entities" ) )
-                .ThenByDescending( i => i.Key.Equals( "Common" ) )
-                .ThenByDescending( i => i.Key.Equals( "Core" ) )
-                .ThenByDescending( i => i.Key.Equals( "Internal" ) )
-
-                .ThenByDescending( i => i.Key.Equals( "Launcher" ) )
-                .ThenByDescending( i => i.Key.Equals( "LauncherScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "Startup" ) )
-                .ThenByDescending( i => i.Key.Equals( "StartupScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "Program" ) )
-                .ThenByDescending( i => i.Key.Equals( "ProgramScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "MainScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "GameScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "WorldScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "LevelScene" ) )
-
-                .ThenByDescending( i => i.Key.Equals( "MainScreen" ) )
-                .ThenByDescending( i => i.Key.Equals( "GameScreen" ) )
-                .ThenByDescending( i => i.Key.Equals( "DebugScreen" ) )
-
-                .ThenBy( i => i is KeyValueTreeList<AddressableAssetEntry>.ValueItem )
-                .ThenBy( i => i.Key );
         }
 
         // IsSupported
@@ -94,12 +29,63 @@ namespace UnityEditor.AddressableAssets {
         }
 
         // Helpers
-        private static string Escape(string name, string? outer) {
-            name = name.TrimStart( ' ', '-', '_' ).TrimStart( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
-            name = name.TrimEnd( ' ', '-', '_' );
-            name = name.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
-            return name == outer ? (name + "_") : name;
+        private static List<AddressableAssetEntry> GetEntries(AddressableAssetSettings settings) {
+            var entries = new List<AddressableAssetEntry>();
+            settings.GetAllAssets( entries, true );
+            return entries;
         }
+        // Helpers
+        private static KeyValueTreeList<AddressableAssetEntry> GetTreeList(IEnumerable<AddressableAssetEntry> entries) {
+            var treeList = new KeyValueTreeList<AddressableAssetEntry>();
+            foreach (var entry in entries) {
+                var path = GetPath( entry );
+                treeList.AddValue( path.SkipLast( 1 ), path.Last(), entry );
+            }
+            return treeList;
+        }
+        private static string[] GetPath(AddressableAssetEntry entry) {
+            if (IsAsset( entry )) {
+                if (IsMainAsset( entry )) {
+                    var path = GetAddressWithoutExtension( entry ).Split( '/', '\\', '.' );
+                    var dir = path.SkipLast( 1 );
+                    var name = path.Last();
+                    if (name.Contains( " #" )) name = name.Substring( 0, name.IndexOf( " #" ) );
+                    return dir.Append( name ).ToArray();
+                } else {
+                    var dir = GetPath( entry.ParentEntry );
+                    var name = entry.TargetAsset.name;
+                    return dir.Append( name ).ToArray();
+                }
+            } else {
+                throw new NotSupportedException( $"Entry {entry} is not supported" );
+            }
+        }
+        private static string GetAddressWithoutExtension(AddressableAssetEntry entry) {
+            if (Path.GetExtension( entry.address ) == Path.GetExtension( entry.AssetPath )) {
+                return Path.ChangeExtension( entry.address, null );
+            }
+            return entry.address;
+        }
+        // Helpers
+        private static bool IsAsset(AddressableAssetEntry entry) {
+            return !entry.IsFolder;
+        }
+        private static bool IsMainAsset(AddressableAssetEntry entry) {
+            if (!entry.IsFolder) {
+                return entry.ParentEntry == null || entry.ParentEntry.IsFolder;
+            }
+            return false;
+        }
+        private static bool IsSubAsset(AddressableAssetEntry entry) {
+            if (!entry.IsFolder) {
+                return entry.ParentEntry != null && !entry.ParentEntry.IsFolder;
+            }
+            return false;
+        }
+        private static bool IsFolder(AddressableAssetEntry entry) {
+            return entry.IsFolder;
+        }
+        // Helpers
         private static void WriteText(string path, string text) {
             if (!File.Exists( path ) || File.ReadAllText( path ) != text) {
                 File.WriteAllText( path, text );
