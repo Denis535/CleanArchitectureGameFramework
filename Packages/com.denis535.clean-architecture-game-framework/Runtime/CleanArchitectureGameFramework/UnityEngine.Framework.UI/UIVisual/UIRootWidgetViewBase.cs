@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class RootWidgetViewBase : UIViewBase {
+    public abstract class UIRootWidgetViewBase : UIViewBase {
 
         // VisualElement
         public abstract ElementWrapper Widget { get; }
@@ -14,14 +14,14 @@ namespace UnityEngine.Framework.UI {
         public abstract WidgetListSlotWrapper<UIWidgetBase> ModalWidgetSlot { get; }
 
         // Constructor
-        public RootWidgetViewBase() {
+        public UIRootWidgetViewBase() {
         }
         public override void Dispose() {
             base.Dispose();
         }
 
     }
-    public class RootWidgetView : RootWidgetViewBase {
+    public class UIRootWidgetView : UIRootWidgetViewBase {
 
         // View
         public override ElementWrapper Widget { get; }
@@ -29,7 +29,7 @@ namespace UnityEngine.Framework.UI {
         public override WidgetListSlotWrapper<UIWidgetBase> ModalWidgetSlot { get; }
 
         // Constructor
-        public RootWidgetView() {
+        public UIRootWidgetView() {
             VisualElement = CreateVisualElement( out var widget, out var widgetList, out var modalWidgetList );
             Widget = widget.Wrap();
             WidgetSlot = widgetList.AsWidgetListSlot<UIWidgetBase>();

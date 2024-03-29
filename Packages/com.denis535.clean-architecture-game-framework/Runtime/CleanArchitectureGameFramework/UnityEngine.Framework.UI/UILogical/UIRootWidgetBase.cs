@@ -7,10 +7,10 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class RootWidgetBase<TView> : UIWidgetBase<TView> where TView : RootWidgetViewBase {
+    public abstract class UIRootWidgetBase<TView> : UIWidgetBase<TView> where TView : UIRootWidgetViewBase {
 
         // Constructor
-        public RootWidgetBase() {
+        public UIRootWidgetBase() {
         }
         public override void Dispose() {
             base.Dispose();
@@ -53,17 +53,17 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public class RootWidget : RootWidgetBase<RootWidgetViewBase> {
+    public class UIRootWidget : UIRootWidgetBase<UIRootWidgetViewBase> {
 
         // View
         public IReadOnlyList<UIWidgetBase> Widgets => View.WidgetSlot.Widgets;
         public IReadOnlyList<UIWidgetBase> ModalWidgets => View.ModalWidgetSlot.Widgets;
 
         // Constructor
-        public RootWidget() {
+        public UIRootWidget() {
             View = CreateView();
         }
-        public RootWidget(RootWidgetViewBase view) {
+        public UIRootWidget(UIRootWidgetViewBase view) {
             View = view;
         }
         public override void Dispose() {
@@ -145,8 +145,8 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        protected static RootWidgetView CreateView() {
-            var view = new RootWidgetView();
+        protected static UIRootWidgetView CreateView() {
+            var view = new UIRootWidgetView();
             view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
                 var button = evt.target as Button;
                 if (button != null) {
