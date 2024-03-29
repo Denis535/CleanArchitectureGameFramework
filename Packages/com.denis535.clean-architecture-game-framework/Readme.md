@@ -5,33 +5,33 @@ This package provides you with the architecture game framework that helping you 
 This package contains classes that define the entire architecture of your game project and some other utilities.
 
 ## Assemblies
-- CleanArchitectureGameFramework - the additional logic.
-- CleanArchitectureGameFramework.Core - the main logic.
-- CleanArchitectureGameFramework.Internal - utilities and helpers.
+- CleanArchitectureGameFramework - the secondary module.
+- CleanArchitectureGameFramework.Core - the primary module.
+- CleanArchitectureGameFramework.Internal - the module with some utilities and helpers.
 
 ## Namespaces
 - Framework - the root module.
     - IDependencyContainer - this allows you to resolve your dependencies.
-    - Program              - this is responsible for the startup and global logic.
+    - Program              - the entry point.
 - Framework.UI - the presentation (user interface) module.
-    - UIAudioTheme - the audio theme.
-    - UIScreen     - the user interface. The user interface consists of the hierarchy of business units and the hierarchy of visual units.
-    - UIWidget     - the business unit of ui. This may contain (or not contain) the view.
-    - UIView       - the visual unit of ui. This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
-    - UIRouter     - the state router.
+    - UIAudioTheme         - the audio theme.
+    - UIScreen             - the user interface. The user interface consists of the hierarchy of business units and the hierarchy of visual units.
+    - UIWidget             - the business unit of ui. This may contain (or not contain) the view.
+    - UIView               - the visual unit of ui. This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
+    - UIRouter             - the state router.
 - Framework.App - the application module.
-    - Application - The application.
-    - Globals     - this class contains global values.
+    - Application          - the application.
+    - Globals              - the global values.
 - Framework.Entities - the domain (entities) module.
-    - Game       - the game's rules and states.
-    - Player     - the player's rules and states.
-    - Level      - the level.
-    - LevelView  - the level's visual and audible aspects.
-    - World      - the world.
-    - WorldView  - the world's visual and audible aspects.
-    - Entity     - the entity (player's character/avatar, NPC/bot or any other scene's object).
-    - EntityView - the entity's visual and audible aspects.
-    - EntityBody - the entity's physical aspects.
+    - Game                 - the game's rules and states.
+    - Player               - the player's rules and states.
+    - Level                - the level.
+    - LevelView            - the level's visual and audible aspects.
+    - World                - the world.
+    - WorldView            - the world's visual and audible aspects.
+    - Entity               - the entity (player's character/avatar, NPC/bot or any other scene's object).
+    - EntityView           - the entity's visual and audible aspects.
+    - EntityBody           - the entity's physical aspects.
 
 # Media
 - [![YouTube](https://img.youtube.com/vi/JQobAqfakJQ/0.jpg)](https://youtu.be/JQobAqfakJQ)
