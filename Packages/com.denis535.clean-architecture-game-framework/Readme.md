@@ -11,26 +11,27 @@ This package contains classes that define the entire architecture of your game p
 
 ## Namespaces
 - Framework - the root module.
-    - IDependencyContainer - this interface allows you to resolve your dependencies.
-    - Program - this class is responsible for the startup and global logic.
+    - IDependencyContainer - this allows you to resolve your dependencies.
+    - Program              - this is responsible for the startup and global logic.
 - Framework.UI - the presentation (user interface) module.
-    - UIAudioTheme - this class is responsible for the audio theme.
-    - UIScreen - this class is responsible for the user interface. The user interface consists of the hierarchy of logical (business) units and the hierarchy of visual units.
-    - UIWidget - this class is responsible for the business logic of ui unit. This may contain (or not contain) the view.
-    - UIView - this class is responsible for the visual (view) logic of ui unit. This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
-    - UIRouter - this class is responsible for the application state.
+    - UIAudioTheme - the audio theme.
+    - UIScreen     - the user interface. The user interface consists of the hierarchy of business units and the hierarchy of visual units.
+    - UIWidget     - the business unit of ui. This may contain (or not contain) the view.
+    - UIView       - the visual unit of ui. This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
+    - UIRouter     - the state router.
 - Framework.App - the application module.
-    - Application - This class is responsible for the application logic.
-    - Globals - this class contains global values.
+    - Application - The application.
+    - Globals     - this class contains global values.
 - Framework.Entities - the domain (entities) module.
-    - Game - this class is responsible for the game rules and states.
-    - Player - this class is responsible for the player rules and states.
-    - Level - this class is responsible for the level rules and states.
-    - World - this class is responsible for the world.
-    - WorldView - this class is responsible for the world's visual and audible aspects.
-    - Entity - this class is responsible for the scene's entity (player's character/avatar, NPC/bot or any other object).
-    - EntityView - this class is responsible for the entity's visual and audible aspects.
-    - EntityBody - this class is responsible for the entity's physical aspects.
+    - Game       - the game's rules and states.
+    - Player     - the player's rules and states.
+    - Level      - the level.
+    - LevelView  - the level's visual and audible aspects.
+    - World      - the world.
+    - WorldView  - the world's visual and audible aspects.
+    - Entity     - the entity (player's character/avatar, NPC/bot or any other scene's object).
+    - EntityView - the entity's visual and audible aspects.
+    - EntityBody - the entity's physical aspects.
 
 # Media
 - [![YouTube](https://img.youtube.com/vi/JQobAqfakJQ/0.jpg)](https://youtu.be/JQobAqfakJQ)
