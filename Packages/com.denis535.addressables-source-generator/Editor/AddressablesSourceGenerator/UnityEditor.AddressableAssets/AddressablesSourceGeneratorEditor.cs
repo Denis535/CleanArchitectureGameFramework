@@ -10,10 +10,11 @@ namespace UnityEditor.AddressableAssets {
 
         public AddressablesSourceGenerator Target => (AddressablesSourceGenerator) target;
 
+        // OnInspectorGUI
         public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
             if (GUILayout.Button( "Generate" )) {
-                Target.Generate();
+                Target.GenerateResourcesSource( "R.cs", "UnityEngine.AddressableAssets", "R" );
+                Target.GenerateLabelsSource( "L.cs", "UnityEngine.AddressableAssets", "L" );
             }
         }
 

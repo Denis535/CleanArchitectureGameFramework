@@ -15,9 +15,9 @@ namespace UnityEditor.AddressableAssets {
         // Generate
         public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
             var treeList = GetTreeList( GetEntries( settings ).Where( IsSupported ) );
-            Generate( settings, path, @namespace, name, treeList );
+            Generate( path, @namespace, name, treeList );
         }
-        public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
+        public virtual void Generate(string path, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
             var builder = new StringBuilder();
             builder.AppendCompilationUnit( @namespace, name, treeList );
             WriteText( path, builder.ToString() );
@@ -54,7 +54,7 @@ namespace UnityEditor.AddressableAssets {
                 } else {
                     var path = GetPath( entry.ParentEntry );
                     var dir = path.SkipLast( 1 );
-                    var name = path.Last() + "_SubAssets";
+                    var name = path.Last();
                     return dir.Append( name ).Append( entry.TargetAsset.name ).ToArray();
                 }
             } else {

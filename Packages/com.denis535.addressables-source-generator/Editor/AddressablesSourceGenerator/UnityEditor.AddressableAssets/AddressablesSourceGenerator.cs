@@ -9,12 +9,16 @@ namespace UnityEditor.AddressableAssets {
     [CreateAssetMenu( fileName = "AddressablesSourceGenerator", menuName = "Addressables/AddressablesSourceGenerator" )]
     public class AddressablesSourceGenerator : ScriptableObject {
 
-        public void Generate() {
+        // Generate
+        public void GenerateResourcesSource(string path, string @namespace, string name) {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            var path = AssetDatabase.GetAssetPath( this );
-            var dir = Path.GetDirectoryName( path );
-            new ResourcesSourceGenerator().Generate( settings, Path.Combine( dir, "R.cs" ), "UnityEngine.AddressableAssets", "R" );
-            new LabelsSourceGenerator().Generate( settings, Path.Combine( dir, "L.cs" ), "UnityEngine.AddressableAssets", "L" );
+            path = Path.Combine( Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ), path );
+            new ResourcesSourceGenerator().Generate( settings, path, @namespace, name );
+        }
+        public void GenerateLabelsSource(string path, string @namespace, string name) {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            path = Path.Combine( Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ), path );
+            new LabelsSourceGenerator().Generate( settings, path, @namespace, name );
         }
 
     }

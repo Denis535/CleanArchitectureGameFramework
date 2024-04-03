@@ -11,54 +11,54 @@ namespace UnityEditor.AddressableAssets {
     internal static class SourceGeneratorHelper {
 
         // AppendCompilationUnit
-        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<string> treeList) {
+        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
             builder.AppendLine( $"namespace {@namespace} {{" );
             {
-                builder.AppendClass( 1, @class, treeList.Items.ToArray() );
+                builder.AppendClass( 1, name, treeList.Items.ToArray() );
             }
             builder.AppendLine( "}" );
         }
-        private static void AppendClass(this StringBuilder builder, int indent, string @class, KeyValueTreeList<string>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{@class} {{" );
-            foreach (var item in items) {
-                if (item is KeyValueTreeList<string>.ValueItem value) {
-                    builder.AppendConst( indent + 1, Escape( value.Key, @class ), value.Value );
-                } else
-                if (item is KeyValueTreeList<string>.ListItem list) {
-                    builder.AppendClass( indent + 1, Escape( list.Key, @class ), list.Items.ToArray() );
-                }
-            }
-            builder.AppendIndent( indent ).AppendLine( "}" );
-        }
-        private static void AppendConst(this StringBuilder builder, int indent, string @const, string value) {
-            builder.AppendIndent( indent ).AppendLine( $"public const string @{@const} = \"{value}\";" );
-        }
-
-        // AppendCompilationUnit
-        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<AddressableAssetEntry> treeList) {
-            builder.AppendLine( $"namespace {@namespace} {{" );
-            {
-                builder.AppendClass( 1, @class, treeList.Items.ToArray() );
-            }
-            builder.AppendLine( "}" );
-        }
-        private static void AppendClass(this StringBuilder builder, int indent, string @class, KeyValueTreeList<AddressableAssetEntry>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{@class} {{" );
+        private static void AppendClass(this StringBuilder builder, int indent, string name, KeyValueTreeList<AddressableAssetEntry>.Item[] items) {
+            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassName( name )} {{" );
             foreach (var item in Sort( items )) {
                 if (item is KeyValueTreeList<AddressableAssetEntry>.ValueItem value) {
-                    builder.AppendConst( indent + 1, Escape( value.Key, @class ), value.Value );
+                    builder.AppendConst( indent + 1, value.Key, value.Value );
                 } else
                 if (item is KeyValueTreeList<AddressableAssetEntry>.ListItem list) {
-                    builder.AppendClass( indent + 1, Escape( list.Key, @class ), list.Items.ToArray() );
+                    builder.AppendClass( indent + 1, list.Key, list.Items.ToArray() );
                 }
             }
             builder.AppendIndent( indent ).AppendLine( "}" );
         }
-        private static void AppendConst(this StringBuilder builder, int indent, string @const, AddressableAssetEntry value) {
+        private static void AppendConst(this StringBuilder builder, int indent, string name, AddressableAssetEntry value) {
             if (value.IsFolder) {
                 throw new NotSupportedException( $"Entry {value} is not supported" );
             }
-            builder.AppendIndent( indent ).AppendLine( $"public const string @{@const} = \"{value.address}\";" );
+            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstName( name )} = \"{value.address}\";" );
+        }
+
+        // AppendCompilationUnit
+        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string name, KeyValueTreeList<string> treeList) {
+            builder.AppendLine( $"namespace {@namespace} {{" );
+            {
+                builder.AppendClass( 1, name, treeList.Items.ToArray() );
+            }
+            builder.AppendLine( "}" );
+        }
+        private static void AppendClass(this StringBuilder builder, int indent, string name, KeyValueTreeList<string>.Item[] items) {
+            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassName( name )} {{" );
+            foreach (var item in items) {
+                if (item is KeyValueTreeList<string>.ValueItem value) {
+                    builder.AppendConst( indent + 1, value.Key, value.Value );
+                } else
+                if (item is KeyValueTreeList<string>.ListItem list) {
+                    builder.AppendClass( indent + 1, list.Key, list.Items.ToArray() );
+                }
+            }
+            builder.AppendIndent( indent ).AppendLine( "}" );
+        }
+        private static void AppendConst(this StringBuilder builder, int indent, string name, string value) {
+            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstName( name )} = \"{value}\";" );
         }
 
         // Helpers
@@ -105,11 +105,17 @@ namespace UnityEditor.AddressableAssets {
 
                 .ThenBy( i => i.Key );
         }
-        private static string Escape(string name, string? outer) {
-            name = name.TrimStart( ' ', '-', '_' ).TrimStart( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
-            name = name.TrimEnd( ' ', '-', '_' );
-            name = name.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
-            return name == outer ? (name + "_") : name;
+        private static string GetClassName(string key) {
+            key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
+            key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+            key = key.TrimEnd( ' ', '-', '_' );
+            return key;
+        }
+        private static string GetConstName(string key) {
+            key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
+            key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+            key = key.TrimEnd( ' ', '-', '_' );
+            return key + "_Value";
         }
 
     }

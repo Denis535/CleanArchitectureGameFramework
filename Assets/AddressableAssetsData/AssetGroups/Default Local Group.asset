@@ -32,16 +32,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: db43341d301b6f840a9fb46c7736b517
-    m_Address: Global
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 14e95c2bcda69224d8101108538f4941
-    m_Address: Global
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 018c793907199c54f8d40370c1926213
     m_Address: MyProject
     m_ReadOnly: 0
