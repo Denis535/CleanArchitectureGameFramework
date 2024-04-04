@@ -6,7 +6,7 @@ namespace UnityEngine {
     using System.Runtime.CompilerServices;
     using UnityEngine;
 
-    public static class TransformExtensions {
+    public static class ComponentExtensions {
 
         // Require/Transform
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -14,6 +14,12 @@ namespace UnityEngine {
             var result = transform.Find( path );
             Assert.Operation.Message( $"Transform {path} was not found" ).Valid( result != null );
             return result;
+        }
+
+        // Validate
+        public static void Validate(this MonoBehaviour component) {
+            Assert.Object.Message( $"Component {component} must be awakened" ).Initialized( component.didAwake );
+            Assert.Object.Message( $"Component {component} must be alive" ).Alive( component );
         }
 
     }

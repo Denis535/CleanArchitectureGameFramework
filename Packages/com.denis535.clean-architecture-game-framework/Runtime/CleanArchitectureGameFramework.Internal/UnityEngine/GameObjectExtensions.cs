@@ -11,29 +11,41 @@ namespace UnityEngine {
         // Require/Component
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireComponent<T>(this GameObject gameObject) {
-            return gameObject.GetComponent<T>() ?? throw Exceptions.Internal.Exception( $"Component {typeof( T )} was not found" );
+            var result = gameObject.GetComponent<T>();
+            Assert.Operation.Message( $"Component {typeof( T )} was not found" ).Valid( result != null );
+            return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireComponentInChildren<T>(this GameObject gameObject, bool includeInactive = false) {
-            return gameObject.GetComponentInChildren<T>( includeInactive ) ?? throw Exceptions.Internal.Exception( $"Component {typeof( T )} (in children) was not found" );
+            var result = gameObject.GetComponentInChildren<T>( includeInactive );
+            Assert.Operation.Message( $"Component {typeof( T )} (in children) was not found" ).Valid( result != null );
+            return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireComponentInParent<T>(this GameObject gameObject, bool includeInactive = false) {
-            return gameObject.GetComponentInParent<T>( includeInactive ) ?? throw Exceptions.Internal.Exception( $"Component {typeof( T )} (in parent) was not found" );
+            var result = gameObject.GetComponentInParent<T>( includeInactive );
+            Assert.Operation.Message( $"Component {typeof( T )} (in parent) was not found" ).Valid( result != null );
+            return result;
         }
 
         // Require/Components
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T[] RequireComponents<T>(this GameObject gameObject) {
-            return gameObject.GetComponents<T>().NullIfEmpty() ?? throw Exceptions.Internal.Exception( $"Components {typeof( T )} was not found" );
+            var result = gameObject.GetComponents<T>().NullIfEmpty();
+            Assert.Operation.Message( $"Components {typeof( T )} was not found" ).Valid( result != null );
+            return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T[] RequireComponentsInChildren<T>(this GameObject gameObject, bool includeInactive = false) {
-            return gameObject.GetComponentsInChildren<T>( includeInactive ).NullIfEmpty() ?? throw Exceptions.Internal.Exception( $"Components {typeof( T )} (in children) was not found" );
+            var result = gameObject.GetComponentsInChildren<T>( includeInactive ).NullIfEmpty();
+            Assert.Operation.Message( $"Components {typeof( T )} (in children) was not found" ).Valid( result != null );
+            return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T[] RequireComponentsInParent<T>(this GameObject gameObject, bool includeInactive = false) {
-            return gameObject.GetComponentsInParent<T>( includeInactive ).NullIfEmpty() ?? throw Exceptions.Internal.Exception( $"Components {typeof( T )} (in parent) was not found" );
+            var result = gameObject.GetComponentsInParent<T>( includeInactive ).NullIfEmpty();
+            Assert.Operation.Message( $"Components {typeof( T )} (in parent) was not found" ).Valid( result != null );
+            return result;
         }
 
     }
