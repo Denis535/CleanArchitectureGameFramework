@@ -11,7 +11,7 @@ This package contains classes that define the entire architecture of your game p
 
 ## Namespaces
 - Framework - the root module.
-    - IDependencyContainer - this allows you to resolve your dependencies.
+    - IDependencyContainer - this provides you with your dependencies.
     - Program              - the entry point.
 - Framework.UI - the presentation (user interface) module.
     - UIAudioTheme         - the audio theme.

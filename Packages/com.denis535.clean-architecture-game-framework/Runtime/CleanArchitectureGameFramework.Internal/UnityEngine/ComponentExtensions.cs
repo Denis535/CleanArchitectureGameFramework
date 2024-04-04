@@ -16,8 +16,8 @@ namespace UnityEngine {
             return result;
         }
 
-        // Validate
-        public static void Validate(this MonoBehaviour component) {
+        // Check
+        public static void Check(this MonoBehaviour component) {
             Assert.Object.Message( $"Component {component} must be awakened" ).Initialized( component.didAwake );
             Assert.Object.Message( $"Component {component} must be alive" ).Alive( component );
         }

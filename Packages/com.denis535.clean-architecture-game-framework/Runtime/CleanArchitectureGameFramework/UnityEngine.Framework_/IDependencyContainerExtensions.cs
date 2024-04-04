@@ -4,9 +4,6 @@ namespace UnityEngine.Framework {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Entities;
-    using UnityEngine.Framework.UI;
 
     public static class IDependencyContainerExtensions {
 

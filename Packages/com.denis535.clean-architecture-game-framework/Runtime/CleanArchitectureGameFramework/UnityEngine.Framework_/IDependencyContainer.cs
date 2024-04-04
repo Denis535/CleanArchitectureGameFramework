@@ -3,7 +3,6 @@ namespace UnityEngine.Framework {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using UnityEngine;
 
     // todo: Make GetDependency and RequireDependency methods sealed. Now it doesn't work!!!
@@ -11,12 +10,12 @@ namespace UnityEngine.Framework {
 
         private static IDependencyContainer? instance;
 
-        protected internal static IDependencyContainer Instance {
+        public static IDependencyContainer Instance {
             get {
                 Assert.Operation.Message( $"DependencyContainer must be instantiated" ).Valid( instance != null );
                 return instance;
             }
-            set {
+            protected set {
                 Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
                 Assert.Operation.Message( $"DependencyContainer is already instantiated" ).Valid( instance == null );
                 instance = value;
@@ -24,22 +23,27 @@ namespace UnityEngine.Framework {
         }
 
         // GetDependency
-        object? GetDependency(Type type, object? argument = null);
+        object? GetDependency(Type type, object? argument = null) {
+            return GetObject( type, argument );
+        }
         T? GetDependency<T>(object? argument = null) where T : notnull {
-            return (T?) GetDependency( typeof( T ), argument );
+            return (T?) GetObject( typeof( T ), argument );
         }
 
         // RequireDependency
         object RequireDependency(Type type, object? argument = null) {
-            var result = GetDependency( type, argument );
+            var result = GetObject( type, argument );
             Assert.Operation.Message( $"Object {type} ({argument}) was not found" ).Valid( result != null );
             return result;
         }
         T RequireDependency<T>(object? argument = null) where T : notnull {
-            var result = GetDependency<T>( argument );
+            var result = (T?) GetObject( typeof( T ), argument );
             Assert.Operation.Message( $"Object {typeof( T )} ({argument}) was not found" ).Valid( result != null );
             return result;
         }
+
+        // GetObject
+        object? GetObject(Type type, object? argument);
 
     }
 }
