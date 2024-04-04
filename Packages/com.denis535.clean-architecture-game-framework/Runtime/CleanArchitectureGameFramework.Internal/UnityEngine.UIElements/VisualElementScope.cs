@@ -7,16 +7,17 @@ namespace UnityEngine.UIElements {
 
     public class VisualElementScope : IDisposable {
 
-        private static readonly Stack<VisualElementScope> stack = new Stack<VisualElementScope>();
-        public static VisualElementScope? Current => stack.Count > 0 ? stack.Peek() : null;
+        private static Stack<VisualElementScope> Stack { get; } = new Stack<VisualElementScope>();
+        internal static VisualElementScope? Peek => Stack.Count > 0 ? Stack.Peek() : null;
+
         public VisualElement VisualElement { get; }
 
         public VisualElementScope(VisualElement visualElement) {
             VisualElement = visualElement;
-            stack.Push( this );
+            Stack.Push( this );
         }
         public void Dispose() {
-            stack.Pop();
+            Stack.Pop();
         }
 
         public void Add(VisualElement element) {
@@ -24,15 +25,6 @@ namespace UnityEngine.UIElements {
         }
         public void Remove(VisualElement element) {
             VisualElement.Remove( element );
-        }
-
-        public static VisualElementScope operator +(VisualElementScope scope, VisualElement element) {
-            scope.VisualElement.Add( element );
-            return scope;
-        }
-        public static VisualElementScope operator -(VisualElementScope scope, VisualElement element) {
-            scope.VisualElement.Remove( element );
-            return scope;
         }
 
     }
@@ -47,21 +39,21 @@ namespace UnityEngine.UIElements {
     public static class VisualElementScopeExtensions {
 
         public static VisualElementScope<T> AsScope<T>(this T visualElement) where T : VisualElement {
-            VisualElementScope.Current?.VisualElement.Add( visualElement );
+            VisualElementScope.Peek?.VisualElement.Add( visualElement );
             return new VisualElementScope<T>( visualElement );
         }
         public static VisualElementScope<T> AsScope<T>(this T visualElement, out T @out) where T : VisualElement {
             @out = visualElement;
-            VisualElementScope.Current?.VisualElement.Add( visualElement );
+            VisualElementScope.Peek?.VisualElement.Add( visualElement );
             return new VisualElementScope<T>( visualElement );
         }
 
         public static void AddToScope<T>(this T visualElement) where T : VisualElement {
-            VisualElementScope.Current!.VisualElement.Add( visualElement );
+            VisualElementScope.Peek!.VisualElement.Add( visualElement );
         }
         public static void AddToScope<T>(this T visualElement, out T @out) where T : VisualElement {
             @out = visualElement;
-            VisualElementScope.Current!.VisualElement.Add( visualElement );
+            VisualElementScope.Peek!.VisualElement.Add( visualElement );
         }
 
     }
