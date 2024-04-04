@@ -7,7 +7,11 @@ namespace UnityEngine {
 
     public static class InitializationContext {
 
-        public static IDisposable Begin<T>(object arguments) where T : notnull, Component {
+        public static IDisposable Enter<T>(object arguments) where T : notnull, Component {
+            Assert.Argument.Message( $"Argument 'arguments' must be non-null" ).NotNull( arguments != null );
+            return new InitializationContext<T>.Scope( arguments );
+        }
+        public static IDisposable Enter<T, TArguments>(TArguments arguments) where T : notnull, Component {
             Assert.Argument.Message( $"Argument 'arguments' must be non-null" ).NotNull( arguments != null );
             return new InitializationContext<T>.Scope( arguments );
         }
@@ -22,23 +26,27 @@ namespace UnityEngine {
         }
 
     }
-    public static class InitializationContext<T> where T : notnull, Component {
+    internal static class InitializationContext<T> where T : notnull, Component {
         internal class Scope : IDisposable {
+
             public Scope(object arguments) {
+                Assert.Argument.Message( $"Argument 'arguments' must be non-null" ).NotNull( arguments != null );
                 Arguments = arguments;
             }
+
             public void Dispose() {
                 Arguments = null;
             }
+
         }
 
-        public static object? Arguments { get; internal set; }
+        public static object? Arguments { get; private set; }
 
     }
     public static class InitializationContextExtensions {
 
         public static T AddComponent<T>(this GameObject gameObject, object arguments) where T : notnull, Component {
-            using (InitializationContext.Begin<T>( arguments )) {
+            using (InitializationContext.Enter<T>( arguments )) {
                 return gameObject.AddComponent<T>();
             }
         }
