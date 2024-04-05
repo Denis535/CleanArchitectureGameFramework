@@ -23,14 +23,14 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // Wait
         public static void Wait<T>(this AsyncOperationHandle<T> handle) {
             handle.WaitForCompletion();
-            if (handle.IsSucceeded()) {
+            if (handle.IsValid() && handle.IsSucceeded()) {
                 return;
             }
             throw handle.OperationException;
         }
         public static async Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsSucceeded()) {
+            if (handle.IsValid() && handle.IsSucceeded()) {
                 return;
             }
             throw handle.OperationException;
@@ -39,14 +39,14 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // GetResult
         public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
             handle.WaitForCompletion();
-            if (handle.IsSucceeded()) {
+            if (handle.IsValid() && handle.IsSucceeded()) {
                 return handle.Result;
             }
             throw handle.OperationException;
         }
         public static async Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsSucceeded()) {
+            if (handle.IsValid() && handle.IsSucceeded()) {
                 return handle.Result;
             }
             throw handle.OperationException;
