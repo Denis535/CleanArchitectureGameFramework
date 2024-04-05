@@ -23,33 +23,35 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // Wait
         public static void Wait<T>(this AsyncOperationHandle<T> handle) {
             handle.WaitForCompletion();
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
         }
         public static async Task WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
         }
 
         // GetResult
-        public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
+        public static T? GetResult<T>(this AsyncOperationHandle<T> handle) {
             handle.WaitForCompletion();
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return handle.Result;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return handle.Result;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
+            return default;
         }
-        public static async Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
+        public static async Task<T?> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return handle.Result;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return handle.Result;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
+            return default;
         }
 
     }

@@ -23,33 +23,35 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         // Wait
         public static void Wait(this AsyncOperationHandle handle) {
             handle.WaitForCompletion();
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
         }
         public static async Task WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
         }
 
         // GetResult
-        public static object GetResult(this AsyncOperationHandle handle) {
+        public static object? GetResult(this AsyncOperationHandle handle) {
             handle.WaitForCompletion();
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return handle.Result;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return handle.Result;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
+            return null;
         }
-        public static async Task<object> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
+        public static async Task<object?> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
             await handle.Task.WaitAsync( cancellationToken );
-            if (handle.IsValid() && handle.IsSucceeded()) {
-                return handle.Result;
+            if (handle.IsValid()) {
+                if (handle.IsSucceeded()) return handle.Result;
+                throw handle.OperationException;
             }
-            throw handle.OperationException;
+            return null;
         }
 
     }
