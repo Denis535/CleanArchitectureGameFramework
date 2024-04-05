@@ -6,10 +6,10 @@ namespace UnityEngine.Framework.App {
     using System.Linq;
     using UnityEngine;
 
-    public abstract class GlobalsBase {
+    public abstract class StorageBase {
 
         // Constructor
-        public GlobalsBase() {
+        public StorageBase() {
         }
 
         // Helpers
@@ -35,28 +35,28 @@ namespace UnityEngine.Framework.App {
         }
         // Helpers
         protected static string Load(string key, string @default) {
-            var value = PlayerPrefs.GetString( key, @default );
-            return value;
+            var result = PlayerPrefs.GetString( key, @default );
+            return result;
         }
         protected static int Load(string key, int @default) {
-            var value = PlayerPrefs.GetInt( key, @default );
-            return value;
+            var result = PlayerPrefs.GetInt( key, @default );
+            return result;
         }
         protected static float Load(string key, float @default) {
-            var value = PlayerPrefs.GetFloat( key, @default );
-            return value;
+            var result = PlayerPrefs.GetFloat( key, @default );
+            return result;
         }
         protected static decimal Load(string key, decimal @default) {
-            var value = PlayerPrefs.GetString( key, @default.ToString() );
-            return decimal.TryParse( value, out var value2 ) ? value2 : @default;
+            var result = PlayerPrefs.GetString( key, null );
+            return result != null && decimal.TryParse( result, out var result2 ) ? result2 : @default;
         }
         protected static bool Load(string key, bool @default) {
-            var value = PlayerPrefs.GetString( key, @default.ToString() );
-            return bool.TryParse( value, out var value2 ) ? value2 : @default;
+            var result = PlayerPrefs.GetString( key, null );
+            return result != null && bool.TryParse( result, out var result2 ) ? result2 : @default;
         }
-        protected static T Load<T>(string key, T @default) where T : struct, Enum {
-            var value = PlayerPrefs.GetString( key, @default.ToString() );
-            return Enum.TryParse<T>( value, out var value2 ) ? value2 : @default;
+        protected static Enum Load(string key, Enum @default, Type enumType) {
+            var result = PlayerPrefs.GetString( key, null );
+            return result != null && Enum.TryParse( enumType, result, true, out var result2 ) ? (Enum) result2 : @default;
         }
         // Helpers
         protected static void Save(string key, string value) {
@@ -74,7 +74,7 @@ namespace UnityEngine.Framework.App {
         protected static void Save(string key, bool value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
-        protected static void Save<T>(string key, T value) where T : Enum {
+        protected static void Save(string key, Enum value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
 
