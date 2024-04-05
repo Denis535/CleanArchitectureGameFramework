@@ -19,14 +19,9 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                 throw;
             }
         }
-        // Wait/Async
         public static async Task WaitAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
             try {
-                cancellationToken.ThrowIfCancellationRequested();
-                while (operation.IsRunning) {
-                    await Task.Yield();
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
+                await operation.WaitForCompletionAsync( cancellationToken );
                 onComplete?.Invoke( operation );
             } catch (Exception ex) {
                 onError?.Invoke( operation, ex );
@@ -45,19 +40,23 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
                 throw;
             }
         }
-        // GetResult/Async
         public static async Task<T> GetResultAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken, Action<AsyncOperationBase<T>>? onComplete = null, Action<AsyncOperationBase<T>, Exception>? onError = null) {
             try {
-                cancellationToken.ThrowIfCancellationRequested();
-                while (operation.IsRunning) {
-                    await Task.Yield();
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
+                await operation.WaitForCompletionAsync( cancellationToken );
                 onComplete?.Invoke( operation );
                 return operation.Result;
             } catch (Exception ex) {
                 onError?.Invoke( operation, ex );
                 throw;
+            }
+        }
+
+        // Helpers
+        private static async Task WaitForCompletionAsync<T>(this AsyncOperationBase<T> operation, CancellationToken cancellationToken) {
+            cancellationToken.ThrowIfCancellationRequested();
+            while (operation.IsRunning) {
+                await Task.Yield();
+                cancellationToken.ThrowIfCancellationRequested();
             }
         }
 
