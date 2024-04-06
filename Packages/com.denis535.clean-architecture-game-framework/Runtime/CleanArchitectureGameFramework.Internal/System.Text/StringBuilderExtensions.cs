@@ -5,7 +5,7 @@ namespace System.Text {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public static class StringBuilderExtensions {
+    internal static class StringBuilderExtensions {
 
         public static int IndentSize { get; set; } = 4;
 

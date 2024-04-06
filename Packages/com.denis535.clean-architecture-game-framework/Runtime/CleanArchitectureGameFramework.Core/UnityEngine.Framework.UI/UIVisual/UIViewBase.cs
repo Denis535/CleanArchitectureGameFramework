@@ -32,7 +32,7 @@ namespace UnityEngine.Framework.UI {
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
-            if (VisualElement.visualTreeAssetSource != null) Addressables2.Release( VisualElement.visualTreeAssetSource );
+            if (VisualElement.visualTreeAssetSource != null) Addressables.Release( VisualElement.visualTreeAssetSource );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
