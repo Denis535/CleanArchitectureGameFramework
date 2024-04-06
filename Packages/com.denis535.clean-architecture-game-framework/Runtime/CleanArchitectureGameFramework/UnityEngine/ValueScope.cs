@@ -17,6 +17,12 @@ namespace UnityEngine {
             return new ValueScope<T>( value );
         }
 
+        // Has
+        public static bool Has<T>() where T : notnull {
+            var result = ValueScope<T>.Value;
+            return result != null;
+        }
+
         // Get
         public static object Get<T>() where T : notnull {
             var result = ValueScope<T>.Value;
