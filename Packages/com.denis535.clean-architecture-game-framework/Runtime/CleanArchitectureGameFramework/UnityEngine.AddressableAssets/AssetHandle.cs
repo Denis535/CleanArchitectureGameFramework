@@ -3,6 +3,7 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -10,19 +11,19 @@ namespace UnityEngine.AddressableAssets {
 
     public class AssetHandle<T> where T : notnull, UnityEngine.Object {
 
-        private AsyncOperationHandle<T>? handle;
+        private AsyncOperationHandle<T>? asset;
 
         public string Key { get; }
-        public bool IsActive => handle != null;
-        public bool IsValid => handle != null && handle.Value.IsValid();
-        public bool IsSucceeded => handle != null && handle.Value.IsValid() && handle.Value.IsSucceeded();
-        public bool IsFailed => handle != null && handle.Value.IsValid() && handle.Value.IsFailed();
+        public bool IsActive => asset != null;
+        public bool IsValid => asset != null && asset.Value.IsValid();
+        public bool IsSucceeded => asset != null && asset.Value.IsValid() && asset.Value.IsSucceeded();
+        public bool IsFailed => asset != null && asset.Value.IsValid() && asset.Value.IsFailed();
         public T Asset {
             get {
-                Assert.Operation.Message( $"SceneHandle {this} must be active" ).Valid( handle != null );
-                Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( handle.Value.IsValid() );
-                Assert.Operation.Message( $"SceneHandle {this} must be succeeded" ).Valid( handle.Value.IsSucceeded() );
-                return handle.Value.Result;
+                Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
+                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
+                Assert.Operation.Message( $"AssetHandle {this} must be succeeded" ).Valid( asset.Value.IsSucceeded() );
+                return asset.Value.Result;
             }
         }
 
@@ -31,24 +32,28 @@ namespace UnityEngine.AddressableAssets {
             Key = key;
         }
 
-        // LoadAsync
-        public async Task<T> LoadAsync(CancellationToken cancellationToken) {
-            if (handle == null) {
-                handle = Addressables.LoadAssetAsync<T>( Key );
-            }
-            if (handle.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await handle.Value.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
-                if (handle.Value.Status is AsyncOperationStatus.Succeeded) {
+        // LoadAssetAsync
+        public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( asset == null );
+            asset = Addressables.LoadAssetAsync<T>( Key );
+            return GetAssetAsync( cancellationToken );
+        }
+        public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
+            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
+            if (asset.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
+                var result = await asset.Value.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
+                if (asset.Value.Status is AsyncOperationStatus.Succeeded) {
                     return result;
                 }
             }
-            throw handle.Value.OperationException;
+            throw asset.Value.OperationException;
         }
         public void Release() {
-            if (handle != null) {
-                Addressables.Release( handle.Value );
-                handle = null;
-            }
+            Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
+            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
+            Addressables.Release( asset.Value );
+            asset = null;
         }
 
         // Utils
@@ -59,8 +64,8 @@ namespace UnityEngine.AddressableAssets {
     }
     public static class AssetHandleExtensions {
 
-        public static void Release<T>(this IEnumerable<AssetHandle<T>> collection) where T : notnull, UnityEngine.Object {
-            foreach (var item in collection) {
+        public static void ReleaseAll<T>(this IEnumerable<AssetHandle<T>> collection) where T : notnull, UnityEngine.Object {
+            foreach (var item in collection.Where( i => i.IsActive )) {
                 item.Release();
             }
         }
