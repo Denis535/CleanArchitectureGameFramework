@@ -37,7 +37,7 @@ namespace UnityEngine.AddressableAssets {
             Assert.Operation.Message( $"SceneHandle {this} must be non-active" ).Valid( handle == null );
             handle = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
             if (handle.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await handle.Value.Task;
+                var result = await handle.Value.Task.ConfigureAwait( false );
                 if (handle.Value.Status is AsyncOperationStatus.Succeeded) {
                     return result.Scene;
                 }
@@ -46,13 +46,15 @@ namespace UnityEngine.AddressableAssets {
         }
         public async Task<Scene> ActivateAsync() {
             Assert.Operation.Message( $"SceneHandle {this} must be active" ).Valid( handle != null );
-            var sceneInstance = await handle.Value.Task;
+            Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( handle.Value.IsValid() );
+            Assert.Operation.Message( $"SceneHandle {this} must be succeeded" ).Valid( handle.Value.IsSucceeded() );
+            var sceneInstance = handle.Value.Result;
             await sceneInstance.ActivateAsync();
             return sceneInstance.Scene;
         }
         public async Task UnloadAsync() {
             if (handle != null) {
-                await Addressables.UnloadSceneAsync( handle.Value ).Task;
+                await Addressables.UnloadSceneAsync( handle.Value ).Task.ConfigureAwait( false );
                 handle = null;
             }
         }

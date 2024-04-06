@@ -7,17 +7,18 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceProviders;
 
-    public class AssetHandle<T> where T : notnull, UnityEngine.Object {
+    public class PrefabHandle {
 
-        private AsyncOperationHandle<T>? handle;
+        private AsyncOperationHandle<GameObject>? handle;
 
         public string Key { get; }
         public bool IsActive => handle != null;
         public bool IsValid => handle != null && handle.Value.IsValid();
         public bool IsSucceeded => handle != null && handle.Value.IsValid() && handle.Value.IsSucceeded();
         public bool IsFailed => handle != null && handle.Value.IsValid() && handle.Value.IsFailed();
-        public T Asset {
+        public GameObject Instance {
             get {
                 Assert.Operation.Message( $"SceneHandle {this} must be active" ).Valid( handle != null );
                 Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( handle.Value.IsValid() );
@@ -27,14 +28,14 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public AssetHandle(string key) {
+        public PrefabHandle(string key) {
             Key = key;
         }
 
-        // LoadAsync
-        public async Task<T> LoadAsync(CancellationToken cancellationToken) {
+        // InstantiateAsync
+        public async Task<GameObject> InstantiateAsync(object key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
             if (handle == null) {
-                handle = Addressables.LoadAssetAsync<T>( Key );
+                handle = Addressables.InstantiateAsync( key, new InstantiationParameters( position, rotation, parent ) );
             }
             if (handle.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
                 var result = await handle.Value.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
@@ -44,9 +45,9 @@ namespace UnityEngine.AddressableAssets {
             }
             throw handle.Value.OperationException;
         }
-        public void Release() {
+        public void ReleaseInstance() {
             if (handle != null) {
-                Addressables.Release( handle.Value );
+                Addressables.ReleaseInstance( handle.Value );
                 handle = null;
             }
         }
@@ -54,15 +55,6 @@ namespace UnityEngine.AddressableAssets {
         // Utils
         public override string ToString() {
             return Key;
-        }
-
-    }
-    public static class AssetHandleExtensions {
-
-        public static void Release<T>(this IEnumerable<AssetHandle<T>> collection) where T : notnull, UnityEngine.Object {
-            foreach (var item in collection) {
-                item.Release();
-            }
         }
 
     }
