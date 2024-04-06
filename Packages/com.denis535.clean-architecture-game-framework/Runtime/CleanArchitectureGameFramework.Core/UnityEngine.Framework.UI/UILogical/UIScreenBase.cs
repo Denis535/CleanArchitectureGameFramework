@@ -11,7 +11,7 @@ namespace UnityEngine.Framework.UI {
 
         private readonly Lock @lock = new Lock();
 
-        // Globals
+        // Document
         protected UIDocument Document { get; set; } = default!;
         // Widget
         public UIWidgetBase? Widget { get; private set; }
