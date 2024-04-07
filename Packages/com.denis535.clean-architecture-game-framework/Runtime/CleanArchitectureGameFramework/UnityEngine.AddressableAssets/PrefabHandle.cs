@@ -13,6 +13,7 @@ namespace UnityEngine.AddressableAssets {
     public class PrefabHandle {
 
         private AsyncOperationHandle<GameObject>? instance;
+        private CancellationTokenRegistration destroyCancellationTokenRegistration;
 
         public string Key { get; }
         public bool IsActive => instance != null;
@@ -34,20 +35,17 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // InstantiateAsync
-        public Task<GameObject> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, MonoBehaviour owner, Action<PrefabHandle>? onDestroy = null) {
-            return InstantiateAsync( position, rotation, parent, owner.destroyCancellationToken, onDestroy );
+        public Task<GameObject> InstantiateAsync(CancellationToken destroyCancellationToken) {
+            return InstantiateAsync( Vector3.zero, Quaternion.identity, null, destroyCancellationToken );
         }
-        public Task<GameObject> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, CancellationToken destroyCancellationToken, Action<PrefabHandle>? onDestroy = null) {
+        public Task<GameObject> InstantiateAsync(Transform? parent, CancellationToken destroyCancellationToken) {
+            return InstantiateAsync( Vector3.zero, Quaternion.identity, parent, destroyCancellationToken );
+        }
+        public Task<GameObject> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, CancellationToken destroyCancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} must be non-active" ).Valid( instance == null );
+            Assert.Operation.Message( $"PrefabHandle {this} must be non-active" ).Valid( destroyCancellationToken == default );
             instance = Addressables.InstantiateAsync( Key, new InstantiationParameters( position, rotation, parent ) );
-            var disposable = default( CancellationTokenRegistration );
-            disposable = destroyCancellationToken.Register( () => {
-                if (IsActive) {
-                    onDestroy?.Invoke( this );
-                    if (IsActive) Destroy();
-                }
-                disposable.Dispose();
-            } );
+            destroyCancellationTokenRegistration = destroyCancellationToken.Register( () => Destroy() );
             return GetInstanceAsync( destroyCancellationToken );
         }
         public async Task<GameObject> GetInstanceAsync(CancellationToken cancellationToken) {
@@ -64,8 +62,12 @@ namespace UnityEngine.AddressableAssets {
         public void Destroy() {
             Assert.Operation.Message( $"PrefabHandle {this} must be active" ).Valid( instance != null );
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( instance.Value.IsValid() );
-            Addressables.ReleaseInstance( instance.Value );
-            instance = null;
+            {
+                Addressables.ReleaseInstance( instance.Value );
+                instance = null;
+                destroyCancellationTokenRegistration.Dispose();
+                destroyCancellationTokenRegistration = default;
+            }
         }
 
         // Utils

@@ -12,6 +12,7 @@ namespace UnityEngine.AddressableAssets {
     public class AssetHandle<T> where T : notnull, UnityEngine.Object {
 
         private AsyncOperationHandle<T>? asset;
+        private CancellationTokenRegistration releaseCancellationTokenRegistration;
 
         public string Key { get; }
         public bool IsActive => asset != null;
@@ -33,20 +34,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAssetAsync
-        public Task<T> LoadAssetAsync(MonoBehaviour owner, Action<AssetHandle<T>>? onRelease = null) {
-            return LoadAssetAsync( owner.destroyCancellationToken, onRelease );
-        }
-        public Task<T> LoadAssetAsync(CancellationToken releaseCancellationToken, Action<AssetHandle<T>>? onRelease = null) {
+        public Task<T> LoadAssetAsync(CancellationToken releaseCancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( asset == null );
+            Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( releaseCancellationTokenRegistration == default );
             asset = Addressables.LoadAssetAsync<T>( Key );
-            var disposable = default( CancellationTokenRegistration );
-            disposable = releaseCancellationToken.Register( () => {
-                if (IsActive) {
-                    onRelease?.Invoke( this );
-                    if (IsActive) Release();
-                }
-                disposable.Dispose();
-            } );
+            releaseCancellationTokenRegistration = releaseCancellationToken.Register( () => Release() );
             return GetAssetAsync( releaseCancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
@@ -63,8 +55,12 @@ namespace UnityEngine.AddressableAssets {
         public void Release() {
             Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
             Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
-            Addressables.Release( asset.Value );
-            asset = null;
+            {
+                Addressables.Release( asset.Value );
+                asset = null;
+                releaseCancellationTokenRegistration.Dispose();
+                releaseCancellationTokenRegistration = default;
+            }
         }
 
         // Utils
