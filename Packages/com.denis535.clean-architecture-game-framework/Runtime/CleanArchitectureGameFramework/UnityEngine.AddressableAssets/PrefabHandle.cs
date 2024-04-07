@@ -34,10 +34,21 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // InstantiateAsync
-        public Task<GameObject> InstantiateAsync(object key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
+        public Task<GameObject> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, MonoBehaviour owner, Action<PrefabHandle>? onDestroy = null) {
+            return InstantiateAsync( position, rotation, parent, owner.destroyCancellationToken, onDestroy );
+        }
+        public Task<GameObject> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, CancellationToken destroyCancellationToken, Action<PrefabHandle>? onDestroy = null) {
             Assert.Operation.Message( $"PrefabHandle {this} must be non-active" ).Valid( instance == null );
-            instance = Addressables.InstantiateAsync( key, new InstantiationParameters( position, rotation, parent ) );
-            return GetInstanceAsync( cancellationToken );
+            instance = Addressables.InstantiateAsync( Key, new InstantiationParameters( position, rotation, parent ) );
+            var disposable = default( CancellationTokenRegistration );
+            disposable = destroyCancellationToken.Register( () => {
+                if (IsActive) {
+                    onDestroy?.Invoke( this );
+                    if (IsActive) Destroy();
+                }
+                disposable.Dispose();
+            } );
+            return GetInstanceAsync( destroyCancellationToken );
         }
         public async Task<GameObject> GetInstanceAsync(CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} must be active" ).Valid( instance != null );
@@ -56,13 +67,6 @@ namespace UnityEngine.AddressableAssets {
             Addressables.ReleaseInstance( instance.Value );
             instance = null;
         }
-        public void DestroyImmediate() {
-            Assert.Operation.Message( $"PrefabHandle {this} must be active" ).Valid( instance != null );
-            Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( instance.Value.IsValid() );
-            UnityEngine.Object.DestroyImmediate( instance.Value.Result );
-            Addressables.ReleaseInstance( instance.Value );
-            instance = null;
-        }
 
         // Utils
         public override string ToString() {
@@ -75,11 +79,6 @@ namespace UnityEngine.AddressableAssets {
         public static void DestroyAll<T>(this IEnumerable<PrefabHandle> collection) {
             foreach (var item in collection.Where( i => i.IsActive )) {
                 item.Destroy();
-            }
-        }
-        public static void DestroyImmediateAll<T>(this IEnumerable<PrefabHandle> collection) {
-            foreach (var item in collection.Where( i => i.IsActive )) {
-                item.DestroyImmediate();
             }
         }
 

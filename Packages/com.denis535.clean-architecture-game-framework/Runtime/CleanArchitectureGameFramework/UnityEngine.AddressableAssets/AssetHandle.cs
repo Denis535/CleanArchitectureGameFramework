@@ -33,10 +33,21 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAssetAsync
-        public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
+        public Task<T> LoadAssetAsync(MonoBehaviour owner, Action<AssetHandle<T>>? onRelease = null) {
+            return LoadAssetAsync( owner.destroyCancellationToken, onRelease );
+        }
+        public Task<T> LoadAssetAsync(CancellationToken releaseCancellationToken, Action<AssetHandle<T>>? onRelease = null) {
             Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( asset == null );
             asset = Addressables.LoadAssetAsync<T>( Key );
-            return GetAssetAsync( cancellationToken );
+            var disposable = default( CancellationTokenRegistration );
+            disposable = releaseCancellationToken.Register( () => {
+                if (IsActive) {
+                    onRelease?.Invoke( this );
+                    if (IsActive) Release();
+                }
+                disposable.Dispose();
+            } );
+            return GetAssetAsync( releaseCancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );

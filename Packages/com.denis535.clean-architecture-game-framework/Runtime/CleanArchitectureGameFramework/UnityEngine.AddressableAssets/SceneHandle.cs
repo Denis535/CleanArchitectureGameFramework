@@ -35,16 +35,16 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadSceneAsync
-        public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
+        public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad) {
             Assert.Operation.Message( $"SceneHandle {this} must be non-active" ).Valid( scene == null );
             scene = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
-            return GetSceneAsync( cancellationToken );
+            return GetSceneAsync();
         }
-        public async Task<Scene> GetSceneAsync(CancellationToken cancellationToken) {
+        public async Task<Scene> GetSceneAsync() {
             Assert.Operation.Message( $"SceneHandle {this} must be active" ).Valid( scene != null );
             Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( scene.Value.IsValid() );
             if (scene.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await scene.Value.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
+                var result = await scene.Value.Task.ConfigureAwait( false );
                 if (scene.Value.Status is AsyncOperationStatus.Succeeded) {
                     return result.Scene;
                 }
