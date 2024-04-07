@@ -10,8 +10,10 @@ namespace UnityEngine.UIElements {
         private static Stack<VisualElementScope> Stack { get; } = new Stack<VisualElementScope>();
         internal static VisualElementScope? Peek => Stack.Count > 0 ? Stack.Peek() : null;
 
+        // VisualElement
         public VisualElement VisualElement { get; }
 
+        // Constructor
         public VisualElementScope(VisualElement visualElement) {
             VisualElement = visualElement;
             Stack.Push( this );
@@ -20,6 +22,7 @@ namespace UnityEngine.UIElements {
             Stack.Pop();
         }
 
+        // Add
         public void Add(VisualElement element) {
             VisualElement.Add( element );
         }
@@ -32,28 +35,31 @@ namespace UnityEngine.UIElements {
 
         public new T VisualElement => (T) base.VisualElement;
 
+        // Constructor
         public VisualElementScope(T visualElement) : base( visualElement ) {
         }
 
     }
     public static class VisualElementScopeExtensions {
 
+        // AsScope
         public static VisualElementScope<T> AsScope<T>(this T visualElement) where T : VisualElement {
-            VisualElementScope.Peek?.VisualElement.Add( visualElement );
+            VisualElementScope.Peek?.Add( visualElement );
             return new VisualElementScope<T>( visualElement );
         }
         public static VisualElementScope<T> AsScope<T>(this T visualElement, out T @out) where T : VisualElement {
             @out = visualElement;
-            VisualElementScope.Peek?.VisualElement.Add( visualElement );
+            VisualElementScope.Peek?.Add( visualElement );
             return new VisualElementScope<T>( visualElement );
         }
 
+        // AddToScope
         public static void AddToScope<T>(this T visualElement) where T : VisualElement {
-            VisualElementScope.Peek!.VisualElement.Add( visualElement );
+            VisualElementScope.Peek!.Add( visualElement );
         }
         public static void AddToScope<T>(this T visualElement, out T @out) where T : VisualElement {
             @out = visualElement;
-            VisualElementScope.Peek!.VisualElement.Add( visualElement );
+            VisualElementScope.Peek!.Add( visualElement );
         }
 
     }
