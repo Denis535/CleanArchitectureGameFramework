@@ -11,20 +11,18 @@ namespace UnityEngine.AddressableAssets {
 
     public class AssetHandle<T> where T : notnull, UnityEngine.Object {
 
-        private AsyncOperationHandle<T>? asset;
+        private AsyncOperationHandle<T> asset;
         private CancellationTokenRegistration releaseCancellationTokenRegistration;
 
         public string Key { get; }
-        public bool IsActive => asset != null;
-        public bool IsValid => asset != null && asset.Value.IsValid();
-        public bool IsSucceeded => asset != null && asset.Value.IsValid() && asset.Value.IsSucceeded();
-        public bool IsFailed => asset != null && asset.Value.IsValid() && asset.Value.IsFailed();
+        public bool IsValid => asset.IsValid();
+        public bool IsSucceeded => asset.IsValid() && asset.IsSucceeded();
+        public bool IsFailed => asset.IsValid() && asset.IsFailed();
         public T Asset {
             get {
-                Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
-                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
-                Assert.Operation.Message( $"AssetHandle {this} must be succeeded" ).Valid( asset.Value.IsSucceeded() );
-                return asset.Value.Result;
+                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.IsValid() );
+                Assert.Operation.Message( $"AssetHandle {this} must be succeeded" ).Valid( asset.IsSucceeded() );
+                return asset.Result;
             }
         }
 
@@ -35,29 +33,27 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadAssetAsync
         public Task<T> LoadAssetAsync(CancellationToken releaseCancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( asset == null );
-            Assert.Operation.Message( $"AssetHandle {this} must be non-active" ).Valid( releaseCancellationTokenRegistration == default );
+            Assert.Operation.Message( $"AssetHandle {this} already exists" ).Valid( !asset.IsValid() );
+            Assert.Operation.Message( $"AssetHandle {this} already exists" ).Valid( releaseCancellationTokenRegistration == default );
             asset = Addressables.LoadAssetAsync<T>( Key );
             releaseCancellationTokenRegistration = releaseCancellationToken.Register( () => Release() );
             return GetAssetAsync( releaseCancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
-            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
-            if (asset.Value.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await asset.Value.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
-                if (asset.Value.Status is AsyncOperationStatus.Succeeded) {
+            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.IsValid() );
+            if (asset.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
+                var result = await asset.Task.WaitAsync( cancellationToken ).ConfigureAwait( false );
+                if (asset.Status is AsyncOperationStatus.Succeeded) {
                     return result;
                 }
             }
-            throw asset.Value.OperationException;
+            throw asset.OperationException;
         }
         public void Release() {
-            Assert.Operation.Message( $"AssetHandle {this} must be active" ).Valid( asset != null );
-            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.Value.IsValid() );
+            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.IsValid() );
             {
-                Addressables.Release( asset.Value );
-                asset = null;
+                Addressables.Release( asset );
+                asset = default;
                 releaseCancellationTokenRegistration.Dispose();
                 releaseCancellationTokenRegistration = default;
             }
@@ -72,7 +68,7 @@ namespace UnityEngine.AddressableAssets {
     public static class AssetHandleExtensions {
 
         public static void ReleaseAll<T>(this IEnumerable<AssetHandle<T>> collection) where T : notnull, UnityEngine.Object {
-            foreach (var item in collection.Where( i => i.IsActive )) {
+            foreach (var item in collection.Where( i => i.IsValid )) {
                 item.Release();
             }
         }
