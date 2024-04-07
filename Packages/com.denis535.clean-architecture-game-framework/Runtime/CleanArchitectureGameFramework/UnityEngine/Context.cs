@@ -7,12 +7,12 @@ namespace UnityEngine {
 
     public static class Context {
 
-        // Enter
-        public static IDisposable Enter<T>(object value) where T : notnull {
+        // Begin
+        public static IDisposable Begin<T>(object value) where T : notnull {
             Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
             return new Context<T>( value );
         }
-        public static IDisposable Enter<T, TValue>(TValue value) where T : notnull where TValue : notnull {
+        public static IDisposable Begin<T, TValue>(TValue value) where T : notnull where TValue : notnull {
             Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
             return new Context<T>( value );
         }
@@ -40,6 +40,7 @@ namespace UnityEngine {
 
         // Constructor
         public Context(object value) {
+            Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
             Assert.Operation.Message( $"Value {Value} must be null" ).Valid( Value == null );
             Value = value;
         }
