@@ -4,6 +4,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
@@ -32,15 +33,15 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadSceneAsync
-        public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad) {
+        public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"SceneHandle {this} already exists" ).Valid( !scene.IsValid() );
             scene = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
-            return GetSceneAsync();
+            return GetSceneAsync( cancellationToken );
         }
-        public async Task<Scene> GetSceneAsync() {
+        public async Task<Scene> GetSceneAsync(CancellationToken cancellationToken) {
             Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( scene.IsValid() );
             if (scene.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await scene.Task.ConfigureAwait( false );
+                var result = await scene.Task.WaitAsync( cancellationToken );
                 if (scene.Status is AsyncOperationStatus.Succeeded) {
                     return result.Scene;
                 }
@@ -55,22 +56,17 @@ namespace UnityEngine.AddressableAssets {
         }
         public async Task UnloadAsync() {
             Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( scene.IsValid() );
-            await Addressables.UnloadSceneAsync( scene ).Task.ConfigureAwait( false );
+            await Addressables.UnloadSceneAsync( scene ).Task;
+            scene = default;
+        }
+        public async Task UnloadSafeAsync() {
+            await Addressables.UnloadSceneAsync( scene ).Task;
             scene = default;
         }
 
         // Utils
         public override string ToString() {
             return Key;
-        }
-
-    }
-    public static class SceneHandleExtensions {
-
-        public static async Task UnloadAllAsync(this IEnumerable<SceneHandle> collection) {
-            foreach (var item in collection.Where( i => i.IsValid )) {
-                await item.UnloadAsync();
-            }
         }
 
     }
