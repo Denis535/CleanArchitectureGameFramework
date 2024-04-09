@@ -8,9 +8,9 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AssetHandle<T> where T : notnull, UnityEngine.Object {
+    public abstract class AssetHandleBase<T> where T : notnull, UnityEngine.Object {
 
-        private AsyncOperationHandle<T> asset;
+        protected AsyncOperationHandle<T> asset;
 
         public bool IsValid => asset.IsValid();
         public bool IsSucceeded => asset.IsValid() && asset.IsSucceeded();
@@ -24,13 +24,13 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public AssetHandle() {
+        public AssetHandleBase() {
         }
 
         // LoadAssetAsync
-        public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
+        protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> asset, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
-            asset = Addressables.LoadAssetAsync<T>( key );
+            this.asset = asset;
             return GetAssetAsync( cancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
@@ -58,6 +58,37 @@ namespace UnityEngine.AddressableAssets {
         // Utils
         public override string ToString() {
             return asset.DebugName;
+        }
+
+    }
+    // AssetHandle
+    public class AssetHandle<T> : AssetHandleBase<T> where T : notnull, UnityEngine.Object {
+
+        public string Key { get; }
+
+        // Constructor
+        public AssetHandle(string key) {
+            Key = key;
+        }
+
+        // LoadAssetAsync
+        public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
+            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( Key ), cancellationToken );
+        }
+
+    }
+    // DynamicAssetHandle
+    public class DynamicAssetHandle<T> : AssetHandleBase<T> where T : notnull, UnityEngine.Object {
+
+        // Constructor
+        public DynamicAssetHandle() {
+        }
+
+        // LoadAssetAsync
+        public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
+            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( key ), cancellationToken );
         }
 
     }
