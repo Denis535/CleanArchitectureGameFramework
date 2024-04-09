@@ -3,7 +3,6 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -13,7 +12,6 @@ namespace UnityEngine.AddressableAssets {
 
         private AsyncOperationHandle<T> asset;
 
-        public string Key { get; }
         public bool IsValid => asset.IsValid();
         public bool IsSucceeded => asset.IsValid() && asset.IsSucceeded();
         public bool IsFailed => asset.IsValid() && asset.IsFailed();
@@ -26,14 +24,13 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public AssetHandle(string key) {
-            Key = key;
+        public AssetHandle() {
         }
 
         // LoadAssetAsync
-        public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} already exists" ).Valid( !asset.IsValid() );
-            asset = Addressables.LoadAssetAsync<T>( Key );
+        public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
+            asset = Addressables.LoadAssetAsync<T>( key );
             return GetAssetAsync( cancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
@@ -58,7 +55,7 @@ namespace UnityEngine.AddressableAssets {
 
         // Utils
         public override string ToString() {
-            return Key;
+            return asset.DebugName;
         }
 
     }

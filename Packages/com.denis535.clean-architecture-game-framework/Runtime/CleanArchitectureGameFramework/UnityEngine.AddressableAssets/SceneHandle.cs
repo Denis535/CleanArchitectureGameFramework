@@ -3,7 +3,6 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -15,7 +14,6 @@ namespace UnityEngine.AddressableAssets {
 
         private AsyncOperationHandle<SceneInstance> scene;
 
-        public string Key { get; }
         public bool IsValid => scene.IsValid();
         public bool IsSucceeded => scene.IsValid() && scene.IsSucceeded();
         public bool IsFailed => scene.IsValid() && scene.IsFailed();
@@ -28,14 +26,13 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public SceneHandle(string key) {
-            Key = key;
+        public SceneHandle() {
         }
 
         // LoadSceneAsync
-        public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} already exists" ).Valid( !scene.IsValid() );
-            scene = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
+        public Task<Scene> LoadSceneAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !scene.IsValid() );
+            scene = Addressables.LoadSceneAsync( key, loadMode, activateOnLoad );
             return GetSceneAsync( cancellationToken );
         }
         public async Task<Scene> GetSceneAsync(CancellationToken cancellationToken) {
@@ -66,7 +63,7 @@ namespace UnityEngine.AddressableAssets {
 
         // Utils
         public override string ToString() {
-            return Key;
+            return scene.DebugName;
         }
 
     }

@@ -3,7 +3,6 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -14,7 +13,6 @@ namespace UnityEngine.AddressableAssets {
 
         private AsyncOperationHandle<T> instance;
 
-        public string Key { get; }
         public bool IsValid => instance.IsValid();
         public bool IsSucceeded => instance.IsValid() && instance.IsSucceeded();
         public bool IsFailed => instance.IsValid() && instance.IsFailed();
@@ -27,20 +25,23 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public PrefabHandle(string key) {
-            Key = key;
+        public PrefabHandle() {
         }
 
         // InstantiateAsync
-        public Task<T> InstantiateAsync(CancellationToken cancellationToken) {
-            return InstantiateAsync( Vector3.zero, Quaternion.identity, null, cancellationToken );
+        public Task<T> InstantiateAsync(string key, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
+            instance = InstantiateAsync( key, null, null, null );
+            return GetInstanceAsync( cancellationToken );
         }
-        public Task<T> InstantiateAsync(Transform? parent, CancellationToken cancellationToken) {
-            return InstantiateAsync( Vector3.zero, Quaternion.identity, parent, cancellationToken );
+        public Task<T> InstantiateAsync(string key, Transform? parent, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
+            instance = InstantiateAsync( key, null, null, parent );
+            return GetInstanceAsync( cancellationToken );
         }
-        public Task<T> InstantiateAsync(Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"PrefabHandle {this} already exists" ).Valid( !instance.IsValid() );
-            instance = InstantiateAsync( Key, position, rotation, parent );
+        public Task<T> InstantiateAsync(string key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
+            instance = InstantiateAsync( key, position, rotation, parent );
             return GetInstanceAsync( cancellationToken );
         }
         public async Task<T> GetInstanceAsync(CancellationToken cancellationToken) {
@@ -53,24 +54,24 @@ namespace UnityEngine.AddressableAssets {
             }
             throw instance.OperationException;
         }
-        public void Destroy() {
+        public void ReleaseInstance() {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( instance.IsValid() );
             Addressables.ReleaseInstance( instance );
             instance = default;
         }
-        public void DestroySafe() {
+        public void ReleaseInstanceSafe() {
             Addressables.ReleaseInstance( instance );
             instance = default;
         }
 
         // Utils
         public override string ToString() {
-            return Key;
+            return instance.DebugName;
         }
 
         // Helpers
-        private static AsyncOperationHandle<T> InstantiateAsync(string key, Vector3 position, Quaternion rotation, Transform? parent) {
-            var instance = Addressables.InstantiateAsync( key, new InstantiationParameters( position, rotation, parent ) );
+        private static AsyncOperationHandle<T> InstantiateAsync(string key, Vector3? position, Quaternion? rotation, Transform? parent) {
+            var instance = Addressables.InstantiateAsync( key, new InstantiationParameters( position ?? Vector3.zero, rotation ?? Quaternion.identity, parent ) );
             return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( instance, i => {
                 var result = (T?) i.Result.GetComponent<T>();
                 if (result != null) {
