@@ -28,9 +28,9 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAssetAsync
-        protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> asset, CancellationToken cancellationToken) {
+        protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> assetHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
-            AssetHandle = asset;
+            AssetHandle = assetHandle;
             return GetAssetAsync( cancellationToken );
         }
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
@@ -43,6 +43,8 @@ namespace UnityEngine.AddressableAssets {
             }
             throw AssetHandle.OperationException;
         }
+
+        // Release
         public void Release() {
             Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( AssetHandle.IsValid() );
             Addressables.Release( AssetHandle );

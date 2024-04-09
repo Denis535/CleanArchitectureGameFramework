@@ -30,9 +30,9 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadSceneAsync
-        protected Task<Scene> LoadSceneAsync(AsyncOperationHandle<SceneInstance> scene, CancellationToken cancellationToken) {
+        protected Task<Scene> LoadSceneAsync(AsyncOperationHandle<SceneInstance> sceneHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
-            SceneHandle = scene;
+            SceneHandle = sceneHandle;
             return GetSceneAsync( cancellationToken );
         }
         public async Task<Scene> GetSceneAsync(CancellationToken cancellationToken) {
@@ -51,6 +51,8 @@ namespace UnityEngine.AddressableAssets {
             await sceneInstance.ActivateAsync();
             return sceneInstance.Scene;
         }
+
+        // UnloadAsync
         public async Task UnloadAsync() {
             Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
             await Addressables.UnloadSceneAsync( SceneHandle ).Task;

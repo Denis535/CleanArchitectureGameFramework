@@ -36,9 +36,9 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadPrefabAsync
-        protected Task<T> LoadPrefabAsync(AsyncOperationHandle<T> prefab, CancellationToken cancellationToken) {
+        protected Task<T> LoadPrefabAsync(AsyncOperationHandle<T> prefabHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !PrefabHandle.IsValid() );
-            PrefabHandle = prefab;
+            PrefabHandle = prefabHandle;
             return GetPrefabAsync( cancellationToken );
         }
         public async Task<T> GetPrefabAsync(CancellationToken cancellationToken) {
@@ -51,6 +51,8 @@ namespace UnityEngine.AddressableAssets {
             }
             throw PrefabHandle.OperationException;
         }
+
+        // Release
         public void Release() {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
             Assert.Operation.Message( $"PrefabHandle {this} must have no instances, but have {Instances_.Count} instances" ).Valid( !Instances_.Any() );
@@ -92,27 +94,45 @@ namespace UnityEngine.AddressableAssets {
             Instances_.Add( instance );
             return instance;
         }
+
+        // Destroy
         public void Destroy(T instance) {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
             Assert.Operation.Message( $"PrefabHandle {this} must have {instance} instance" ).Valid( Instances_.Contains( instance ) );
-            UnityEngine.Object.Destroy( instance );
+            UnityEngine.Object.Destroy( instance.gameObject );
             Instances_.Remove( instance );
         }
         public void DestroyImmediate(T instance) {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
             Assert.Operation.Message( $"PrefabHandle {this} must have {instance} instance" ).Valid( Instances_.Contains( instance ) );
-            UnityEngine.Object.DestroyImmediate( instance );
+            UnityEngine.Object.DestroyImmediate( instance.gameObject );
             Instances_.Remove( instance );
         }
-        public void Destroy(IReadOnlyList<T> instances) {
+
+        // Destroy
+        public void Destroy(IEnumerable<T> instances) {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
             foreach (var instance in instances) {
                 Destroy( instance );
             }
         }
-        public void DestroyImmediate(IReadOnlyList<T> instances) {
+        public void DestroyImmediate(IEnumerable<T> instances) {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
             foreach (var instance in instances) {
+                DestroyImmediate( instance );
+            }
+        }
+
+        // Destroy
+        public void DestroyAll() {
+            Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
+            foreach (var instance in Instances_) {
+                Destroy( instance );
+            }
+        }
+        public void DestroyAllImmediate() {
+            Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
+            foreach (var instance in Instances_) {
                 DestroyImmediate( instance );
             }
         }
@@ -148,7 +168,7 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadPrefabAsync
         public Task<T> LoadPrefabAsync(string key, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !this.PrefabHandle.IsValid() );
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !PrefabHandle.IsValid() );
             return LoadPrefabAsync( LoadPrefabAsync( key ), cancellationToken );
         }
 
@@ -175,7 +195,7 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadPrefabAsync
         public Task<T> LoadPrefabAsync(string key, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !this.PrefabHandle.IsValid() );
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !PrefabHandle.IsValid() );
             return LoadPrefabAsync( LoadPrefabAsync( key ), cancellationToken );
         }
 
