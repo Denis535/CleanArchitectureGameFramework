@@ -8,6 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceLocations;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
@@ -30,6 +31,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadSceneAsync
+        protected Task<Scene> LoadSceneAsync(IResourceLocation location, LoadSceneMode mode, bool activateOnLoad, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
+            SceneHandle = Addressables.LoadSceneAsync( location, mode, activateOnLoad );
+            return GetSceneAsync( cancellationToken );
+        }
         protected Task<Scene> LoadSceneAsync(AsyncOperationHandle<SceneInstance> sceneHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
             SceneHandle = sceneHandle;

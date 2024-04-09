@@ -8,6 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceLocations;
 
     public abstract class AssetHandleBase<T> where T : notnull, UnityEngine.Object {
 
@@ -28,6 +29,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAssetAsync
+        protected Task<T> LoadAssetAsync(IResourceLocation location, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
+            AssetHandle = Addressables.LoadAssetAsync<T>( location );
+            return GetAssetAsync( cancellationToken );
+        }
         protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> assetHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
             AssetHandle = assetHandle;

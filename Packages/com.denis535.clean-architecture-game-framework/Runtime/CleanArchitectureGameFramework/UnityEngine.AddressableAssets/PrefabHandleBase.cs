@@ -9,6 +9,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceLocations;
 
     public abstract class PrefabHandleBase<T> where T : notnull, Component {
 
@@ -36,6 +37,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadPrefabAsync
+        protected Task<T> LoadPrefabAsync(IResourceLocation location, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !PrefabHandle.IsValid() );
+            PrefabHandle = LoadPrefabAsync( location );
+            return GetPrefabAsync( cancellationToken );
+        }
         protected Task<T> LoadPrefabAsync(AsyncOperationHandle<T> prefabHandle, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !PrefabHandle.IsValid() );
             PrefabHandle = prefabHandle;
@@ -126,14 +132,14 @@ namespace UnityEngine.AddressableAssets {
         // Destroy
         public void DestroyAll() {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
-            foreach (var instance in Instances_) {
-                Destroy( instance );
+            while (Instances_.Any()) {
+                Destroy( Instances_.Last() );
             }
         }
         public void DestroyAllImmediate() {
             Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( PrefabHandle.IsValid() );
-            foreach (var instance in Instances_) {
-                DestroyImmediate( instance );
+            while (Instances_.Any()) {
+                DestroyImmediate( Instances_.Last() );
             }
         }
 
@@ -145,6 +151,17 @@ namespace UnityEngine.AddressableAssets {
         // Helpers
         protected static AsyncOperationHandle<T> LoadPrefabAsync(string key) {
             var prefab = Addressables.LoadAssetAsync<GameObject>( key );
+            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( prefab, i => {
+                var result = (T?) i.Result.GetComponent<T>();
+                if (result != null) {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( result, null );
+                } else {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                }
+            } );
+        }
+        protected static AsyncOperationHandle<T> LoadPrefabAsync(IResourceLocation location) {
+            var prefab = Addressables.LoadAssetAsync<GameObject>( location );
             return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( prefab, i => {
                 var result = (T?) i.Result.GetComponent<T>();
                 if (result != null) {
