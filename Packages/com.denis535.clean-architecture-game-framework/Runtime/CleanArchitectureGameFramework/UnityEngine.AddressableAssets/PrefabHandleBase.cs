@@ -3,6 +3,7 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -30,7 +31,7 @@ namespace UnityEngine.AddressableAssets {
 
         // InstantiateAsync
         protected Task<T> InstantiateAsync(AsyncOperationHandle<T> instance, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
+            Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !this.instance.IsValid() );
             this.instance = instance;
             return GetInstanceAsync( cancellationToken );
         }
@@ -51,8 +52,7 @@ namespace UnityEngine.AddressableAssets {
         }
         public void ReleaseInstanceSafe() {
             if (instance.IsValid()) {
-                Addressables.ReleaseInstance( instance );
-                instance = default;
+                ReleaseInstance();
             }
         }
 
@@ -103,6 +103,19 @@ namespace UnityEngine.AddressableAssets {
     // DynamicPrefabHandle
     public class DynamicPrefabHandle<T> : PrefabHandleBase<T> where T : notnull, Component {
 
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert.Operation.Message( $"PrefabHandle {this} must be valid" ).Valid( instance.IsValid() );
+                return key!;
+            }
+            private set {
+                key = value;
+            }
+        }
+
         // Constructor
         public DynamicPrefabHandle() {
         }
@@ -110,15 +123,15 @@ namespace UnityEngine.AddressableAssets {
         // InstantiateAsync
         public Task<T> InstantiateAsync(string key, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
-            return InstantiateAsync( InstantiateAsync( key, null, null, null ), cancellationToken );
+            return InstantiateAsync( InstantiateAsync( Key = key, null, null, null ), cancellationToken );
         }
         public Task<T> InstantiateAsync(string key, Transform? parent, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
-            return InstantiateAsync( InstantiateAsync( key, null, null, parent ), cancellationToken );
+            return InstantiateAsync( InstantiateAsync( Key = key, null, null, parent ), cancellationToken );
         }
         public Task<T> InstantiateAsync(string key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"PrefabHandle {this} is already valid" ).Valid( !instance.IsValid() );
-            return InstantiateAsync( InstantiateAsync( key, position, rotation, parent ), cancellationToken );
+            return InstantiateAsync( InstantiateAsync( Key = key, position, rotation, parent ), cancellationToken );
         }
 
     }

@@ -3,6 +3,7 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -29,7 +30,7 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadAssetAsync
         protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> asset, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
+            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !this.asset.IsValid() );
             this.asset = asset;
             return GetAssetAsync( cancellationToken );
         }
@@ -50,8 +51,7 @@ namespace UnityEngine.AddressableAssets {
         }
         public void ReleaseSafe() {
             if (asset.IsValid()) {
-                Addressables.Release( asset );
-                asset = default;
+                Release();
             }
         }
 
@@ -81,6 +81,19 @@ namespace UnityEngine.AddressableAssets {
     // DynamicAssetHandle
     public class DynamicAssetHandle<T> : AssetHandleBase<T> where T : notnull, UnityEngine.Object {
 
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( asset.IsValid() );
+                return key!;
+            }
+            private set {
+                key = value;
+            }
+        }
+
         // Constructor
         public DynamicAssetHandle() {
         }
@@ -88,7 +101,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadAssetAsync
         public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !asset.IsValid() );
-            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( key ), cancellationToken );
+            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( Key = key ), cancellationToken );
         }
 
     }

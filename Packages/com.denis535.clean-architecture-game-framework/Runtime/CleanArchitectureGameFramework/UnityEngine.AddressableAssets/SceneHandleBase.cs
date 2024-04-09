@@ -3,6 +3,7 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -31,7 +32,7 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadSceneAsync
         protected Task<Scene> LoadSceneAsync(AsyncOperationHandle<SceneInstance> scene, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !scene.IsValid() );
+            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !this.scene.IsValid() );
             this.scene = scene;
             return GetSceneAsync( cancellationToken );
         }
@@ -58,8 +59,7 @@ namespace UnityEngine.AddressableAssets {
         }
         public async Task UnloadSafeAsync() {
             if (scene.IsValid()) {
-                await Addressables.UnloadSceneAsync( scene ).Task;
-                scene = default;
+                await UnloadAsync();
             }
         }
 
@@ -89,6 +89,19 @@ namespace UnityEngine.AddressableAssets {
     // DynamicSceneHandle
     public class DynamicSceneHandle : SceneHandleBase {
 
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( scene.IsValid() );
+                return key!;
+            }
+            private set {
+                key = value;
+            }
+        }
+
         // Constructor
         public DynamicSceneHandle() {
         }
@@ -96,7 +109,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadSceneAsync
         public Task<Scene> LoadSceneAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !scene.IsValid() );
-            return LoadSceneAsync( Addressables.LoadSceneAsync( key, loadMode, activateOnLoad ), cancellationToken );
+            return LoadSceneAsync( Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad ), cancellationToken );
         }
 
     }
