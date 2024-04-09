@@ -60,8 +60,10 @@ namespace UnityEngine.AddressableAssets {
             instance = default;
         }
         public void ReleaseInstanceSafe() {
-            Addressables.ReleaseInstance( instance );
-            instance = default;
+            if (instance.IsValid()) {
+                Addressables.ReleaseInstance( instance );
+                instance = default;
+            }
         }
 
         // Utils

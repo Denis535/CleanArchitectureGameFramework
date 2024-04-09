@@ -57,8 +57,10 @@ namespace UnityEngine.AddressableAssets {
             scene = default;
         }
         public async Task UnloadSafeAsync() {
-            await Addressables.UnloadSceneAsync( scene ).Task;
-            scene = default;
+            if (scene.IsValid()) {
+                await Addressables.UnloadSceneAsync( scene ).Task;
+                scene = default;
+            }
         }
 
         // Utils

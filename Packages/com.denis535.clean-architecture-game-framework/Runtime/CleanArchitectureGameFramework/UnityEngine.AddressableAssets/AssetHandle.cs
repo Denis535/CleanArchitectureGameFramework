@@ -49,8 +49,10 @@ namespace UnityEngine.AddressableAssets {
             asset = default;
         }
         public void ReleaseSafe() {
-            Addressables.Release( asset );
-            asset = default;
+            if (asset.IsValid()) {
+                Addressables.Release( asset );
+                asset = default;
+            }
         }
 
         // Utils
