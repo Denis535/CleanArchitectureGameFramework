@@ -88,16 +88,5 @@ namespace UnityEngine.AddressableAssets {
             throw handle.OperationException;
         }
 
-        // Assert
-        public static void Assert_IsValid(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} is already valid" ).Valid( !handle.IsValid );
-        }
-
     }
 }
