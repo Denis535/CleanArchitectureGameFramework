@@ -14,10 +14,28 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public override Task<T> LoadAsync(CancellationToken cancellationToken) {
+        public Task<T> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key );
-            return GetResultAsync( cancellationToken );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetResultAsync
+        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
         }
 
     }
@@ -28,10 +46,28 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public override Task<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
+        public Task<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Key );
             return GetResultAsync( cancellationToken );
+        }
+
+        // GetResultAsync
+        public Task<IReadOnlyList<T>> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
         }
 
     }
@@ -42,10 +78,28 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public override Task<T> LoadAsync(string key, CancellationToken cancellationToken) {
+        public Task<T> LoadAsync(string key, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key = key );
-            return GetResultAsync( cancellationToken );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetResultAsync
+        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
         }
 
     }
@@ -56,10 +110,28 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public override Task<IReadOnlyList<T>> LoadAsync(string[] key, CancellationToken cancellationToken) {
+        public Task<IReadOnlyList<T>> LoadAsync(string[] key, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Key = key );
-            return GetResultAsync( cancellationToken );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetResultAsync
+        public Task<IReadOnlyList<T>> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
         }
 
     }

@@ -4,8 +4,6 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
-    using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -27,27 +25,6 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public AddressableHandle(TKey key) {
             Key = key;
-        }
-
-        // LoadAsync
-        public abstract Task<T> LoadAsync(CancellationToken cancellationToken);
-
-        // GetResultAsync
-        public async Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return await Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
         }
 
         // Utils
@@ -97,27 +74,6 @@ namespace UnityEngine.AddressableAssets {
         public DynamicAddressableHandle() {
         }
 
-        // LoadAsync
-        public abstract Task<T> LoadAsync(TKey key, CancellationToken cancellationToken);
-
-        // GetResultAsync
-        public async Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return await Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
         // Utils
         public override string ToString() {
             return Handle.DebugName;
@@ -125,13 +81,13 @@ namespace UnityEngine.AddressableAssets {
 
         // Heleprs
         protected void Assert_IsValid() {
-            Assert.Operation.Message( $"AddressableHandle {this} must be valid" ).Valid( Handle.IsValid() );
+            Assert.Operation.Message( $"DynamicAddressableHandle {this} must be valid" ).Valid( Handle.IsValid() );
         }
         protected void Assert_IsSucceeded() {
-            Assert.Operation.Message( $"AddressableHandle {this} must be succeeded" ).Valid( Handle.IsSucceeded() );
+            Assert.Operation.Message( $"DynamicAddressableHandle {this} must be succeeded" ).Valid( Handle.IsSucceeded() );
         }
         protected void Assert_IsNotValid() {
-            Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
+            Assert.Operation.Message( $"DynamicAddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
         }
 
     }
