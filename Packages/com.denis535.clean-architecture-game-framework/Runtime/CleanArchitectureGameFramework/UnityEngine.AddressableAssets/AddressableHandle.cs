@@ -3,8 +3,12 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceProviders;
+    using UnityEngine.SceneManagement;
 
     public abstract class AddressableHandle<T> {
 
@@ -38,6 +42,94 @@ namespace UnityEngine.AddressableAssets {
         }
         protected void Assert_IsNotValid() {
             Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
+        }
+
+    }
+    // AddressableAssetHandle
+    public abstract class AddressableAssetHandle<T> : AddressableHandle<T> where T : notnull {
+
+        // Constructor
+        public AddressableAssetHandle() {
+        }
+
+        // GetResultAsync
+        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
+        }
+
+    }
+    // AddressablePrefabHandle
+    public abstract class AddressablePrefabHandle<T> : AddressableHandle<T> where T : notnull {
+
+        // Constructor
+        public AddressablePrefabHandle() {
+        }
+
+        // GetResultAsync
+        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
+        }
+
+    }
+    // AddressableSceneHandle
+    public abstract class AddressableSceneHandle : AddressableHandle<SceneInstance> {
+
+        // Constructor
+        public AddressableSceneHandle() {
+        }
+
+        // ActivateAsync
+        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var result = await Handle.GetResultAsync( cancellationToken );
+            await result.ActivateAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            return result.Scene;
+        }
+
+        // GetResultAsync
+        public async Task<Scene> GetResultAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var result = await Handle.GetResultAsync( cancellationToken );
+            return result.Scene;
+        }
+
+        // UnloadAsync
+        public async Task UnloadAsync() {
+            Assert_IsValid();
+            await Addressables.UnloadSceneAsync( Handle ).Task;
+            Handle = default;
+        }
+        public async Task UnloadSafeAsync() {
+            if (Handle.IsValid()) {
+                await UnloadAsync();
+            }
         }
 
     }

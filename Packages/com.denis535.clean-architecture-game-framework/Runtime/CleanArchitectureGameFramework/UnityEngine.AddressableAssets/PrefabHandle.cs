@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public class PrefabHandle<T> : AddressableHandle<T> where T : notnull, Component {
+    public class PrefabHandle<T> : AddressablePrefabHandle<T> where T : notnull, Component {
 
         public string Key { get; }
 
@@ -24,26 +24,8 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetResultAsync
-        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
     }
-    public class PrefabListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, Component {
+    public class PrefabListHandle<T> : AddressablePrefabHandle<IReadOnlyList<T>> where T : notnull, Component {
 
         public string[] Key { get; }
 
@@ -59,26 +41,8 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetResultAsync
-        public Task<IReadOnlyList<T>> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
     }
-    public class DynamicPrefabHandle<T> : AddressableHandle<T> where T : notnull, Component {
+    public class DynamicPrefabHandle<T> : AddressablePrefabHandle<T> where T : notnull, Component {
 
         private string? key;
 
@@ -104,26 +68,8 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetResultAsync
-        public Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
     }
-    public class DynamicPrefabListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, Component {
+    public class DynamicPrefabListHandle<T> : AddressablePrefabHandle<IReadOnlyList<T>> where T : notnull, Component {
 
         private string[]? key;
 
@@ -147,24 +93,6 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsNotValid();
             Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Key = key );
             return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // GetResultAsync
-        public Task<IReadOnlyList<T>> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
         }
 
     }

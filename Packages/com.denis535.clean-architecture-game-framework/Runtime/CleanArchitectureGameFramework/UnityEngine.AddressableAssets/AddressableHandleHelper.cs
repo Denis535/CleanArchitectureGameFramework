@@ -24,7 +24,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadPrefabAsync
         public static AsyncOperationHandle<T> LoadPrefabAsync<T>(string key) where T : Component {
             var handle = Addressables.LoadAssetAsync<GameObject>( key );
-            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( handle, prefab => {
+            return Addressables.ResourceManager.CreateChainOperation( handle, prefab => {
                 var component = (T?) prefab.Result.GetComponent<T>();
                 if (component != null) {
                     return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
@@ -35,7 +35,7 @@ namespace UnityEngine.AddressableAssets {
         }
         public static AsyncOperationHandle<IReadOnlyList<T>> LoadPrefabListAsync<T>(string[] keys) where T : Component {
             var handle = Addressables.LoadAssetsAsync<GameObject>( keys.AsEnumerable(), null, Addressables.MergeMode.Union );
-            return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<GameObject>>( handle, prefabs => {
+            return Addressables.ResourceManager.CreateChainOperation( handle, prefabs => {
                 var components = new List<T>( prefabs.Result.Count );
                 foreach (var prefab in prefabs.Result) {
                     var component = (T?) prefab.GetComponent<T>();
@@ -83,7 +83,7 @@ namespace UnityEngine.AddressableAssets {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                    return Addressables.ResourceManager.CreateCompletedOperation( component, null );
                 } else {
                     return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
                 }
@@ -94,7 +94,7 @@ namespace UnityEngine.AddressableAssets {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                    return Addressables.ResourceManager.CreateCompletedOperation( component, null );
                 } else {
                     return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
                 }
@@ -105,7 +105,7 @@ namespace UnityEngine.AddressableAssets {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                    return Addressables.ResourceManager.CreateCompletedOperation( component, null );
                 } else {
                     return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
                 }
@@ -116,7 +116,7 @@ namespace UnityEngine.AddressableAssets {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                    return Addressables.ResourceManager.CreateCompletedOperation( component, null );
                 } else {
                     return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
                 }

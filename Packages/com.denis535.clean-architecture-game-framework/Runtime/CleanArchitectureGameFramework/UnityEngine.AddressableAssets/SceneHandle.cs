@@ -7,10 +7,9 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
-    using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableHandle<SceneInstance> {
+    public class SceneHandle : AddressableSceneHandle {
 
         public string Key { get; }
         public new Scene Result => base.Result.Scene;
@@ -28,36 +27,8 @@ namespace UnityEngine.AddressableAssets {
             return result.Scene;
         }
 
-        // ActivateAsync
-        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var result = await Handle.GetResultAsync( cancellationToken );
-            await result.ActivateAsync();
-            cancellationToken.ThrowIfCancellationRequested();
-            return result.Scene;
-        }
-
-        // GetResultAsync
-        public async Task<Scene> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
-        }
-
-        // UnloadAsync
-        public async Task UnloadAsync() {
-            Assert_IsValid();
-            await Addressables.UnloadSceneAsync( Handle ).Task;
-            Handle = default;
-        }
-        public async Task UnloadSafeAsync() {
-            if (Handle.IsValid()) {
-                await UnloadAsync();
-            }
-        }
-
     }
-    public class DynamicSceneHandle : AddressableHandle<SceneInstance> {
+    public class DynamicSceneHandle : AddressableSceneHandle {
 
         private string? key;
 
@@ -83,34 +54,6 @@ namespace UnityEngine.AddressableAssets {
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
             var result = await Handle.GetResultAsync( cancellationToken );
             return result.Scene;
-        }
-
-        // ActivateAsync
-        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var result = await Handle.GetResultAsync( cancellationToken );
-            await result.ActivateAsync();
-            cancellationToken.ThrowIfCancellationRequested();
-            return result.Scene;
-        }
-
-        // GetResultAsync
-        public async Task<Scene> GetResultAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
-        }
-
-        // UnloadAsync
-        public async Task UnloadAsync() {
-            Assert_IsValid();
-            await Addressables.UnloadSceneAsync( Handle ).Task;
-            Handle = default;
-        }
-        public async Task UnloadSafeAsync() {
-            if (Handle.IsValid()) {
-                await UnloadAsync();
-            }
         }
 
     }
