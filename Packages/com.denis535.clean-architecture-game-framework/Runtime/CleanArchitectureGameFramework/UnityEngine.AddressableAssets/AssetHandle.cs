@@ -3,14 +3,18 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public class AssetHandle<T> : AddressableHandle<T, string> where T : notnull, UnityEngine.Object {
+    public class AssetHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
+
+        public string Key { get; }
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public AssetHandle(string key) {
+            Key = key;
         }
 
         // LoadAsync
@@ -39,10 +43,13 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class AssetListHandle<T> : AddressableHandle<IReadOnlyList<T>, string[]> where T : notnull, UnityEngine.Object {
+    public class AssetListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, UnityEngine.Object {
+
+        private string[] Key { get; }
 
         // Constructor
-        public AssetListHandle(string[] key) : base( key ) {
+        public AssetListHandle(string[] key) {
+            Key = key;
         }
 
         // LoadAsync
@@ -71,7 +78,20 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetHandle<T> : DynamicAddressableHandle<T, string> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
+
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
 
         // Constructor
         public DynamicAssetHandle() {
@@ -103,7 +123,20 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetListHandle<T> : DynamicAddressableHandle<IReadOnlyList<T>, string[]> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, UnityEngine.Object {
+
+        private string[]? key;
+
+        [AllowNull]
+        public string[] Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
 
         // Constructor
         public DynamicAssetListHandle() {

@@ -3,14 +3,18 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public class PrefabHandle<T> : AddressableHandle<T, string> where T : notnull, Component {
+    public class PrefabHandle<T> : AddressableHandle<T> where T : notnull, Component {
+
+        public string Key { get; }
 
         // Constructor
-        public PrefabHandle(string key) : base( key ) {
+        public PrefabHandle(string key) {
+            Key = key;
         }
 
         // LoadAsync
@@ -39,10 +43,13 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class PrefabListHandle<T> : AddressableHandle<IReadOnlyList<T>, string[]> where T : notnull, Component {
+    public class PrefabListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, Component {
+
+        public string[] Key { get; }
 
         // Constructor
-        public PrefabListHandle(string[] key) : base( key ) {
+        public PrefabListHandle(string[] key) {
+            Key = key;
         }
 
         // LoadAsync
@@ -71,7 +78,20 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicPrefabHandle<T> : DynamicAddressableHandle<T, string> where T : notnull, Component {
+    public class DynamicPrefabHandle<T> : AddressableHandle<T> where T : notnull, Component {
+
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
 
         // Constructor
         public DynamicPrefabHandle() {
@@ -103,7 +123,20 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicPrefabListHandle<T> : DynamicAddressableHandle<IReadOnlyList<T>, string[]> where T : notnull, Component {
+    public class DynamicPrefabListHandle<T> : AddressableHandle<IReadOnlyList<T>> where T : notnull, Component {
+
+        private string[]? key;
+
+        [AllowNull]
+        public string[] Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
 
         // Constructor
         public DynamicPrefabListHandle() {

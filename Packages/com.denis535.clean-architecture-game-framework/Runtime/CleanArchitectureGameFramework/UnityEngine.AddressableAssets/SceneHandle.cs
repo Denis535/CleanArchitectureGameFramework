@@ -3,18 +3,21 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableHandle<SceneInstance, string> {
+    public class SceneHandle : AddressableHandle<SceneInstance> {
 
+        public string Key { get; }
         public new Scene Result => base.Result.Scene;
 
         // Constructor
-        public SceneHandle(string key) : base( key ) {
+        public SceneHandle(string key) {
+            Key = key;
         }
 
         // LoadAsync
@@ -54,8 +57,20 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicSceneHandle : DynamicAddressableHandle<SceneInstance, string> {
+    public class DynamicSceneHandle : AddressableHandle<SceneInstance> {
 
+        private string? key;
+
+        [AllowNull]
+        public string Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
         public new Scene Result => base.Result.Scene;
 
         // Constructor

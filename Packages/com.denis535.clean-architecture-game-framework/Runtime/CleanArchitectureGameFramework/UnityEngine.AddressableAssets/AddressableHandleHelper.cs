@@ -77,6 +77,52 @@ namespace UnityEngine.AddressableAssets {
         //    } );
         //}
 
+        // InstantiateAsync
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key) where T : notnull, Component {
+            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key ), i => {
+                var gameObject = i.Result;
+                var component = (T?) gameObject.GetComponent<T>();
+                if (component != null) {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                } else {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                }
+            } );
+        }
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation) where T : notnull, Component {
+            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, position, rotation ), i => {
+                var gameObject = i.Result;
+                var component = (T?) gameObject.GetComponent<T>();
+                if (component != null) {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                } else {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                }
+            } );
+        }
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Transform parent) where T : notnull, Component {
+            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, parent ), i => {
+                var gameObject = i.Result;
+                var component = (T?) gameObject.GetComponent<T>();
+                if (component != null) {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                } else {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                }
+            } );
+        }
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform parent) where T : notnull, Component {
+            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, position, rotation, parent ), i => {
+                var gameObject = i.Result;
+                var component = (T?) gameObject.GetComponent<T>();
+                if (component != null) {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
+                } else {
+                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                }
+            } );
+        }
+
         // GetResultAsync
         public static async Task<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {

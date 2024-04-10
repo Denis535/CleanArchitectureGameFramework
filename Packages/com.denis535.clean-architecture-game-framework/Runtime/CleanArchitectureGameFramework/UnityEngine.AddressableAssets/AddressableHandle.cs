@@ -3,7 +3,6 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -39,37 +38,6 @@ namespace UnityEngine.AddressableAssets {
         }
         protected void Assert_IsNotValid() {
             Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
-        }
-
-    }
-    public abstract class AddressableHandle<T, TKey> : AddressableHandle<T> where T : notnull where TKey : notnull {
-
-        public TKey Key { get; }
-
-        // Constructor
-        public AddressableHandle(TKey key) {
-            Key = key;
-        }
-
-    }
-    public abstract class DynamicAddressableHandle<T, TKey> : AddressableHandle<T> where T : notnull where TKey : notnull {
-
-        private TKey? key;
-
-        [AllowNull]
-        public TKey Key {
-            get {
-                Assert_IsValid();
-                return key!;
-            }
-            protected set {
-                key = value;
-            }
-        }
-
-        // Constructor
-        public DynamicAddressableHandle() {
-            Key = default;
         }
 
     }
