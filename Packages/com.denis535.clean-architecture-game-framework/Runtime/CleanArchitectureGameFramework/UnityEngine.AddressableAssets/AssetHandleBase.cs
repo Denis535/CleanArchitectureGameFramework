@@ -3,107 +3,63 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
-    using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class AssetHandleBase<T> where T : notnull, UnityEngine.Object {
-
-        protected AsyncOperationHandle<T> AssetHandle { get; private set; }
-        public bool IsValid => AssetHandle.IsValid();
-        public bool IsSucceeded => AssetHandle.IsValid() && AssetHandle.IsSucceeded();
-        public bool IsFailed => AssetHandle.IsValid() && AssetHandle.IsFailed();
-        public T Asset {
-            get {
-                this.Assert_IsValid();
-                this.Assert_IsSucceeded();
-                return AssetHandle.Result;
-            }
-        }
+    public class AssetHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
-        public AssetHandleBase() {
+        public AssetHandle(string key) : base( key ) {
         }
 
-        // Initialize
-        //protected void Initialize(IResourceLocation location) {
-        //    this.Assert_IsNotValid();
-        //    AssetHandle = Addressables.LoadAssetAsync<T>( location );
-        //}
-        protected void Initialize(AsyncOperationHandle<T> handle) {
+        // LoadAsync
+        public override Task<T> LoadAsync(CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            AssetHandle = handle;
-        }
-
-        // GetAssetAsync
-        public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
-            this.Assert_IsValid();
-            return await AssetHandle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            this.Assert_IsValid();
-            Addressables.Release( AssetHandle );
-            AssetHandle = default;
-        }
-        public void ReleaseSafe() {
-            if (AssetHandle.IsValid()) {
-                Release();
-            }
-        }
-
-        // Utils
-        public override string ToString() {
-            return AssetHandle.DebugName;
+            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key );
+            return GetResultAsync( cancellationToken );
         }
 
     }
-    // AssetHandle
-    public class AssetHandle<T> : AssetHandleBase<T> where T : notnull, UnityEngine.Object {
-
-        public string Key { get; }
+    public class AssetListHandle<T> : AddressableListHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
-        public AssetHandle(string key) {
-            Key = key;
+        public AssetListHandle(string[] keys) : base( keys ) {
         }
 
-        // LoadAssetAsync
-        public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
+        // LoadAsync
+        public override Task<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            Initialize( Addressables.LoadAssetAsync<T>( Key ) );
-            return GetAssetAsync( cancellationToken );
+            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys );
+            return GetResultAsync( cancellationToken );
         }
 
     }
-    // DynamicAssetHandle
-    public class DynamicAssetHandle<T> : AssetHandleBase<T> where T : notnull, UnityEngine.Object {
-
-        private string? key;
-
-        [AllowNull]
-        public string Key {
-            get {
-                this.Assert_IsValid();
-                return key!;
-            }
-            private set {
-                key = value;
-            }
-        }
+    public class DynamicAssetHandle<T> : DynamicAddressableHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public DynamicAssetHandle() {
         }
 
-        // LoadAssetAsync
-        public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
+        // LoadAsync
+        public override Task<T> LoadAsync(string key, CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            Initialize( Addressables.LoadAssetAsync<T>( Key = key ) );
-            return GetAssetAsync( cancellationToken );
+            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key = key );
+            return GetResultAsync( cancellationToken );
+        }
+
+    }
+    public class DynamicAssetListHandle<T> : DynamicAddressableListHandle<T> where T : notnull, UnityEngine.Object {
+
+        // Constructor
+        public DynamicAssetListHandle() {
+        }
+
+        // LoadAsync
+        public override Task<IReadOnlyList<T>> LoadAsync(string[] keys, CancellationToken cancellationToken) {
+            this.Assert_IsNotValid();
+            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys = keys );
+            return GetResultAsync( cancellationToken );
         }
 
     }

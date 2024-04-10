@@ -3,107 +3,63 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
-    using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class PrefabHandleBase<T> where T : notnull, Component {
-
-        protected AsyncOperationHandle<T> PrefabHandle { get; private set; }
-        public bool IsValid => PrefabHandle.IsValid();
-        public bool IsSucceeded => PrefabHandle.IsValid() && PrefabHandle.IsSucceeded();
-        public bool IsFailed => PrefabHandle.IsValid() && PrefabHandle.IsFailed();
-        public T Prefab {
-            get {
-                this.Assert_IsValid();
-                this.Assert_IsSucceeded();
-                return PrefabHandle.Result;
-            }
-        }
+    public class PrefabHandle<T> : AddressableHandle<T> where T : notnull, Component {
 
         // Constructor
-        public PrefabHandleBase() {
+        public PrefabHandle(string key) : base( key ) {
         }
 
-        // Initialize
-        //protected void Initialize(IResourceLocation location) {
-        //    this.Assert_IsNotValid();
-        //    PrefabHandle = AddressableHandleHelper.LoadPrefabAsync<T>( location );
-        //}
-        protected void Initialize(AsyncOperationHandle<T> handle) {
+        // LoadAsync
+        public override Task<T> LoadAsync(CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            PrefabHandle = handle;
-        }
-
-        // GetPrefabAsync
-        public Task<T> GetPrefabAsync(CancellationToken cancellationToken) {
-            this.Assert_IsValid();
-            return PrefabHandle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            this.Assert_IsValid();
-            Addressables.Release( PrefabHandle );
-            PrefabHandle = default;
-        }
-        public void ReleaseSafe() {
-            if (PrefabHandle.IsValid()) {
-                Release();
-            }
-        }
-
-        // Utils
-        public override string ToString() {
-            return PrefabHandle.DebugName;
+            Handle = AddressableHandleHelper.LoadPrefabAsync<T>( Key );
+            return GetResultAsync( cancellationToken );
         }
 
     }
-    // PrefabHandle
-    public class PrefabHandle<T> : PrefabHandleBase<T> where T : notnull, Component {
-
-        public string Key { get; }
+    public class PrefabListHandle<T> : AddressableListHandle<T> where T : notnull, Component {
 
         // Constructor
-        public PrefabHandle(string key) {
-            Key = key;
+        public PrefabListHandle(string[] keys) : base( keys ) {
         }
 
-        // LoadPrefabAsync
-        public Task<T> LoadPrefabAsync(CancellationToken cancellationToken) {
+        // LoadAsync
+        public override Task<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            Initialize( AddressableHandleHelper.LoadPrefabAsync<T>( Key ) );
-            return GetPrefabAsync( cancellationToken );
+            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Keys );
+            return GetResultAsync( cancellationToken );
         }
 
     }
-    // DynamicPrefabHandle
-    public class DynamicPrefabHandle<T> : PrefabHandleBase<T> where T : notnull, Component {
-
-        private string? key;
-
-        [AllowNull]
-        public string Key {
-            get {
-                this.Assert_IsValid();
-                return key!;
-            }
-            private set {
-                key = value;
-            }
-        }
+    public class DynamicPrefabHandle<T> : DynamicAddressableHandle<T> where T : notnull, Component {
 
         // Constructor
         public DynamicPrefabHandle() {
         }
 
-        // LoadPrefabAsync
-        public Task<T> LoadPrefabAsync(string key, CancellationToken cancellationToken) {
+        // LoadAsync
+        public override Task<T> LoadAsync(string key, CancellationToken cancellationToken) {
             this.Assert_IsNotValid();
-            Initialize( AddressableHandleHelper.LoadPrefabAsync<T>( Key = key ) );
-            return GetPrefabAsync( cancellationToken );
+            Handle = AddressableHandleHelper.LoadPrefabAsync<T>( Key = key );
+            return GetResultAsync( cancellationToken );
+        }
+
+    }
+    public class DynamicPrefabListHandle<T> : DynamicAddressableListHandle<T> where T : notnull, Component {
+
+        // Constructor
+        public DynamicPrefabListHandle() {
+        }
+
+        // LoadAsync
+        public override Task<IReadOnlyList<T>> LoadAsync(string[] keys, CancellationToken cancellationToken) {
+            this.Assert_IsNotValid();
+            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Keys = keys );
+            return GetResultAsync( cancellationToken );
         }
 
     }

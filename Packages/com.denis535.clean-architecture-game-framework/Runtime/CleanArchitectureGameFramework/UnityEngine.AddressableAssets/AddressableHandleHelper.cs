@@ -11,59 +11,16 @@ namespace UnityEngine.AddressableAssets {
 
     internal static class AddressableHandleHelper {
 
-        // Assert
-        public static void Assert_IsValid<T>(this AssetHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded<T>(this AssetHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid<T>(this AssetHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        // LoadAssetAsync
+        public static AsyncOperationHandle<T> LoadAssetAsync<T>(string key) where T : UnityEngine.Object {
+            var handle = Addressables.LoadAssetAsync<T>( key );
+            return handle;
         }
 
-        // Assert
-        public static void Assert_IsValid<T>(this AssetListHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetListHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded<T>(this AssetListHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetListHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid<T>(this AssetListHandleBase<T> handle) where T : notnull, UnityEngine.Object {
-            Assert.Operation.Message( $"AssetListHandle {handle} is already valid" ).Valid( !handle.IsValid );
-        }
-
-        // Assert
-        public static void Assert_IsValid<T>(this PrefabHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded<T>(this PrefabHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid<T>(this PrefabHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabHandle {handle} is already valid" ).Valid( !handle.IsValid );
-        }
-
-        // Assert
-        public static void Assert_IsValid<T>(this PrefabListHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabListHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded<T>(this PrefabListHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabListHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid<T>(this PrefabListHandleBase<T> handle) where T : notnull, Component {
-            Assert.Operation.Message( $"PrefabListHandle {handle} is already valid" ).Valid( !handle.IsValid );
-        }
-
-        // Assert
-        public static void Assert_IsValid(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} must be valid" ).Valid( handle.IsValid );
-        }
-        public static void Assert_IsSucceeded(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
-        }
-        public static void Assert_IsNotValid(this SceneHandleBase handle) {
-            Assert.Operation.Message( $"SceneHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        // LoadAssetListAsync
+        public static AsyncOperationHandle<IReadOnlyList<T>> LoadAssetListAsync<T>(string[] keys) where T : UnityEngine.Object {
+            var handle = Addressables.LoadAssetsAsync<T>( keys.AsEnumerable(), null, Addressables.MergeMode.Union );
+            return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<T>>( handle, i => Addressables.ResourceManager.CreateCompletedOperation( (IReadOnlyList<T>) handle.Result, null ) );
         }
 
         // LoadPrefabAsync
@@ -91,34 +48,34 @@ namespace UnityEngine.AddressableAssets {
         //}
 
         // LoadPrefabListAsync
-        public static AsyncOperationHandle<IList<T>> LoadPrefabListAsync<T>(string[] keys) where T : Component {
+        public static AsyncOperationHandle<IReadOnlyList<T>> LoadPrefabListAsync<T>(string[] keys) where T : Component {
             var handle = Addressables.LoadAssetsAsync<GameObject>( keys.AsEnumerable(), null, Addressables.MergeMode.Union );
-            return Addressables.ResourceManager.CreateChainOperation<IList<T>, IList<GameObject>>( handle, i => {
+            return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<GameObject>>( handle, i => {
                 var result = new List<T>( i.Result.Count );
                 foreach (var item in i.Result) {
                     var item_ = (T?) item.GetComponent<T>();
                     if (item_ != null) {
                         result.Add( item_ );
                     } else {
-                        return Addressables.ResourceManager.CreateCompletedOperation<IList<T>>( null!, $"Component '{typeof( T )}' was not found" );
+                        return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( null!, $"Component '{typeof( T )}' was not found" );
                     }
                 }
-                return Addressables.ResourceManager.CreateCompletedOperation<IList<T>>( result, null );
+                return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( result, null );
             } );
         }
-        //public static AsyncOperationHandle<IList<T>> LoadPrefabListAsync<T>(IResourceLocation location) where T : Component {
+        //public static AsyncOperationHandle<IReadOnlyList<T>> LoadPrefabListAsync<T>(IResourceLocation location) where T : Component {
         //    var handle = Addressables.LoadAssetsAsync<GameObject>( location, null! );
-        //    return Addressables.ResourceManager.CreateChainOperation<IList<T>, IList<GameObject>>( handle, i => {
+        //    return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<GameObject>>( handle, i => {
         //        var result = new List<T>( i.Result.Count );
         //        foreach (var item in i.Result) {
         //            var item_ = (T?) item.GetComponent<T>();
         //            if (item_ != null) {
         //                result.Add( item_ );
         //            } else {
-        //                return Addressables.ResourceManager.CreateCompletedOperation<IList<T>>( null!, $"Component '{typeof( T )}' was not found" );
+        //                return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( null!, $"Component '{typeof( T )}' was not found" );
         //            }
         //        }
-        //        return Addressables.ResourceManager.CreateCompletedOperation<IList<T>>( result, null );
+        //        return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( result, null );
         //    } );
         //}
 
@@ -131,6 +88,61 @@ namespace UnityEngine.AddressableAssets {
                 }
             }
             throw handle.OperationException;
+        }
+
+        // Assert
+        public static void Assert_IsValid<T>(this AddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} must be valid" ).Valid( handle.IsValid );
+        }
+        public static void Assert_IsSucceeded<T>(this AddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
+        }
+        public static void Assert_IsNotValid<T>(this AddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        }
+
+        // Assert
+        public static void Assert_IsValid<T>(this DynamicAddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableDynamicHandle {handle} must be valid" ).Valid( handle.IsValid );
+        }
+        public static void Assert_IsSucceeded<T>(this DynamicAddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AssetHAddressableDynamicHandleandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
+        }
+        public static void Assert_IsNotValid<T>(this DynamicAddressableHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableDynamicHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        }
+
+        // Assert
+        public static void Assert_IsValid<T>(this AddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} must be valid" ).Valid( handle.IsValid );
+        }
+        public static void Assert_IsSucceeded<T>(this AddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
+        }
+        public static void Assert_IsNotValid<T>(this AddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        }
+
+        // Assert
+        public static void Assert_IsValid<T>(this DynamicAddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableDynamicHandle {handle} must be valid" ).Valid( handle.IsValid );
+        }
+        public static void Assert_IsSucceeded<T>(this DynamicAddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AssetHAddressableDynamicHandleandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
+        }
+        public static void Assert_IsNotValid<T>(this DynamicAddressableListHandle<T> handle) {
+            Assert.Operation.Message( $"AddressableDynamicHandle {handle} is already valid" ).Valid( !handle.IsValid );
+        }
+
+        // Assert
+        public static void Assert_IsValid(this SceneHandleBase handle) {
+            Assert.Operation.Message( $"SceneHandle {handle} must be valid" ).Valid( handle.IsValid );
+        }
+        public static void Assert_IsSucceeded(this SceneHandleBase handle) {
+            Assert.Operation.Message( $"SceneHandle {handle} must be succeeded" ).Valid( handle.IsSucceeded );
+        }
+        public static void Assert_IsNotValid(this SceneHandleBase handle) {
+            Assert.Operation.Message( $"SceneHandle {handle} is already valid" ).Valid( !handle.IsValid );
         }
 
     }
