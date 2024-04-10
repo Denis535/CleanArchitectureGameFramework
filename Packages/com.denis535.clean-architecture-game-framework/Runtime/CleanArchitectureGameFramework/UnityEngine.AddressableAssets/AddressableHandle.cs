@@ -9,23 +9,23 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class AddressableHandle<T> {
+    public abstract class AddressableHandle<T, TKey> where T : notnull where TKey : notnull {
 
         protected AsyncOperationHandle<T> Handle { get; set; }
-        public string Key { get; }
+        public TKey Key { get; }
         public bool IsValid => Handle.IsValid();
         public bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
         public bool IsFailed => Handle.IsValid() && Handle.IsFailed();
         public T Result {
             get {
-                this.Assert_IsValid();
-                this.Assert_IsSucceeded();
+                Assert_IsValid();
+                Assert_IsSucceeded();
                 return Handle.Result;
             }
         }
 
         // Constructor
-        public AddressableHandle(string key) {
+        public AddressableHandle(TKey key) {
             Key = key;
         }
 
@@ -34,13 +34,13 @@ namespace UnityEngine.AddressableAssets {
 
         // GetResultAsync
         public async Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            this.Assert_IsValid();
+            Assert_IsValid();
             return await Handle.GetResultAsync( cancellationToken );
         }
 
         // Release
         public void Release() {
-            this.Assert_IsValid();
+            Assert_IsValid();
             Addressables.Release( Handle );
             Handle = default;
         }
@@ -55,16 +55,27 @@ namespace UnityEngine.AddressableAssets {
             return Handle.DebugName;
         }
 
-    }
-    public abstract class DynamicAddressableHandle<T> {
+        // Heleprs
+        protected void Assert_IsValid() {
+            Assert.Operation.Message( $"AddressableHandle {this} must be valid" ).Valid( Handle.IsValid() );
+        }
+        protected void Assert_IsSucceeded() {
+            Assert.Operation.Message( $"AddressableHandle {this} must be succeeded" ).Valid( Handle.IsSucceeded() );
+        }
+        protected void Assert_IsNotValid() {
+            Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
+        }
 
-        private string? key;
+    }
+    public abstract class DynamicAddressableHandle<T, TKey> where T : notnull where TKey : notnull {
+
+        private TKey? key;
 
         protected AsyncOperationHandle<T> Handle { get; set; }
         [AllowNull]
-        public string Key {
+        public TKey Key {
             get {
-                this.Assert_IsValid();
+                Assert_IsValid();
                 return key!;
             }
             protected set {
@@ -76,8 +87,8 @@ namespace UnityEngine.AddressableAssets {
         public bool IsFailed => Handle.IsValid() && Handle.IsFailed();
         public T Result {
             get {
-                this.Assert_IsValid();
-                this.Assert_IsSucceeded();
+                Assert_IsValid();
+                Assert_IsSucceeded();
                 return Handle.Result;
             }
         }
@@ -87,17 +98,17 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public abstract Task<T> LoadAsync(string key, CancellationToken cancellationToken);
+        public abstract Task<T> LoadAsync(TKey key, CancellationToken cancellationToken);
 
         // GetResultAsync
         public async Task<T> GetResultAsync(CancellationToken cancellationToken) {
-            this.Assert_IsValid();
+            Assert_IsValid();
             return await Handle.GetResultAsync( cancellationToken );
         }
 
         // Release
         public void Release() {
-            this.Assert_IsValid();
+            Assert_IsValid();
             Addressables.Release( Handle );
             Handle = default;
         }
@@ -110,6 +121,17 @@ namespace UnityEngine.AddressableAssets {
         // Utils
         public override string ToString() {
             return Handle.DebugName;
+        }
+
+        // Heleprs
+        protected void Assert_IsValid() {
+            Assert.Operation.Message( $"AddressableHandle {this} must be valid" ).Valid( Handle.IsValid() );
+        }
+        protected void Assert_IsSucceeded() {
+            Assert.Operation.Message( $"AddressableHandle {this} must be succeeded" ).Valid( Handle.IsSucceeded() );
+        }
+        protected void Assert_IsNotValid() {
+            Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
         }
 
     }
