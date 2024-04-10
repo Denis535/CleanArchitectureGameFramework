@@ -8,7 +8,6 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
-    using UnityEngine.ResourceManagement.ResourceLocations;
 
     public abstract class AssetHandleBase<T> where T : notnull, UnityEngine.Object {
 
@@ -18,8 +17,8 @@ namespace UnityEngine.AddressableAssets {
         public bool IsFailed => AssetHandle.IsValid() && AssetHandle.IsFailed();
         public T Asset {
             get {
-                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( AssetHandle.IsValid() );
-                Assert.Operation.Message( $"AssetHandle {this} must be succeeded" ).Valid( AssetHandle.IsSucceeded() );
+                this.Assert_IsValid();
+                this.Assert_IsSucceeded();
                 return AssetHandle.Result;
             }
         }
@@ -28,31 +27,25 @@ namespace UnityEngine.AddressableAssets {
         public AssetHandleBase() {
         }
 
-        // LoadAssetAsync
-        protected Task<T> LoadAssetAsync(IResourceLocation location, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
-            AssetHandle = Addressables.LoadAssetAsync<T>( location );
-            return GetAssetAsync( cancellationToken );
+        // Initialize
+        //protected void Initialize(IResourceLocation location) {
+        //    this.Assert_IsNotValid();
+        //    AssetHandle = Addressables.LoadAssetAsync<T>( location );
+        //}
+        protected void Initialize(AsyncOperationHandle<T> handle) {
+            this.Assert_IsNotValid();
+            AssetHandle = handle;
         }
-        protected Task<T> LoadAssetAsync(AsyncOperationHandle<T> assetHandle, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
-            AssetHandle = assetHandle;
-            return GetAssetAsync( cancellationToken );
-        }
+
+        // GetAssetAsync
         public async Task<T> GetAssetAsync(CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( AssetHandle.IsValid() );
-            if (AssetHandle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await AssetHandle.Task.WaitAsync( cancellationToken );
-                if (AssetHandle.Status is AsyncOperationStatus.Succeeded) {
-                    return result;
-                }
-            }
-            throw AssetHandle.OperationException;
+            this.Assert_IsValid();
+            return await AssetHandle.GetResultAsync( cancellationToken );
         }
 
         // Release
         public void Release() {
-            Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( AssetHandle.IsValid() );
+            this.Assert_IsValid();
             Addressables.Release( AssetHandle );
             AssetHandle = default;
         }
@@ -80,8 +73,9 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadAssetAsync
         public Task<T> LoadAssetAsync(CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
-            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( Key ), cancellationToken );
+            this.Assert_IsNotValid();
+            Initialize( Addressables.LoadAssetAsync<T>( Key ) );
+            return GetAssetAsync( cancellationToken );
         }
 
     }
@@ -93,7 +87,7 @@ namespace UnityEngine.AddressableAssets {
         [AllowNull]
         public string Key {
             get {
-                Assert.Operation.Message( $"AssetHandle {this} must be valid" ).Valid( AssetHandle.IsValid() );
+                this.Assert_IsValid();
                 return key!;
             }
             private set {
@@ -107,8 +101,9 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadAssetAsync
         public Task<T> LoadAssetAsync(string key, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"AssetHandle {this} is already valid" ).Valid( !AssetHandle.IsValid() );
-            return LoadAssetAsync( Addressables.LoadAssetAsync<T>( Key = key ), cancellationToken );
+            this.Assert_IsNotValid();
+            Initialize( Addressables.LoadAssetAsync<T>( Key = key ) );
+            return GetAssetAsync( cancellationToken );
         }
 
     }

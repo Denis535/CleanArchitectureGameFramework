@@ -7,8 +7,8 @@ namespace UnityEngine {
 
     public static class ObjectExtensions {
 
-        // Check
-        public static void Check(this Object @object) {
+        // Assert
+        public static void Assert_IsValid(this Object @object) {
             if (@object is MonoBehaviour object_MonoBehaviour) {
                 Assert.Object.Message( $"Object {object_MonoBehaviour} must be awakened" ).Initialized( object_MonoBehaviour.didAwake );
             }

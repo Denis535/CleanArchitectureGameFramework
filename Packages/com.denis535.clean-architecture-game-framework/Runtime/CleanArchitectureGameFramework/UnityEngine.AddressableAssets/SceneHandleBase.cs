@@ -8,7 +8,6 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
-    using UnityEngine.ResourceManagement.ResourceLocations;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
@@ -20,8 +19,8 @@ namespace UnityEngine.AddressableAssets {
         public bool IsFailed => SceneHandle.IsValid() && SceneHandle.IsFailed();
         public Scene Scene {
             get {
-                Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
-                Assert.Operation.Message( $"SceneHandle {this} must be succeeded" ).Valid( SceneHandle.IsSucceeded() );
+                this.Assert_IsValid();
+                this.Assert_IsSucceeded();
                 return SceneHandle.Result.Scene;
             }
         }
@@ -30,29 +29,26 @@ namespace UnityEngine.AddressableAssets {
         public SceneHandleBase() {
         }
 
-        // LoadSceneAsync
-        protected Task<Scene> LoadSceneAsync(IResourceLocation location, LoadSceneMode mode, bool activateOnLoad, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
-            SceneHandle = Addressables.LoadSceneAsync( location, mode, activateOnLoad );
-            return GetSceneAsync( cancellationToken );
+        // Initialize
+        //protected void Initialize(IResourceLocation location, LoadSceneMode loadMode, bool activateOnLoad) {
+        //    this.Assert_IsNotValid();
+        //    SceneHandle = Addressables.LoadSceneAsync( location, loadMode, activateOnLoad );
+        //}
+        protected void Initialize(AsyncOperationHandle<SceneInstance> handle) {
+            this.Assert_IsNotValid();
+            SceneHandle = handle;
         }
-        protected Task<Scene> LoadSceneAsync(AsyncOperationHandle<SceneInstance> sceneHandle, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
-            SceneHandle = sceneHandle;
-            return GetSceneAsync( cancellationToken );
-        }
+
+        // GetSceneAsync
         public async Task<Scene> GetSceneAsync(CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
-            if (SceneHandle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
-                var result = await SceneHandle.Task.WaitAsync( cancellationToken );
-                if (SceneHandle.Status is AsyncOperationStatus.Succeeded) {
-                    return result.Scene;
-                }
-            }
-            throw SceneHandle.OperationException;
+            this.Assert_IsValid();
+            var result = await SceneHandle.GetResultAsync( cancellationToken );
+            return result.Scene;
         }
+
+        // ActivateAsync
         public async Task<Scene> ActivateAsync() {
-            Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
+            this.Assert_IsValid();
             var sceneInstance = SceneHandle.Result;
             await sceneInstance.ActivateAsync();
             return sceneInstance.Scene;
@@ -60,7 +56,7 @@ namespace UnityEngine.AddressableAssets {
 
         // UnloadAsync
         public async Task UnloadAsync() {
-            Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
+            this.Assert_IsValid();
             await Addressables.UnloadSceneAsync( SceneHandle ).Task;
             SceneHandle = default;
         }
@@ -88,8 +84,9 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadSceneAsync
         public Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
-            return LoadSceneAsync( Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad ), cancellationToken );
+            this.Assert_IsNotValid();
+            Initialize( Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad ) );
+            return GetSceneAsync( cancellationToken );
         }
 
     }
@@ -101,7 +98,7 @@ namespace UnityEngine.AddressableAssets {
         [AllowNull]
         public string Key {
             get {
-                Assert.Operation.Message( $"SceneHandle {this} must be valid" ).Valid( SceneHandle.IsValid() );
+                this.Assert_IsValid();
                 return key!;
             }
             private set {
@@ -115,8 +112,9 @@ namespace UnityEngine.AddressableAssets {
 
         // LoadSceneAsync
         public Task<Scene> LoadSceneAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
-            Assert.Operation.Message( $"SceneHandle {this} is already valid" ).Valid( !SceneHandle.IsValid() );
-            return LoadSceneAsync( Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad ), cancellationToken );
+            this.Assert_IsNotValid();
+            Initialize( Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad ) );
+            return GetSceneAsync( cancellationToken );
         }
 
     }
