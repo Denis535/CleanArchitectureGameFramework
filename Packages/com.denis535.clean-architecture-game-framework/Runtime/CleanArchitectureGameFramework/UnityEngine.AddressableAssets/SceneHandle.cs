@@ -17,11 +17,20 @@ namespace UnityEngine.AddressableAssets {
         public SceneHandle(string key) : base( key ) {
         }
 
-        // LoadSceneAsync
-        public async Task<Scene> LoadSceneAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
+        // LoadAsync
+        public async Task<Scene> LoadAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
             var result = await Handle.GetResultAsync( cancellationToken );
+            return result.Scene;
+        }
+
+        // ActivateAsync
+        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var result = await Handle.GetResultAsync( cancellationToken );
+            await result.ActivateAsync();
+            cancellationToken.ThrowIfCancellationRequested();
             return result.Scene;
         }
 
@@ -29,14 +38,6 @@ namespace UnityEngine.AddressableAssets {
         public async Task<Scene> GetResultAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
-        }
-
-        // ActivateAsync
-        public async Task<Scene> ActivateAsync() {
-            Assert_IsValid();
-            var result = Handle.Result;
-            await result.ActivateAsync();
             return result.Scene;
         }
 
@@ -61,11 +62,20 @@ namespace UnityEngine.AddressableAssets {
         public DynamicSceneHandle() {
         }
 
-        // LoadSceneAsync
-        public async Task<Scene> LoadSceneAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
+        // LoadAsync
+        public async Task<Scene> LoadAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
             var result = await Handle.GetResultAsync( cancellationToken );
+            return result.Scene;
+        }
+
+        // ActivateAsync
+        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var result = await Handle.GetResultAsync( cancellationToken );
+            await result.ActivateAsync();
+            cancellationToken.ThrowIfCancellationRequested();
             return result.Scene;
         }
 
@@ -73,14 +83,6 @@ namespace UnityEngine.AddressableAssets {
         public async Task<Scene> GetResultAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
-        }
-
-        // ActivateAsync
-        public async Task<Scene> ActivateAsync() {
-            Assert_IsValid();
-            var result = Handle.Result;
-            await result.ActivateAsync();
             return result.Scene;
         }
 
