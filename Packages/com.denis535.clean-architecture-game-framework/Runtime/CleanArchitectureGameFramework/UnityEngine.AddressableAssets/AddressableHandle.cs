@@ -133,4 +133,24 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
+    // AddressableInstanceHandle
+    public class AddressableInstanceHandle<T> : AddressableHandle<T> where T : notnull {
+
+        // Constructor
+        public AddressableInstanceHandle() {
+        }
+
+        // ReleaseInstance
+        public void ReleaseInstance() {
+            Assert_IsValid();
+            Addressables.ReleaseInstance( Handle );
+            Handle = default;
+        }
+        public void ReleaseInstanceSafe() {
+            if (Handle.IsValid()) {
+                ReleaseInstance();
+            }
+        }
+
+    }
 }

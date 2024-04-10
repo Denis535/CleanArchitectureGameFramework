@@ -18,7 +18,7 @@ namespace UnityEngine.AddressableAssets {
         }
         public static AsyncOperationHandle<IReadOnlyList<T>> LoadAssetListAsync<T>(string[] keys) where T : UnityEngine.Object {
             var handle = Addressables.LoadAssetsAsync<T>( keys.AsEnumerable(), null, Addressables.MergeMode.Union );
-            return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<T>>( handle, i => Addressables.ResourceManager.CreateCompletedOperation( (IReadOnlyList<T>) handle.Result, null ) );
+            return Addressables.ResourceManager.CreateChainOperation( handle, i => Addressables.ResourceManager.CreateCompletedOperation( (IReadOnlyList<T>) handle.Result, null ) );
         }
 
         // LoadPrefabAsync
@@ -52,7 +52,7 @@ namespace UnityEngine.AddressableAssets {
         //// LoadPrefabAsync
         //public static AsyncOperationHandle<T> LoadPrefabAsync<T>(IResourceLocation location) where T : Component {
         //    var handle = Addressables.LoadAssetAsync<GameObject>( location );
-        //    return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( handle, prefab => {
+        //    return Addressables.ResourceManager.CreateChainOperation( handle, prefab => {
         //        var component = (T?) prefab.Result.GetComponent<T>();
         //        if (component != null) {
         //            return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
@@ -63,7 +63,7 @@ namespace UnityEngine.AddressableAssets {
         //}
         //public static AsyncOperationHandle<IReadOnlyList<T>> LoadPrefabListAsync<T>(IResourceLocation location) where T : Component {
         //    var handle = Addressables.LoadAssetsAsync<GameObject>( location, null! );
-        //    return Addressables.ResourceManager.CreateChainOperation<IReadOnlyList<T>, IList<GameObject>>( handle, prefabs => {
+        //    return Addressables.ResourceManager.CreateChainOperation( handle, prefabs => {
         //        var components = new List<T>( prefabs.Result.Count );
         //        foreach (var prefab in prefabs.Result) {
         //            var component = (T?) prefab.GetComponent<T>();
@@ -79,7 +79,7 @@ namespace UnityEngine.AddressableAssets {
 
         // InstantiateAsync
         public static AsyncOperationHandle<T> InstantiateAsync<T>(string key) where T : notnull, Component {
-            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key ), i => {
+            return Addressables.ResourceManager.CreateChainOperation( Addressables.InstantiateAsync( key ), i => {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
@@ -90,7 +90,7 @@ namespace UnityEngine.AddressableAssets {
             } );
         }
         public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation) where T : notnull, Component {
-            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, position, rotation ), i => {
+            return Addressables.ResourceManager.CreateChainOperation( Addressables.InstantiateAsync( key, position, rotation ), i => {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
@@ -101,7 +101,7 @@ namespace UnityEngine.AddressableAssets {
             } );
         }
         public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Transform parent) where T : notnull, Component {
-            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, parent ), i => {
+            return Addressables.ResourceManager.CreateChainOperation( Addressables.InstantiateAsync( key, parent ), i => {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {
@@ -112,7 +112,7 @@ namespace UnityEngine.AddressableAssets {
             } );
         }
         public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform parent) where T : notnull, Component {
-            return Addressables.ResourceManager.CreateChainOperation<T, GameObject>( Addressables.InstantiateAsync( key, position, rotation, parent ), i => {
+            return Addressables.ResourceManager.CreateChainOperation( Addressables.InstantiateAsync( key, position, rotation, parent ), i => {
                 var gameObject = i.Result;
                 var component = (T?) gameObject.GetComponent<T>();
                 if (component != null) {

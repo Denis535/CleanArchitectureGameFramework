@@ -27,17 +27,17 @@ namespace UnityEngine.AddressableAssets {
     }
     public class PrefabListHandle<T> : AddressablePrefabHandle<IReadOnlyList<T>> where T : notnull, Component {
 
-        public string[] Key { get; }
+        public string[] Keys { get; }
 
         // Constructor
-        public PrefabListHandle(string[] key) {
-            Key = key;
+        public PrefabListHandle(string[] keys) {
+            Keys = keys;
         }
 
         // LoadAsync
         public Task<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Key );
+            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 
@@ -71,16 +71,16 @@ namespace UnityEngine.AddressableAssets {
     }
     public class DynamicPrefabListHandle<T> : AddressablePrefabHandle<IReadOnlyList<T>> where T : notnull, Component {
 
-        private string[]? key;
+        private string[]? keys;
 
         [AllowNull]
-        public string[] Key {
+        public string[] Keys {
             get {
                 Assert_IsValid();
-                return key!;
+                return keys!;
             }
             protected set {
-                key = value;
+                keys = value;
             }
         }
 
@@ -89,9 +89,9 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // LoadAsync
-        public Task<IReadOnlyList<T>> LoadAsync(string[] key, CancellationToken cancellationToken) {
+        public Task<IReadOnlyList<T>> LoadAsync(string[] keys, CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Key = key );
+            Handle = AddressableHandleHelper.LoadPrefabListAsync<T>( Keys = keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 
