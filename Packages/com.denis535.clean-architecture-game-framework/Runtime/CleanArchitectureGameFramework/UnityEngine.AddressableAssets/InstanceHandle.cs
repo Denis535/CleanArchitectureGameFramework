@@ -11,15 +11,14 @@ namespace UnityEngine.AddressableAssets {
 
     public class InstanceHandle<T> : AddressableInstanceHandle<T>, ICloneable where T : notnull, Component {
 
-        private string Key { get; }
+        public string Key { get; }
 
         public InstanceHandle(string key) {
             Key = key;
         }
-        private InstanceHandle(string key, AsyncOperationHandle<T> handle) {
+        public InstanceHandle(string key, AsyncOperationHandle<T> handle) {
             Key = key;
             Handle = handle;
-            Addressables.ResourceManager.Acquire( Handle );
         }
 
         // InstantiateAsync
@@ -50,7 +49,9 @@ namespace UnityEngine.AddressableAssets {
         }
         public InstanceHandle<T> Clone() {
             Assert_IsValid();
-            return new InstanceHandle<T>( Key, Handle );
+            var clone = new InstanceHandle<T>( Key, Handle );
+            Addressables.ResourceManager.Acquire( Handle );
+            return clone;
         }
 
     }
@@ -71,10 +72,9 @@ namespace UnityEngine.AddressableAssets {
 
         public DynamicInstanceHandle() {
         }
-        private DynamicInstanceHandle(string key, AsyncOperationHandle<T> handle) {
+        public DynamicInstanceHandle(string key, AsyncOperationHandle<T> handle) {
             Key = key;
             Handle = handle;
-            Addressables.ResourceManager.Acquire( Handle );
         }
 
         // InstantiateAsync
@@ -103,9 +103,11 @@ namespace UnityEngine.AddressableAssets {
         object ICloneable.Clone() {
             return Clone();
         }
-        public DynamicInstanceHandle<T> Clone() {
+        public InstanceHandle<T> Clone() {
             Assert_IsValid();
-            return new DynamicInstanceHandle<T>( Key, Handle );
+            var clone = new InstanceHandle<T>( Key, Handle );
+            Addressables.ResourceManager.Acquire( Handle );
+            return clone;
         }
 
     }

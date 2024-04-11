@@ -11,6 +11,17 @@ namespace UnityEngine.AddressableAssets {
 
     internal static class AddressableHandleHelper {
 
+        // IsState
+        public static bool IsNone<T>(this AsyncOperationHandle<T> handle) {
+            return handle.Status == AsyncOperationStatus.None;
+        }
+        public static bool IsSucceeded<T>(this AsyncOperationHandle<T> handle) {
+            return handle.Status == AsyncOperationStatus.Succeeded;
+        }
+        public static bool IsFailed<T>(this AsyncOperationHandle<T> handle) {
+            return handle.Status == AsyncOperationStatus.Failed;
+        }
+
         // LoadAssetAsync
         public static AsyncOperationHandle<T> LoadAssetAsync<T>(string key) where T : UnityEngine.Object {
             var handle = Addressables.LoadAssetAsync<T>( key );

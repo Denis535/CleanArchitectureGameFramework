@@ -7,24 +7,30 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
+    using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
     public class SceneHandle : AddressableSceneHandle {
 
         public string Key { get; }
-        public new Scene Result => base.Result.Scene;
+        public new Scene Value => base.Value.Scene;
 
         // Constructor
         public SceneHandle(string key) {
             Key = key;
+        }
+        public SceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) {
+            Key = key;
+            Handle = handle;
         }
 
         // LoadAsync
         public async Task<Scene> LoadAsync(LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
-            var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
+            var value = await Handle.GetResultAsync( cancellationToken );
+            return value.Scene;
         }
 
     }
@@ -42,18 +48,22 @@ namespace UnityEngine.AddressableAssets {
                 key = value;
             }
         }
-        public new Scene Result => base.Result.Scene;
+        public new Scene Value => base.Value.Scene;
 
         // Constructor
         public DynamicSceneHandle() {
+        }
+        public DynamicSceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) {
+            Key = key;
+            Handle = handle;
         }
 
         // LoadAsync
         public async Task<Scene> LoadAsync(string key, LoadSceneMode loadMode, bool activateOnLoad, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
-            var result = await Handle.GetResultAsync( cancellationToken );
-            return result.Scene;
+            var value = await Handle.GetResultAsync( cancellationToken );
+            return value.Scene;
         }
 
     }

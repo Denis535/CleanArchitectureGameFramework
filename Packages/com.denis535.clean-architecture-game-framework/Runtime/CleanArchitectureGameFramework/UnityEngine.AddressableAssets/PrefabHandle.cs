@@ -7,6 +7,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
+    using UnityEngine.ResourceManagement.AsyncOperations;
 
     public class PrefabHandle<T> : AddressablePrefabHandle<T> where T : notnull, Component {
 
@@ -15,6 +16,10 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public PrefabHandle(string key) {
             Key = key;
+        }
+        public PrefabHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
+            Handle = handle;
         }
 
         // LoadAsync
@@ -32,6 +37,10 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public PrefabListHandle(string[] keys) {
             Keys = keys;
+        }
+        public PrefabListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
+            Keys = keys;
+            Handle = handle;
         }
 
         // LoadAsync
@@ -60,6 +69,10 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public DynamicPrefabHandle() {
         }
+        public DynamicPrefabHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
+            Handle = handle;
+        }
 
         // LoadAsync
         public Task<T> LoadAsync(string key, CancellationToken cancellationToken) {
@@ -86,6 +99,10 @@ namespace UnityEngine.AddressableAssets {
 
         // Constructor
         public DynamicPrefabListHandle() {
+        }
+        public DynamicPrefabListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
+            Keys = keys;
+            Handle = handle;
         }
 
         // LoadAsync
