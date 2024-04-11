@@ -10,12 +10,40 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public abstract class AddressableHandle<T> {
+    public abstract class AddressableHandle {
 
+        // State
+        public abstract bool IsValid { get; }
+        public abstract bool IsSucceeded { get; }
+        public abstract bool IsFailed { get; }
+        // ValueObject
+        public abstract object ValueObject { get; }
+        public abstract object? ValueObjectSafe { get; }
+        // Exception
+        public abstract Exception? Exception { get; }
+
+        // Constructor
+        public AddressableHandle() {
+        }
+
+        // GetValueObjectAsync
+        public abstract Task<object> GetValueObjectAsync(CancellationToken cancellationToken);
+
+        // Utils
+        public override string ToString() {
+            return base.ToString();
+        }
+
+    }
+    public abstract class AddressableHandle<T> : AddressableHandle where T : notnull {
+
+        // Handle
         protected internal AsyncOperationHandle<T> Handle { get; set; }
-        public bool IsValid => Handle.IsValid();
-        public bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
-        public bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+        // State
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
+        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+        // Value
         public T Value {
             get {
                 Assert_IsValid();
@@ -28,10 +56,27 @@ namespace UnityEngine.AddressableAssets {
                 return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
             }
         }
-        public Exception? Exception => Handle.OperationException;
+        // ValueObject
+        public override object ValueObject => Value;
+        public override object? ValueObjectSafe => ValueSafe;
+        // Exception
+        public override Exception? Exception => Handle.OperationException;
 
         // Constructor
         public AddressableHandle() {
+        }
+
+        // GetValueAsync
+        public async Task<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var value = await Handle.GetResultAsync( cancellationToken );
+            return value;
+        }
+
+        // GetValueObjectAsync
+        public override async Task<object> GetValueObjectAsync(CancellationToken cancellationToken) {
+            var value = await GetValueAsync( cancellationToken );
+            return value;
         }
 
         // Utils
@@ -58,13 +103,6 @@ namespace UnityEngine.AddressableAssets {
         public AddressableAssetHandle() {
         }
 
-        // GetValueAsync
-        public async Task<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
-        }
-
         // Release
         public void Release() {
             Assert_IsValid();
@@ -83,13 +121,6 @@ namespace UnityEngine.AddressableAssets {
 
         // Constructor
         public AddressablePrefabHandle() {
-        }
-
-        // GetValueAsync
-        public async Task<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
         }
 
         // Release
@@ -121,13 +152,6 @@ namespace UnityEngine.AddressableAssets {
             return value.Scene;
         }
 
-        // GetValueAsync
-        public async Task<Scene> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value.Scene;
-        }
-
         // UnloadAsync
         public async Task UnloadAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
@@ -146,13 +170,6 @@ namespace UnityEngine.AddressableAssets {
 
         // Constructor
         public AddressableInstanceHandle() {
-        }
-
-        // GetValueAsync
-        public async Task<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
         }
 
         // ReleaseInstance
