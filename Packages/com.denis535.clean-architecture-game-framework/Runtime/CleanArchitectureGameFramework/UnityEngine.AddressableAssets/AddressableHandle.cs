@@ -3,46 +3,16 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
-    using UnityEngine.ResourceManagement.ResourceProviders;
-    using UnityEngine.SceneManagement;
 
-    public abstract class AddressableHandle {
+    public abstract class AddressableHandle<T> : AddressableHandleBase<T> where T : notnull {
 
-        // State
-        public abstract bool IsValid { get; }
-        public abstract bool IsSucceeded { get; }
-        public abstract bool IsFailed { get; }
-        // ValueObject
-        public abstract object ValueObject { get; }
-        public abstract object? ValueObjectSafe { get; }
-        // Exception
-        public abstract Exception? Exception { get; }
-
-        // Constructor
-        public AddressableHandle() {
-        }
-
-        // GetValueObjectAsync
-        public abstract Task<object> GetValueObjectAsync(CancellationToken cancellationToken);
-
-        // Utils
-        public override string ToString() {
-            return base.ToString();
-        }
-
-    }
-    public abstract class AddressableHandle<T> : AddressableHandle where T : notnull {
-
-        // Handle
-        protected internal AsyncOperationHandle<T> Handle { get; set; }
-        // State
-        public override bool IsValid => Handle.IsValid();
-        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
-        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+        // Key
+        public string Key { get; }
         // Value
         public T Value {
             get {
@@ -56,132 +26,148 @@ namespace UnityEngine.AddressableAssets {
                 return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
             }
         }
-        // ValueObject
-        public override object ValueObject => Value;
-        public override object? ValueObjectSafe => ValueSafe;
+
+        // Constructor
+        public AddressableHandle(string key) {
+            Key = key;
+        }
+        public AddressableHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
+            Handle = handle;
+        }
+
+        // GetValueAsync
+        public async ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var value = await Handle.GetResultAsync( cancellationToken );
+            return value;
+        }
+
+    }
+    public abstract class AddressableListHandle<T> : AddressableHandleBase<IReadOnlyList<T>> where T : notnull {
+
+        // Keys
+        public string[] Keys { get; }
+        // Values
+        public IReadOnlyList<T> Values {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public IReadOnlyList<T>? ValuesSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
+
+        // Constructor
+        public AddressableListHandle(string[] keys) {
+            Keys = keys;
+        }
+        public AddressableListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
+            Keys = keys;
+            Handle = handle;
+        }
+
+        // GetValuesAsync
+        public async ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var value = await Handle.GetResultAsync( cancellationToken );
+            return value;
+        }
+
+    }
+    public abstract class DynamicAddressableHandle<T> : AddressableHandleBase<T> where T : notnull {
+
+        private string? key;
+
+        // Key
+        [AllowNull]
+        public string Key {
+            get {
+                Assert_IsValid();
+                return key!;
+            }
+            protected set {
+                key = value;
+            }
+        }
+        // Value
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public T? ValueSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
         // Exception
         public override Exception? Exception => Handle.OperationException;
 
         // Constructor
-        public AddressableHandle() {
+        public DynamicAddressableHandle() {
+        }
+        public DynamicAddressableHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
+            Handle = handle;
         }
 
         // GetValueAsync
-        public async Task<T> GetValueAsync(CancellationToken cancellationToken) {
+        public async ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( cancellationToken );
             return value;
         }
 
-        // GetValueObjectAsync
-        public override async Task<object> GetValueObjectAsync(CancellationToken cancellationToken) {
-            var value = await GetValueAsync( cancellationToken );
-            return value;
-        }
-
-        // Utils
-        public override string ToString() {
-            return Handle.DebugName;
-        }
-
-        // Heleprs
-        protected internal void Assert_IsValid() {
-            Assert.Operation.Message( $"AddressableHandle {this} must be valid" ).Valid( Handle.IsValid() );
-        }
-        protected internal void Assert_IsSucceeded() {
-            Assert.Operation.Message( $"AddressableHandle {this} must be succeeded" ).Valid( Handle.IsSucceeded() );
-        }
-        protected internal void Assert_IsNotValid() {
-            Assert.Operation.Message( $"AddressableHandle {this} is already valid" ).Valid( !Handle.IsValid() );
-        }
-
     }
-    // AddressableAssetHandle
-    public abstract class AddressableAssetHandle<T> : AddressableHandle<T> where T : notnull {
+    public abstract class DynamicAddressableListHandle<T> : AddressableHandleBase<IReadOnlyList<T>> where T : notnull {
 
-        // Constructor
-        public AddressableAssetHandle() {
-        }
+        private string[]? keys;
 
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
+        // Keys
+        [AllowNull]
+        public string[] Keys {
+            get {
+                Assert_IsValid();
+                return keys!;
+            }
+            protected set {
+                keys = value;
+            }
         }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
+        // Values
+        public IReadOnlyList<T> Values {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public IReadOnlyList<T>? ValuesSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
             }
         }
 
-    }
-    // AddressablePrefabHandle
-    public abstract class AddressablePrefabHandle<T> : AddressableHandle<T> where T : notnull {
-
         // Constructor
-        public AddressablePrefabHandle() {
+        public DynamicAddressableListHandle() {
+        }
+        public DynamicAddressableListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
+            Keys = keys;
+            Handle = handle;
         }
 
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
-    }
-    // AddressableSceneHandle
-    public abstract class AddressableSceneHandle : AddressableHandle<SceneInstance> {
-
-        // Constructor
-        public AddressableSceneHandle() {
-        }
-
-        // ActivateAsync
-        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+        // GetValuesAsync
+        public async ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( cancellationToken );
-            await value.ActivateAsync();
-            cancellationToken.ThrowIfCancellationRequested();
-            return value.Scene;
-        }
-
-        // UnloadAsync
-        public async Task UnloadAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            await Addressables.UnloadSceneAsync( Handle ).Task.WaitAsync( cancellationToken );
-            Handle = default;
-        }
-        public async Task UnloadSafeAsync(CancellationToken cancellationToken) {
-            if (Handle.IsValid()) {
-                await UnloadAsync( cancellationToken );
-            }
-        }
-
-    }
-    // AddressableInstanceHandle
-    public class AddressableInstanceHandle<T> : AddressableHandle<T> where T : notnull {
-
-        // Constructor
-        public AddressableInstanceHandle() {
-        }
-
-        // ReleaseInstance
-        public void ReleaseInstance() {
-            Assert_IsValid();
-            Addressables.ReleaseInstance( Handle );
-            Handle = default;
-        }
-        public void ReleaseInstanceSafe() {
-            if (Handle.IsValid()) {
-                ReleaseInstance();
-            }
+            return value;
         }
 
     }

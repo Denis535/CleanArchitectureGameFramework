@@ -3,7 +3,6 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
@@ -11,18 +10,14 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableSceneHandle {
+    public class SceneHandle : AddressableHandle<SceneInstance> {
 
-        public string Key { get; }
         public new Scene Value => base.Value.Scene;
 
         // Constructor
-        public SceneHandle(string key) {
-            Key = key;
+        public SceneHandle(string key) : base( key ) {
         }
-        public SceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) {
-            Key = key;
-            Handle = handle;
+        public SceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) : base( key, handle ) {
         }
 
         // LoadAsync
@@ -33,29 +28,36 @@ namespace UnityEngine.AddressableAssets {
             return value.Scene;
         }
 
-    }
-    public class DynamicSceneHandle : AddressableSceneHandle {
+        // ActivateAsync
+        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var value = await Handle.GetResultAsync( cancellationToken );
+            await value.ActivateAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            return value.Scene;
+        }
 
-        private string? key;
-
-        [AllowNull]
-        public string Key {
-            get {
-                Assert_IsValid();
-                return key!;
-            }
-            protected set {
-                key = value;
+        // UnloadAsync
+        public async Task UnloadAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            await Addressables.UnloadSceneAsync( Handle ).Task.WaitAsync( cancellationToken );
+            Handle = default;
+        }
+        public async Task UnloadSafeAsync(CancellationToken cancellationToken) {
+            if (Handle.IsValid()) {
+                await UnloadAsync( cancellationToken );
             }
         }
+
+    }
+    public class DynamicSceneHandle : DynamicAddressableHandle<SceneInstance> {
+
         public new Scene Value => base.Value.Scene;
 
         // Constructor
         public DynamicSceneHandle() {
         }
-        public DynamicSceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) {
-            Key = key;
-            Handle = handle;
+        public DynamicSceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) : base( key, handle ) {
         }
 
         // LoadAsync
@@ -64,6 +66,27 @@ namespace UnityEngine.AddressableAssets {
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
             var value = await Handle.GetResultAsync( cancellationToken );
             return value.Scene;
+        }
+
+        // ActivateAsync
+        public async Task<Scene> ActivateAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            var value = await Handle.GetResultAsync( cancellationToken );
+            await value.ActivateAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            return value.Scene;
+        }
+
+        // UnloadAsync
+        public async Task UnloadAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            await Addressables.UnloadSceneAsync( Handle ).Task.WaitAsync( cancellationToken );
+            Handle = default;
+        }
+        public async Task UnloadSafeAsync(CancellationToken cancellationToken) {
+            if (Handle.IsValid()) {
+                await UnloadAsync( cancellationToken );
+            }
         }
 
     }
