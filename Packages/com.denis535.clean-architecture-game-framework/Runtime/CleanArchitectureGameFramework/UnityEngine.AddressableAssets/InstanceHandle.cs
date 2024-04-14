@@ -3,13 +3,39 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class InstanceHandle<T> : AddressableHandle<T>, ICloneable where T : notnull, Component {
+    public interface IInstanceHandle<out T> where T : notnull, Component {
+
+        // State
+        bool IsValid { get; }
+        bool IsDone { get; }
+        bool IsSucceeded { get; }
+        bool IsFailed { get; }
+        // Value
+        T Value { get; }
+        T? ValueSafe { get; }
+        // Exception
+        Exception? Exception { get; }
+
+        // InstantiateAsync
+        //ValueTask<T> InstantiateAsync(CancellationToken cancellationToken);
+        //ValueTask<T> InstantiateAsync(Vector3 position, Quaternion rotation, CancellationToken cancellationToken);
+        //ValueTask<T> InstantiateAsync(Transform parent, CancellationToken cancellationToken);
+        //ValueTask<T> InstantiateAsync(Vector3 position, Quaternion rotation, Transform parent, CancellationToken cancellationToken);
+
+        // GetValueAsync
+        //ValueTask<T> GetValueAsync(CancellationToken cancellationToken);
+
+        // ReleaseInstance
+        void ReleaseInstance();
+        void ReleaseInstanceSafe();
+
+    }
+    public class InstanceHandle<T> : AddressableHandle<T>, IInstanceHandle<T>, ICloneable where T : notnull, Component {
 
         // Constructor
         public InstanceHandle(string key) : base( key ) {
@@ -63,7 +89,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicInstanceHandle<T> : DynamicAddressableHandle<T>, ICloneable where T : notnull, Component {
+    public class DynamicInstanceHandle<T> : DynamicAddressableHandle<T>, IInstanceHandle<T>, ICloneable where T : notnull, Component {
 
         // Constructor
         public DynamicInstanceHandle() {

@@ -4,8 +4,6 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
-    using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -13,19 +11,6 @@ namespace UnityEngine.AddressableAssets {
 
         // Key
         public string Key { get; }
-        // Value
-        public T Value {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public T? ValueSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
 
         // Constructor
         public AddressableHandle(string key) {
@@ -36,31 +21,11 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // GetValueAsync
-        public async ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
-        }
-
     }
-    public abstract class AddressableListHandle<T> : AddressableHandleBase<IReadOnlyList<T>> where T : notnull {
+    public abstract class AddressableListHandle<T> : AddressableListHandleBase<T> where T : notnull {
 
         // Keys
         public string[] Keys { get; }
-        // Values
-        public IReadOnlyList<T> Values {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public IReadOnlyList<T>? ValuesSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
 
         // Constructor
         public AddressableListHandle(string[] keys) {
@@ -69,13 +34,6 @@ namespace UnityEngine.AddressableAssets {
         public AddressableListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
             Keys = keys;
             Handle = handle;
-        }
-
-        // GetValuesAsync
-        public async ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
         }
 
     }
@@ -94,21 +52,6 @@ namespace UnityEngine.AddressableAssets {
                 key = value;
             }
         }
-        // Value
-        public T Value {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public T? ValueSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
-        // Exception
-        public override Exception? Exception => Handle.OperationException;
 
         // Constructor
         public DynamicAddressableHandle() {
@@ -118,15 +61,8 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // GetValueAsync
-        public async ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
-        }
-
     }
-    public abstract class DynamicAddressableListHandle<T> : AddressableHandleBase<IReadOnlyList<T>> where T : notnull {
+    public abstract class DynamicAddressableListHandle<T> : AddressableListHandleBase<T> where T : notnull {
 
         private string[]? keys;
 
@@ -141,19 +77,6 @@ namespace UnityEngine.AddressableAssets {
                 keys = value;
             }
         }
-        // Values
-        public IReadOnlyList<T> Values {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public IReadOnlyList<T>? ValuesSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
 
         // Constructor
         public DynamicAddressableListHandle() {
@@ -161,13 +84,6 @@ namespace UnityEngine.AddressableAssets {
         public DynamicAddressableListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) {
             Keys = keys;
             Handle = handle;
-        }
-
-        // GetValuesAsync
-        public async ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            var value = await Handle.GetResultAsync( cancellationToken );
-            return value;
         }
 
     }
