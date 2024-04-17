@@ -6,8 +6,9 @@ namespace System {
 
     public class Lock {
 
-        private volatile bool isLocked;
+        private bool isLocked;
         public bool IsLocked { get => isLocked; internal set => isLocked = value; }
+        public bool CanEnter => !isLocked;
 
         public Lock() {
             IsLocked = false;
