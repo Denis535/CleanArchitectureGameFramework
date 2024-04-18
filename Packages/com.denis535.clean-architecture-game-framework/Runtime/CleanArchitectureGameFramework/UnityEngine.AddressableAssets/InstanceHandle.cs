@@ -55,8 +55,7 @@ namespace UnityEngine.AddressableAssets {
             return Clone();
         }
         public InstanceHandle<T> Clone() {
-            Assert_IsValid();
-            Addressables.ResourceManager.Acquire( Handle );
+            if (Handle.IsValid()) Addressables.ResourceManager.Acquire( Handle );
             return new InstanceHandle<T>( Key, Handle );
         }
 
@@ -107,10 +106,9 @@ namespace UnityEngine.AddressableAssets {
         object ICloneable.Clone() {
             return Clone();
         }
-        public InstanceHandle<T> Clone() {
-            Assert_IsValid();
-            Addressables.ResourceManager.Acquire( Handle );
-            return new InstanceHandle<T>( Key, Handle );
+        public DynamicInstanceHandle<T> Clone() {
+            if (Handle.IsValid()) Addressables.ResourceManager.Acquire( Handle );
+            return new DynamicInstanceHandle<T>( Key, Handle );
         }
 
     }
