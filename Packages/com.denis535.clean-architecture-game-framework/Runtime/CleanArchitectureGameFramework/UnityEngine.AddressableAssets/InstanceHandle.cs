@@ -37,16 +37,21 @@ namespace UnityEngine.AddressableAssets {
             Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, position, rotation, parent );
             return Handle.GetResultAsync( cancellationToken );
         }
+        public ValueTask<T> InstantiateAsync(CancellationToken cancellationToken, Func<T, T> instantiate) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, instantiate );
+            return Handle.GetResultAsync( cancellationToken );
+        }
 
-        // ReleaseInstance
-        public void ReleaseInstance() {
+        // Release
+        public void Release() {
             Assert_IsValid();
-            Addressables.ReleaseInstance( Handle );
+            Addressables.Release( Handle );
             Handle = default;
         }
-        public void ReleaseInstanceSafe() {
+        public void ReleaseSafe() {
             if (Handle.IsValid()) {
-                ReleaseInstance();
+                Release();
             }
         }
 
@@ -90,15 +95,15 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // ReleaseInstance
-        public void ReleaseInstance() {
+        // Release
+        public void Release() {
             Assert_IsValid();
-            Addressables.ReleaseInstance( Handle );
+            Addressables.Release( Handle );
             Handle = default;
         }
-        public void ReleaseInstanceSafe() {
+        public void ReleaseSafe() {
             if (Handle.IsValid()) {
-                ReleaseInstance();
+                Release();
             }
         }
 
