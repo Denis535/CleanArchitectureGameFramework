@@ -20,14 +20,16 @@ namespace System.Threading.Tasks {
             if (cancellationToken.IsCancellationRequested) {
                 throw new OperationCanceledException( cancellationToken );
             }
-            var tcs = new TaskCompletionSource<object?>();
-            using (cancellationToken.Register( () => tcs.TrySetResult( null ) )) {
-                if (await Task.WhenAny( task, tcs.Task ).ConfigureAwait( false ) != task) {
+            using (cancellationToken.WaitAsync( out var cancellationTask )) {
+                var anyTask = await Task.WhenAny( task, cancellationTask ).ConfigureAwait( false );
+                if (anyTask == cancellationTask) {
                     throw new OperationCanceledException( cancellationToken );
                 }
             }
             await task.ConfigureAwait( false );
         }
+
+        // WaitAsync
         public static async Task<T> WaitAsync<T>(this Task<T> task, CancellationToken cancellationToken) {
             if (task.IsCompleted) {
                 return await task.ConfigureAwait( false );
@@ -38,9 +40,9 @@ namespace System.Threading.Tasks {
             if (cancellationToken.IsCancellationRequested) {
                 throw new OperationCanceledException( cancellationToken );
             }
-            var tcs = new TaskCompletionSource<object?>();
-            using (cancellationToken.Register( () => tcs.TrySetResult( null ) )) {
-                if (await Task.WhenAny( task, tcs.Task ).ConfigureAwait( false ) != task) {
+            using (cancellationToken.WaitAsync( out var cancellationTask )) {
+                var anyTask = await Task.WhenAny( task, cancellationTask ).ConfigureAwait( false );
+                if (anyTask == cancellationTask) {
                     throw new OperationCanceledException( cancellationToken );
                 }
             }
@@ -50,6 +52,13 @@ namespace System.Threading.Tasks {
         // Throw
         public static async void Throw(this Task task) {
             await task;
+        }
+
+        // Helpers
+        private static CancellationTokenRegistration WaitAsync(this CancellationToken cancellationToken, out Task task) {
+            var tcs = new TaskCompletionSource<object?>();
+            task = tcs.Task;
+            return cancellationToken.Register( tcs => ((TaskCompletionSource<object?>) tcs).SetResult( null ), tcs );
         }
 
     }

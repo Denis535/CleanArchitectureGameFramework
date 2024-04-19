@@ -26,11 +26,11 @@ namespace UnityEngine {
         // Get
         public static object Get<T>() where T : notnull {
             var result = Context<T>.Value;
-            return result ?? throw Exceptions.Internal.Exception( $"ValueScope {typeof( T )} has no value" );
+            return result ?? throw Exceptions.Internal.Exception( $"Context {typeof( T )} has no value" );
         }
         public static TValue Get<T, TValue>() where T : notnull {
             var result = (TValue?) Context<T>.Value;
-            return result ?? throw Exceptions.Internal.Exception( $"ValueScope {typeof( T )} has no value" );
+            return result ?? throw Exceptions.Internal.Exception( $"Context {typeof( T )} has no value" );
         }
 
     }

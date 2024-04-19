@@ -150,6 +150,7 @@ namespace UnityEngine.AddressableAssets {
         public static async ValueTask<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
                 var result = await handle.Task.WaitAsync( cancellationToken );
+                cancellationToken.ThrowIfCancellationRequested();
                 if (handle.Status is AsyncOperationStatus.Succeeded) {
                     return result;
                 }
