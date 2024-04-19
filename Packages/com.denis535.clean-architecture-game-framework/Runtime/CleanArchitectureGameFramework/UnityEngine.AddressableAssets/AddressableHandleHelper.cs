@@ -158,8 +158,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Helpers
-        private static AsyncOperationHandle<TObject> Chain<TObject, TObjectDependency>(this AsyncOperationHandle<TObjectDependency> handle, Func<AsyncOperationHandle<TObjectDependency>, AsyncOperationHandle<TObject>> operationProvider) {
-            return Addressables.ResourceManager.CreateChainOperation( handle, operationProvider );
+        private static AsyncOperationHandle<T2> Chain<T1, T2>(this AsyncOperationHandle<T1> handle1, Func<AsyncOperationHandle<T1>, AsyncOperationHandle<T2>> handle2Provider) {
+            var handle2 = Addressables.ResourceManager.CreateChainOperation( handle1, handle2Provider );
+            handle2.Destroyed += i => Addressables.Release( handle1 );
+            return handle2;
         }
 
     }
