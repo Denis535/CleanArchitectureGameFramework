@@ -8,12 +8,35 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class InstanceHandle<T> : AddressableHandleBase3<T>, ICloneable where T : notnull, Component {
+    public class InstanceHandle<T> : AddressableHandle, ICloneable where T : notnull, Component {
+
+        // Key
+        public new string Key => base.Key!;
+        // Handle
+        protected AsyncOperationHandle<T> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public T? ValueSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
         public InstanceHandle(string key) : base( key ) {
         }
-        public InstanceHandle(string key, AsyncOperationHandle<T> handle) : base( key, handle ) {
+        public InstanceHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+            Handle = handle;
         }
 
         // InstantiateAsync
@@ -66,12 +89,33 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicInstanceHandle<T> : DynamicAddressableHandleBase3<T>, ICloneable where T : notnull, Component {
+    public class DynamicInstanceHandle<T> : AddressableHandle, ICloneable where T : notnull, Component {
+
+        // Handle
+        protected AsyncOperationHandle<T> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public T? ValueSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
-        public DynamicInstanceHandle() {
+        public DynamicInstanceHandle() : base( null ) {
         }
-        public DynamicInstanceHandle(string key, AsyncOperationHandle<T> handle) : base( key, handle ) {
+        public DynamicInstanceHandle(string? key, AsyncOperationHandle<T> handle) : base( key ) {
+            Handle = handle;
         }
 
         // InstantiateAsync
@@ -106,6 +150,7 @@ namespace UnityEngine.AddressableAssets {
         public void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
+            Key = null;
             Handle = default;
         }
         public void ReleaseSafe() {

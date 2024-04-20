@@ -8,12 +8,35 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AssetHandle<T> : AddressableHandleBase3<T> where T : notnull, UnityEngine.Object {
+    public class AssetHandle<T> : AddressableHandle where T : notnull, UnityEngine.Object {
+
+        // Key
+        public new string Key => base.Key!;
+        // Handle
+        protected AsyncOperationHandle<T> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public T? ValueSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
         public AssetHandle(string key) : base( key ) {
         }
-        public AssetHandle(string key, AsyncOperationHandle<T> handle) : base( key, handle ) {
+        public AssetHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+            Handle = handle;
         }
 
         // LoadAsync
@@ -23,6 +46,12 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
+        // GetValueAsync
+        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
         // Release
         public void Release() {
             Assert_IsValid();
@@ -36,12 +65,35 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class AssetListHandle<T> : AddressableListHandleBase3<T> where T : notnull, UnityEngine.Object {
+    public class AssetListHandle<T> : AddressableListHandle where T : notnull, UnityEngine.Object {
+
+        // Keys
+        public new string[] Keys => base.Keys!;
+        // Handle
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public IReadOnlyList<T> Values {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public IReadOnlyList<T>? ValuesSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
         public AssetListHandle(string[] keys) : base( keys ) {
         }
-        public AssetListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys, handle ) {
+        public AssetListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys ) {
+            Handle = handle;
         }
 
         // LoadAsync
@@ -51,6 +103,12 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
+        // GetValuesAsync
+        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
         // Release
         public void Release() {
             Assert_IsValid();
@@ -64,12 +122,33 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetHandle<T> : DynamicAddressableHandleBase3<T> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetHandle<T> : AddressableHandle where T : notnull, UnityEngine.Object {
+
+        // Handle
+        protected AsyncOperationHandle<T> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public T? ValueSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
-        public DynamicAssetHandle() {
+        public DynamicAssetHandle() : base( null ) {
         }
-        public DynamicAssetHandle(string key, AsyncOperationHandle<T> handle) : base( key, handle ) {
+        public DynamicAssetHandle(string? key, AsyncOperationHandle<T> handle) : base( key ) {
+            Handle = handle;
         }
 
         // LoadAsync
@@ -79,10 +158,17 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
+        // GetValueAsync
+        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
         // Release
         public void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
+            Key = null;
             Handle = default;
         }
         public void ReleaseSafe() {
@@ -92,12 +178,33 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetListHandle<T> : DynamicAddressableListHandleBase3<T> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetListHandle<T> : AddressableListHandle where T : notnull, UnityEngine.Object {
+
+        // Handle
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public IReadOnlyList<T> Values {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public IReadOnlyList<T>? ValuesSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
 
         // Constructor
-        public DynamicAssetListHandle() {
+        public DynamicAssetListHandle() : base( null ) {
         }
-        public DynamicAssetListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys, handle ) {
+        public DynamicAssetListHandle(string[]? keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys ) {
+            Handle = handle;
         }
 
         // LoadAsync
@@ -107,10 +214,17 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
 
+        // GetValuesAsync
+        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
         // Release
         public void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
+            Keys = null;
             Handle = default;
         }
         public void ReleaseSafe() {
