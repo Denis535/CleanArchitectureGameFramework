@@ -97,7 +97,7 @@ namespace UnityEngine.AddressableAssets {
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
         }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Transform parent) where T : notnull, Component {
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Transform? parent) where T : notnull, Component {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
@@ -113,7 +113,7 @@ namespace UnityEngine.AddressableAssets {
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
         }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform parent) where T : notnull, Component {
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform? parent) where T : notnull, Component {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
