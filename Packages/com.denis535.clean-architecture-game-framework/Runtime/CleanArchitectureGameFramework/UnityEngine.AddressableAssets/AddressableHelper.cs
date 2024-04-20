@@ -9,7 +9,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    internal static class AddressableHandleHelper {
+    internal static class AddressableHelper {
 
         // IsState
         public static bool IsNone<T>(this AsyncOperationHandle<T> handle) {

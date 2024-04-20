@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AssetHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
+    public class AssetHandle<T> : AddressableHandleBase3<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public AssetHandle(string key) : base( key ) {
@@ -19,7 +19,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadAsync
         public ValueTask<T> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key );
+            Handle = AddressableHelper.LoadAssetAsync<T>( Key );
             return Handle.GetResultAsync( cancellationToken );
         }
 
@@ -36,7 +36,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class AssetListHandle<T> : AddressableListHandle<T> where T : notnull, UnityEngine.Object {
+    public class AssetListHandle<T> : AddressableListHandleBase3<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public AssetListHandle(string[] keys) : base( keys ) {
@@ -47,7 +47,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadAsync
         public ValueTask<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys );
+            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 
@@ -64,7 +64,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetHandle<T> : DynamicAddressableHandle<T> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetHandle<T> : DynamicAddressableHandleBase3<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public DynamicAssetHandle() {
@@ -75,7 +75,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadAsync
         public ValueTask<T> LoadAsync(string key, CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key = key );
+            Handle = AddressableHelper.LoadAssetAsync<T>( Key = key );
             return Handle.GetResultAsync( cancellationToken );
         }
 
@@ -92,7 +92,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetListHandle<T> : DynamicAddressableListHandle<T> where T : notnull, UnityEngine.Object {
+    public class DynamicAssetListHandle<T> : DynamicAddressableListHandleBase3<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public DynamicAssetListHandle() {
@@ -103,7 +103,7 @@ namespace UnityEngine.AddressableAssets {
         // LoadAsync
         public ValueTask<IReadOnlyList<T>> LoadAsync(string[] keys, CancellationToken cancellationToken) {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys = keys );
+            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys = keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 

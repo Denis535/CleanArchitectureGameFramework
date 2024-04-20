@@ -9,7 +9,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableHandle<SceneInstance> {
+    public class SceneHandle : AddressableHandleBase3<SceneInstance> {
 
         // Value
         public new Scene Value => base.Value.Scene;
@@ -49,7 +49,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicSceneHandle : DynamicAddressableHandle<SceneInstance> {
+    public class DynamicSceneHandle : DynamicAddressableHandleBase3<SceneInstance> {
 
         // Value
         public new Scene Value => base.Value.Scene;
