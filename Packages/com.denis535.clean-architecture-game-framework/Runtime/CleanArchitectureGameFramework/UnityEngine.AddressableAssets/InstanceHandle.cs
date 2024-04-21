@@ -8,7 +8,22 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class InstanceHandle<T> : AddressableHandle, ICloneable where T : notnull, Component {
+    public abstract class InstanceHandle : AddressableHandle {
+
+        // Constructor
+        public InstanceHandle(string key) : base( key ) {
+        }
+
+        // Release
+        public abstract void Release();
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
+
+    }
+    public class InstanceHandle<T> : InstanceHandle, ICloneable where T : notnull, Component {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -66,15 +81,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Release
-        public void Release() {
+        public override void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
             Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
         }
 
         // Utils
@@ -87,7 +97,22 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicInstanceHandle<T> : DynamicAddressableHandle, ICloneable where T : notnull, Component {
+    public abstract class DynamicInstanceHandle : DynamicAddressableHandle {
+
+        // Constructor
+        public DynamicInstanceHandle(string? key) : base( key ) {
+        }
+
+        // Release
+        public abstract void Release();
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
+
+    }
+    public class DynamicInstanceHandle<T> : DynamicInstanceHandle, ICloneable where T : notnull, Component {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -145,16 +170,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Release
-        public void Release() {
+        public override void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
             Key = null;
             Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
         }
 
         // Utils

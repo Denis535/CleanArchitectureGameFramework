@@ -1,43 +1,32 @@
-#nullable enable
+﻿#nullable enable
 namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class AddressableHandle : AddressableHandleBase {
+    public abstract class AddressableListHandleBase {
 
-        // Key
-        public string Key { get; }
-
-        // Constructor
-        public AddressableHandle(string key) {
-            Key = key;
-        }
-
-        // Utils
-        public override string ToString() {
-            return "AddressableHandle: " + Key;
-        }
-
-    }
-    public abstract class DynamicAddressableHandle : AddressableHandleBase {
-
-        // Key
-        public string? Key { get; protected set; }
+        // Handle
+        public abstract bool IsValid { get; }
+        public abstract bool IsDone { get; }
+        public abstract bool IsSucceeded { get; }
+        public abstract bool IsFailed { get; }
+        public abstract Exception? Exception { get; }
 
         // Constructor
-        public DynamicAddressableHandle(string? key) {
-            Key = key;
+        public AddressableListHandleBase() {
         }
 
-        // Utils
-        public override string ToString() {
-            if (Key != null) {
-                return "DynamicAddressableHandle: " + Key;
-            } else {
-                return "DynamicAddressableHandle";
-            }
+        // Heleprs
+        protected void Assert_IsValid() {
+            Assert.Operation.Message( $"AddressableListHandle {this} must be valid" ).Valid( IsValid );
+        }
+        protected void Assert_IsSucceeded() {
+            Assert.Operation.Message( $"AddressableListHandle {this} must be succeeded" ).Valid( IsSucceeded );
+        }
+        protected void Assert_IsNotValid() {
+            Assert.Operation.Message( $"AddressableListHandle {this} is already valid" ).Valid( !IsValid );
         }
 
     }
