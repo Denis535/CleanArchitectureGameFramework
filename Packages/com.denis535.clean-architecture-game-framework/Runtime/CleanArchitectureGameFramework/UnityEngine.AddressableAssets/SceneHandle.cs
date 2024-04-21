@@ -11,8 +11,6 @@ namespace UnityEngine.AddressableAssets {
 
     public class SceneHandle : AddressableHandle {
 
-        // Key
-        public new string Key => base.Key!;
         // Handle
         protected AsyncOperationHandle<SceneInstance> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
@@ -76,7 +74,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicSceneHandle : AddressableHandle {
+    public class DynamicSceneHandle : DynamicAddressableHandle {
 
         // Handle
         protected AsyncOperationHandle<SceneInstance> Handle { get; set; }

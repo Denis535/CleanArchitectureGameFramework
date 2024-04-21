@@ -10,8 +10,6 @@ namespace UnityEngine.AddressableAssets {
 
     public class AssetHandle<T> : AddressableHandle where T : notnull, UnityEngine.Object {
 
-        // Key
-        public new string Key => base.Key!;
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
@@ -65,64 +63,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class AssetListHandle<T> : AddressableListHandle where T : notnull, UnityEngine.Object {
-
-        // Keys
-        public new string[] Keys => base.Keys!;
-        // Handle
-        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
-        public override bool IsValid => Handle.IsValid();
-        public override bool IsDone => Handle.IsDone;
-        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
-        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
-        public override Exception? Exception => Handle.OperationException;
-        public IReadOnlyList<T> Values {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public IReadOnlyList<T>? ValuesSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
-
-        // Constructor
-        public AssetListHandle(string[] keys) : base( keys ) {
-        }
-        public AssetListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys ) {
-            Handle = handle;
-        }
-
-        // LoadAsync
-        public ValueTask<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
-            Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // GetValuesAsync
-        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Handle = default;
-        }
-        public void ReleaseSafe() {
-            if (Handle.IsValid()) {
-                Release();
-            }
-        }
-
-    }
-    public class DynamicAssetHandle<T> : AddressableHandle where T : notnull, UnityEngine.Object {
+    public class DynamicAssetHandle<T> : DynamicAddressableHandle where T : notnull, UnityEngine.Object {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -178,7 +119,62 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicAssetListHandle<T> : AddressableListHandle where T : notnull, UnityEngine.Object {
+    public class AssetListHandle<T> : AddressableListHandle where T : notnull, UnityEngine.Object {
+
+        // Handle
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsDone;
+        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
+        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
+        public override Exception? Exception => Handle.OperationException;
+        public IReadOnlyList<T> Values {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
+        public IReadOnlyList<T>? ValuesSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
+
+        // Constructor
+        public AssetListHandle(string[] keys) : base( keys ) {
+        }
+        public AssetListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys ) {
+            Handle = handle;
+        }
+
+        // LoadAsync
+        public ValueTask<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetValuesAsync
+        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Addressables.Release( Handle );
+            Handle = default;
+        }
+        public void ReleaseSafe() {
+            if (Handle.IsValid()) {
+                Release();
+            }
+        }
+
+    }
+    public class DynamicAssetListHandle<T> : DynamicAddressableListHandle where T : notnull, UnityEngine.Object {
 
         // Handle
         protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }

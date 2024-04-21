@@ -10,8 +10,6 @@ namespace UnityEngine.AddressableAssets {
 
     public class InstanceHandle<T> : AddressableHandle, ICloneable where T : notnull, Component {
 
-        // Key
-        public new string Key => base.Key!;
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
@@ -89,7 +87,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class DynamicInstanceHandle<T> : AddressableHandle, ICloneable where T : notnull, Component {
+    public class DynamicInstanceHandle<T> : DynamicAddressableHandle, ICloneable where T : notnull, Component {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
