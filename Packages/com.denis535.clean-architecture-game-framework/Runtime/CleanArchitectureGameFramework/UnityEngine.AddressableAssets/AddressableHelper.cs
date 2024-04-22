@@ -29,8 +29,8 @@ namespace UnityEngine.AddressableAssets {
         public static AsyncOperationHandle<IReadOnlyList<T>> LoadAssetListAsync<T>(string[] keys) where T : UnityEngine.Object {
             return Addressables.LoadAssetsAsync<T>( keys.AsEnumerable(), null, Addressables.MergeMode.Union ).Chain( i => {
                 if (i.IsSucceeded()) {
-                    var assets = (IReadOnlyList<T>) i.Result;
-                    return Addressables.ResourceManager.CreateCompletedOperation( assets, null );
+                    var assets = i.Result;
+                    return Addressables.ResourceManager.CreateCompletedOperation( (IReadOnlyList<T>) assets, null );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<IReadOnlyList<T>>( null!, i.OperationException );
             } );
@@ -41,11 +41,7 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = (T?) prefab.GetComponent<T>();
-                    if (component != null) {
-                        return Addressables.ResourceManager.CreateCompletedOperation<T>( component, null );
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateCastOperation<T>( prefab );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
@@ -54,11 +50,7 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetsAsync<GameObject>( keys.AsEnumerable(), null, Addressables.MergeMode.Union ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefabs = i.Result;
-                    var components = prefabs.Select( i => i.GetComponent<T>() ).ToList();
-                    if (components.All( i => i != null )) {
-                        return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( components, null );
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateCastOperation<T>( (IReadOnlyList<GameObject>) prefabs );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<IReadOnlyList<T>>( null!, i.OperationException );
             } );
@@ -69,14 +61,7 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = prefab.GetComponent<T>();
-                    if (component != null) {
-                        var instance = GameObject.Instantiate( component );
-                        var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                        operation.Destroyed += i => GameObject.Destroy( ((T) i.Result).gameObject );
-                        return operation;
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateInstantiateOperation<T>( prefab );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
@@ -85,14 +70,7 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = prefab.GetComponent<T>();
-                    if (component != null) {
-                        var instance = GameObject.Instantiate( component, position, rotation );
-                        var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                        operation.Destroyed += i => GameObject.Destroy( ((T) i.Result).gameObject );
-                        return operation;
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateInstantiateOperation<T>( prefab, position, rotation );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
@@ -101,14 +79,7 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = prefab.GetComponent<T>();
-                    if (component != null) {
-                        var instance = GameObject.Instantiate( component, parent );
-                        var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                        operation.Destroyed += i => GameObject.Destroy( ((T) i.Result).gameObject );
-                        return operation;
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateInstantiateOperation<T>( prefab, parent );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
@@ -117,35 +88,31 @@ namespace UnityEngine.AddressableAssets {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = prefab.GetComponent<T>();
-                    if (component != null) {
-                        var instance = GameObject.Instantiate( component, position, rotation, parent );
-                        var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                        operation.Destroyed += i => GameObject.Destroy( ((T) i.Result).gameObject );
-                        return operation;
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateInstantiateOperation<T>( prefab, position, rotation, parent );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
         }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Func<T, T> instanceProvider) where T : notnull, Component {
+        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Func<GameObject, T> instanceProvider) where T : notnull, Component {
             return Addressables.LoadAssetAsync<GameObject>( key ).Chain( i => {
                 if (i.IsSucceeded()) {
                     var prefab = i.Result;
-                    var component = prefab.GetComponent<T>();
-                    if (component != null) {
-                        var instance = instanceProvider( component );
-                        var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                        operation.Destroyed += i => GameObject.Destroy( ((T) i.Result).gameObject );
-                        return operation;
-                    }
-                    return Addressables.ResourceManager.CreateCompletedOperation<T>( null!, $"Component '{typeof( T )}' was not found" );
+                    return CreateInstantiateOperation<T>( prefab, instanceProvider );
                 }
                 return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, i.OperationException );
             } );
         }
 
+        // GetResult
+        public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
+            if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
+                var result = handle.WaitForCompletion();
+                if (handle.Status is AsyncOperationStatus.Succeeded) {
+                    return result;
+                }
+            }
+            throw handle.OperationException;
+        }
         // GetResultAsync
         public static async ValueTask<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
@@ -163,6 +130,72 @@ namespace UnityEngine.AddressableAssets {
             var handle2 = Addressables.ResourceManager.CreateChainOperation( handle1, handle2Provider );
             handle2.Destroyed += i => Addressables.Release( handle1 );
             return handle2;
+        }
+        // Helpers
+        private static AsyncOperationHandle<T> CreateCastOperation<T>(GameObject gameObject) where T : Component {
+            try {
+                return Addressables.ResourceManager.CreateCompletedOperation( gameObject.RequireComponent<T>(), null );
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
+        }
+        private static AsyncOperationHandle<IReadOnlyList<T>> CreateCastOperation<T>(IReadOnlyList<GameObject> gameObjects) where T : Component {
+            try {
+                return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( gameObjects.Select( i => i.RequireComponent<T>() ).ToList(), null );
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<IReadOnlyList<T>>( null!, ex );
+            }
+        }
+        // Helpers
+        private static AsyncOperationHandle<T> CreateInstantiateOperation<T>(GameObject prefab) where T : Component {
+            try {
+                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>() );
+                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
+                operation.Destroyed += i => UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
+                return operation;
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
+        }
+        private static AsyncOperationHandle<T> CreateInstantiateOperation<T>(GameObject prefab, Transform? parent) where T : Component {
+            try {
+                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), parent );
+                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
+                operation.Destroyed += i => UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
+                return operation;
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
+        }
+        private static AsyncOperationHandle<T> CreateInstantiateOperation<T>(GameObject prefab, Vector3 position, Quaternion rotation) where T : Component {
+            try {
+                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), position, rotation );
+                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
+                operation.Destroyed += i => UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
+                return operation;
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
+        }
+        private static AsyncOperationHandle<T> CreateInstantiateOperation<T>(GameObject prefab, Vector3 position, Quaternion rotation, Transform? parent) where T : Component {
+            try {
+                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), position, rotation, parent );
+                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
+                operation.Destroyed += i => UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
+                return operation;
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
+        }
+        private static AsyncOperationHandle<T> CreateInstantiateOperation<T>(GameObject prefab, Func<GameObject, T> instanceProvider) where T : Component {
+            try {
+                var instance = instanceProvider( prefab );
+                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
+                operation.Destroyed += i => UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
+                return operation;
+            } catch (Exception ex) {
+                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
+            }
         }
 
     }

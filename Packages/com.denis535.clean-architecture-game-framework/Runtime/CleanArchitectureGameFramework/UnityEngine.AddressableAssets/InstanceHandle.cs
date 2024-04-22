@@ -74,7 +74,7 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
         // InstantiateAsync
-        public ValueTask<T> InstantiateAsync(CancellationToken cancellationToken, Func<T, T> instanceProvider) {
+        public ValueTask<T> InstantiateAsync(Func<GameObject, T> instanceProvider, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key, instanceProvider );
             return Handle.GetResultAsync( cancellationToken );
@@ -163,7 +163,7 @@ namespace UnityEngine.AddressableAssets {
             return Handle.GetResultAsync( cancellationToken );
         }
         // InstantiateAsync
-        public ValueTask<T> InstantiateAsync(string key, CancellationToken cancellationToken, Func<T, T> instanceProvider) {
+        public ValueTask<T> InstantiateAsync(string key, Func<GameObject, T> instanceProvider, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key = key, instanceProvider );
             return Handle.GetResultAsync( cancellationToken );
