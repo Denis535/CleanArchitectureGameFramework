@@ -23,6 +23,21 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
+    public abstract class DynamicAssetHandle : DynamicAddressableHandle {
+
+        // Constructor
+        public DynamicAssetHandle(string? key) : base( key ) {
+        }
+
+        // Release
+        public abstract void Release();
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
+
+    }
     public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
 
         // Handle
@@ -52,14 +67,23 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
+        // Load
+        public T Load() {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.LoadAssetAsync<T>( Key );
+            return Handle.GetResult();
+        }
         public ValueTask<T> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetAsync<T>( Key );
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetValueAsync
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
         public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
@@ -70,21 +94,6 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsValid();
             Addressables.Release( Handle );
             Handle = default;
-        }
-
-    }
-    public abstract class DynamicAssetHandle : DynamicAddressableHandle {
-
-        // Constructor
-        public DynamicAssetHandle(string? key) : base( key ) {
-        }
-
-        // Release
-        public abstract void Release();
-        public void ReleaseSafe() {
-            if (IsValid) {
-                Release();
-            }
         }
 
     }
@@ -117,14 +126,23 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
+        // Load
+        public T Load(string key) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.LoadAssetAsync<T>( Key = key );
+            return Handle.GetResult();
+        }
         public ValueTask<T> LoadAsync(string key, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetAsync<T>( Key = key );
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetValueAsync
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
         public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );

@@ -23,6 +23,21 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
+    public abstract class DynamicInstanceHandle : DynamicAddressableHandle {
+
+        // Constructor
+        public DynamicInstanceHandle(string? key) : base( key ) {
+        }
+
+        // Release
+        public abstract void Release();
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
+
+    }
     public class InstanceHandle<T> : InstanceHandle, ICloneable where T : notnull, Component {
 
         // Handle
@@ -52,6 +67,33 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
+        // Instantiate
+        public T Instantiate() {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key );
+            return Handle.GetResult();
+        }
+        public T Instantiate(Vector3 position, Quaternion rotation) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key, position, rotation );
+            return Handle.GetResult();
+        }
+        public T Instantiate(Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key, parent );
+            return Handle.GetResult();
+        }
+        public T Instantiate(Vector3 position, Quaternion rotation, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key, position, rotation, parent );
+            return Handle.GetResult();
+        }
+        public T Instantiate(Func<GameObject, T> instanceProvider) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key, instanceProvider );
+            return Handle.GetResult();
+        }
+
         // InstantiateAsync
         public ValueTask<T> InstantiateAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
@@ -73,10 +115,19 @@ namespace UnityEngine.AddressableAssets {
             Handle = AddressableHelper.InstantiateAsync<T>( Key, position, rotation, parent );
             return Handle.GetResultAsync( cancellationToken );
         }
-        // InstantiateAsync
         public ValueTask<T> InstantiateAsync(Func<GameObject, T> instanceProvider, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key, instanceProvider );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
+        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
         }
 
@@ -94,21 +145,6 @@ namespace UnityEngine.AddressableAssets {
         public InstanceHandle<T> Clone() {
             if (Handle.IsValid()) Addressables.ResourceManager.Acquire( Handle );
             return new InstanceHandle<T>( Key, Handle );
-        }
-
-    }
-    public abstract class DynamicInstanceHandle : DynamicAddressableHandle {
-
-        // Constructor
-        public DynamicInstanceHandle(string? key) : base( key ) {
-        }
-
-        // Release
-        public abstract void Release();
-        public void ReleaseSafe() {
-            if (IsValid) {
-                Release();
-            }
         }
 
     }
@@ -141,6 +177,33 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
+        // Instantiate
+        public T Instantiate(string key) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key = key );
+            return Handle.GetResult();
+        }
+        public T Instantiate(string key, Vector3 position, Quaternion rotation) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key = key, position, rotation );
+            return Handle.GetResult();
+        }
+        public T Instantiate(string key, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key = key, parent );
+            return Handle.GetResult();
+        }
+        public T Instantiate(string key, Vector3 position, Quaternion rotation, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key = key, position, rotation, parent );
+            return Handle.GetResult();
+        }
+        public T Instantiate(string key, Func<GameObject, T> instanceProvider) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.InstantiateAsync<T>( Key = key, instanceProvider );
+            return Handle.GetResult();
+        }
+
         // InstantiateAsync
         public ValueTask<T> InstantiateAsync(string key, CancellationToken cancellationToken) {
             Assert_IsNotValid();
@@ -162,10 +225,19 @@ namespace UnityEngine.AddressableAssets {
             Handle = AddressableHelper.InstantiateAsync<T>( Key = key, position, rotation, parent );
             return Handle.GetResultAsync( cancellationToken );
         }
-        // InstantiateAsync
         public ValueTask<T> InstantiateAsync(string key, Func<GameObject, T> instanceProvider, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key = key, instanceProvider );
+            return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
+        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
         }
 

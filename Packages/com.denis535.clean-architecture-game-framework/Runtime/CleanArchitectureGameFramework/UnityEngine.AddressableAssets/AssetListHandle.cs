@@ -21,6 +21,21 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
+    public abstract class DynamicAssetListHandle : DynamicAddressableListHandle {
+
+        // Constructor
+        public DynamicAssetListHandle(string[]? keys) : base( keys ) {
+        }
+
+        // Release
+        public abstract void Release();
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
+
+    }
     public class AssetListHandle<T> : AssetListHandle where T : notnull, UnityEngine.Object {
 
         // Handle
@@ -50,14 +65,23 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
+        // Load
+        public IReadOnlyList<T> Load() {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
+            return Handle.GetResult();
+        }
         public ValueTask<IReadOnlyList<T>> LoadAsync(CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetValuesAsync
+        // GetValues
+        public IReadOnlyList<T> GetValues() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
         public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
@@ -68,21 +92,6 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsValid();
             Addressables.Release( Handle );
             Handle = default;
-        }
-
-    }
-    public abstract class DynamicAssetListHandle : DynamicAddressableListHandle {
-
-        // Constructor
-        public DynamicAssetListHandle(string[]? keys) : base( keys ) {
-        }
-
-        // Release
-        public abstract void Release();
-        public void ReleaseSafe() {
-            if (IsValid) {
-                Release();
-            }
         }
 
     }
@@ -115,14 +124,23 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
+        // Load
+        public IReadOnlyList<T> Load(string[] keys) {
+            Assert_IsNotValid();
+            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys = keys );
+            return Handle.GetResult();
+        }
         public ValueTask<IReadOnlyList<T>> LoadAsync(string[] keys, CancellationToken cancellationToken) {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetListAsync<T>( Keys = keys );
             return Handle.GetResultAsync( cancellationToken );
         }
 
-        // GetValuesAsync
+        // GetValues
+        public IReadOnlyList<T> GetValues() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
         public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
