@@ -103,6 +103,27 @@ namespace UnityEngine.AddressableAssets {
             } );
         }
 
+        // Wait
+        public static void Wait<T>(this AsyncOperationHandle<T> handle) {
+            if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
+                handle.WaitForCompletion();
+                if (handle.Status is AsyncOperationStatus.Succeeded) {
+                    return;
+                }
+            }
+            throw handle.OperationException;
+        }
+        public static async ValueTask WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
+            if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
+                await handle.Task.WaitAsync( cancellationToken );
+                cancellationToken.ThrowIfCancellationRequested();
+                if (handle.Status is AsyncOperationStatus.Succeeded) {
+                    return;
+                }
+            }
+            throw handle.OperationException;
+        }
+
         // GetResult
         public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
             if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
@@ -113,7 +134,6 @@ namespace UnityEngine.AddressableAssets {
             }
             throw handle.OperationException;
         }
-        // GetResultAsync
         public static async ValueTask<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.Status is AsyncOperationStatus.None or AsyncOperationStatus.Succeeded) {
                 var result = await handle.Task.WaitAsync( cancellationToken );

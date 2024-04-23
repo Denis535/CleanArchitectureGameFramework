@@ -46,6 +46,12 @@ namespace UnityEngine.AddressableAssets {
             return value.Scene;
         }
 
+        // WaitAsync
+        public ValueTask WaitAsync() {
+            Assert_IsValid();
+            return Handle.WaitAsync( default );
+        }
+
         // GetValueAsync
         public async ValueTask<Scene> GetValueAsync() {
             Assert_IsValid();
@@ -109,6 +115,12 @@ namespace UnityEngine.AddressableAssets {
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
             var value = await Handle.GetResultAsync( default );
             return value.Scene;
+        }
+
+        // WaitAsync
+        public ValueTask WaitAsync() {
+            Assert_IsValid();
+            return Handle.WaitAsync( default );
         }
 
         // GetValueAsync

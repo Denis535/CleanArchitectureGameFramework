@@ -14,6 +14,10 @@ namespace UnityEngine.AddressableAssets {
         public InstanceHandle(string key) : base( key ) {
         }
 
+        // Wait
+        public abstract void Wait();
+        public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
+
         // Release
         public abstract void Release();
         public void ReleaseSafe() {
@@ -28,6 +32,10 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public DynamicInstanceHandle(string? key) : base( key ) {
         }
+
+        // Wait
+        public abstract void Wait();
+        public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
 
         // Release
         public abstract void Release();
@@ -119,6 +127,16 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key, instanceProvider );
             return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Wait
+        public override void Wait() {
+            Assert_IsValid();
+            Handle.Wait();
+        }
+        public override ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValue
@@ -229,6 +247,16 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsNotValid();
             Handle = AddressableHelper.InstantiateAsync<T>( Key = key, instanceProvider );
             return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Wait
+        public override void Wait() {
+            Assert_IsValid();
+            Handle.Wait();
+        }
+        public override ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValue

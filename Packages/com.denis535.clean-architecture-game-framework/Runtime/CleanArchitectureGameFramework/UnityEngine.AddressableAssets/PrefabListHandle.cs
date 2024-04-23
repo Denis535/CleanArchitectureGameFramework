@@ -13,6 +13,10 @@ namespace UnityEngine.AddressableAssets {
         public PrefabListHandle(string[] keys) : base( keys ) {
         }
 
+        // Wait
+        public abstract void Wait();
+        public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
+
         // Release
         public abstract void Release();
         public void ReleaseSafe() {
@@ -27,6 +31,10 @@ namespace UnityEngine.AddressableAssets {
         // Constructor
         public DynamicPrefabListHandle(string[]? keys) : base( keys ) {
         }
+
+        // Wait
+        public abstract void Wait();
+        public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
 
         // Release
         public abstract void Release();
@@ -76,6 +84,16 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadPrefabListAsync<T>( Keys );
             return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Wait
+        public override void Wait() {
+            Assert_IsValid();
+            Handle.Wait();
+        }
+        public override ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValues
@@ -135,6 +153,16 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadPrefabListAsync<T>( Keys = keys );
             return Handle.GetResultAsync( cancellationToken );
+        }
+
+        // Wait
+        public override void Wait() {
+            Assert_IsValid();
+            Handle.Wait();
+        }
+        public override ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValues
