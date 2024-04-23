@@ -76,15 +76,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Load
-        public T Load() {
+        public AssetHandle<T> Load() {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetAsync<T>( Key );
-            return Handle.GetResult();
-        }
-        public ValueTask<T> LoadAsync(CancellationToken cancellationToken) {
-            Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetAsync<T>( Key );
-            return Handle.GetResultAsync( cancellationToken );
+            return this;
         }
 
         // Wait
@@ -145,15 +140,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Load
-        public T Load(string key) {
+        public DynamicAssetHandle<T> Load(string key) {
             Assert_IsNotValid();
             Handle = AddressableHelper.LoadAssetAsync<T>( Key = key );
-            return Handle.GetResult();
-        }
-        public ValueTask<T> LoadAsync(string key, CancellationToken cancellationToken) {
-            Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetAsync<T>( Key = key );
-            return Handle.GetResultAsync( cancellationToken );
+            return this;
         }
 
         // Wait

@@ -38,12 +38,11 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
-        public async ValueTask<Scene> LoadAsync(LoadSceneMode loadMode, bool activateOnLoad) {
+        // Load
+        public SceneHandle Load(LoadSceneMode loadMode, bool activateOnLoad) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key, loadMode, activateOnLoad );
-            var value = await Handle.GetResultAsync( default );
-            return value.Scene;
+            return this;
         }
 
         // WaitAsync
@@ -109,12 +108,11 @@ namespace UnityEngine.AddressableAssets {
             Handle = handle;
         }
 
-        // LoadAsync
-        public async ValueTask<Scene> LoadAsync(string key, LoadSceneMode loadMode, bool activateOnLoad) {
+        // Load
+        public DynamicSceneHandle Load(string key, LoadSceneMode loadMode, bool activateOnLoad) {
             Assert_IsNotValid();
             Handle = Addressables.LoadSceneAsync( Key = key, loadMode, activateOnLoad );
-            var value = await Handle.GetResultAsync( default );
-            return value.Scene;
+            return this;
         }
 
         // WaitAsync
