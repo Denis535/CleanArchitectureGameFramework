@@ -23,17 +23,17 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnBeforeDescendantAttach
-        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantAttach( descendant );
+        public override void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
+            base.OnBeforeDescendantAttach( descendant, argument );
         }
-        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
-            base.OnAfterDescendantAttach( descendant );
+        public override void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
+            base.OnAfterDescendantAttach( descendant, argument );
         }
-        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantDetach( descendant );
+        public override void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
+            base.OnBeforeDescendantDetach( descendant, argument );
         }
-        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
-            base.OnAfterDescendantDetach( descendant );
+        public override void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
+            base.OnAfterDescendantDetach( descendant, argument );
         }
 
         // AttachChild
@@ -79,17 +79,17 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnBeforeDescendantAttach
-        public override void OnBeforeDescendantAttach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantAttach( descendant );
+        public override void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
+            base.OnBeforeDescendantAttach( descendant, argument );
         }
-        public override void OnAfterDescendantAttach(UIWidgetBase descendant) {
-            base.OnAfterDescendantAttach( descendant );
+        public override void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
+            base.OnAfterDescendantAttach( descendant, argument );
         }
-        public override void OnBeforeDescendantDetach(UIWidgetBase descendant) {
-            base.OnBeforeDescendantDetach( descendant );
+        public override void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
+            base.OnBeforeDescendantDetach( descendant, argument );
         }
-        public override void OnAfterDescendantDetach(UIWidgetBase descendant) {
-            base.OnAfterDescendantDetach( descendant );
+        public override void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
+            base.OnAfterDescendantDetach( descendant, argument );
         }
 
         // AttachChild
