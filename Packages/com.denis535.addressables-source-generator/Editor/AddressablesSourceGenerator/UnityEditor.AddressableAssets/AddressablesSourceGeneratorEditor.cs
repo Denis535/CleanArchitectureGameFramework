@@ -8,7 +8,14 @@ namespace UnityEditor.AddressableAssets {
     [CustomEditor( typeof( AddressablesSourceGenerator ) )]
     public class AddressablesSourceGeneratorEditor : Editor {
 
-        public AddressablesSourceGenerator Target => (AddressablesSourceGenerator) target;
+        // Target
+        private AddressablesSourceGenerator Target => (AddressablesSourceGenerator) target;
+
+        // Awake
+        public void Awake() {
+        }
+        public void OnDestroy() {
+        }
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {

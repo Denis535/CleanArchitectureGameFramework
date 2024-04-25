@@ -8,12 +8,20 @@ namespace CleanArchitectureGameFramework {
 
     public class AboutWindow : EditorWindow {
 
+        // Show
         [MenuItem( "Tools/Clean Architecture Game Framework/About Clean Architecture Game Framework", priority = 10000 )]
         public new static void Show() {
             var window = GetWindow<AboutWindow>( true, "About Clean Architecture Game Framework", true );
             window.minSize = window.maxSize = new Vector2( 800, 600 );
         }
 
+        // Awake
+        public void Awake() {
+        }
+        public void OnDestroy() {
+        }
+
+        // OnGUI
         public void OnGUI() {
             using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
                 EditorGUILayout.LabelField( "Overview", EditorStyles.boldLabel );

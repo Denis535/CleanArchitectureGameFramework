@@ -10,7 +10,14 @@ namespace UnityEngine.Framework {
     [CustomEditor( typeof( ProgramBase ), true )]
     public class ProgramEditor : Editor {
 
-        protected ProgramBase Target => (ProgramBase) target;
+        // Target
+        private ProgramBase Target => (ProgramBase) target;
+
+        // Awake
+        public void Awake() {
+        }
+        public void OnDestroy() {
+        }
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {
