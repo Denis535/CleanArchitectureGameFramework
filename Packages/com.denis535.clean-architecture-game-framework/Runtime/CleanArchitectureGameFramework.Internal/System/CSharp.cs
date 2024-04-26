@@ -39,30 +39,30 @@ namespace System {
             return values;
         }
 
-        // Convert
+        // Chain
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static TOutput Convert<TInput, TOutput>(this TInput value, Converter<TInput, TOutput> converter) {
-            return converter( value );
+        public static TOutput Chain<TInput, TOutput>(this TInput value, Converter<TInput, TOutput> selector) {
+            return selector( value );
         }
-        // Convert/All
+        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] values, Converter<TInput, TOutput> converter) {
-            return Array.ConvertAll( values, converter );
+        public static TOutput[] ChainAll<TInput, TOutput>(this TInput[] values, Converter<TInput, TOutput> selector) {
+            return Array.ConvertAll( values, selector );
         }
-        // Convert/All
+        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static List<TOutput> ConvertAll<TInput, TOutput>(this List<TInput> values, Converter<TInput, TOutput> converter) {
-            return values.Select( i => converter( i ) ).ToList();
+        public static List<TOutput> ChainAll<TInput, TOutput>(this List<TInput> values, Converter<TInput, TOutput> selector) {
+            return values.Select( i => selector( i ) ).ToList();
         }
-        // Convert/All
+        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyCollection<TOutput> ConvertAll<TInput, TOutput>(this IReadOnlyCollection<TInput> values, Converter<TInput, TOutput> converter) {
-            return values.Select( i => converter( i ) ).ToList();
+        public static IReadOnlyCollection<TOutput> ChainAll<TInput, TOutput>(this IReadOnlyCollection<TInput> values, Converter<TInput, TOutput> selector) {
+            return values.Select( i => selector( i ) ).ToList();
         }
-        // Convert/All
+        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyList<TOutput> ConvertAll<TInput, TOutput>(this IReadOnlyList<TInput> values, Converter<TInput, TOutput> converter) {
-            return values.Select( i => converter( i ) ).ToList();
+        public static IReadOnlyList<TOutput> ChainAll<TInput, TOutput>(this IReadOnlyList<TInput> values, Converter<TInput, TOutput> selector) {
+            return values.Select( i => selector( i ) ).ToList();
         }
 
     }

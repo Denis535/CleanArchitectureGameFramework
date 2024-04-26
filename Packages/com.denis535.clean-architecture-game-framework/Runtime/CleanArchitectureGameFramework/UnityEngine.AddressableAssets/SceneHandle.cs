@@ -59,11 +59,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // ActivateAsync
-        public async ValueTask<Scene> ActivateAsync() {
+        public async ValueTask ActivateAsync() {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( default );
             await value.ActivateAsync();
-            return value.Scene;
         }
 
         // UnloadAsync
@@ -129,11 +128,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // ActivateAsync
-        public async ValueTask<Scene> ActivateAsync() {
+        public async ValueTask ActivateAsync() {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( default );
             await value.ActivateAsync();
-            return value.Scene;
         }
 
         // UnloadAsync
