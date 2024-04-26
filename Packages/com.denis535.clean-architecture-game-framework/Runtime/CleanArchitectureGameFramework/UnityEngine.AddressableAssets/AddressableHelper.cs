@@ -115,19 +115,21 @@ namespace UnityEngine.AddressableAssets {
 
         // Helpers
         private static AsyncOperationHandle<T> ChainOperation<TDependency, T>(this AsyncOperationHandle<TDependency> dependency, Func<AsyncOperationHandle<TDependency>, AsyncOperationHandle<T>> operationProvider) {
-            var chainOperation = Addressables.ResourceManager.CreateChainOperation( dependency, i => {
-                if (i.IsSucceeded()) {
-                    return operationProvider( i );
+            return Addressables.ResourceManager.CreateChainOperation( dependency, dependency => {
+                if (dependency.IsSucceeded()) {
+                    var operation = operationProvider( dependency );
+                    operation.Destroyed += i => {
+                        Addressables.Release( dependency );
+                    };
+                    return operation;
+                } else {
+                    var operation = Addressables.ResourceManager.CreateCompletedOperationWithException<T>( default!, dependency.OperationException );
+                    operation.Destroyed += i => {
+                        Addressables.Release( dependency );
+                    };
+                    return operation;
                 }
-                if (i.IsFailed()) {
-                    return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( default!, i.OperationException );
-                }
-                return Addressables.ResourceManager.CreateCompletedOperation<T>( default!, $"AsyncOperationHandle {i} is invalid" );
             } );
-            chainOperation.Destroyed += i => {
-                Addressables.Release( dependency );
-            };
-            return chainOperation;
         }
         // Helpers
         private static AsyncOperationHandle<T> RequireComponentOperation<T>(GameObject gameObject) where T : Component {

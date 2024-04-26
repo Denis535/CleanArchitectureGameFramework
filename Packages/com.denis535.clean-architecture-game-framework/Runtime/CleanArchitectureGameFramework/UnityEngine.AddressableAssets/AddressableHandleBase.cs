@@ -16,7 +16,6 @@ namespace UnityEngine.AddressableAssets {
 
         // Constructor
         public AddressableHandleBase() {
-            //ResourceManager.ExceptionHandler = CustomExceptionHandler;
         }
 
         // Heleprs
