@@ -8,19 +8,19 @@ namespace UnityEngine.AddressableAssets {
     public class SceneHandleDynamic : AddressableHandleDynamic {
 
         // Handle
-        public new SceneHandle? Handle => (SceneHandle?) base.Handle;
+        public new SceneHandle Handle => (SceneHandle) base.Handle;
 
         // Constructor
         public SceneHandleDynamic() {
         }
 
-        // SetScene
-        public SceneHandleDynamic SetScene(string key) {
+        // SetHandle
+        public SceneHandleDynamic SetHandle(string key) {
             Assert_IsNotValid();
             base.handle = new SceneHandle( key );
             return this;
         }
-        public SceneHandleDynamic SetScene(SceneHandle handle) {
+        public SceneHandleDynamic SetHandle(SceneHandle handle) {
             Assert_IsNotValid();
             base.handle = handle;
             return this;
