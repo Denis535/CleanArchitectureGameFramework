@@ -15,15 +15,15 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // SetHandle
-        public AssetListHandleDynamic<T> SetHandle(string[] keys) {
+        public AssetListHandle<T> SetHandle(string[] keys) {
             Assert_IsNotValid();
             base.handle = new AssetListHandle<T>( keys );
-            return this;
+            return Handle;
         }
-        public AssetListHandleDynamic<T> SetHandle(AssetListHandle<T> handle) {
+        public AssetListHandle<T> SetHandle(AssetListHandle<T> handle) {
             Assert_IsNotValid();
             base.handle = handle;
-            return this;
+            return Handle;
         }
 
     }
