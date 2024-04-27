@@ -17,12 +17,12 @@ namespace UnityEngine.AddressableAssets {
         // SetScene
         public SceneHandleDynamic SetScene(string key) {
             Assert_IsNotValid();
-            base.Handle = new SceneHandle( key );
+            base.handle = new SceneHandle( key );
             return this;
         }
         public SceneHandleDynamic SetScene(SceneHandle handle) {
             Assert_IsNotValid();
-            base.Handle = handle;
+            base.handle = handle;
             return this;
         }
 

@@ -7,8 +7,16 @@ namespace UnityEngine.AddressableAssets {
 
     public abstract class AddressableHandleDynamic {
 
+        protected AddressableHandle? handle;
+
         // Handle
-        public AddressableHandle? Handle { get; protected set; }
+        public AddressableHandle Handle {
+            get {
+                Assert_IsValid();
+                return handle!;
+            }
+        }
+        public bool IsValid => Handle != null && Handle.IsValid;
 
         // Constructor
         public AddressableHandleDynamic() {
@@ -25,10 +33,10 @@ namespace UnityEngine.AddressableAssets {
 
         // Heleprs
         protected void Assert_IsValid() {
-            Assert.Operation.Message( $"AddressableHandleDynamic {this} must be valid" ).Valid( Handle != null && Handle.IsValid );
+            Assert.Operation.Message( $"AddressableHandleDynamic {this} must be valid" ).Valid( IsValid );
         }
         protected void Assert_IsNotValid() {
-            Assert.Operation.Message( $"AddressableHandleDynamic {this} is already valid" ).Valid( Handle == null || !Handle.IsValid );
+            Assert.Operation.Message( $"AddressableHandleDynamic {this} is already valid" ).Valid( !IsValid );
         }
 
     }

@@ -17,12 +17,12 @@ namespace UnityEngine.AddressableAssets {
         // SetAsset
         public AssetHandleDynamic<T> SetAsset(string key) {
             Assert_IsNotValid();
-            base.Handle = new AssetHandle<T>( key );
+            base.handle = new AssetHandle<T>( key );
             return this;
         }
         public AssetHandleDynamic<T> SetAsset(AssetHandle handle) {
             Assert_IsNotValid();
-            base.Handle = handle;
+            base.handle = handle;
             return this;
         }
 
