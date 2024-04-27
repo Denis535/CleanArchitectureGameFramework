@@ -19,33 +19,6 @@ namespace UnityEngine.AddressableAssets {
             } );
         }
 
-        // InstantiateAsync
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key) where T : notnull, Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabsHandle => {
-                return InstantiateOperation<T>( prefabsHandle.Result );
-            } );
-        }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation) where T : notnull, Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabsHandle => {
-                return InstantiateOperation<T>( prefabsHandle.Result, position, rotation );
-            } );
-        }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Transform? parent) where T : notnull, Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabsHandle => {
-                return InstantiateOperation<T>( prefabsHandle.Result, parent );
-            } );
-        }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform? parent) where T : notnull, Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabsHandle => {
-                return InstantiateOperation<T>( prefabsHandle.Result, position, rotation, parent );
-            } );
-        }
-        public static AsyncOperationHandle<T> InstantiateAsync<T>(string key, Func<GameObject, T> instanceProvider) where T : notnull, Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabsHandle => {
-                return InstantiateOperation<T>( prefabsHandle.Result, instanceProvider );
-            } );
-        }
-
         // Helpers
         private static AsyncOperationHandle<T> ChainOperation<TDependency, T>(this AsyncOperationHandle<TDependency> dependency, Func<AsyncOperationHandle<TDependency>, AsyncOperationHandle<T>> operationProvider) {
             return Addressables.ResourceManager.CreateChainOperation( dependency, dependency => {
@@ -63,82 +36,6 @@ namespace UnityEngine.AddressableAssets {
                     return operation;
                 }
             } );
-        }
-        // Helpers
-        private static AsyncOperationHandle<T> RequireComponentOperation<T>(GameObject gameObject) where T : Component {
-            try {
-                return Addressables.ResourceManager.CreateCompletedOperation( gameObject.RequireComponent<T>(), null );
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
-        }
-        private static AsyncOperationHandle<IReadOnlyList<T>> RequireComponentsOperation<T>(IReadOnlyList<GameObject> gameObjects) where T : Component {
-            try {
-                return Addressables.ResourceManager.CreateCompletedOperation<IReadOnlyList<T>>( gameObjects.Select( i => i.RequireComponent<T>() ).ToList(), null );
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<IReadOnlyList<T>>( null!, ex );
-            }
-        }
-        // Helpers
-        private static AsyncOperationHandle<T> InstantiateOperation<T>(GameObject prefab) where T : Component {
-            try {
-                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>() );
-                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                operation.Destroyed += i => {
-                    UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
-                };
-                return operation;
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
-        }
-        private static AsyncOperationHandle<T> InstantiateOperation<T>(GameObject prefab, Transform? parent) where T : Component {
-            try {
-                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), parent );
-                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                operation.Destroyed += i => {
-                    UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
-                };
-                return operation;
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
-        }
-        private static AsyncOperationHandle<T> InstantiateOperation<T>(GameObject prefab, Vector3 position, Quaternion rotation) where T : Component {
-            try {
-                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), position, rotation );
-                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                operation.Destroyed += i => {
-                    UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
-                };
-                return operation;
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
-        }
-        private static AsyncOperationHandle<T> InstantiateOperation<T>(GameObject prefab, Vector3 position, Quaternion rotation, Transform? parent) where T : Component {
-            try {
-                var instance = UnityEngine.Object.Instantiate( prefab.RequireComponent<T>(), position, rotation, parent );
-                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                operation.Destroyed += i => {
-                    UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
-                };
-                return operation;
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
-        }
-        private static AsyncOperationHandle<T> InstantiateOperation<T>(GameObject prefab, Func<GameObject, T> instanceProvider) where T : Component {
-            try {
-                var instance = instanceProvider( prefab );
-                var operation = Addressables.ResourceManager.CreateCompletedOperation( instance, null );
-                operation.Destroyed += i => {
-                    UnityEngine.Object.Destroy( ((T) i.Result).gameObject );
-                };
-                return operation;
-            } catch (Exception ex) {
-                return Addressables.ResourceManager.CreateCompletedOperationWithException<T>( null!, ex );
-            }
         }
 
     }
