@@ -8,10 +8,10 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class PrefabHandle : AddressableHandle {
+    public abstract class InstanceHandle : AddressableHandle {
 
         // Constructor
-        public PrefabHandle(string key) : base( key ) {
+        public InstanceHandle(string key) : base( key ) {
         }
 
         // Wait
@@ -27,10 +27,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public abstract class DynamicPrefabHandle : DynamicAddressableHandle {
+    public abstract class DynamicInstanceHandle : DynamicAddressableHandle {
 
         // Constructor
-        public DynamicPrefabHandle(string? key) : base( key ) {
+        public DynamicInstanceHandle(string? key) : base( key ) {
         }
 
         // Wait
@@ -46,7 +46,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class PrefabHandle<T> : PrefabHandle where T : notnull, Component {
+    public class InstanceHandle<T> : InstanceHandle, ICloneable where T : notnull, Component {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -69,16 +69,36 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public PrefabHandle(string key) : base( key ) {
+        public InstanceHandle(string key) : base( key ) {
         }
-        public PrefabHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public InstanceHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
             Handle = handle;
         }
 
-        // Load
-        public PrefabHandle<T> Load() {
+        // Instantiate
+        public InstanceHandle<T> Instantiate() {
             Assert_IsNotValid();
-            Handle = AddressableHelper.LoadPrefabAsync<T>( Key );
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key );
+            return this;
+        }
+        public InstanceHandle<T> Instantiate(Vector3 position, Quaternion rotation) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, position, rotation );
+            return this;
+        }
+        public InstanceHandle<T> Instantiate(Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, parent );
+            return this;
+        }
+        public InstanceHandle<T> Instantiate(Vector3 position, Quaternion rotation, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, position, rotation, parent );
+            return this;
+        }
+        public InstanceHandle<T> Instantiate(Func<GameObject, T> instanceProvider) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key, instanceProvider );
             return this;
         }
 
@@ -109,8 +129,17 @@ namespace UnityEngine.AddressableAssets {
             Handle = default;
         }
 
+        // Utils
+        object ICloneable.Clone() {
+            return Clone();
+        }
+        public InstanceHandle<T> Clone() {
+            if (Handle.IsValid()) Addressables.ResourceManager.Acquire( Handle );
+            return new InstanceHandle<T>( Key, Handle );
+        }
+
     }
-    public class DynamicPrefabHandle<T> : DynamicPrefabHandle where T : notnull, Component {
+    public class DynamicInstanceHandle<T> : DynamicInstanceHandle, ICloneable where T : notnull, Component {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -133,16 +162,36 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Constructor
-        public DynamicPrefabHandle() : base( null ) {
+        public DynamicInstanceHandle() : base( null ) {
         }
-        public DynamicPrefabHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public DynamicInstanceHandle(string? key, AsyncOperationHandle<T> handle) : base( key ) {
             Handle = handle;
         }
 
-        // Load
-        public DynamicPrefabHandle<T> Load(string key) {
+        // Instantiate
+        public DynamicInstanceHandle<T> Instantiate(string key) {
             Assert_IsNotValid();
-            Handle = AddressableHelper.LoadPrefabAsync<T>( Key = key );
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key = key );
+            return this;
+        }
+        public DynamicInstanceHandle<T> Instantiate(string key, Vector3 position, Quaternion rotation) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key = key, position, rotation );
+            return this;
+        }
+        public DynamicInstanceHandle<T> Instantiate(string key, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key = key, parent );
+            return this;
+        }
+        public DynamicInstanceHandle<T> Instantiate(string key, Vector3 position, Quaternion rotation, Transform? parent) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key = key, position, rotation, parent );
+            return this;
+        }
+        public DynamicInstanceHandle<T> Instantiate(string key, Func<GameObject, T> instanceProvider) {
+            Assert_IsNotValid();
+            Handle = AddressableHandleHelper.InstantiateAsync<T>( Key = key, instanceProvider );
             return this;
         }
 
@@ -172,6 +221,15 @@ namespace UnityEngine.AddressableAssets {
             Addressables.Release( Handle );
             Key = null;
             Handle = default;
+        }
+
+        // Utils
+        object ICloneable.Clone() {
+            return Clone();
+        }
+        public DynamicInstanceHandle<T> Clone() {
+            if (Handle.IsValid()) Addressables.ResourceManager.Acquire( Handle );
+            return new DynamicInstanceHandle<T>( Key, Handle );
         }
 
     }

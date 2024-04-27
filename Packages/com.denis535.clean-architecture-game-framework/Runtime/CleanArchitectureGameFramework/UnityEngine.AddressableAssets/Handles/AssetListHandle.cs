@@ -76,7 +76,7 @@ namespace UnityEngine.AddressableAssets {
         // Load
         public AssetListHandle<T> Load() {
             Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
+            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys );
             return this;
         }
 
@@ -140,7 +140,7 @@ namespace UnityEngine.AddressableAssets {
         // Load
         public DynamicAssetListHandle<T> Load(string[] keys) {
             Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys = keys );
+            Handle = AddressableHandleHelper.LoadAssetListAsync<T>( Keys = keys );
             return this;
         }
 

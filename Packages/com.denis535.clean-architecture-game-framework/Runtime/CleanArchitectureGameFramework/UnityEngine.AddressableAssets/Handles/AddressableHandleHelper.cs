@@ -7,7 +7,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    internal static class AddressableHelper {
+    internal static class AddressableHandleHelper {
 
         // LoadAssetAsync
         public static AsyncOperationHandle<T> LoadAssetAsync<T>(string key) where T : UnityEngine.Object {
@@ -16,18 +16,6 @@ namespace UnityEngine.AddressableAssets {
         public static AsyncOperationHandle<IReadOnlyList<T>> LoadAssetListAsync<T>(string[] keys) where T : UnityEngine.Object {
             return Addressables.LoadAssetsAsync<T>( keys.AsEnumerable(), null, Addressables.MergeMode.Union ).ChainOperation( assetsHandle => {
                 return Addressables.ResourceManager.CreateCompletedOperation( (IReadOnlyList<T>) assetsHandle.Result, null );
-            } );
-        }
-
-        // LoadPrefabAsync
-        public static AsyncOperationHandle<T> LoadPrefabAsync<T>(string key) where T : Component {
-            return Addressables.LoadAssetAsync<GameObject>( key ).ChainOperation( prefabHandle => {
-                return RequireComponentOperation<T>( prefabHandle.Result );
-            } );
-        }
-        public static AsyncOperationHandle<IReadOnlyList<T>> LoadPrefabListAsync<T>(string[] keys) where T : Component {
-            return Addressables.LoadAssetsAsync<GameObject>( keys.AsEnumerable(), null, Addressables.MergeMode.Union ).ChainOperation( prefabsHandle => {
-                return RequireComponentsOperation<T>( (IReadOnlyList<GameObject>) prefabsHandle.Result );
             } );
         }
 

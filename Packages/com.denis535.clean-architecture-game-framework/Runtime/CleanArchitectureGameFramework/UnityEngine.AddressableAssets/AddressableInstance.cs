@@ -20,10 +20,9 @@ namespace UnityEngine.AddressableAssets {
     }
     public static class AddressableInstanceExtensions {
 
-        public static AddressableInstance AddAddressableInstance(this GameObject instance, AsyncOperationHandle<GameObject> prefabHandle) {
+        public static void AddAddressableInstance(this GameObject instance, AsyncOperationHandle<GameObject> prefabHandle) {
             var component = instance.AddComponent<AddressableInstance>();
             component.PrefabHandle = prefabHandle;
-            return component;
         }
 
     }
