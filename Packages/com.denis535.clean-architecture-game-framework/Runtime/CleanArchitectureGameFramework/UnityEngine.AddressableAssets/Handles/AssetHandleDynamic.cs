@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     public class AssetHandleDynamic<T> : AddressableHandleDynamic where T : notnull, UnityEngine.Object {
 
         // Handle
-        public new AssetHandle Handle => (AssetHandle) base.Handle;
+        public new AssetHandle<T> Handle => (AssetHandle<T>) base.Handle;
 
         // Constructor
         public AssetHandleDynamic() {
