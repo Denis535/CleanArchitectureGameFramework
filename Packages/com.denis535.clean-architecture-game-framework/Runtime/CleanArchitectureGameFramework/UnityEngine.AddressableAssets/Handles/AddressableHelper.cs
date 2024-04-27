@@ -7,7 +7,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    internal static class AddressableHandleHelper {
+    internal static class AddressableHelper {
 
         // LoadAssetAsync
         public static AsyncOperationHandle<T> LoadAssetAsync<T>(string key) where T : UnityEngine.Object {

@@ -15,7 +15,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = prefabHandle.GetResult().RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -27,7 +27,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = prefabHandle.GetResult().RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, parent );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -39,7 +39,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = prefabHandle.GetResult().RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -51,7 +51,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = prefabHandle.GetResult().RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation, parent );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -63,7 +63,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = prefabHandle.GetResult().RequireComponent<T>();
                 var instance = instanceProvider( prefab );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -77,7 +77,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = (await prefabHandle.GetResultAsync( cancellationToken )).RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -89,7 +89,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = (await prefabHandle.GetResultAsync( cancellationToken )).RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, parent );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -101,7 +101,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = (await prefabHandle.GetResultAsync( cancellationToken )).RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -113,7 +113,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = (await prefabHandle.GetResultAsync( cancellationToken )).RequireComponent<T>();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation, parent );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -125,7 +125,7 @@ namespace UnityEngine.AddressableAssets {
             try {
                 var prefab = (await prefabHandle.GetResultAsync( cancellationToken )).RequireComponent<T>();
                 var instance = instanceProvider( prefab );
-                instance.gameObject.AddAddressableInstance( prefabHandle );
+                instance.gameObject.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );

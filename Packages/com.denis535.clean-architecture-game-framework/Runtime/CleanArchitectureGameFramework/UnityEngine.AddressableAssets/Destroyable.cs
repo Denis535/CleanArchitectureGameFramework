@@ -6,7 +6,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AddressableInstance : MonoBehaviour {
+    public class Destroyable : MonoBehaviour {
 
         public AsyncOperationHandle<GameObject> PrefabHandle { get; internal set; }
 
@@ -18,10 +18,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public static class AddressableInstanceExtensions {
+    public static class DestroyableExtensions {
 
-        public static void AddAddressableInstance(this GameObject instance, AsyncOperationHandle<GameObject> prefabHandle) {
-            var component = instance.AddComponent<AddressableInstance>();
+        public static void AddDestroyable(this GameObject gameObject, AsyncOperationHandle<GameObject> prefabHandle) {
+            var component = gameObject.AddComponent<Destroyable>();
             component.PrefabHandle = prefabHandle;
         }
 

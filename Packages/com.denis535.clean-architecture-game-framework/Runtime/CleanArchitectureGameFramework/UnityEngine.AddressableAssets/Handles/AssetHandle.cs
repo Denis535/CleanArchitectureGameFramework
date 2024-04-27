@@ -10,6 +10,10 @@ namespace UnityEngine.AddressableAssets {
 
     public abstract class AssetHandle : AddressableHandle {
 
+        // Value
+        public abstract UnityEngine.Object ValueBase { get; }
+        public abstract UnityEngine.Object? ValueBaseSafe { get; }
+
         // Constructor
         public AssetHandle(string key) : base( key ) {
         }
@@ -18,24 +22,9 @@ namespace UnityEngine.AddressableAssets {
         public abstract void Wait();
         public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
 
-        // Release
-        public abstract void Release();
-        public void ReleaseSafe() {
-            if (IsValid) {
-                Release();
-            }
-        }
-
-    }
-    public abstract class DynamicAssetHandle : DynamicAddressableHandle {
-
-        // Constructor
-        public DynamicAssetHandle(string? key) : base( key ) {
-        }
-
-        // Wait
-        public abstract void Wait();
-        public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
+        // GetValue
+        public abstract UnityEngine.Object GetValueBase();
+        public abstract ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken);
 
         // Release
         public abstract void Release();
@@ -49,17 +38,29 @@ namespace UnityEngine.AddressableAssets {
     public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
 
         // Handle
-        protected AsyncOperationHandle<T> Handle { get; set; }
+        private AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
         public override bool IsDone => Handle.IsDone;
         public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
         public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
         public override Exception? Exception => Handle.OperationException;
+        public override UnityEngine.Object ValueBase {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
+            }
+        }
         public T Value {
             get {
                 Assert_IsValid();
                 Assert_IsSucceeded();
                 return Handle.Result;
+            }
+        }
+        public override UnityEngine.Object? ValueBaseSafe {
+            get {
+                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
             }
         }
         public T? ValueSafe {
@@ -78,7 +79,7 @@ namespace UnityEngine.AddressableAssets {
         // Load
         public AssetHandle<T> Load() {
             Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key );
+            Handle = AddressableHelper.LoadAssetAsync<T>( Key );
             return this;
         }
 
@@ -93,9 +94,17 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // GetValue
+        public override UnityEngine.Object GetValueBase() {
+            Assert_IsValid();
+            return Handle.GetResult();
+        }
         public T GetValue() {
             Assert_IsValid();
             return Handle.GetResult();
+        }
+        public override async ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return await Handle.GetResultAsync( cancellationToken );
         }
         public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
@@ -106,71 +115,6 @@ namespace UnityEngine.AddressableAssets {
         public override void Release() {
             Assert_IsValid();
             Addressables.Release( Handle );
-            Handle = default;
-        }
-
-    }
-    public class DynamicAssetHandle<T> : DynamicAssetHandle where T : notnull, UnityEngine.Object {
-
-        // Handle
-        protected AsyncOperationHandle<T> Handle { get; set; }
-        public override bool IsValid => Handle.IsValid();
-        public override bool IsDone => Handle.IsDone;
-        public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
-        public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
-        public override Exception? Exception => Handle.OperationException;
-        public T Value {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public T? ValueSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
-
-        // Constructor
-        public DynamicAssetHandle() : base( null ) {
-        }
-        public DynamicAssetHandle(string? key, AsyncOperationHandle<T> handle) : base( key ) {
-            Handle = handle;
-        }
-
-        // Load
-        public DynamicAssetHandle<T> Load(string key) {
-            Assert_IsNotValid();
-            Handle = AddressableHandleHelper.LoadAssetAsync<T>( Key = key );
-            return this;
-        }
-
-        // Wait
-        public override void Wait() {
-            Assert_IsValid();
-            Handle.Wait();
-        }
-        public override ValueTask WaitAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.WaitAsync( cancellationToken );
-        }
-
-        // GetValue
-        public T GetValue() {
-            Assert_IsValid();
-            return Handle.GetResult();
-        }
-        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle.GetResultAsync( cancellationToken );
-        }
-
-        // Release
-        public override void Release() {
-            Assert_IsValid();
-            Addressables.Release( Handle );
-            Key = null;
             Handle = default;
         }
 
