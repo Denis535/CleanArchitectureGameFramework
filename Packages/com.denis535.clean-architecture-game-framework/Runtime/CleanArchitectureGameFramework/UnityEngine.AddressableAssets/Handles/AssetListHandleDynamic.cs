@@ -7,8 +7,23 @@ namespace UnityEngine.AddressableAssets {
 
     public class AssetListHandleDynamic<T> : AddressableListHandleDynamic where T : notnull, UnityEngine.Object {
 
+        private AssetListHandle<T>? handle;
+
+        // IsValid
+        public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public new AssetListHandle<T> Handle => (AssetListHandle<T>) base.Handle;
+        public override AddressableListHandle HandleBase {
+            get {
+                Assert_IsValid();
+                return handle!;
+            }
+        }
+        public AssetListHandle<T> Handle {
+            get {
+                Assert_IsValid();
+                return handle!;
+            }
+        }
 
         // Constructor
         public AssetListHandleDynamic() {
@@ -17,13 +32,11 @@ namespace UnityEngine.AddressableAssets {
         // SetHandle
         public AssetListHandle<T> SetHandle(string[] keys) {
             Assert_IsNotValid();
-            base.handle = new AssetListHandle<T>( keys );
-            return Handle;
+            return this.handle = new AssetListHandle<T>( keys );
         }
         public AssetListHandle<T> SetHandle(AssetListHandle<T> handle) {
             Assert_IsNotValid();
-            base.handle = handle;
-            return Handle;
+            return this.handle = handle;
         }
 
     }

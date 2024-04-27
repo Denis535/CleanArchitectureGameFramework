@@ -7,16 +7,10 @@ namespace UnityEngine.AddressableAssets {
 
     public abstract class AddressableHandleDynamic {
 
-        protected AddressableHandle? handle;
-
+        // IsValid
+        public abstract bool IsValid { get; }
         // Handle
-        public AddressableHandle Handle {
-            get {
-                Assert_IsValid();
-                return handle!;
-            }
-        }
-        public bool IsValid => Handle != null && Handle.IsValid;
+        public abstract AddressableHandle HandleBase { get; }
 
         // Constructor
         public AddressableHandleDynamic() {
@@ -24,8 +18,8 @@ namespace UnityEngine.AddressableAssets {
 
         // Utils
         public override string ToString() {
-            if (Handle != null) {
-                return "AddressableHandleDynamic: " + Handle.Key;
+            if (IsValid) {
+                return "AddressableHandleDynamic: " + HandleBase.Key;
             } else {
                 return "AddressableHandleDynamic";
             }

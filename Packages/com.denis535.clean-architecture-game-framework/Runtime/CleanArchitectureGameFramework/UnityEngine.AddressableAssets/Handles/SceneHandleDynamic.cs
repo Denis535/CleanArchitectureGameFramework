@@ -7,8 +7,23 @@ namespace UnityEngine.AddressableAssets {
 
     public class SceneHandleDynamic : AddressableHandleDynamic {
 
+        private SceneHandle? handle;
+
+        // IsValid
+        public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public new SceneHandle Handle => (SceneHandle) base.Handle;
+        public override AddressableHandle HandleBase {
+            get {
+                Assert_IsValid();
+                return handle!;
+            }
+        }
+        public SceneHandle Handle {
+            get {
+                Assert_IsValid();
+                return handle!;
+            }
+        }
 
         // Constructor
         public SceneHandleDynamic() {
@@ -17,13 +32,11 @@ namespace UnityEngine.AddressableAssets {
         // SetHandle
         public SceneHandle SetHandle(string key) {
             Assert_IsNotValid();
-            base.handle = new SceneHandle( key );
-            return Handle;
+            return this.handle = new SceneHandle( key );
         }
         public SceneHandle SetHandle(SceneHandle handle) {
             Assert_IsNotValid();
-            base.handle = handle;
-            return Handle;
+            return this.handle = handle;
         }
 
     }

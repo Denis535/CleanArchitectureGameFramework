@@ -21,8 +21,8 @@ namespace UnityEngine.AddressableAssets {
     public static class DestroyableExtensions {
 
         public static void AddDestroyable(this GameObject gameObject, AsyncOperationHandle<GameObject> prefabHandle) {
-            var component = gameObject.AddComponent<Destroyable>();
-            component.PrefabHandle = prefabHandle;
+            var destroyable = gameObject.AddComponent<Destroyable>();
+            destroyable.PrefabHandle = prefabHandle;
         }
 
     }
