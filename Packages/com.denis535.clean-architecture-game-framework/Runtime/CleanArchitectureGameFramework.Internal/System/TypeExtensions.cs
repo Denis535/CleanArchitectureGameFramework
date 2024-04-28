@@ -10,24 +10,35 @@ namespace System {
 
         // Is
         public static bool Is(this Type type, Type general) {
+            // Example:
+            // Option<object> == Option<object>
+            // Option<object> == Option<>
             return type.Iz( general );
         }
         // Is/BaseTypeOf
         public static bool IsBaseTypeOf(this Type type, Type derived) {
-            return derived.BaseType != null && derived.BaseType.Iz( type );
+            // Example:
+            // Base<object> is base type of Child<object>
+            // Base<>       is base type of Child<object>
+            return derived.IsChildOf( type );
         }
         public static bool IsAncesorOf(this Type type, Type derived) {
-            while (derived.BaseType != null) {
-                if (derived.BaseType.Iz( type )) return true;
-                derived = derived.BaseType;
-            }
-            return false;
+            // Example:
+            // Base<object> is ancesor type of Child<object>
+            // Base<>       is ancesor type of Child<object>
+            return derived.IsDescendentOf( type );
         }
         // Is/ChildOf
         public static bool IsChildOf(this Type type, Type @base) {
+            // Example:
+            // Child<object> is child of Base<object>
+            // Child<object> is child of Base<>
             return type.BaseType != null && type.BaseType.Iz( @base );
         }
         public static bool IsDescendentOf(this Type type, Type @base) {
+            // Example:
+            // Child<object> is descendent of Base<object>
+            // Child<object> is descendent of Base<>
             while (type.BaseType != null) {
                 if (type.BaseType.Iz( @base )) return true;
                 type = type.BaseType;
@@ -74,9 +85,9 @@ namespace System {
         }
 
         // IsAssignableFrom
-        public static bool IsAssignableFrom(this Type type, Type specific) {
-            return type.IsAssignableFrom( specific );
-        }
+        //public static bool IsAssignableFrom(this Type type, Type specific) {
+        //    return type.IsAssignableFrom( specific );
+        //}
         public static bool IsAssignableTo(this Type type, Type general) {
             return general.IsAssignableFrom( type );
         }
@@ -111,15 +122,18 @@ namespace System {
 
         // Helpers
         private static bool Iz(this Type type, Type general) {
-            if (general.IsGenericTypeDefinition) {
-                return type.SafeGetGenericTypeDefinition() == general;
+            // Example:
+            // Option<object> == Option<object>
+            // Option<object> == Option<>
+            if (type.IsGenericType && !type.IsGenericTypeDefinition) {
+                if (general.IsGenericType && general.IsGenericTypeDefinition) {
+                    return type.GetGenericTypeDefinition() == general;
+                } else {
+                    return type == general;
+                }
             } else {
                 return type == general;
             }
-        }
-        private static Type SafeGetGenericTypeDefinition(this Type type) {
-            if (type.IsGenericType) return type.GetGenericTypeDefinition();
-            return type;
         }
 
     }

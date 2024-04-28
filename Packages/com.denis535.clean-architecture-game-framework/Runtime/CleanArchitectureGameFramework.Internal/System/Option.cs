@@ -69,9 +69,7 @@ namespace System {
 
         private readonly bool hasValue;
         private readonly T value;
-        public static Option<T> Default => default;
-        //[MemberMaybeNullWhen( false, nameof( ValueOrDefault ) )] // When HasValue == false: ValueOrDefault is always default
-        //[MemberNotNullWhen( true, nameof( ValueOrDefault ) )]    // When HasValue == true:  ValueOrDefault can still be default, so it doesn't work right
+
         public bool HasValue => hasValue;
         public T Value => hasValue ? value : throw new InvalidOperationException( "Option must have value" );
         public T? ValueOrDefault => hasValue ? value : default;
@@ -93,20 +91,6 @@ namespace System {
         }
 
         // Utils
-        public bool Equals(Option<T> other) {
-            return Option.Equals( this, other );
-        }
-        public bool Equals(T other) {
-            return Option.Equals( this, other );
-        }
-        public int CompareTo(Option<T> other) {
-            return Option.Compare( this, other );
-        }
-        public int CompareTo(T other) {
-            return Option.Compare( this, other );
-        }
-
-        // Utils
         public override string ToString() {
             if (hasValue) return value?.ToString() ?? "Null";
             return "Nothing";
@@ -121,11 +105,23 @@ namespace System {
         }
 
         // Utils
-        public static implicit operator Option<T>(T value) {
-            // This can lead to unexpected behavior:
-            //var option = new Option<object>();
-            //option = new Option<int>(); // This is equivalent to following:
-            //option = new Option<object>( new Option<int>() ); // Now option<object> contains Option<int>
+        public bool Equals(Option<T> other) {
+            return Option.Equals( this, other );
+        }
+        public bool Equals(T other) {
+            return Option.Equals( this, other );
+        }
+
+        // Utils
+        public int CompareTo(Option<T> other) {
+            return Option.Compare( this, other );
+        }
+        public int CompareTo(T other) {
+            return Option.Compare( this, other );
+        }
+
+        // Utils
+        public static explicit operator Option<T>(T value) {
             return new Option<T>( value );
         }
         public static explicit operator T(Option<T> value) {

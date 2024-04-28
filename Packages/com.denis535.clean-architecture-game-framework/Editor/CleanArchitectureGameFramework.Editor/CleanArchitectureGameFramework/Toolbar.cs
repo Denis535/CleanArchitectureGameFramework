@@ -9,24 +9,52 @@ namespace CleanArchitectureGameFramework {
     using System.Text.RegularExpressions;
     using System.Threading;
     using UnityEditor;
+    using UnityEditorInternal;
     using UnityEngine;
 
     public static class Toolbar {
 
+        // TakeScreenshot
+        [MenuItem( "Tools/Clean Architecture Game Framework/Take Screenshot (Game) _F12", priority = 0 )]
+        internal static void TakeScreenshot_Game() {
+            var path = $"Screenshots/{Application.productName}-{DateTime.UtcNow.Ticks}.png";
+            ScreenCapture.CaptureScreenshot( path, 1 );
+            EditorApplication.Beep();
+            EditorUtility.RevealInFinder( path );
+        }
+        [MenuItem( "Tools/Clean Architecture Game Framework/Take Screenshot (Editor) &F12", priority = 1 )]
+        internal static void TakeScreenshot_Editor() {
+            var position = EditorGUIUtility.GetMainWindowPosition();
+            var texture = new Texture2D( (int) position.width, (int) position.height );
+            texture.SetPixels( InternalEditorUtility.ReadScreenPixel( position.position, (int) position.width, (int) position.height ) );
+            var bytes = texture.EncodeToPNG();
+            UnityEngine.Object.DestroyImmediate( texture );
+
+            var path = $"Screenshots/{Application.productName}-{DateTime.UtcNow.Ticks}.png";
+            Directory.CreateDirectory( Path.GetDirectoryName( path ) );
+            File.WriteAllBytes( path, bytes );
+            EditorApplication.Beep();
+            EditorUtility.RevealInFinder( path );
+        }
+
         // OpenAll
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIAudioTheme)", priority = 0 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (CSharp)", priority = 100 )]
+        public static void OpenAll_CSharp() {
+            OpenAssetsReverse( "Assets/(*.cs)" );
+        }
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIAudioTheme)", priority = 100 )]
         public static void OpenAll_UIAudioTheme() {
             OpenAssetsReverse( "Assets/(*ThemeBase.cs|*Theme.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIScreen)", priority = 1 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIScreen)", priority = 101 )]
         public static void OpenAll_UIScreen() {
             OpenAssetsReverse( "Assets/(*ScreenBase.cs|*Screen.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIWidget)", priority = 2 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIWidget)", priority = 102 )]
         public static void OpenAll_UIWidget() {
             OpenAssetsReverse( "Assets/(*WidgetBase.cs|*Widget.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIView)", priority = 3 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIView)", priority = 103 )]
         public static void OpenAll_UIView() {
             OpenAssetsReverse( "Assets/(*ViewBase.cs|*View.cs)" );
         }
@@ -66,9 +94,8 @@ namespace CleanArchitectureGameFramework {
                 .ThenBy( i => !i.EndsWith( ".UI.Common" ) )
                 .ThenBy( i => !i.EndsWith( ".App" ) )
                 .ThenBy( i => !i.EndsWith( ".Entities" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.MainScene" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.GameScene" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.WorldScene" ) )
+                .ThenBy( i => !i.EndsWith( ".Entities.Characters" ) )
+                .ThenBy( i => !i.EndsWith( ".Entities.Worlds" ) )
                 .ThenBy( i => !i.EndsWith( ".Entities.Common" ) )
                 .ThenBy( i => !i.EndsWith( ".Common" ) )
                 .ThenBy( i => i );

@@ -26,8 +26,8 @@ namespace UnityEngine.Framework {
         public const int World_View   = 13_100;
         // Entity
         public const int Entity       = 14_000;
-        public const int Entity_Body  = 14_100;
-        public const int Entity_View  = 14_200;
+        public const int Entity_Body  = 14_050;
+        public const int Entity_View  = 14_100;
 
     }
 }

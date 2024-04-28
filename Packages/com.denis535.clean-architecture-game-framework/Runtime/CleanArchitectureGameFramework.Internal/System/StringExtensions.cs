@@ -7,22 +7,6 @@ namespace System {
 
     public static class StringExtensions {
 
-        // TakeLeftOf
-        public static string? TakeLeftOf(this string value, int index) {
-            if (index != -1) return value.Substring( 0, index );
-            return null;
-        }
-        public static string? TakeLeftOf(this string value, char separator) {
-            var i = value.IndexOf( separator );
-            if (i != -1) return value.Substring( 0, i );
-            return null;
-        }
-        public static string? TakeLeftOf(this string value, string separator) {
-            var i = value.IndexOf( separator );
-            if (i != -1) return value.Substring( 0, i );
-            return null;
-        }
-
         // TakeStartingWith
         public static string? TakeStartingWith(this string value, int index) {
             if (index != -1) return value.Substring( index );
@@ -39,7 +23,23 @@ namespace System {
             return null;
         }
 
-        // TakeRightOf
+        // TakeLeftOf (before of)
+        public static string? TakeLeftOf(this string value, int index) {
+            if (index != -1) return value.Substring( 0, index );
+            return null;
+        }
+        public static string? TakeLeftOf(this string value, char separator) {
+            var i = value.IndexOf( separator );
+            if (i != -1) return value.Substring( 0, i );
+            return null;
+        }
+        public static string? TakeLeftOf(this string value, string separator) {
+            var i = value.IndexOf( separator );
+            if (i != -1) return value.Substring( 0, i );
+            return null;
+        }
+
+        // TakeRightOf (after of)
         public static string? TakeRightOf(this string value, int index) {
             if (index != -1) return value.Substring( index + 1 );
             return null;
@@ -53,14 +53,6 @@ namespace System {
             var i = value.IndexOf( separator );
             if (i != -1) return value.Substring( i + separator.Length );
             return null;
-        }
-
-        // Join
-        public static string Join(this char separator, IEnumerable<string> values) {
-            return string.Join( separator, values );
-        }
-        public static string Join(this string separator, IEnumerable<string> values) {
-            return string.Join( separator, values );
         }
 
         // Format
