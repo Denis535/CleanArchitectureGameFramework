@@ -18,6 +18,7 @@ namespace UnityEngine.AddressableAssets {
         public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
         public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
         public override Exception? Exception => Handle.OperationException;
+        // Value
         public Scene Value {
             get {
                 Assert_IsValid();

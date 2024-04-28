@@ -109,6 +109,7 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsValid();
             return await Handle.GetResultAsync( cancellationToken );
         }
+
         // GetValue
         public T GetValue() {
             Assert_IsValid();

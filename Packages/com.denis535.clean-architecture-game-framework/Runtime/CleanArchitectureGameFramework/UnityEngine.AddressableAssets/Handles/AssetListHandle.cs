@@ -108,6 +108,7 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsValid();
             return await Handle.GetResultAsync( cancellationToken );
         }
+
         // GetValues
         public IReadOnlyList<T> GetValues() {
             Assert_IsValid();
