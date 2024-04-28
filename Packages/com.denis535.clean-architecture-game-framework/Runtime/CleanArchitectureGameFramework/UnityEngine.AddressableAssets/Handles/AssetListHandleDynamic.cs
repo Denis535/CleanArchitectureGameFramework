@@ -12,12 +12,6 @@ namespace UnityEngine.AddressableAssets {
         // IsValid
         public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public override AddressableListHandle HandleBase {
-            get {
-                Assert_IsValid();
-                return handle!;
-            }
-        }
         public AssetListHandle<T> Handle {
             get {
                 Assert_IsValid();
@@ -29,14 +23,23 @@ namespace UnityEngine.AddressableAssets {
         public AssetListHandleDynamic() {
         }
 
-        // SetHandle
-        public AssetListHandle<T> SetHandle(string[] keys) {
+        // SetUp
+        public AssetListHandle<T> SetUp(string[] keys) {
             Assert_IsNotValid();
             return this.handle = new AssetListHandle<T>( keys );
         }
-        public AssetListHandle<T> SetHandle(AssetListHandle<T> handle) {
+        public AssetListHandle<T> SetUp(AssetListHandle<T> handle) {
             Assert_IsNotValid();
             return this.handle = handle;
+        }
+
+        // Utils
+        public override string ToString() {
+            if (IsValid) {
+                return "AssetListHandleDynamic: " + string.Join( ", ", Handle.Keys );
+            } else {
+                return "AssetListHandleDynamic";
+            }
         }
 
     }

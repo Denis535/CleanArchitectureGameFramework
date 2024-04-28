@@ -21,11 +21,6 @@ namespace UnityEngine.AddressableAssets {
             Keys = keys;
         }
 
-        // Utils
-        public override string ToString() {
-            return "AddressableListHandle: " + string.Join( ", ", Keys );
-        }
-
         // Heleprs
         protected void Assert_IsValid() {
             Assert.Operation.Message( $"AddressableListHandle {this} must be valid" ).Valid( IsValid );

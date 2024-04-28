@@ -77,5 +77,10 @@ namespace UnityEngine.AddressableAssets {
             }
         }
 
+        // Utils
+        public override string ToString() {
+            return "SceneHandle: " + Key;
+        }
+
     }
 }

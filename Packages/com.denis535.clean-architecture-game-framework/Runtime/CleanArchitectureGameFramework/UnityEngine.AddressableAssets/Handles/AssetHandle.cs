@@ -34,6 +34,11 @@ namespace UnityEngine.AddressableAssets {
             }
         }
 
+        // Utils
+        public override string ToString() {
+            return "AssetHandle: " + Key;
+        }
+
     }
     public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
 
@@ -44,14 +49,8 @@ namespace UnityEngine.AddressableAssets {
         public override bool IsSucceeded => Handle.Status == AsyncOperationStatus.Succeeded;
         public override bool IsFailed => Handle.Status == AsyncOperationStatus.Failed;
         public override Exception? Exception => Handle.OperationException;
+        // Value
         public override UnityEngine.Object ValueBase {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public T Value {
             get {
                 Assert_IsValid();
                 Assert_IsSucceeded();
@@ -61,6 +60,14 @@ namespace UnityEngine.AddressableAssets {
         public override UnityEngine.Object? ValueBaseSafe {
             get {
                 return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
+            }
+        }
+        // Value
+        public T Value {
+            get {
+                Assert_IsValid();
+                Assert_IsSucceeded();
+                return Handle.Result;
             }
         }
         public T? ValueSafe {
@@ -98,13 +105,14 @@ namespace UnityEngine.AddressableAssets {
             Assert_IsValid();
             return Handle.GetResult();
         }
-        public T GetValue() {
-            Assert_IsValid();
-            return Handle.GetResult();
-        }
         public override async ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return await Handle.GetResultAsync( cancellationToken );
+        }
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle.GetResult();
         }
         public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
             Assert_IsValid();

@@ -9,20 +9,9 @@ namespace UnityEngine.AddressableAssets {
 
         // IsValid
         public abstract bool IsValid { get; }
-        // Handle
-        public abstract AddressableListHandle HandleBase { get; }
 
         // Constructor
         public AddressableListHandleDynamic() {
-        }
-
-        // Utils
-        public override string ToString() {
-            if (IsValid) {
-                return "AddressableListHandleDynamic: " + string.Join( ", ", HandleBase.Keys );
-            } else {
-                return "AddressableListHandleDynamic";
-            }
         }
 
         // Heleprs
