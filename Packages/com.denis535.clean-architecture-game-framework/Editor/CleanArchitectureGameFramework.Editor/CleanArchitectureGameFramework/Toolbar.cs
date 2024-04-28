@@ -42,19 +42,19 @@ namespace CleanArchitectureGameFramework {
         public static void OpenAll_CSharp() {
             OpenAssetsReverse( "Assets/(*.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIAudioTheme)", priority = 100 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIAudioTheme)", priority = 101 )]
         public static void OpenAll_UIAudioTheme() {
             OpenAssetsReverse( "Assets/(*ThemeBase.cs|*Theme.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIScreen)", priority = 101 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIScreen)", priority = 102 )]
         public static void OpenAll_UIScreen() {
             OpenAssetsReverse( "Assets/(*ScreenBase.cs|*Screen.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIWidget)", priority = 102 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIWidget)", priority = 103 )]
         public static void OpenAll_UIWidget() {
             OpenAssetsReverse( "Assets/(*WidgetBase.cs|*Widget.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIView)", priority = 103 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIView)", priority = 104 )]
         public static void OpenAll_UIView() {
             OpenAssetsReverse( "Assets/(*ViewBase.cs|*View.cs)" );
         }
