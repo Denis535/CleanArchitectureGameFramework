@@ -58,6 +58,11 @@ namespace UnityEngine.Framework.UI {
             wrapper.VisualElement.ClearClassList();
         }
 
+        // GetStyle
+        public static IStyle GetStyle(this VisualElementWrapper wrapper) {
+            return wrapper.VisualElement.style;
+        }
+
         // OnEvent
         public static void OnEvent<T>(this VisualElementWrapper wrapper, EventCallback<T> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
             wrapper.VisualElement.RegisterCallback( callback, useTrickleDown );
