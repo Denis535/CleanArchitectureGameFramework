@@ -12,6 +12,9 @@ namespace UnityEngine.Framework.UI {
         // Constructor
         public UIRootWidgetBase() {
         }
+        public UIRootWidgetBase(TView view) {
+            View = view;
+        }
         public override void Dispose() {
             base.Dispose();
         }
@@ -63,8 +66,7 @@ namespace UnityEngine.Framework.UI {
         public UIRootWidget() {
             View = CreateView();
         }
-        public UIRootWidget(UIRootWidgetViewBase view) {
-            View = view;
+        public UIRootWidget(UIRootWidgetViewBase view) : base( view ) {
         }
         public override void Dispose() {
             base.Dispose();
@@ -105,14 +107,12 @@ namespace UnityEngine.Framework.UI {
             if (widget.IsViewable) {
                 var covered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (covered != null) covered.__GetView__()!.__GetVisualElement__().SaveFocus();
-
                 if (widget.IsModal()) {
-                    ShowDescendantWidget( View.ModalWidgetSlot, widget );
                     View.WidgetSlot.SetEnabled( false );
+                    ShowDescendantWidget( View.ModalWidgetSlot, widget );
                 } else {
                     ShowDescendantWidget( View.WidgetSlot, widget );
                 }
-
                 var @new = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (@new != null) @new.__GetView__()!.__GetVisualElement__().Focus2();
             }
@@ -125,7 +125,6 @@ namespace UnityEngine.Framework.UI {
                 } else {
                     HideDescendantWidget( View.WidgetSlot, widget );
                 }
-
                 var uncovered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (uncovered != null) uncovered.__GetView__()!.__GetVisualElement__().LoadFocus();
             }
@@ -147,14 +146,14 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         protected static UIRootWidgetView CreateView() {
             var view = new UIRootWidgetView();
-            view.Widget.OnEvent<NavigationSubmitEvent>( evt => {
+            view.Root.OnEvent<NavigationSubmitEvent>( evt => {
                 var button = evt.target as Button;
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
                 }
             }, TrickleDown.TrickleDown );
-            view.Widget.OnEvent<NavigationCancelEvent>( evt => {
+            view.Root.OnEvent<NavigationCancelEvent>( evt => {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
                 var button = widget?.Query<Button>().Where( IsCancel ).First();
                 if (button != null) {

@@ -8,8 +8,8 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIRootWidgetViewBase : UIViewBase {
 
-        // VisualElement
-        public abstract ElementWrapper Widget { get; }
+        // Root
+        public abstract ElementWrapper Root { get; }
         public abstract WidgetListSlotWrapper<UIWidgetBase> WidgetSlot { get; }
         public abstract WidgetListSlotWrapper<UIWidgetBase> ModalWidgetSlot { get; }
 
@@ -23,43 +23,43 @@ namespace UnityEngine.Framework.UI {
     }
     public class UIRootWidgetView : UIRootWidgetViewBase {
 
-        // View
-        public override ElementWrapper Widget { get; }
+        // Root
+        public override ElementWrapper Root { get; }
         public override WidgetListSlotWrapper<UIWidgetBase> WidgetSlot { get; }
         public override WidgetListSlotWrapper<UIWidgetBase> ModalWidgetSlot { get; }
 
         // Constructor
         public UIRootWidgetView() {
-            VisualElement = CreateVisualElement( out var widget, out var widgetList, out var modalWidgetList );
-            Widget = widget.Wrap();
-            WidgetSlot = widgetList.AsWidgetListSlot<UIWidgetBase>();
-            ModalWidgetSlot = modalWidgetList.AsWidgetListSlot<UIWidgetBase>();
+            VisualElement = CreateVisualElement( out var root, out var widgetSlot, out var modalWidgetSlot );
+            Root = root.Wrap();
+            WidgetSlot = widgetSlot.AsWidgetListSlot<UIWidgetBase>();
+            ModalWidgetSlot = modalWidgetSlot.AsWidgetListSlot<UIWidgetBase>();
         }
         public override void Dispose() {
             base.Dispose();
         }
 
         // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement widgetSlot, out VisualElement modalWidgetSlot) {
-            widget = new VisualElement();
-            widget.name = "root-widget";
-            widget.AddToClassList( "root-widget" );
-            widget.pickingMode = PickingMode.Ignore;
+        protected static VisualElement CreateVisualElement(out VisualElement root, out VisualElement widgetSlot, out VisualElement modalWidgetSlot) {
+            root = new VisualElement();
+            root.name = "root-widget";
+            root.AddToClassList( "root-widget" );
+            root.pickingMode = PickingMode.Ignore;
             {
                 widgetSlot = new VisualElement();
                 widgetSlot.name = "widget-slot";
                 widgetSlot.AddToClassList( "widget-slot" );
                 widgetSlot.pickingMode = PickingMode.Ignore;
-                widget.Add( widgetSlot );
+                root.Add( widgetSlot );
             }
             {
                 modalWidgetSlot = new VisualElement();
                 modalWidgetSlot.name = "modal-widget-slot";
                 modalWidgetSlot.AddToClassList( "modal-widget-slot" );
                 modalWidgetSlot.pickingMode = PickingMode.Ignore;
-                widget.Add( modalWidgetSlot );
+                root.Add( modalWidgetSlot );
             }
-            return widget;
+            return root;
         }
 
     }
