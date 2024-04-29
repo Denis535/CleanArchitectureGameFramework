@@ -1,7 +1,7 @@
 {
     "name": "com.denis535.clean-architecture-game-framework",
     "displayName": "Clean Architecture Game Framework",
-    "version": "1.0.138",
+    "version": "1.0.139",
     "description": "This package provides you with the architecture game framework that helping you to develop your project following the best practices.",
     "author": {
         "name": "Denis535",
@@ -29,11 +29,11 @@
         "Uber Ribs",
 
         "Presentation",
+        "UI",
         "Application",
         "Domain",
         "Entities",
 
-        "Program",
         "Theme",
         "Screen",
         "Widget",
@@ -41,6 +41,7 @@
         "Router",
         "Application",
         "Game",
+        "Player",
         "Entity"
     ]
 }

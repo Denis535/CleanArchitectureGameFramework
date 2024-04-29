@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
 
     public class Destroyable : MonoBehaviour {
 
-        public AsyncOperationHandle<GameObject> PrefabHandle { get; internal set; }
+        internal AsyncOperationHandle<GameObject> PrefabHandle { get; set; }
 
         // Awake
         public void Awake() {

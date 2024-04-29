@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static class VisualElementWrapperExtensions {
+    public static class VisualElementWrapperExtensions2 {
 
         // IsEnabled
         public static bool IsEnabledInHierarchy(this VisualElementWrapper wrapper) {

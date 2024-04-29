@@ -56,8 +56,8 @@ namespace UnityEngine.Framework.UI {
     public class UIRootWidget : UIRootWidgetBase<UIRootWidgetViewBase> {
 
         // View
-        public IReadOnlyList<UIWidgetBase> Widgets => View.WidgetSlot.Widgets;
-        public IReadOnlyList<UIWidgetBase> ModalWidgets => View.ModalWidgetSlot.Widgets;
+        public IReadOnlyList<UIWidgetBase> Widgets => View.WidgetSlot.Children;
+        public IReadOnlyList<UIWidgetBase> ModalWidgets => View.ModalWidgetSlot.Children;
 
         // Constructor
         public UIRootWidget() {
@@ -103,7 +103,7 @@ namespace UnityEngine.Framework.UI {
         // ShowDescendantWidget
         protected override void ShowDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
-                var covered = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                var covered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (covered != null) covered.__GetView__()!.__GetVisualElement__().SaveFocus();
 
                 if (widget.IsModal()) {
@@ -113,7 +113,7 @@ namespace UnityEngine.Framework.UI {
                     ShowDescendantWidget( View.WidgetSlot, widget );
                 }
 
-                var @new = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                var @new = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (@new != null) @new.__GetView__()!.__GetVisualElement__().Focus2();
             }
         }
@@ -121,26 +121,26 @@ namespace UnityEngine.Framework.UI {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     HideDescendantWidget( View.ModalWidgetSlot, widget );
-                    View.WidgetSlot.SetEnabled( !View.ModalWidgetSlot.Widgets.Any() );
+                    View.WidgetSlot.SetEnabled( !View.ModalWidgetSlot.Children.Any() );
                 } else {
                     HideDescendantWidget( View.WidgetSlot, widget );
                 }
 
-                var uncovered = (UIWidgetBase?) View.WidgetSlot.Widgets.Concat( View.ModalWidgetSlot.Widgets ).LastOrDefault();
+                var uncovered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
                 if (uncovered != null) uncovered.__GetView__()!.__GetVisualElement__().LoadFocus();
             }
         }
 
         // ShowDescendantWidget
         protected virtual void ShowDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
-            var covered = slot.Widgets.LastOrDefault();
+            var covered = slot.Children.LastOrDefault();
             if (covered != null) slot.__GetVisualElement__().Remove( covered.__GetView__()!.__GetVisualElement__() );
             slot.Add( widget );
         }
         protected virtual void HideDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
-            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Widgets.LastOrDefault() );
+            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Children.LastOrDefault() );
             slot.Remove( widget );
-            var uncovered = slot.Widgets.LastOrDefault();
+            var uncovered = slot.Children.LastOrDefault();
             if (uncovered != null) slot.__GetVisualElement__().Add( uncovered.__GetView__()!.__GetVisualElement__() );
         }
 
