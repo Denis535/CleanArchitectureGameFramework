@@ -42,25 +42,23 @@ namespace UnityEngine.Framework.UI {
             return (T) Activator.CreateInstance( typeof( T ), visualElement );
         }
 
-        // AsSlot
+        // AsWidgetSlot
         public static WidgetSlotWrapper<T> AsWidgetSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
             return new WidgetSlotWrapper<T>( visualElement );
         }
-        public static ViewSlotWrapper<T> AsViewSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
-            return new ViewSlotWrapper<T>( visualElement );
-        }
-
-        // AsListSlot
         public static WidgetListSlotWrapper<T> AsWidgetListSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
             return new WidgetListSlotWrapper<T>( visualElement );
         }
-        public static ViewListSlotWrapper<T> AsViewListSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
-            return new ViewListSlotWrapper<T>( visualElement );
-        }
-
-        // AsStackSlot
         public static WidgetStackSlotWrapper<T> AsWidgetStackSlot<T>(this VisualElement visualElement) where T : notnull, UIWidgetBase {
             return new WidgetStackSlotWrapper<T>( visualElement );
+        }
+
+        // AsViewSlot
+        public static ViewSlotWrapper<T> AsViewSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewSlotWrapper<T>( visualElement );
+        }
+        public static ViewListSlotWrapper<T> AsViewListSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
+            return new ViewListSlotWrapper<T>( visualElement );
         }
         public static ViewStackSlotWrapper<T> AsViewStackSlot<T>(this VisualElement visualElement) where T : notnull, UIViewBase {
             return new ViewStackSlotWrapper<T>( visualElement );
