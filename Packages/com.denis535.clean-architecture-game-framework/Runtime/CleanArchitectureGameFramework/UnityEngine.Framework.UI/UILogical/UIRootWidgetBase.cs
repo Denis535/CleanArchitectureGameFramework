@@ -12,8 +12,7 @@ namespace UnityEngine.Framework.UI {
         // Constructor
         public UIRootWidgetBase() {
         }
-        public UIRootWidgetBase(TView view) {
-            View = view;
+        public UIRootWidgetBase(TView view) : base( view ) {
         }
         public override void Dispose() {
             base.Dispose();
