@@ -28,7 +28,7 @@ namespace UnityEngine.Framework.UI {
         public bool DisposeWhenDetach { get; protected init; } = true;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
-        protected internal UIViewBase? View => (this as IUIViewable)?.View;
+        public UIViewBase? View => (this as IUIViewable)?.View;
         // Screen
         public UIScreenBase? Screen { get; private set; }
         public UIWidgetState State { get; private set; } = UIWidgetState.Unattached;
@@ -202,11 +202,14 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
         // View
-        protected internal new TView View { get; protected init; } = default!;
+        public new TView View { get; protected init; } = default!;
         UIViewBase IUIViewable.View => View;
 
         // Constructor
         public UIWidgetBase() {
+        }
+        public UIWidgetBase(TView view) {
+            View = view;
         }
         public override void Dispose() {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );

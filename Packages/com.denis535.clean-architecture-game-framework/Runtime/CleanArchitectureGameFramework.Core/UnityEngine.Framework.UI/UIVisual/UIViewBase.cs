@@ -28,6 +28,9 @@ namespace UnityEngine.Framework.UI {
         // Constructor
         public UIViewBase() {
         }
+        public UIViewBase(VisualElement visualElement) {
+            VisualElement = visualElement;
+        }
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );

@@ -71,15 +71,5 @@ namespace UnityEngine.Framework.UI {
             widget.OnAfterDescendantDetachEvent += callback;
         }
 
-        // GetView
-        public static UIViewBase? __GetView__(this UIWidgetBase widget) {
-            // try not to use View outside of it's widget
-            return widget?.View;
-        }
-        public static T __GetView__<T>(this UIWidgetBase<T> widget) where T : UIViewBase {
-            // try not to use View outside of it's widget
-            return widget.View;
-        }
-
     }
 }
