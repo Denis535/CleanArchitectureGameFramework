@@ -46,12 +46,12 @@ namespace UnityEngine.Framework.UI {
             base.__DetachChild__( child, argument );
         }
 
-        // ShowDescendantWidget
-        protected override void ShowDescendantWidget(UIWidgetBase widget) {
-            base.ShowDescendantWidget( widget );
+        // ShowWidget
+        protected override void ShowWidget(UIWidgetBase widget) {
+            base.ShowWidget( widget );
         }
-        protected override void HideDescendantWidget(UIWidgetBase widget) {
-            base.HideDescendantWidget( widget );
+        protected override void HideWidget(UIWidgetBase widget) {
+            base.HideWidget( widget );
         }
 
     }
@@ -97,45 +97,26 @@ namespace UnityEngine.Framework.UI {
             base.__DetachChild__( child, argument );
         }
 
-        // ShowDescendantWidget
-        protected override void ShowDescendantWidget(UIWidgetBase widget) {
+        // ShowWidget
+        protected override void ShowWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
-                //var covered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (covered != null) covered.View!.SaveFocus();
                 if (widget.IsModal()) {
                     View.WidgetSlot.SetEnabled( false );
-                    ShowDescendantWidget( View.ModalWidgetSlot, widget );
+                    Push( View.ModalWidgetSlot, widget, i => true );
                 } else {
-                    ShowDescendantWidget( View.WidgetSlot, widget );
+                    Push( View.WidgetSlot, widget, i => true );
                 }
-                //var @new = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (@new != null) @new.View!.Focus();
             }
         }
-        protected override void HideDescendantWidget(UIWidgetBase widget) {
+        protected override void HideWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
-                    HideDescendantWidget( View.ModalWidgetSlot, widget );
+                    Pop( View.ModalWidgetSlot, widget, i => true );
                     View.WidgetSlot.SetEnabled( !View.ModalWidgetSlot.Children.Any() );
                 } else {
-                    HideDescendantWidget( View.WidgetSlot, widget );
+                    Pop( View.WidgetSlot, widget, i => true );
                 }
-                //var uncovered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (uncovered != null) uncovered.View!.LoadFocus();
             }
-        }
-
-        // ShowDescendantWidget
-        protected virtual void ShowDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
-            var covered = slot.Children.LastOrDefault();
-            if (covered != null) slot.__GetVisualElement__().Remove( covered.View!.__GetVisualElement__() );
-            slot.Add( widget );
-        }
-        protected virtual void HideDescendantWidget(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget) {
-            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Children.LastOrDefault() );
-            slot.Remove( widget );
-            var uncovered = slot.Children.LastOrDefault();
-            if (uncovered != null) slot.__GetVisualElement__().Add( uncovered.View!.__GetVisualElement__() );
         }
 
         // Helpers
@@ -194,6 +175,18 @@ namespace UnityEngine.Framework.UI {
                 evt.target = button;
                 button.SendEvent( evt );
             }
+        }
+        // Helpers
+        protected static void Push(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget, Func<UIWidgetBase, bool> canBeHidden) {
+            var last = slot.Children.LastOrDefault();
+            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Remove( last.View!.__GetVisualElement__() );
+            slot.Add( widget );
+        }
+        protected static void Pop(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget, Func<UIWidgetBase, bool> canBeHidden) {
+            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Children.LastOrDefault() );
+            slot.Remove( widget );
+            var last = slot.Children.LastOrDefault();
+            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Add( last.View!.__GetVisualElement__() );
         }
 
     }

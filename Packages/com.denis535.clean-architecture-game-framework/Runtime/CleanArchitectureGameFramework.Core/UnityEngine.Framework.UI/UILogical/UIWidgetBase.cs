@@ -8,6 +8,7 @@ namespace UnityEngine.Framework.UI {
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : IUILogicalElement, IDisposable {
 
@@ -77,7 +78,10 @@ namespace UnityEngine.Framework.UI {
             OnBeforeAttachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantAttach( this, argument );
         }
-        public abstract void OnAttach(object? argument);
+        public virtual void OnAttach(object? argument) {
+            ShowWidget( this );
+            if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
+        }
         public virtual void OnAfterAttach(object? argument) {
             Parent?.OnAfterDescendantAttach( this, argument );
             OnAfterAttachEvent?.Invoke( argument );
@@ -86,7 +90,10 @@ namespace UnityEngine.Framework.UI {
             OnBeforeDetachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantDetach( this, argument );
         }
-        public abstract void OnDetach(object? argument);
+        public virtual void OnDetach(object? argument) {
+            HideWidget( this );
+            if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
+        }
         public virtual void OnAfterDetach(object? argument) {
             Parent?.OnAfterDescendantDetach( this, argument );
             OnAfterDetachEvent?.Invoke( argument );
@@ -143,14 +150,12 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // ShowDescendantWidget
-        protected virtual void ShowDescendantWidget(UIWidgetBase widget) {
-            Assert.Operation.Message( $"Can not show descendant widget: {widget}" ).Valid( Parent != null );
-            Parent.ShowDescendantWidget( widget );
+        // ShowWidget
+        protected virtual void ShowWidget(UIWidgetBase widget) {
+            Parent!.ShowWidget( widget );
         }
-        protected virtual void HideDescendantWidget(UIWidgetBase widget) {
-            Assert.Operation.Message( $"Can not hide descendant widget: {widget}" ).Valid( Parent != null );
-            Parent.HideDescendantWidget( widget );
+        protected virtual void HideWidget(UIWidgetBase widget) {
+            Parent!.HideWidget( widget );
         }
 
         // Helpers
@@ -166,7 +171,6 @@ namespace UnityEngine.Framework.UI {
                 widget.State = UIWidgetState.Attaching;
                 {
                     widget.OnAttach( argument );
-                    widget.Parent?.ShowDescendantWidget( widget );
                     foreach (var child in widget.Children) {
                         AttachToScreen( child, screen, argument );
                     }
@@ -189,7 +193,6 @@ namespace UnityEngine.Framework.UI {
                     foreach (var child in widget.Children.Reverse()) {
                         DetachFromScreen( child, screen, argument );
                     }
-                    widget.Parent?.HideDescendantWidget( widget );
                     widget.OnDetach( argument );
                 }
                 widget.State = UIWidgetState.Detached;
