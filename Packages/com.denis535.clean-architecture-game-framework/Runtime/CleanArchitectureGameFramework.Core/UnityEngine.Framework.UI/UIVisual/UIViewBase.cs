@@ -11,6 +11,8 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIViewBase : IDisposable {
 
         protected CancellationTokenSource? disposeCancellationTokenSource;
+        private VisualElement? visualElement;
+        private VisualElement? focusedElement;
 
         // System
         public bool IsDisposed { get; protected set; }
@@ -24,9 +26,24 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // VisualElement
-        protected internal VisualElement VisualElement { get; protected init; } = default!;
+        protected internal VisualElement VisualElement {
+            get => visualElement!;
+            protected init {
+                Assert.Operation.Message( $"View {this} already have VisualElement" ).Valid( visualElement == null );
+                visualElement = value;
+                visualElement.userData = this;
+            }
+        }
         // Children
-        public virtual IReadOnlyList<UIViewBase> Children => Array.Empty<UIViewBase>();
+        public IReadOnlyList<UIViewBase> Children {
+            get {
+                return VisualElement
+                    .GetDescendants( i => i.userData == this || i.userData is not UIViewBase )
+                    .Select( i => i.userData )
+                    .OfType<UIViewBase>()
+                    .ToList();
+            }
+        }
 
         // Constructor
         public UIViewBase() {
@@ -43,6 +60,47 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
+        }
+
+        // Focus
+        public virtual void Focus() {
+            if (VisualElement.focusable) {
+                VisualElement.Focus();
+            } else {
+                VisualElement.focusable = true;
+                VisualElement.delegatesFocus = true;
+                VisualElement.Focus();
+                VisualElement.delegatesFocus = false;
+                VisualElement.focusable = false;
+            }
+        }
+        public virtual void SaveFocus() {
+            var focusedElement = GetFocusedElement();
+            SaveFocusedElement( focusedElement );
+        }
+        public virtual bool LoadFocus() {
+            var focusedElement = LoadFocusedElement();
+            if (focusedElement != null) {
+                focusedElement.Focus();
+                return true;
+            }
+            return false;
+        }
+        public bool HasFocusedElement() {
+            var focusedElement = (VisualElement) VisualElement.focusController.focusedElement;
+            if (focusedElement != null && (VisualElement == focusedElement || VisualElement.Contains( focusedElement ))) return true;
+            return false;
+        }
+        public VisualElement? GetFocusedElement() {
+            var focusedElement = (VisualElement) VisualElement.focusController.focusedElement;
+            if (focusedElement != null && (VisualElement == focusedElement || VisualElement.Contains( focusedElement ))) return focusedElement;
+            return null;
+        }
+        private void SaveFocusedElement(VisualElement? focusedElement) {
+            this.focusedElement = focusedElement;
+        }
+        private VisualElement? LoadFocusedElement() {
+            return focusedElement;
         }
 
     }

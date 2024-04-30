@@ -101,7 +101,7 @@ namespace UnityEngine.Framework.UI {
         protected override void ShowDescendantWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 //var covered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (covered != null) covered.View!.__GetVisualElement__().SaveFocus();
+                //if (covered != null) covered.View!.SaveFocus();
                 if (widget.IsModal()) {
                     View.WidgetSlot.SetEnabled( false );
                     ShowDescendantWidget( View.ModalWidgetSlot, widget );
@@ -109,7 +109,7 @@ namespace UnityEngine.Framework.UI {
                     ShowDescendantWidget( View.WidgetSlot, widget );
                 }
                 //var @new = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (@new != null) @new.View!.__GetVisualElement__().Focus2();
+                //if (@new != null) @new.View!.Focus();
             }
         }
         protected override void HideDescendantWidget(UIWidgetBase widget) {
@@ -121,7 +121,7 @@ namespace UnityEngine.Framework.UI {
                     HideDescendantWidget( View.WidgetSlot, widget );
                 }
                 //var uncovered = (UIWidgetBase?) View.WidgetSlot.Children.Concat( View.ModalWidgetSlot.Children ).LastOrDefault();
-                //if (uncovered != null) uncovered.View!.__GetVisualElement__().LoadFocus();
+                //if (uncovered != null) uncovered.View!.LoadFocus();
             }
         }
 

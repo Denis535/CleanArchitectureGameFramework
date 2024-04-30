@@ -26,45 +26,33 @@ namespace UnityEngine.UIElements {
         }
         public static IEnumerable<VisualElement> GetAncestorsAndSelf(this VisualElement element) {
             yield return element;
-            foreach (var ancestor in element.GetAncestors()) {
-                yield return ancestor;
-            }
+            foreach (var i in element.GetAncestors()) yield return i;
         }
 
         // GetDescendants
         public static IEnumerable<VisualElement> GetDescendants(this VisualElement element) {
             foreach (var child in element.Children()) {
                 yield return child;
-                foreach (var descendant in child.GetDescendants()) {
-                    yield return descendant;
-                }
+                foreach (var i in child.GetDescendants()) yield return i;
             }
         }
         public static IEnumerable<VisualElement> GetDescendantsAndSelf(this VisualElement element) {
             yield return element;
-            foreach (var descendant in element.GetDescendants()) {
-                yield return descendant;
-            }
+            foreach (var i in element.GetDescendants()) yield return i;
         }
 
         // GetDescendants
         public static IEnumerable<VisualElement> GetDescendants(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
-            foreach (var child in element.Children()) {
-                yield return child;
-                if (descentIntoElement( child )) {
-                    foreach (var descendant in child.GetDescendants( descentIntoElement )) {
-                        yield return descendant;
-                    }
+            if (descentIntoElement( element )) {
+                foreach (var child in element.Children()) {
+                    yield return child;
+                    foreach (var i in child.GetDescendants( descentIntoElement )) yield return i;
                 }
             }
         }
         public static IEnumerable<VisualElement> GetDescendantsAndSelf(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
             yield return element;
-            if (descentIntoElement( element )) {
-                foreach (var descendant in element.GetDescendants( descentIntoElement )) {
-                    yield return descendant;
-                }
-            }
+            foreach (var i in element.GetDescendants( descentIntoElement )) yield return i;
         }
 
         // Add

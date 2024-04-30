@@ -68,47 +68,6 @@ namespace UnityEngine.UIElements {
             return element;
         }
 
-        // Focus
-        public static void Focus2(this VisualElement element) {
-            if (element.focusable) {
-                element.Focus();
-            } else {
-                element.focusable = true;
-                element.delegatesFocus = true;
-                element.Focus();
-                element.delegatesFocus = false;
-                element.focusable = false;
-            }
-        }
-        public static void SaveFocus(this VisualElement element) {
-            var focusedElement = element.GetFocusedElement();
-            element.SaveFocusedElement( focusedElement );
-        }
-        public static bool LoadFocus(this VisualElement element) {
-            var focusedElement = element.LoadFocusedElement();
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return true;
-            }
-            return false;
-        }
-        public static bool HasFocusedElement(this VisualElement element) {
-            var focusedElement = (VisualElement) element.focusController.focusedElement;
-            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return true;
-            return false;
-        }
-        public static VisualElement? GetFocusedElement(this VisualElement element) {
-            var focusedElement = (VisualElement) element.focusController.focusedElement;
-            if (focusedElement != null && (element == focusedElement || element.Contains( focusedElement ))) return focusedElement;
-            return null;
-        }
-        public static void SaveFocusedElement(this VisualElement element, VisualElement? focusedElement) {
-            element.userData = focusedElement;
-        }
-        public static VisualElement? LoadFocusedElement(this VisualElement element) {
-            return (VisualElement?) element.userData;
-        }
-
         // FindElement
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
