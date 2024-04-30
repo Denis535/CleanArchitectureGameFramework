@@ -37,8 +37,7 @@ namespace UnityEngine.Framework.UI {
         // Children
         public IReadOnlyList<UIViewBase> Children {
             get {
-                return VisualElement
-                    .GetDescendants( i => i.userData == this || i.userData is not UIViewBase )
+                return VisualElement.GetDescendants( i => i.userData == this || i.userData is not UIViewBase )
                     .Select( i => i.userData )
                     .OfType<UIViewBase>()
                     .ToList();

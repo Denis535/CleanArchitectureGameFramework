@@ -39,10 +39,10 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        public override void AttachChild(UIWidgetBase child, object? argument) {
+        public override void AttachChild(UIWidgetBase child, object? argument = null) {
             base.AttachChild( child, argument );
         }
-        public override void DetachChild(UIWidgetBase child, object? argument) {
+        public override void DetachChild(UIWidgetBase child, object? argument = null) {
             base.DetachChild( child, argument );
         }
 
@@ -88,10 +88,10 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        public override void AttachChild(UIWidgetBase child, object? argument) {
+        public override void AttachChild(UIWidgetBase child, object? argument = null) {
             base.AttachChild( child, argument );
         }
-        public override void DetachChild(UIWidgetBase child, object? argument) {
+        public override void DetachChild(UIWidgetBase child, object? argument = null) {
             base.DetachChild( child, argument );
         }
 
