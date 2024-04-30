@@ -3,6 +3,7 @@ namespace UnityEngine.UIElements {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using UnityEngine;
@@ -15,8 +16,11 @@ namespace UnityEngine.UIElements {
         }
 
         // IsDisplayed
-        public static bool IsDisplayed(this VisualElement element) {
-            return element.style.display == DisplayStyle.Flex;
+        public static bool IsDisplayedSelf(this VisualElement element) {
+            return element.resolvedStyle.display == DisplayStyle.Flex;
+        }
+        public static bool IsDisplayedInHierarchy(this VisualElement element) {
+            return element.GetAncestorsAndSelf().All( IsDisplayedSelf );
         }
         public static void SetDisplayed(this VisualElement element, bool value) {
             if (value) {
@@ -27,8 +31,11 @@ namespace UnityEngine.UIElements {
         }
 
         // IsValid
-        public static bool IsValid(this VisualElement element) {
+        public static bool IsValidSelf(this VisualElement element) {
             return !element.ClassListContains( "invalid" );
+        }
+        public static bool IsValidInHierarchy(this VisualElement element) {
+            return element.GetAncestorsAndSelf().All( IsValidSelf );
         }
         public static void SetValid(this VisualElement element, bool value) {
             if (value) {
@@ -36,6 +43,11 @@ namespace UnityEngine.UIElements {
             } else {
                 element.AddToClassList( "invalid" );
             }
+        }
+
+        // IsContentValid
+        public static bool IsContentValid(this VisualElement element) {
+            return element.GetDescendants().All( IsValidSelf );
         }
 
         // SetUp

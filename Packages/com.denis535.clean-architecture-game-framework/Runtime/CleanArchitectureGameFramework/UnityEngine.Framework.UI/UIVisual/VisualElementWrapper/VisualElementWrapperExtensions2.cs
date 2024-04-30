@@ -21,7 +21,7 @@ namespace UnityEngine.Framework.UI {
 
         // IsDisplayed
         public static bool IsDisplayed(this VisualElementWrapper wrapper) {
-            return wrapper.VisualElement.IsDisplayed();
+            return wrapper.VisualElement.IsDisplayedSelf();
         }
         public static void SetDisplayed(this VisualElementWrapper wrapper, bool value) {
             wrapper.VisualElement.SetDisplayed( value );
@@ -29,7 +29,7 @@ namespace UnityEngine.Framework.UI {
 
         // IsValid
         public static bool IsValid(this VisualElementWrapper wrapper) {
-            return wrapper.VisualElement.IsValid();
+            return wrapper.VisualElement.IsValidSelf();
         }
         public static void SetValid(this VisualElementWrapper wrapper, bool value) {
             wrapper.VisualElement.SetValid( value );
