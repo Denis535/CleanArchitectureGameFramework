@@ -78,10 +78,7 @@ namespace UnityEngine.Framework.UI {
             OnBeforeAttachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantAttach( this, argument );
         }
-        public virtual void OnAttach(object? argument) {
-            ShowWidget( this );
-            if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
-        }
+        public abstract void OnAttach(object? argument); // initialize and show self
         public virtual void OnAfterAttach(object? argument) {
             Parent?.OnAfterDescendantAttach( this, argument );
             OnAfterAttachEvent?.Invoke( argument );
@@ -90,10 +87,7 @@ namespace UnityEngine.Framework.UI {
             OnBeforeDetachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantDetach( this, argument );
         }
-        public virtual void OnDetach(object? argument) {
-            HideWidget( this );
-            if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
-        }
+        public abstract void OnDetach(object? argument); // hide self and deinitialize
         public virtual void OnAfterDetach(object? argument) {
             Parent?.OnAfterDescendantDetach( this, argument );
             OnAfterDetachEvent?.Invoke( argument );
@@ -118,7 +112,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        protected internal virtual void __AttachChild__(UIWidgetBase child, object? argument) {
+        public virtual void AttachChild(UIWidgetBase child, object? argument = null) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
@@ -132,7 +126,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected internal virtual void __DetachChild__(UIWidgetBase child, object? argument) {
+        public virtual void DetachChild(UIWidgetBase child, object? argument = null) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
@@ -151,11 +145,13 @@ namespace UnityEngine.Framework.UI {
         }
 
         // ShowWidget
-        protected virtual void ShowWidget(UIWidgetBase widget) {
+        public virtual void ShowWidget(UIWidgetBase widget) {
             Parent!.ShowWidget( widget );
+            if (widget.View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( widget.View.VisualElement.IsAttached() );
         }
-        protected virtual void HideWidget(UIWidgetBase widget) {
+        public virtual void HideWidget(UIWidgetBase widget) {
             Parent!.HideWidget( widget );
+            if (widget.View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !widget.View.VisualElement.IsAttached() );
         }
 
         // Helpers

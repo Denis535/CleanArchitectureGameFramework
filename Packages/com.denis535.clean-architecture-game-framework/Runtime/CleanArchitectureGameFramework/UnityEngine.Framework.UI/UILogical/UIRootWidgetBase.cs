@@ -39,19 +39,19 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        protected internal override void __AttachChild__(UIWidgetBase child, object? argument) {
-            base.__AttachChild__( child, argument );
+        public override void AttachChild(UIWidgetBase child, object? argument) {
+            base.AttachChild( child, argument );
         }
-        protected internal override void __DetachChild__(UIWidgetBase child, object? argument) {
-            base.__DetachChild__( child, argument );
+        public override void DetachChild(UIWidgetBase child, object? argument) {
+            base.DetachChild( child, argument );
         }
 
         // ShowWidget
-        protected override void ShowWidget(UIWidgetBase widget) {
-            base.ShowWidget( widget );
+        public override void ShowWidget(UIWidgetBase widget) {
+            throw Exceptions.Internal.NotImplemented( $"Method 'ShowWidget' is not implemented" );
         }
-        protected override void HideWidget(UIWidgetBase widget) {
-            base.HideWidget( widget );
+        public override void HideWidget(UIWidgetBase widget) {
+            throw Exceptions.Internal.NotImplemented( $"Method 'HideWidget' is not implemented" );
         }
 
     }
@@ -69,10 +69,8 @@ namespace UnityEngine.Framework.UI {
 
         // OnAttach
         public override void OnAttach(object? argument) {
-            base.OnAttach( argument );
         }
         public override void OnDetach(object? argument) {
-            base.OnDetach( argument );
         }
 
         // OnBeforeDescendantAttach
@@ -90,15 +88,15 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachChild
-        protected internal override void __AttachChild__(UIWidgetBase child, object? argument) {
-            base.__AttachChild__( child, argument );
+        public override void AttachChild(UIWidgetBase child, object? argument) {
+            base.AttachChild( child, argument );
         }
-        protected internal override void __DetachChild__(UIWidgetBase child, object? argument) {
-            base.__DetachChild__( child, argument );
+        public override void DetachChild(UIWidgetBase child, object? argument) {
+            base.DetachChild( child, argument );
         }
 
         // ShowWidget
-        protected override void ShowWidget(UIWidgetBase widget) {
+        public override void ShowWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     View.WidgetSlot.SetEnabled( false );
@@ -108,7 +106,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected override void HideWidget(UIWidgetBase widget) {
+        public override void HideWidget(UIWidgetBase widget) {
             if (widget.IsViewable) {
                 if (widget.IsModal()) {
                     Pop( View.ModalWidgetSlot, widget, i => true );

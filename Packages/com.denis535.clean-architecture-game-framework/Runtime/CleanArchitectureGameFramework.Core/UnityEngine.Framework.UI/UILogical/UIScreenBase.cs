@@ -8,7 +8,7 @@ namespace UnityEngine.Framework.UI {
 
     [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
     public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement {
-
+        
         private readonly Lock @lock = new Lock();
 
         // Document
@@ -24,7 +24,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AttachWidget
-        protected internal virtual void __AttachWidget__(UIWidgetBase widget, object? argument) {
+        public virtual void AttachWidget(UIWidgetBase widget, object? argument = null) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
@@ -36,7 +36,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected internal virtual void __DetachWidget__(UIWidgetBase widget, object? argument) {
+        public virtual void DetachWidget(UIWidgetBase widget, object? argument = null) {
             // You can override it but you should not directly call this method
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
