@@ -8,18 +8,6 @@ namespace System {
 
     public static class Option {
 
-        // Create
-        public static Option<T> Create<T>() {
-            return new Option<T>();
-        }
-        public static Option<T> Create<T>(T value) {
-            return new Option<T>( value );
-        }
-        public static Option<T> Create<T>(T? value) where T : struct {
-            if (value.HasValue) return new Option<T>( value.Value );
-            return default;
-        }
-
         // Equals
         public static bool Equals<T>(Option<T> v1, Option<T> v2) {
             if (v1.HasValue && v2.HasValue) return EqualityComparer<T>.Default.Equals( v1.Value, v2.Value );
@@ -27,11 +15,11 @@ namespace System {
         }
         public static bool Equals<T>(Option<T> v1, T v2) {
             if (v1.HasValue) return EqualityComparer<T>.Default.Equals( v1.Value, v2 );
-            return EqualityComparer<bool>.Default.Equals( v1.HasValue, true );
+            return false;
         }
-        public static bool Equals<T>(Option<T> v1, T? v2) where T : struct {
-            if (v1.HasValue && v2.HasValue) return EqualityComparer<T>.Default.Equals( v1.Value, v2.Value );
-            return EqualityComparer<bool>.Default.Equals( v1.HasValue, v2.HasValue );
+        public static bool Equals<T>(T v1, Option<T> v2) {
+            if (v2.HasValue) return EqualityComparer<T>.Default.Equals( v1, v2.Value );
+            return false;
         }
 
         // Compare
@@ -41,11 +29,11 @@ namespace System {
         }
         public static int Compare<T>(Option<T> v1, T v2) {
             if (v1.HasValue) return Comparer<T>.Default.Compare( v1.Value, v2 );
-            return Comparer<bool>.Default.Compare( v1.HasValue, true );
+            return Comparer<bool>.Default.Compare( false, true );
         }
-        public static int Compare<T>(Option<T> v1, T? v2) where T : struct {
-            if (v1.HasValue && v2.HasValue) return Comparer<T>.Default.Compare( v1.Value, v2.Value );
-            return Comparer<bool>.Default.Compare( v1.HasValue, v2.HasValue );
+        public static int Compare<T>(T v1, Option<T> v2) {
+            if (v2.HasValue) return Comparer<T>.Default.Compare( v1, v2.Value );
+            return Comparer<bool>.Default.Compare( true, false );
         }
 
         // GetUnderlyingType
@@ -64,17 +52,28 @@ namespace System {
         }
 
     }
+    public static class OptionExtensions {
+
+        public static Option<T> AsOption<T>(this T value) {
+            return new Option<T>( value );
+        }
+
+    }
     [Serializable]
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>, IComparable<Option<T>>, IComparable<T> {
 
         private readonly bool hasValue;
-        private readonly T value;
+        private readonly T? value;
 
         public bool HasValue => hasValue;
-        public T Value => hasValue ? value : throw new InvalidOperationException( "Option must have value" );
+        public T Value => hasValue ? value! : throw new InvalidOperationException( "Option must have value" );
         public T? ValueOrDefault => hasValue ? value : default;
 
         // Constructor
+        //public Option() {
+        //    this.hasValue = false;
+        //    this.value = default;
+        //}
         public Option(T value) {
             this.hasValue = true;
             this.value = value;
@@ -83,7 +82,7 @@ namespace System {
         // TryGetValue
         public bool TryGetValue([MaybeNullWhen( false )] out T value) {
             if (hasValue) {
-                value = this.value;
+                value = this.value!;
                 return true;
             }
             value = default;
@@ -121,18 +120,22 @@ namespace System {
         }
 
         // Utils
-        public static explicit operator Option<T>(T value) {
-            return new Option<T>( value );
-        }
-        public static explicit operator T(Option<T> value) {
-            return value.Value;
-        }
-
-        // Utils
         public static bool operator ==(Option<T> left, Option<T> right) {
             return Option.Equals( left, right );
         }
+        public static bool operator ==(Option<T> left, T right) {
+            return Option.Equals( left, right );
+        }
+        public static bool operator ==(T left, Option<T> right) {
+            return Option.Equals( left, right );
+        }
         public static bool operator !=(Option<T> left, Option<T> right) {
+            return !Option.Equals( left, right );
+        }
+        public static bool operator !=(Option<T> left, T right) {
+            return !Option.Equals( left, right );
+        }
+        public static bool operator !=(T left, Option<T> right) {
             return !Option.Equals( left, right );
         }
 
