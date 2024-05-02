@@ -76,7 +76,7 @@ namespace UnityEngine.Framework.UI {
             OnBeforeAttachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantAttach( this, argument );
         }
-        public abstract void OnAttach(object? argument); // initialize and show self
+        public abstract void OnAttach(object? argument);
         public virtual void OnAfterAttach(object? argument) {
             Parent?.OnAfterDescendantAttach( this, argument );
             OnAfterAttachEvent?.Invoke( argument );
@@ -85,7 +85,7 @@ namespace UnityEngine.Framework.UI {
             OnBeforeDetachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantDetach( this, argument );
         }
-        public abstract void OnDetach(object? argument); // hide self and deinitialize
+        public abstract void OnDetach(object? argument);
         public virtual void OnAfterDetach(object? argument) {
             Parent?.OnAfterDescendantDetach( this, argument );
             OnAfterDetachEvent?.Invoke( argument );
@@ -142,14 +142,22 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
+        // Show
+        public void Show() {
+            Parent!.ShowWidget( this );
+            if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
+        }
+        public void Hide() {
+            Parent!.HideWidget( this );
+            if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
+        }
+
         // ShowWidget
         public virtual void ShowWidget(UIWidgetBase widget) {
             Parent!.ShowWidget( widget );
-            if (widget.View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( widget.View.VisualElement.IsAttached() );
         }
         public virtual void HideWidget(UIWidgetBase widget) {
             Parent!.HideWidget( widget );
-            if (widget.View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !widget.View.VisualElement.IsAttached() );
         }
 
         // Helpers
