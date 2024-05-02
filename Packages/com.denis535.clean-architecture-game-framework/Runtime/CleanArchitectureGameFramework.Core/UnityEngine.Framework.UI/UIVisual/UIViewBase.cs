@@ -34,15 +34,6 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
-        // Children
-        public IReadOnlyList<UIViewBase> Children {
-            get {
-                return VisualElement.GetDescendants( i => i.userData == this || i.userData is not UIViewBase )
-                    .Select( i => i.userData )
-                    .OfType<UIViewBase>()
-                    .ToList();
-            }
-        }
 
         // Constructor
         public UIViewBase() {
@@ -53,10 +44,12 @@ namespace UnityEngine.Framework.UI {
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
-            foreach (var child in Children) {
+            foreach (var child in this.GetChildren()) {
                 child.Dispose();
             }
-            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
+#if UNITY_EDITOR
+            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
+#endif
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }

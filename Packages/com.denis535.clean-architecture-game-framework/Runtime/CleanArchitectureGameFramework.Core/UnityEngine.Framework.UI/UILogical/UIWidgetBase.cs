@@ -68,7 +68,9 @@ namespace UnityEngine.Framework.UI {
             foreach (var child in Children) {
                 child.Dispose();
             }
+#if UNITY_EDITOR
             Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
+#endif
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
