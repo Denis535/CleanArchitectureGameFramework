@@ -40,14 +40,10 @@ namespace UnityEngine.Framework.UI {
         // Parent
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase? Parent { get; internal set; }
-        public IReadOnlyList<UIWidgetBase> Ancestors => this.GetAncestors();
-        public IReadOnlyList<UIWidgetBase> AncestorsAndSelf => this.GetAncestorsAndSelf();
         // Children
         public bool HasChildren => Children_.Any();
         private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
-        public IReadOnlyList<UIWidgetBase> Descendants => this.GetDescendants();
-        public IReadOnlyList<UIWidgetBase> DescendantsAndSelf => this.GetDescendantsAndSelf();
         // OnAttach
         public event Action<object?>? OnBeforeAttachEvent;
         public event Action<object?>? OnAfterAttachEvent;

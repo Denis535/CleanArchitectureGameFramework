@@ -29,7 +29,6 @@ namespace UnityEngine.Framework.UI {
         protected internal VisualElement VisualElement {
             get => visualElement!;
             protected init {
-                Assert.Operation.Message( $"View {this} already have VisualElement" ).Valid( visualElement == null );
                 visualElement = value;
                 visualElement.userData = this;
             }
