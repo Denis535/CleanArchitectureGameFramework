@@ -5,32 +5,56 @@ namespace System {
     using System.Collections.Generic;
     using System.Linq;
 
-    public static class Exceptions {
+    public static partial class Exceptions {
+        // Internal
         public static class Internal {
-            public static Exception Exception(FormattableString? message) => Exception<Exception>( message?.GetDisplayString() );
-            public static NullReferenceException NullReference(FormattableString? message) => Exception<NullReferenceException>( message?.GetDisplayString() );
-            public static NotSupportedException NotSupported(FormattableString? message) => Exception<NotSupportedException>( message?.GetDisplayString() );
-            public static NotImplementedException NotImplemented(FormattableString? message) => Exception<NotImplementedException>( message?.GetDisplayString() );
+            public static Exception Exception(FormattableString? message) => GetException<Exception>( message );
+            public static NullReferenceException NullReference(FormattableString? message) => GetException<NullReferenceException>( message );
+            public static NotSupportedException NotSupported(FormattableString? message) => GetException<NotSupportedException>( message );
+            public static NotImplementedException NotImplemented(FormattableString? message) => GetException<NotImplementedException>( message );
+        }
+    }
+    public static partial class Exceptions {
+
+        public static Func<FormattableString?, string?> GetMessageStringDelegate = GetMessageString;
+        public static Func<object?, string> GetArgumentStringDelegate = GetArgumentString;
+        public static Func<Type, string?, Exception> GetExceptionDelegate = GetException;
+
+        // GetException
+        internal static T GetException<T>(FormattableString? message) where T : Exception {
+            return GetException<T>( GetMessageStringDelegate( message ) );
+        }
+        internal static T GetException<T>(string? message) where T : Exception {
+            return (T) GetExceptionDelegate( typeof( T ), message );
         }
 
         // Helpers
-        internal static string GetDisplayString(this FormattableString message) {
-            var format = message.Format.Replace( "{", "'{" ).Replace( "}", "}'" );
-            var arguments = message.GetArguments();
-            for (var i = 0; i < arguments.Length; i++) {
-                if (arguments[ i ] is IList list) {
-                    arguments[ i ] = string.Join( ", ", list.Cast<object?>().ToArray() );
-                } else
-                if (arguments[ i ] is null) {
-                    arguments[ i ] = "Null";
+        private static string? GetMessageString(this FormattableString? message) {
+            if (message != null) {
+                var format = message.Format.Replace( "{", "'{" ).Replace( "}", "}'" );
+                var arguments = message.GetArguments();
+                for (var i = 0; i < arguments.Length; i++) {
+                    arguments[ i ] = GetArgumentStringDelegate( arguments[ i ] );
                 }
+                return string.Format( format, arguments );
             }
-            return string.Format( format, arguments );
+            return null;
         }
-        internal static T Exception<T>(string? message) where T : Exception {
-            var type = typeof( T );
+        private static string GetArgumentString(object? argument) {
+            if (argument is ICollection collection) {
+                return string.Join( ", ", collection.Cast<object?>().Select( GetArgumentString ) );
+            }
+            if (argument is IList list) {
+                return string.Join( ", ", list.Cast<object?>().Select( GetArgumentString ) );
+            }
+            if (argument is null) {
+                return "Null";
+            }
+            return argument.ToString();
+        }
+        private static Exception GetException(Type type, string? message) {
             var constructor = type.GetConstructor( new Type[] { typeof( string ), typeof( Exception ) } );
-            return (T) constructor.Invoke( new object?[] { message, null } );
+            return (Exception) constructor.Invoke( new object?[] { message, null } );
         }
 
     }
