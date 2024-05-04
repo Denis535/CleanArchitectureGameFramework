@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.denis535.addressables-extensions": {
+      "version": "file:com.denis535.addressables-extensions",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.denis535.addressables-source-generator": {
       "version": "file:com.denis535.addressables-source-generator",
       "depth": 0,
