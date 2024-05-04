@@ -7,5 +7,12 @@ namespace UnityEngine.Framework.Entities {
 
     [DefaultExecutionOrder( ScriptExecutionOrders.Player )]
     public abstract class PlayerBase : MonoBehaviour {
+
+        // Awake
+        public virtual void Awake() {
+        }
+        public virtual void OnDestroy() {
+        }
+
     }
 }

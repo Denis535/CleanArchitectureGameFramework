@@ -8,7 +8,7 @@ namespace UnityEngine.Framework.UI {
 
     [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
     public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement {
-        
+
         private readonly Lock @lock = new Lock();
 
         // Document
@@ -17,10 +17,10 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase? Widget { get; private set; }
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
             Document = gameObject.RequireComponentInChildren<UIDocument>();
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
         // AttachWidget

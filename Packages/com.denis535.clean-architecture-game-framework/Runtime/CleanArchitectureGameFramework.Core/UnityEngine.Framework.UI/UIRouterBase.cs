@@ -9,9 +9,9 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIRouterBase : MonoBehaviour {
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
     }

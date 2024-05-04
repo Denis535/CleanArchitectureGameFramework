@@ -9,9 +9,9 @@ namespace UnityEngine.Framework.App {
     public abstract class ApplicationBase : MonoBehaviour {
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
     }
