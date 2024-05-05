@@ -20,14 +20,10 @@ namespace UnityEngine.Framework {
         public const int Player       = 13_100;
         // Level
         public const int Level        = 12_000;
-        public const int Level_View   = 12_100;
         // World
         public const int World        = 13_000;
-        public const int World_View   = 13_100;
         // Entity
         public const int Entity       = 14_000;
-        public const int Entity_Body  = 14_050;
-        public const int Entity_View  = 14_100;
 
     }
 }

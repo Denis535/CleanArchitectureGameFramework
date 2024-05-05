@@ -15,6 +15,7 @@ namespace UnityEngine.Framework.Entities {
     }
     public abstract class WorldBase<TView> : WorldBase where TView : notnull, WorldViewBase {
 
+        // View
         protected TView View { get; set; } = default!;
 
     }

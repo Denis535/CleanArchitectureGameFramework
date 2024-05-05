@@ -15,12 +15,15 @@ namespace UnityEngine.Framework.Entities {
     }
     public abstract class EntityBase<TView> : EntityBase where TView : notnull, EntityViewBase {
 
+        // View
         protected TView View { get; set; } = default!;
 
     }
     public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
 
+        // Body
         protected TBody Body { get; set; } = default!;
+        // View
         protected TView View { get; set; } = default!;
 
     }

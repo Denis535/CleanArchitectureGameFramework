@@ -15,6 +15,7 @@ namespace UnityEngine.Framework.Entities {
     }
     public abstract class LevelBase<TView> : LevelBase where TView : notnull, LevelViewBase {
 
+        // View
         protected TView View { get; set; } = default!;
 
     }
