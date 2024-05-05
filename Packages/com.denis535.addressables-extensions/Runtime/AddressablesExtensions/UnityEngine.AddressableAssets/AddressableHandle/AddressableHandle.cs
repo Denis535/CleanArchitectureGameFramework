@@ -23,13 +23,16 @@ namespace UnityEngine.AddressableAssets {
 
         // Heleprs
         protected void Assert_IsValid() {
-            Debug.Assert( IsValid, $"AddressableHandle {this} must be valid" );
+            if (IsValid) return;
+            throw new InvalidOperationException( $"AddressableHandle `{this}` must be valid" );
         }
         protected void Assert_IsSucceeded() {
-            Debug.Assert( IsSucceeded, $"AddressableHandle {this} must be succeeded" );
+            if (IsSucceeded) return;
+            throw new InvalidOperationException( $"AddressableHandle `{this}` must be succeeded" );
         }
         protected void Assert_IsNotValid() {
-            Debug.Assert( !IsValid, $"AddressableHandle {this} is already valid" );
+            if (!IsValid) return;
+            throw new InvalidOperationException( $"AddressableHandle `{this}` is already valid" );
         }
 
     }

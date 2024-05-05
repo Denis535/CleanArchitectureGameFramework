@@ -16,10 +16,12 @@ namespace UnityEngine.AddressableAssets {
 
         // Heleprs
         protected void Assert_IsValid() {
-            Debug.Assert( IsValid, $"AddressableListHandleDynamic {this} must be valid" );
+            if (IsValid) return;
+            throw new InvalidOperationException( $"AddressableListHandleDynamic `{this}` must be valid" );
         }
         protected void Assert_IsNotValid() {
-            Debug.Assert( !IsValid, $"AddressableListHandleDynamic {this} is already valid" );
+            if (!IsValid) return;
+            throw new InvalidOperationException( $"AddressableListHandleDynamic `{this}` is already valid" );
         }
 
     }
