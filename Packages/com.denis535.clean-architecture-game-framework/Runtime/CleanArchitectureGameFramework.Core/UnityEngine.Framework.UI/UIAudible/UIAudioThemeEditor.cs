@@ -11,12 +11,12 @@ namespace UnityEngine.Framework.UI {
     public class UIAudioThemeEditor : Editor {
 
         // Target
-        private UIAudioThemeBase Target => (UIAudioThemeBase) target;
+        protected UIAudioThemeBase Target => (UIAudioThemeBase) target;
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
         // OnInspectorGUI

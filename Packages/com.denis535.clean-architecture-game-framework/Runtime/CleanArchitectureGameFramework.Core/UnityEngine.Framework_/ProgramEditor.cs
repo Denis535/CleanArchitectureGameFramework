@@ -11,12 +11,12 @@ namespace UnityEngine.Framework {
     public class ProgramEditor : Editor {
 
         // Target
-        private ProgramBase Target => (ProgramBase) target;
+        protected ProgramBase Target => (ProgramBase) target;
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
         // OnInspectorGUI

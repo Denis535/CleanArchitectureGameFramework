@@ -13,12 +13,12 @@ namespace UnityEngine.Framework.UI {
     public class UIScreenEditor : Editor {
 
         // Target
-        private UIScreenBase Target => (UIScreenBase) target;
+        protected UIScreenBase Target => (UIScreenBase) target;
 
         // Awake
-        public void Awake() {
+        public virtual void Awake() {
         }
-        public void OnDestroy() {
+        public virtual void OnDestroy() {
         }
 
         // OnInspectorGUI
