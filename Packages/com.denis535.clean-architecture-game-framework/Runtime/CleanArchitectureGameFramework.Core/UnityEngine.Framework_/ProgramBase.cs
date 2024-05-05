@@ -9,10 +9,8 @@ namespace UnityEngine.Framework {
     public abstract class ProgramBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
     }
 }

@@ -17,11 +17,8 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase? Widget { get; private set; }
 
         // Awake
-        public virtual void Awake() {
-            Document = gameObject.RequireComponentInChildren<UIDocument>();
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
         // AttachWidget
         public virtual void AttachWidget(UIWidgetBase widget, object? argument = null) {

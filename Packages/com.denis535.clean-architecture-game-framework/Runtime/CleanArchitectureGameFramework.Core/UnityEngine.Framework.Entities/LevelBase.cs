@@ -9,22 +9,13 @@ namespace UnityEngine.Framework.Entities {
     public abstract class LevelBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
     }
-    public abstract class LevelBase<TView> : LevelBase where TView : LevelViewBase {
+    public abstract class LevelBase<TView> : LevelBase where TView : notnull, LevelViewBase {
 
-        public TView View { get; protected set; } = default!;
-
-        // Awake
-        public override void Awake() {
-            View = gameObject.RequireComponent<TView>();
-        }
-        public override void OnDestroy() {
-        }
+        protected TView View { get; set; } = default!;
 
     }
 }

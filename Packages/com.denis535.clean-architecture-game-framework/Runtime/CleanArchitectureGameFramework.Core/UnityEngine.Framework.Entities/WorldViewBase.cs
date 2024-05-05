@@ -9,10 +9,8 @@ namespace UnityEngine.Framework.Entities {
     public abstract class WorldViewBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
     }
 }

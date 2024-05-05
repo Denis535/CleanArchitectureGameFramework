@@ -9,36 +9,19 @@ namespace UnityEngine.Framework.Entities {
     public abstract class EntityBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
     }
-    public abstract class EntityBase<TView> : EntityBase where TView : EntityViewBase {
+    public abstract class EntityBase<TView> : EntityBase where TView : notnull, EntityViewBase {
 
-        public TView View { get; protected set; } = default!;
-
-        // Awake
-        public override void Awake() {
-            View = gameObject.RequireComponent<TView>();
-        }
-        public override void OnDestroy() {
-        }
+        protected TView View { get; set; } = default!;
 
     }
-    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : EntityBodyBase where TView : EntityViewBase {
+    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
 
-        public TBody Body { get; protected set; } = default!;
-        public TView View { get; protected set; } = default!;
-
-        // Awake
-        public override void Awake() {
-            Body = gameObject.RequireComponent<TBody>();
-            View = gameObject.RequireComponent<TView>();
-        }
-        public override void OnDestroy() {
-        }
+        protected TBody Body { get; set; } = default!;
+        protected TView View { get; set; } = default!;
 
     }
 }

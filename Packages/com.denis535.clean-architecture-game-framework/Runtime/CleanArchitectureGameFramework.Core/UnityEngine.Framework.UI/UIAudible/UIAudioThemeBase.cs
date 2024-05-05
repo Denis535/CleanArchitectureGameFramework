@@ -10,10 +10,8 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIAudioThemeBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
         // Helpers
         protected static void Shuffle<T>(T[] array) {

@@ -9,22 +9,13 @@ namespace UnityEngine.Framework.Entities {
     public abstract class WorldBase : MonoBehaviour {
 
         // Awake
-        public virtual void Awake() {
-        }
-        public virtual void OnDestroy() {
-        }
+        public abstract void Awake();
+        public abstract void OnDestroy();
 
     }
-    public abstract class WorldBase<TView> : WorldBase where TView : WorldViewBase {
+    public abstract class WorldBase<TView> : WorldBase where TView : notnull, WorldViewBase {
 
-        public TView View { get; protected set; } = default!;
-
-        // Awake
-        public override void Awake() {
-            View = gameObject.RequireComponent<TView>();
-        }
-        public override void OnDestroy() {
-        }
+        protected TView View { get; set; } = default!;
 
     }
 }
