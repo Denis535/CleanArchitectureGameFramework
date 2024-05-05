@@ -7,5 +7,12 @@ namespace UnityEngine.Framework.Entities {
 
     [DefaultExecutionOrder( ScriptExecutionOrders.Entity_View )]
     public abstract class EntityViewBase : MonoBehaviour {
+
+        // Awake
+        public virtual void Awake() {
+        }
+        public virtual void OnDestroy() {
+        }
+
     }
 }

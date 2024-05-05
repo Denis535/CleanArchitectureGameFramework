@@ -7,5 +7,12 @@ namespace UnityEngine.Framework.Entities {
 
     [DefaultExecutionOrder( ScriptExecutionOrders.World_View )]
     public abstract class WorldViewBase : MonoBehaviour {
+
+        // Awake
+        public virtual void Awake() {
+        }
+        public virtual void OnDestroy() {
+        }
+
     }
 }

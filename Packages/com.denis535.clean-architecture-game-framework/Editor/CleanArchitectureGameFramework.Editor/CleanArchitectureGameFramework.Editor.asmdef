@@ -2,9 +2,9 @@
     "name": "CleanArchitectureGameFramework.Editor",
     "rootNamespace": "UnityEngine",
     "references": [
-        "CleanArchitectureGameFramework.Internal",
-        "CleanArchitectureGameFramework.Core",
-        "CleanArchitectureGameFramework"
+        "GUID:b3fe3ef184551854c9825e624a617826",
+        "GUID:5d84abae7084afd45a745ed680d4fb0e",
+        "GUID:8dd91c5906d12f348bfc27636c6be7b3"
     ],
     "includePlatforms": [
         "Editor"
