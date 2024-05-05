@@ -207,14 +207,11 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
 
         // View
-        public new TView View { get; protected init; } = default!;
+        public abstract new TView View { get; protected init; }
         UIViewBase IUIViewable.View => View;
 
         // Constructor
         public UIWidgetBase() {
-        }
-        public UIWidgetBase(TView view) {
-            View = view;
         }
         public override void Dispose() {
             Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
