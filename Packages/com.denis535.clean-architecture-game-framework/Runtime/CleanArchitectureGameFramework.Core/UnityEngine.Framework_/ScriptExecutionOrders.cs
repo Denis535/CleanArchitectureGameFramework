@@ -18,12 +18,9 @@ namespace UnityEngine.Framework {
         // Game
         public const int Game         = 13_000;
         public const int Player       = 13_100;
-        // Level
-        public const int Level        = 12_000;
-        // World
-        public const int World        = 13_000;
-        // Entity
-        public const int Entity       = 14_000;
+        public const int Level        = 13_200;
+        public const int World        = 13_300;
+        public const int Entity       = 13_400;
 
     }
 }

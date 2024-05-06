@@ -8,13 +8,12 @@ namespace UnityEngine.Framework.Entities {
     public abstract class EntityBodyBase : IDisposable {
 
         // GameObject
-        protected abstract GameObject GameObject { get; init; }
+        protected abstract GameObject GameObject { get; }
         // Transform
         protected Transform Transform => GameObject.transform;
 
         // Constructor
-        public EntityBodyBase(GameObject gameObject) {
-            GameObject = gameObject;
+        public EntityBodyBase() {
         }
         public abstract void Dispose();
 
