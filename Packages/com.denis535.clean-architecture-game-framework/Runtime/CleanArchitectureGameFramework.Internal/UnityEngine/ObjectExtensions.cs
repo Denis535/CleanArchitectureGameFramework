@@ -7,12 +7,14 @@ namespace UnityEngine {
 
     public static class ObjectExtensions {
 
-        // Assert
-        public static void Assert_IsValid(this Object @object) {
+        // Validate
+        public static T Validate<T>(this T @object) where T : Object {
+            Assert.Argument.Message( $"Argument '@object' must be non-null" ).NotNull( @object is not null );
             if (@object is MonoBehaviour object_MonoBehaviour) {
                 Assert.Object.Message( $"Object {object_MonoBehaviour} must be awakened" ).Initialized( object_MonoBehaviour.didAwake );
             }
             Assert.Object.Message( $"Object {@object} must be alive" ).Alive( @object );
+            return @object;
         }
 
     }
