@@ -56,7 +56,7 @@ namespace UnityEngine.Framework.UI {
     public class UIRootWidget : UIRootWidgetBase<UIRootWidgetViewBase> {
 
         // View
-        public override UIRootWidgetViewBase View { get; protected init; }
+        public override UIRootWidgetViewBase View { get; }
 
         // Constructor
         public UIRootWidget() {
