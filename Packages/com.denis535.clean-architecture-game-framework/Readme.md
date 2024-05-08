@@ -26,12 +26,8 @@ This package contains classes that define the entire architecture of your game p
     - Game                 - the game's rules and states.
     - Player               - the player's rules and states.
     - Level                - the level.
-    - LevelView            - the level's visual and audible aspects.
     - World                - the world.
-    - WorldView            - the world's visual and audible aspects.
     - Entity               - the entity (player's character/avatar, NPC/bot or any other scene's object).
-    - EntityView           - the entity's visual and audible aspects.
-    - EntityBody           - the entity's physical aspects.
 
 # Media
 - [![YouTube](https://img.youtube.com/vi/JQobAqfakJQ/0.jpg)](https://youtu.be/JQobAqfakJQ)

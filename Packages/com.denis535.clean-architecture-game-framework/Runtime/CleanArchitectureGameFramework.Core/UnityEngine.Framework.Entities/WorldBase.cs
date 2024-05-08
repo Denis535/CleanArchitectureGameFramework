@@ -13,10 +13,4 @@ namespace UnityEngine.Framework.Entities {
         public abstract void OnDestroy();
 
     }
-    public abstract class WorldBase<TView> : WorldBase where TView : notnull, WorldViewBase {
-
-        // View
-        protected abstract TView View { get; set; }
-
-    }
 }

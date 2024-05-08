@@ -13,10 +13,4 @@ namespace UnityEngine.Framework.Entities {
         public abstract void OnDestroy();
 
     }
-    public abstract class LevelBase<TView> : LevelBase where TView : notnull, LevelViewBase {
-
-        // View
-        protected abstract TView View { get; set; }
-
-    }
 }
