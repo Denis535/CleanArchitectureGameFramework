@@ -39,48 +39,46 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         private void OnGUI(Rect rect, string path, string module, string content) {
             if (string.IsNullOrEmpty( content )) {
-                DrawModule( rect );
+                DrawModule( rect, path, module );
                 return;
             }
-            if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
-                if (IsAssets( content )) {
-                    DrawAssets( rect, content );
-                    return;
-                }
-                if (IsResources( content )) {
-                    DrawResources( rect, content );
-                    return;
-                }
-                if (IsSources( content )) {
-                    DrawSources( rect, content );
-                    return;
-                }
+            if (IsAssets( path, module, content )) {
+                DrawAssets( rect, path, module, content );
+                return;
+            }
+            if (IsResources( path, module, content )) {
+                DrawResources( rect, path, module, content );
+                return;
+            }
+            if (IsSources( path, module, content )) {
+                DrawSources( rect, path, module, content );
+                return;
             }
         }
 
         // Helpers
-        private bool IsAssets(string content) {
+        private bool IsAssets(string path, string module, string content) {
             return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
         }
-        private bool IsResources(string content) {
+        private bool IsResources(string path, string module, string content) {
             return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
-        private bool IsSources(string content) {
-            return true;
+        private bool IsSources(string path, string module, string content) {
+            return AssetDatabase.IsValidFolder( path ) || content.Contains( '/' );
         }
         // Helpers
-        private void DrawModule(Rect rect) {
+        private void DrawModule(Rect rect, string path, string module) {
             DrawItem( rect, Settings.ModuleColor, 0 );
         }
-        private void DrawAssets(Rect rect, string content) {
+        private void DrawAssets(Rect rect, string path, string module, string content) {
             var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.AssetsColor, depth );
         }
-        private void DrawResources(Rect rect, string content) {
+        private void DrawResources(Rect rect, string path, string module, string content) {
             var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.ResourcesColor, depth );
         }
-        private void DrawSources(Rect rect, string content) {
+        private void DrawSources(Rect rect, string path, string module, string content) {
             var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.SourcesColor, depth );
         }
