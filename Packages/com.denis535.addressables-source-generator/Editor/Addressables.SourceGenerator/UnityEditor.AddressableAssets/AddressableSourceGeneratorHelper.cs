@@ -8,7 +8,7 @@ namespace UnityEditor.AddressableAssets {
     using UnityEditor.AddressableAssets.Settings;
     using UnityEngine;
 
-    internal static class SourceGeneratorHelper {
+    internal static class AddressableSourceGeneratorHelper {
 
         // AppendCompilationUnit
         public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {

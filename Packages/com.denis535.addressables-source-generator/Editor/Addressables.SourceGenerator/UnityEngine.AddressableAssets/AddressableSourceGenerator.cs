@@ -8,8 +8,8 @@ namespace UnityEngine.AddressableAssets {
     using UnityEditor.AddressableAssets;
     using UnityEngine;
 
-    [CreateAssetMenu( fileName = "AddressablesSourceGenerator", menuName = "Addressables/AddressablesSourceGenerator" )]
-    public class AddressablesSourceGenerator : ScriptableObject {
+    [CreateAssetMenu( fileName = "AddressableSourceGenerator", menuName = "Addressables/AddressableSourceGenerator" )]
+    public class AddressableSourceGenerator : ScriptableObject {
 
         public string Directory => Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) );
         public string Namespace => new DirectoryInfo( Directory ).Name;
@@ -23,11 +23,11 @@ namespace UnityEngine.AddressableAssets {
         }
         private static void GenerateResourcesSource(string path, string @namespace, string name) {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            new ResourcesSourceGenerator().Generate( settings, path, @namespace, name );
+            new AddressableResourcesSourceGenerator().Generate( settings, path, @namespace, name );
         }
         private static void GenerateLabelsSource(string path, string @namespace, string name) {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            new LabelsSourceGenerator().Generate( settings, path, @namespace, name );
+            new AddressableLabelsSourceGenerator().Generate( settings, path, @namespace, name );
         }
 
     }

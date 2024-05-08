@@ -10,7 +10,7 @@ namespace UnityEditor.AddressableAssets {
     using UnityEditor.AddressableAssets.Settings;
     using UnityEngine;
 
-    public class ResourcesSourceGenerator {
+    public class AddressableResourcesSourceGenerator {
 
         // Generate
         public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {

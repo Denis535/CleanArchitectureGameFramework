@@ -6,11 +6,11 @@ namespace UnityEngine.AddressableAssets {
     using UnityEditor;
     using UnityEngine;
 
-    [CustomEditor( typeof( AddressablesSourceGenerator ) )]
-    public class AddressablesSourceGeneratorEditor : Editor {
+    [CustomEditor( typeof( AddressableSourceGenerator ) )]
+    public class AddressableSourceGeneratorEditor : Editor {
 
         // Target
-        private AddressablesSourceGenerator Target => (AddressablesSourceGenerator) target;
+        private AddressableSourceGenerator Target => (AddressableSourceGenerator) target;
 
         // Awake
         public void Awake() {
@@ -20,9 +20,6 @@ namespace UnityEngine.AddressableAssets {
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {
-            LabelField( "Directory", Target.Directory );
-            EditorGUILayout.Separator();
-
             LabelField( "Namespace", Target.Namespace );
             LabelField( "Resources Class Name", Target.ResourcesClassName );
             LabelField( "Labels Class Name", Target.LabelsClassName );

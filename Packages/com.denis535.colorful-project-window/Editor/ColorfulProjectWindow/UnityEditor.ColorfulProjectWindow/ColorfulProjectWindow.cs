@@ -28,43 +28,60 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
 
         // OnGUI
-        public void OnGUI(string guid, Rect rect) {
+        private void OnGUI(string guid, Rect rect) {
             var path = AssetDatabase.GUIDToAssetPath( guid );
-            var module = ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (module != null) {
-                if (path == module) {
-                    DrawModule( rect );
+            var modulePath = ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (modulePath != null) {
+                var module = Path.GetFileName( modulePath );
+                var content = path.Substring( modulePath.Length ).TrimStart( '/' );
+                OnGUI( rect, path, module, content );
+            }
+        }
+        private void OnGUI(Rect rect, string path, string module, string content) {
+            if (string.IsNullOrEmpty( content )) {
+                DrawModule( rect );
+                return;
+            }
+            if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
+                if (IsAssets( content )) {
+                    DrawAssets( rect, content );
                     return;
                 }
-                var content = path.Substring( module.Length );
-                if (AssetDatabase.IsValidFolder( path ) || content.Skip( 1 ).Contains( '/' )) {
-                    if (content.Equals( "/Assets" ) || content.StartsWith( "/Assets/" ) || content.StartsWith( "/Assets." )) {
-                        DrawAssets( rect, content.Skip( 1 ).Count( i => i == '/' ) );
-                        return;
-                    }
-                    if (content.Equals( "/Resources" ) || content.StartsWith( "/Resources/" ) || content.StartsWith( "/Resources." )) {
-                        DrawResources( rect, content.Skip( 1 ).Count( i => i == '/' ) );
-                        return;
-                    }
-                    {
-                        DrawSources( rect, content.Skip( 1 ).Count( i => i == '/' ) );
-                        return;
-                    }
+                if (IsResources( content )) {
+                    DrawResources( rect, content );
+                    return;
+                }
+                if (IsSources( content )) {
+                    DrawSources( rect, content );
+                    return;
                 }
             }
         }
 
         // Helpers
+        private bool IsAssets(string content) {
+            return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
+        }
+        private bool IsResources(string content) {
+            return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
+        }
+        private bool IsSources(string content) {
+            return true;
+        }
+        // Helpers
         private void DrawModule(Rect rect) {
             DrawItem( rect, Settings.ModuleColor, 0 );
         }
-        private void DrawAssets(Rect rect, int depth) {
+        private void DrawAssets(Rect rect, string content) {
+            var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.AssetsColor, depth );
         }
-        private void DrawResources(Rect rect, int depth) {
+        private void DrawResources(Rect rect, string content) {
+            var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.ResourcesColor, depth );
         }
-        private void DrawSources(Rect rect, int depth) {
+        private void DrawSources(Rect rect, string content) {
+            var depth = content.Count( i => i == '/' );
             DrawItem( rect, Settings.SourcesColor, depth );
         }
         // Helpers

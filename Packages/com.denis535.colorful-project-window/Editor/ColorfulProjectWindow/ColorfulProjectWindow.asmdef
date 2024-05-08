@@ -1,6 +1,6 @@
 {
     "name": "ColorfulProjectWindow",
-    "rootNamespace": "UnityEditor",
+    "rootNamespace": "UnityEditor.ColorfulProjectWindow",
     "references": [],
     "includePlatforms": [
         "Editor"
