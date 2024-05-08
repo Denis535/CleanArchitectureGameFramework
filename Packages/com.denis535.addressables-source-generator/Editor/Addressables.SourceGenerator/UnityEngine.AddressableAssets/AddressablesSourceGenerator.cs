@@ -1,9 +1,11 @@
 #nullable enable
-namespace UnityEditor.AddressableAssets {
+namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using UnityEditor;
+    using UnityEditor.AddressableAssets;
     using UnityEngine;
 
     [CreateAssetMenu( fileName = "AddressablesSourceGenerator", menuName = "Addressables/AddressablesSourceGenerator" )]
@@ -11,13 +13,13 @@ namespace UnityEditor.AddressableAssets {
 
         public string Directory => Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) );
         public string Namespace => new DirectoryInfo( Directory ).Name;
-        public string ResourcesClass => "R";
-        public string LabelsClass => "L";
+        public string ResourcesClassName => "R";
+        public string LabelsClassName => "L";
 
         // Generate
         public void Generate() {
-            GenerateResourcesSource( Path.Combine( Directory, ResourcesClass + ".cs" ), Namespace, ResourcesClass );
-            GenerateLabelsSource( Path.Combine( Directory, LabelsClass + ".cs" ), Namespace, LabelsClass );
+            GenerateResourcesSource( Path.Combine( Directory, ResourcesClassName + ".cs" ), Namespace, ResourcesClassName );
+            GenerateLabelsSource( Path.Combine( Directory, LabelsClassName + ".cs" ), Namespace, LabelsClassName );
         }
         private static void GenerateResourcesSource(string path, string @namespace, string name) {
             var settings = AddressableAssetSettingsDefaultObject.Settings;

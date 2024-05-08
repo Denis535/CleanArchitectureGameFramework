@@ -1,8 +1,9 @@
 #nullable enable
-namespace UnityEditor.AddressableAssets {
+namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEngine;
 
     [CustomEditor( typeof( AddressablesSourceGenerator ) )]
@@ -23,8 +24,8 @@ namespace UnityEditor.AddressableAssets {
             EditorGUILayout.Separator();
 
             LabelField( "Namespace", Target.Namespace );
-            LabelField( "Resources Class", Target.ResourcesClass );
-            LabelField( "Labels Class", Target.LabelsClass );
+            LabelField( "Resources Class Name", Target.ResourcesClassName );
+            LabelField( "Labels Class Name", Target.LabelsClassName );
             EditorGUILayout.Separator();
 
             if (GUILayout.Button( "Generate" )) {
