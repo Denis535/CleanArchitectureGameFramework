@@ -47,7 +47,7 @@ namespace UnityEngine.AddressableAssets {
                 throw;
             }
         }
-        public static GameObject Instantiate<T>(string key, Vector3 position, Quaternion rotation) {
+        public static GameObject Instantiate(string key, Vector3 position, Quaternion rotation) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
                 var prefab = prefabHandle.GetResult();
