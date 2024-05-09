@@ -144,10 +144,12 @@ namespace UnityEngine.Framework.UI {
 
         // Show
         public void Show() {
+            Assert.Operation.Message( $"Widget {this} must be attaching" ).Valid( IsAttaching );
             Parent!.ShowWidget( this );
             if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
         }
         public void Hide() {
+            Assert.Operation.Message( $"Widget {this} must be detaching" ).Valid( IsDetaching );
             Parent!.HideWidget( this );
             if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
         }
