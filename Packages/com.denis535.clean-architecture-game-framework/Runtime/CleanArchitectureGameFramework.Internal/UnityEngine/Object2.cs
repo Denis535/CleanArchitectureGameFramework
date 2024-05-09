@@ -8,6 +8,38 @@ namespace UnityEngine {
 
     public static class Object2 {
 
+        // Instantiate
+        public static T Instantiate<T>(T original, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( original );
+            }
+            return Object.Instantiate( original );
+        }
+        public static T Instantiate<T>(T original, Transform? parent, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( original, parent );
+            }
+            return Object.Instantiate( original, parent );
+        }
+        public static T Instantiate<T>(T original, Transform? parent, bool instantiateInWorldSpace, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( original, parent, instantiateInWorldSpace );
+            }
+            return Object.Instantiate( original, parent, instantiateInWorldSpace );
+        }
+        public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( original, position, rotation );
+            }
+            return Object.Instantiate( original, position, rotation );
+        }
+        public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform? parent, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( original, position, rotation, parent );
+            }
+            return Object.Instantiate( original, position, rotation, parent );
+        }
+
         // Require/Object
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireAnyObjectByType<T>(FindObjectsInactive findObjectsInactive) where T : Object {

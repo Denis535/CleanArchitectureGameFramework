@@ -11,60 +11,72 @@ namespace UnityEngine.AddressableAssets {
     public static class Addressables2 {
 
         // Instantiate
-        public static T Instantiate<T>(string key) where T : notnull, Component {
+        public static GameObject Instantiate(string key) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = prefabHandle.GetResult<T>();
+                var prefab = prefabHandle.GetResult();
                 var instance = UnityEngine.Object.Instantiate( prefab );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static T Instantiate<T>(string key, Transform? parent) where T : notnull, Component {
+        public static GameObject Instantiate(string key, Transform? parent) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = prefabHandle.GetResult<T>();
+                var prefab = prefabHandle.GetResult();
                 var instance = UnityEngine.Object.Instantiate( prefab, parent );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static T Instantiate<T>(string key, Vector3 position, Quaternion rotation) where T : notnull, Component {
+        public static GameObject Instantiate(string key, Transform? parent, bool instantiateInWorldSpace) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = prefabHandle.GetResult<T>();
+                var prefab = prefabHandle.GetResult();
+                var instance = UnityEngine.Object.Instantiate( prefab, parent, instantiateInWorldSpace );
+                instance.AddDestroyable( prefabHandle );
+                return instance;
+            } catch {
+                Addressables.Release( prefabHandle );
+                throw;
+            }
+        }
+        public static GameObject Instantiate<T>(string key, Vector3 position, Quaternion rotation) {
+            var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
+            try {
+                var prefab = prefabHandle.GetResult();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static T Instantiate<T>(string key, Vector3 position, Quaternion rotation, Transform? parent) where T : notnull, Component {
+        public static GameObject Instantiate(string key, Vector3 position, Quaternion rotation, Transform? parent) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = prefabHandle.GetResult<T>();
+                var prefab = prefabHandle.GetResult();
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation, parent );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static T Instantiate<T>(string key, Func<T, T> instanceProvider) where T : notnull, Component {
+        public static GameObject Instantiate(string key, Func<GameObject, GameObject> instanceProvider) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = prefabHandle.GetResult<T>();
+                var prefab = prefabHandle.GetResult();
                 var instance = instanceProvider( prefab );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
@@ -73,60 +85,72 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // InstantiateAsync
-        public static async ValueTask<T> InstantiateAsync<T>(string key, CancellationToken cancellationToken) where T : notnull, Component {
+        public static async ValueTask<GameObject> InstantiateAsync(string key, CancellationToken cancellationToken) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = await prefabHandle.GetResultAsync<T>( cancellationToken );
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
                 var instance = UnityEngine.Object.Instantiate( prefab );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static async ValueTask<T> InstantiateAsync<T>(string key, Transform? parent, CancellationToken cancellationToken) where T : notnull, Component {
+        public static async ValueTask<GameObject> InstantiateAsync(string key, Transform? parent, CancellationToken cancellationToken) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = await prefabHandle.GetResultAsync<T>( cancellationToken );
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
                 var instance = UnityEngine.Object.Instantiate( prefab, parent );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static async ValueTask<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, CancellationToken cancellationToken) where T : notnull, Component {
+        public static async ValueTask<GameObject> InstantiateAsync(string key, Transform? parent, bool instantiateInWorldSpace, CancellationToken cancellationToken) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = await prefabHandle.GetResultAsync<T>( cancellationToken );
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
+                var instance = UnityEngine.Object.Instantiate( prefab, parent, instantiateInWorldSpace );
+                instance.AddDestroyable( prefabHandle );
+                return instance;
+            } catch {
+                Addressables.Release( prefabHandle );
+                throw;
+            }
+        }
+        public static async ValueTask<GameObject> InstantiateAsync(string key, Vector3 position, Quaternion rotation, CancellationToken cancellationToken) {
+            var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
+            try {
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static async ValueTask<T> InstantiateAsync<T>(string key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) where T : notnull, Component {
+        public static async ValueTask<GameObject> InstantiateAsync(string key, Vector3 position, Quaternion rotation, Transform? parent, CancellationToken cancellationToken) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = await prefabHandle.GetResultAsync<T>( cancellationToken );
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
                 var instance = UnityEngine.Object.Instantiate( prefab, position, rotation, parent );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );
                 throw;
             }
         }
-        public static async ValueTask<T> InstantiateAsync<T>(string key, Func<T, T> instanceProvider, CancellationToken cancellationToken) where T : notnull, Component {
+        public static async ValueTask<GameObject> InstantiateAsync(string key, Func<GameObject, GameObject> instanceProvider, CancellationToken cancellationToken) {
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>( key );
             try {
-                var prefab = await prefabHandle.GetResultAsync<T>( cancellationToken );
+                var prefab = await prefabHandle.GetResultAsync( cancellationToken );
                 var instance = instanceProvider( prefab );
-                instance.gameObject.AddDestroyable( prefabHandle );
+                instance.AddDestroyable( prefabHandle );
                 return instance;
             } catch {
                 Addressables.Release( prefabHandle );

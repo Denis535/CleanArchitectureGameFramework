@@ -21,7 +21,7 @@ This package contains classes that define the entire architecture of your game p
     - UIRouter             - the state router.
 - Framework.App - the application module.
     - Application          - the application.
-    - Storage              - the bag of any values.
+    - Storage              - the bag of values.
 - Framework.Entities - the domain (entities) module.
     - Game                 - the game's rules and states.
     - Player               - the player's rules and states.

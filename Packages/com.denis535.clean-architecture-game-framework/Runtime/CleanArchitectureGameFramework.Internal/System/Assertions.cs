@@ -36,6 +36,7 @@ namespace System {
             public override string? ToString() {
                 return Exceptions.GetMessageStringDelegate( Message );
             }
+
         }
         // Operation
         public readonly struct Operation : IAssertion {
@@ -54,6 +55,7 @@ namespace System {
             public override string? ToString() {
                 return Exceptions.GetMessageStringDelegate( Message );
             }
+
         }
         // Object
         public readonly struct Object : IAssertion {
@@ -76,6 +78,7 @@ namespace System {
             public override string? ToString() {
                 return Exceptions.GetMessageStringDelegate( Message );
             }
+
         }
     }
 }
