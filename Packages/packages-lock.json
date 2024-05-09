@@ -4,7 +4,9 @@
       "version": "file:com.denis535.addressables-extensions",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.addressables": "1.0.0"
+      }
     },
     "com.denis535.addressables-source-generator": {
       "version": "file:com.denis535.addressables-source-generator",
@@ -19,7 +21,6 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.unity.addressables": "1.0.0",
         "com.unity.modules.uielements": "1.0.0"
       }
     },
