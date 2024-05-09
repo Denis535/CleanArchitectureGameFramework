@@ -7,31 +7,35 @@ namespace UnityEngine {
 
     public class Context : IDisposable {
 
-        private static object? value;
-
         // Value
-        public static bool HasValue => value != null;
-        public static object? Value => value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
+        private static object? Value { get; set; }
 
         // Constructor
         private Context(object value) {
             Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
-            Assert.Operation.Message( $"Value {Value} must be null" ).Valid( value == null );
-            Context.value = value;
+            Assert.Operation.Message( $"Value {Value} must be null" ).Valid( Value == null );
+            Context.Value = value;
         }
         public void Dispose() {
-            Assert.Operation.Message( $"Value {Value} must be non-null" ).Valid( value != null );
-            Context.value = null;
+            Assert.Operation.Message( $"Value {Value} must be non-null" ).Valid( Value != null );
+            Context.Value = null;
         }
 
         // Begin
         public static Context Begin(object value) {
-            Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
             return new Context( value );
         }
-        public static Context Begin<TValue>(TValue value) where TValue : notnull {
-            Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
-            return new Context( value );
+
+        // HasValue
+        public static bool HasValue() {
+            return Value != null;
+        }
+        // GetValue
+        public static object GetValue() {
+            return Value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
+        }
+        public static T GetValue<T>() {
+            return (T?) Value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
         }
 
     }
