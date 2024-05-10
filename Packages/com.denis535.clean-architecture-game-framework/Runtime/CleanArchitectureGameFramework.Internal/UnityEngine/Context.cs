@@ -7,35 +7,30 @@ namespace UnityEngine {
 
     public class Context : IDisposable {
 
+        private static object? value;
+
         // Value
-        private static object? Value { get; set; }
+        public static bool HasValue => Context.value != null;
+        public static object Value => Context.value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
 
         // Constructor
         private Context(object value) {
-            Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
-            Assert.Operation.Message( $"Value {Value} must be null" ).Valid( Value == null );
-            Context.Value = value;
+            Context.value = value;
         }
         public void Dispose() {
-            Assert.Operation.Message( $"Value {Value} must be non-null" ).Valid( Value != null );
-            Context.Value = null;
+            Context.value = null;
         }
 
         // Begin
         public static Context Begin(object value) {
+            Assert.Argument.Message( $"Argument 'value' must be non-null" ).NotNull( value != null );
+            Assert.Operation.Message( $"Context must have no value" ).Valid( Context.value == null );
             return new Context( value );
         }
 
-        // HasValue
-        public static bool HasValue() {
-            return Value != null;
-        }
         // GetValue
-        public static object GetValue() {
-            return Value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
-        }
         public static T GetValue<T>() {
-            return (T?) Value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
+            return (T?) Context.value ?? throw Exceptions.Operation.InvalidOperationException( $"Context has no value" );
         }
 
     }

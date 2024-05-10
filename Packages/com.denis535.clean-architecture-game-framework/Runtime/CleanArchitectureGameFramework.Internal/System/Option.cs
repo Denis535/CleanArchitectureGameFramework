@@ -52,13 +52,7 @@ namespace System {
         }
 
     }
-    public static class OptionExtensions {
-
-        public static Option<T> AsOption<T>(this T value) {
-            return new Option<T>( value );
-        }
-
-    }
+    // Option
     [Serializable]
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>, IComparable<Option<T>>, IComparable<T> {
 
@@ -66,7 +60,7 @@ namespace System {
         private readonly T? value;
 
         public bool HasValue => hasValue;
-        public T Value => hasValue ? value! : throw new InvalidOperationException( "Option must have value" );
+        public T Value => hasValue ? value! : throw new InvalidOperationException( "Option has no value" );
         public T? ValueOrDefault => hasValue ? value : default;
 
         // Constructor
@@ -137,6 +131,25 @@ namespace System {
         }
         public static bool operator !=(T left, Option<T> right) {
             return !Option.Equals( left, right );
+        }
+
+    }
+    // OptionExtensions
+    public static class OptionExtensions {
+
+        // AsOption
+        public static Option<T> AsOption<T>(this T value) {
+            return new Option<T>( value );
+        }
+        public static Option<T> AsOption<T>(this T? value) where T : struct {
+            if (value.HasValue) return new Option<T>( value.Value );
+            return default;
+        }
+
+        // Cast
+        public static Option<T> Cast<T>(this Option<object?> value) {
+            if (value.HasValue) return new Option<T>( (T) value.Value! );
+            return default;
         }
 
     }
