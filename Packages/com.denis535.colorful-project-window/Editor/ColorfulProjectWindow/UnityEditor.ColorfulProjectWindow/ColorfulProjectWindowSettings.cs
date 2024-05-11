@@ -7,27 +7,22 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ColorfulProjectWindowSettings {
 
-        private static ColorfulProjectWindowSettings? instance;
-
-        public static ColorfulProjectWindowSettings Instance {
-            get {
-                instance ??= new ColorfulProjectWindowSettings();
-                return instance;
-            }
-        }
-
         private static readonly Color DefaultModuleColor = HSVA( 000, 1, 1, 0.3f );
         private static readonly Color DefaultAssetsColor = HSVA( 060, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultResourcesColor = HSVA( 060, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultSourcesColor = HSVA( 120, 1f, 1.0f, 0.3f );
+        private static ColorfulProjectWindowSettings? instance;
 
+        // Instance
+        public static ColorfulProjectWindowSettings Instance => instance ??= new ColorfulProjectWindowSettings();
+        // Colors
         public Color ModuleColor { get; set; }
         public Color AssetsColor { get; set; }
         public Color ResourcesColor { get; set; }
         public Color SourcesColor { get; set; }
 
         // Constructor
-        public ColorfulProjectWindowSettings() {
+        private ColorfulProjectWindowSettings() {
             Load();
         }
 

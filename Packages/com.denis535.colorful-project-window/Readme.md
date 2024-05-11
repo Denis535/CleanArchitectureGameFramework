@@ -9,7 +9,41 @@ This identifies special folders according to the following rules:
 - Source folder is just any other folder.
 
 # How to use it
-Just install this package.
+```
+#if UNITY_EDITOR
+#nullable enable
+namespace UnityEditor.ColorfulProjectWindow {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
+    using UnityEditor;
+    using UnityEngine;
+
+    [InitializeOnLoad]
+    public class ColorfulProjectWindow2 : ColorfulProjectWindow {
+
+        // Constructor
+        static ColorfulProjectWindow2() {
+            new ColorfulProjectWindow2();
+        }
+
+        // Constructor
+        public ColorfulProjectWindow2() {
+        }
+
+        // OnGUI
+        protected override void OnGUI(string guid, Rect rect) {
+            base.OnGUI( guid, rect );
+        }
+        protected override void OnGUI(Rect rect, string path, string module, string content) {
+            base.OnGUI( rect, path, module, content );
+        }
+
+    }
+}
+#endif
+```
 
 # Setup
 You can setup the colors in the 'Preferences/Colorful Project Window'.

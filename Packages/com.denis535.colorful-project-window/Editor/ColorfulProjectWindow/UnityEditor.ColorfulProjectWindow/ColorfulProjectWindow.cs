@@ -9,117 +9,46 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEditor;
     using UnityEngine;
 
-    [InitializeOnLoad]
-    public class ColorfulProjectWindow {
+    public class ColorfulProjectWindow : ColorfulProjectWindowBase {
 
-        private readonly string[] ModulePaths;
-
-        private ColorfulProjectWindowSettings Settings => ColorfulProjectWindowSettings.Instance;
-
-        // ProjectWindow
-        static ColorfulProjectWindow() {
-            new ColorfulProjectWindow();
-        }
+        // ModulePaths
+        protected string[] ModulePaths { get; }
 
         // Constructor
         public ColorfulProjectWindow() {
-            ModulePaths = AssetDatabase.GetAllAssetPaths().Where( i => Path.GetExtension( i ) is ".asmdef" or ".asmref" ).Select( Path.GetDirectoryName ).Select( i => i.Replace( '\\', '/' ) ).ToArray();
-            EditorApplication.projectWindowItemOnGUI = OnGUI;
+            ModulePaths = AssetDatabase.GetAllAssetPaths()
+                .Where( i => Path.GetExtension( i ) is ".asmdef" or ".asmref" )
+                .Select( Path.GetDirectoryName )
+                .Select( i => i.Replace( '\\', '/' ) )
+                .Distinct()
+                .OrderByDescending( i => i.StartsWith( "Assets/" ) )
+                .ToArray();
+        }
+        public ColorfulProjectWindow(string[] modulePaths) {
+            ModulePaths = modulePaths;
         }
 
         // OnGUI
-        private void OnGUI(string guid, Rect rect) {
-            var path = AssetDatabase.GUIDToAssetPath( guid );
-            var modulePath = ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (modulePath != null) {
-                var module = Path.GetFileName( modulePath );
-                var content = path.Substring( modulePath.Length ).TrimStart( '/' );
-                OnGUI( rect, path, module, content );
-            }
+        protected override void OnGUI(string guid, Rect rect) {
+            base.OnGUI( guid, rect );
         }
-        private void OnGUI(Rect rect, string path, string module, string content) {
-            if (string.IsNullOrEmpty( content )) {
-                DrawModule( rect, path, module );
-                return;
-            }
-            if (IsAssets( path, module, content )) {
-                DrawAssets( rect, path, module, content );
-                return;
-            }
-            if (IsResources( path, module, content )) {
-                DrawResources( rect, path, module, content );
-                return;
-            }
-            if (IsSources( path, module, content )) {
-                DrawSources( rect, path, module, content );
-                return;
-            }
+        protected override void OnGUI(Rect rect, string path, string module, string content) {
+            base.OnGUI( rect, path, module, content );
         }
 
         // Helpers
-        private bool IsAssets(string path, string module, string content) {
+        protected override string? GetModulePath(string path) {
+            return ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+        }
+        // Helpers
+        protected override bool IsAssets(string path, string module, string content) {
             return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
         }
-        private bool IsResources(string path, string module, string content) {
+        protected override bool IsResources(string path, string module, string content) {
             return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
-        private bool IsSources(string path, string module, string content) {
+        protected override bool IsSources(string path, string module, string content) {
             return AssetDatabase.IsValidFolder( path ) || content.Contains( '/' );
-        }
-        // Helpers
-        private void DrawModule(Rect rect, string path, string module) {
-            DrawItem( rect, Settings.ModuleColor, 0 );
-        }
-        private void DrawAssets(Rect rect, string path, string module, string content) {
-            var depth = content.Count( i => i == '/' );
-            DrawItem( rect, Settings.AssetsColor, depth );
-        }
-        private void DrawResources(Rect rect, string path, string module, string content) {
-            var depth = content.Count( i => i == '/' );
-            DrawItem( rect, Settings.ResourcesColor, depth );
-        }
-        private void DrawSources(Rect rect, string path, string module, string content) {
-            var depth = content.Count( i => i == '/' );
-            DrawItem( rect, Settings.SourcesColor, depth );
-        }
-        // Helpers
-        private static void DrawItem(Rect rect, Color color, int depth) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-                color = depth switch {
-                    0 => color,
-                    _ => Darken( color, 2.5f ),
-                };
-                DrawRect( rect, color );
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-                color = depth switch {
-                    0 => color,
-                    _ => Darken( color, 2.5f ),
-                };
-                DrawRect( rect, color );
-            }
-        }
-        private static void DrawRect(Rect rect, Color color) {
-            var prev = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture( rect, Texture2D.whiteTexture );
-            GUI.color = prev;
-        }
-        //private static Color Lighten(Color color, float factor) {
-        //    Color.RGBToHSV( color, out var h, out var s, out var v );
-        //    var result = Color.HSVToRGB( h, s, v * factor );
-        //    result.a = color.a;
-        //    return result;
-        //}
-        private static Color Darken(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v / factor );
-            result.a = color.a;
-            return result;
         }
 
     }

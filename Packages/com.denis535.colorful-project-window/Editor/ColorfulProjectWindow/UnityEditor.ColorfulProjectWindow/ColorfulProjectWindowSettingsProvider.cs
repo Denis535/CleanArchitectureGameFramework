@@ -9,6 +9,7 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ColorfulProjectWindowSettingsProvider : SettingsProvider {
 
+        // Settings
         private ColorfulProjectWindowSettings Settings => ColorfulProjectWindowSettings.Instance;
 
         // Constructor
