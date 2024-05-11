@@ -73,40 +73,60 @@ namespace UnityEngine.Framework.UI {
 
         // OnAttach
         public virtual void OnBeforeAttach(object? argument) {
-            OnBeforeAttachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantAttach( this, argument );
+            OnBeforeAttachEvent?.Invoke( argument );
+            // trickle-down
+            // override here
         }
-        public abstract void OnAttach(object? argument);
+        public abstract void OnAttach(object? argument); // init and show
         public virtual void OnAfterAttach(object? argument) {
-            Parent?.OnAfterDescendantAttach( this, argument );
+            // override here
+            // bubble-up
             OnAfterAttachEvent?.Invoke( argument );
+            Parent?.OnAfterDescendantAttach( this, argument );
         }
+
+        // OnDetach
         public virtual void OnBeforeDetach(object? argument) {
-            OnBeforeDetachEvent?.Invoke( argument );
             Parent?.OnBeforeDescendantDetach( this, argument );
+            OnBeforeDetachEvent?.Invoke( argument );
+            // trickle-down
+            // override here
         }
-        public abstract void OnDetach(object? argument);
+        public abstract void OnDetach(object? argument); // hide and deinit
         public virtual void OnAfterDetach(object? argument) {
-            Parent?.OnAfterDescendantDetach( this, argument );
+            // override here
+            // bubble-up
             OnAfterDetachEvent?.Invoke( argument );
+            Parent?.OnAfterDescendantDetach( this, argument );
         }
 
         // OnDescendantAttach
         public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
-            OnBeforeDescendantAttachEvent?.Invoke( descendant, argument );
             Parent?.OnBeforeDescendantAttach( descendant, argument );
+            OnBeforeDescendantAttachEvent?.Invoke( descendant, argument );
+            // trickle-down
+            // override here
         }
         public virtual void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
-            Parent?.OnAfterDescendantAttach( descendant, argument );
+            // override here
+            // bubble-up
             OnAfterDescendantAttachEvent?.Invoke( descendant, argument );
+            Parent?.OnAfterDescendantAttach( descendant, argument );
         }
+
+        // OnDescendantDetach
         public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
-            OnBeforeDescendantDetachEvent?.Invoke( descendant, argument );
             Parent?.OnBeforeDescendantDetach( descendant, argument );
+            OnBeforeDescendantDetachEvent?.Invoke( descendant, argument );
+            // trickle-down
+            // override here
         }
         public virtual void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
-            Parent?.OnAfterDescendantDetach( descendant, argument );
+            // override here
+            // bubble-up
             OnAfterDescendantDetachEvent?.Invoke( descendant, argument );
+            Parent?.OnAfterDescendantDetach( descendant, argument );
         }
 
         // AttachChild
@@ -142,23 +162,29 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // Show
-        public void Show() {
+        // ShowSelf
+        public void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be attaching" ).Valid( IsAttaching );
+            if (View != null) Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( !View.VisualElement.IsAttached() );
             Parent!.ShowWidget( this );
             if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
         }
-        public void Hide() {
+        public void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be detaching" ).Valid( IsDetaching );
+            if (View != null) Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.VisualElement.IsAttached() );
             Parent!.HideWidget( this );
             if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
         }
 
         // ShowWidget
         public virtual void ShowWidget(UIWidgetBase widget) {
+            // override here
+            if (widget.View != null) Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( !widget.View.VisualElement.IsAttached() );
             Parent!.ShowWidget( widget );
         }
         public virtual void HideWidget(UIWidgetBase widget) {
+            // override here
+            if (widget.View != null) Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( widget.View.VisualElement.IsAttached() );
             Parent!.HideWidget( widget );
         }
 
