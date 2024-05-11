@@ -22,17 +22,23 @@ namespace UnityEngine.Framework.UI {
         public override void OnDetach(object? argument) {
         }
 
-        // OnBeforeDescendantAttach
+        // OnDescendantAttach
         public override void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
             base.OnBeforeDescendantAttach( descendant, argument );
+            // override here
         }
         public override void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
+            // override here
             base.OnAfterDescendantAttach( descendant, argument );
         }
+
+        // OnDescendantDetach
         public override void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
             base.OnBeforeDescendantDetach( descendant, argument );
+            // override here
         }
         public override void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
+            // override here
             base.OnAfterDescendantDetach( descendant, argument );
         }
 
@@ -44,12 +50,12 @@ namespace UnityEngine.Framework.UI {
             base.DetachChild( child, argument );
         }
 
-        // ShowWidget
-        public override void ShowWidget(UIWidgetBase widget) {
-            throw Exceptions.Internal.NotImplemented( $"Method 'ShowWidget' is not implemented" );
+        // ShowView
+        public override void ShowView(UIViewBase view) {
+            throw Exceptions.Internal.NotImplemented( $"Method 'ShowView' is not implemented" );
         }
-        public override void HideWidget(UIWidgetBase widget) {
-            throw Exceptions.Internal.NotImplemented( $"Method 'HideWidget' is not implemented" );
+        public override void HideView(UIViewBase view) {
+            throw Exceptions.Internal.NotImplemented( $"Method 'HideView' is not implemented" );
         }
 
     }
@@ -72,17 +78,23 @@ namespace UnityEngine.Framework.UI {
         public override void OnDetach(object? argument) {
         }
 
-        // OnBeforeDescendantAttach
+        // OnDescendantAttach
         public override void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
             base.OnBeforeDescendantAttach( descendant, argument );
+            // override here
         }
         public override void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
+            // override here
             base.OnAfterDescendantAttach( descendant, argument );
         }
+
+        // OnDescendantDetach
         public override void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
             base.OnBeforeDescendantDetach( descendant, argument );
+            // override here
         }
         public override void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
+            // override here
             base.OnAfterDescendantDetach( descendant, argument );
         }
 
@@ -94,25 +106,21 @@ namespace UnityEngine.Framework.UI {
             base.DetachChild( child, argument );
         }
 
-        // ShowWidget
-        public override void ShowWidget(UIWidgetBase widget) {
-            if (widget.IsViewable) {
-                if (widget.IsModal()) {
-                    View.WidgetSlot.SetEnabled( false );
-                    Push( View.ModalWidgetSlot, widget, i => true );
-                } else {
-                    Push( View.WidgetSlot, widget, i => true );
-                }
+        // ShowView
+        public override void ShowView(UIViewBase view) {
+            if (view.IsModal()) {
+                View.ViewSlot.SetEnabled( false );
+                Push( View.ModalViewSlot, view, i => true );
+            } else {
+                Push( View.ViewSlot, view, i => true );
             }
         }
-        public override void HideWidget(UIWidgetBase widget) {
-            if (widget.IsViewable) {
-                if (widget.IsModal()) {
-                    Pop( View.ModalWidgetSlot, widget, i => true );
-                    View.WidgetSlot.SetEnabled( !View.ModalWidgetSlot.Children.Any() );
-                } else {
-                    Pop( View.WidgetSlot, widget, i => true );
-                }
+        public override void HideView(UIViewBase view) {
+            if (view.IsModal()) {
+                Pop( View.ModalViewSlot, view, i => true );
+                View.ViewSlot.SetEnabled( !View.ModalViewSlot.Children.Any() );
+            } else {
+                Pop( View.ViewSlot, view, i => true );
             }
         }
 
@@ -174,16 +182,16 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // Helpers
-        protected static void Push(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget, Func<UIWidgetBase, bool> canBeHidden) {
+        protected static void Push(ViewListSlotWrapper<UIViewBase> slot, UIViewBase view, Func<UIViewBase, bool> canBeHidden) {
             var last = slot.Children.LastOrDefault();
-            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Remove( last.View!.__GetVisualElement__() );
-            slot.Add( widget );
+            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Remove( last.__GetVisualElement__() );
+            slot.Add( view );
         }
-        protected static void Pop(WidgetListSlotWrapper<UIWidgetBase> slot, UIWidgetBase widget, Func<UIWidgetBase, bool> canBeHidden) {
-            Assert.Operation.Message( $"Widget {widget} must be last" ).Valid( widget == slot.Children.LastOrDefault() );
-            slot.Remove( widget );
+        protected static void Pop(ViewListSlotWrapper<UIViewBase> slot, UIViewBase view, Func<UIViewBase, bool> canBeHidden) {
+            Assert.Operation.Message( $"Widget {view} must be last" ).Valid( view == slot.Children.LastOrDefault() );
+            slot.Remove( view );
             var last = slot.Children.LastOrDefault();
-            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Add( last.View!.__GetVisualElement__() );
+            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Add( last.__GetVisualElement__() );
         }
 
     }

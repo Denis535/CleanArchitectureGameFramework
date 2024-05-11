@@ -9,17 +9,6 @@ namespace UnityEngine.Framework.UI {
     internal static class UIHelper {
 
         // Add
-        public static void Add(this VisualElement element, UIWidgetBase widget) {
-            element.Add( widget.View!.VisualElement );
-        }
-        public static void Remove(this VisualElement element, UIWidgetBase widget) {
-            element.Remove( widget.View!.VisualElement );
-        }
-        public static void Contains(this VisualElement element, UIWidgetBase widget) {
-            element.Contains( widget.View!.VisualElement );
-        }
-
-        // Add
         public static void Add(this VisualElement element, UIViewBase view) {
             element.Add( view.VisualElement );
         }

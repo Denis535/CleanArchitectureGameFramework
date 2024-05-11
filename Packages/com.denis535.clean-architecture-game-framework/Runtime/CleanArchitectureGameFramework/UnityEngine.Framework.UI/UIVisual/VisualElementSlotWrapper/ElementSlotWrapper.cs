@@ -7,55 +7,49 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class WidgetSlotWrapper<T> : VisualElementSlotWrapper where T : notnull, UIWidgetBase {
+    public class ElementSlotWrapper<T> : SlotWrapper<T> where T : notnull, VisualElement {
 
-        public T? Child { get; private set; }
+        private T? Child_ { get; set; }
+        public override T? Child => Child_;
 
-        public WidgetSlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ElementSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Set(T child) {
+        public override void Set(T child) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Slot must have no child" ).Valid( Child == null );
-            Child = child;
+            Child_ = child;
             VisualElement.Add( child );
         }
-        public void Clear() {
-            Assert.Operation.Message( $"Slot must have child" ).Valid( Child != null );
-            VisualElement.Remove( Child );
-            Child = null;
-        }
-        public void Clear(T child) {
-            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Operation.Message( $"Slot must have child" ).Valid( Child != null );
-            Assert.Operation.Message( $"Slot must have {child} child" ).Valid( Child == child );
-            VisualElement.Remove( Child );
-            Child = null;
+        public override void Clear() {
+            if (Child != null) {
+                VisualElement.Remove( Child );
+                Child_ = null;
+            }
         }
 
     }
-    public class WidgetListSlotWrapper<T> : VisualElementSlotWrapper where T : notnull, UIWidgetBase {
+    public class ElementListSlotWrapper<T> : ListSlotWrapper<T> where T : notnull, VisualElement {
 
         private List<T> Children_ { get; } = new List<T>();
-        public IReadOnlyList<T> Children => Children_;
+        public override IReadOnlyList<T> Children => Children_;
 
-        public WidgetListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ElementListSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Add(T child) {
+        public override void Add(T child) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Slot must have no {child} child" ).Valid( !Children_.Contains( child ) );
             Children_.Add( child );
             VisualElement.Add( child );
         }
-        public void Remove(T child) {
+        public override void Remove(T child) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Operation.Message( $"Slot must have child" ).Valid( Children_.Any() );
             Assert.Operation.Message( $"Slot must have {child} child" ).Valid( Children_.Contains( child ) );
             VisualElement.Remove( child );
             Children_.Remove( child );
         }
-        public void Clear() {
+        public override void Clear() {
             foreach (var child in Children_) {
                 VisualElement.Remove( child );
             }
@@ -63,15 +57,15 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public class WidgetStackSlotWrapper<T> : VisualElementSlotWrapper where T : notnull, UIWidgetBase {
+    public class ElementStackSlotWrapper<T> : StackSlotWrapper<T> where T : notnull, VisualElement {
 
         private Stack<T> Children_ { get; } = new Stack<T>();
-        public IReadOnlyCollection<T> Children => Children_;
+        public override IReadOnlyCollection<T> Children => Children_;
 
-        public WidgetStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
+        public ElementStackSlotWrapper(VisualElement visualElement) : base( visualElement ) {
         }
 
-        public void Push(T child) {
+        public override void Push(T child) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Slot must have no {child} child" ).Valid( !Children_.Contains( child ) );
             BeforePush( VisualElement, Children_ );
@@ -80,12 +74,12 @@ namespace UnityEngine.Framework.UI {
                 VisualElement.Add( child );
             }
         }
-        public T Peek() {
+        public override T Peek() {
             Assert.Operation.Message( $"Slot must have child" ).Valid( Children_.Any() );
             var result = Children_.Peek();
             return result;
         }
-        public T Pop() {
+        public override T Pop() {
             Assert.Operation.Message( $"Slot must have child" ).Valid( Children_.Any() );
             var result = Children_.Peek();
             {
@@ -96,7 +90,6 @@ namespace UnityEngine.Framework.UI {
             return result;
         }
 
-        // helpers
         private static void BeforePush(VisualElement element, Stack<T> children) {
             if (children.TryPeek( out var last )) {
                 element.Remove( last );

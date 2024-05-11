@@ -78,7 +78,7 @@ namespace UnityEngine.Framework.UI {
             // trickle-down
             // override here
         }
-        public abstract void OnAttach(object? argument); // init and show
+        public abstract void OnAttach(object? argument); // init and show self
         public virtual void OnAfterAttach(object? argument) {
             // override here
             // bubble-up
@@ -93,7 +93,7 @@ namespace UnityEngine.Framework.UI {
             // trickle-down
             // override here
         }
-        public abstract void OnDetach(object? argument); // hide and deinit
+        public abstract void OnDetach(object? argument); // hide self and deinit
         public virtual void OnAfterDetach(object? argument) {
             // override here
             // bubble-up
@@ -164,28 +164,32 @@ namespace UnityEngine.Framework.UI {
 
         // ShowSelf
         public void ShowSelf() {
+            Assert.Operation.Message( $"Widget {this} must be viewable" ).Valid( IsViewable );
             Assert.Operation.Message( $"Widget {this} must be attaching" ).Valid( IsAttaching );
-            if (View != null) Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( !View.VisualElement.IsAttached() );
-            Parent!.ShowWidget( this );
-            if (View != null) Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
+            Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( !View.VisualElement.IsAttached() );
+            Parent!.ShowView( View );
+            Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.IsAttached() );
         }
         public void HideSelf() {
+            Assert.Operation.Message( $"Widget {this} must be viewable" ).Valid( IsViewable );
             Assert.Operation.Message( $"Widget {this} must be detaching" ).Valid( IsDetaching );
-            if (View != null) Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.VisualElement.IsAttached() );
-            Parent!.HideWidget( this );
-            if (View != null) Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
+            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.VisualElement.IsAttached() );
+            Parent!.HideView( View );
+            Assert.Operation.Message( $"Widget {this} was not hidden" ).Valid( !View.VisualElement.IsAttached() );
         }
 
-        // ShowWidget
-        public virtual void ShowWidget(UIWidgetBase widget) {
+        // ShowView
+        public virtual void ShowView(UIViewBase view) {
             // override here
-            if (widget.View != null) Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( !widget.View.VisualElement.IsAttached() );
-            Parent!.ShowWidget( widget );
+            Assert.Operation.Message( $"View {view} must be non-shown" ).Valid( !view.VisualElement.IsAttached() );
+            Parent!.ShowView( view );
+            Assert.Operation.Message( $"View {view} was not shown" ).Valid( view.VisualElement.IsAttached() );
         }
-        public virtual void HideWidget(UIWidgetBase widget) {
+        public virtual void HideView(UIViewBase view) {
             // override here
-            if (widget.View != null) Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( widget.View.VisualElement.IsAttached() );
-            Parent!.HideWidget( widget );
+            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.VisualElement.IsAttached() );
+            Parent!.HideView( view );
+            Assert.Operation.Message( $"View {view} was not hidden" ).Valid( !view.VisualElement.IsAttached() );
         }
 
         // Helpers
