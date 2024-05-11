@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 115
   packageName: Asset Store Publishing Tools
-  packageVersion: 11.4.0
+  packageVersion: 11.4.1
   assetPath: Packages/com.unity.asset-store-tools/Editor/Utility/FileUtility.cs
-  uploadId: 640788
+  uploadId: 662915
