@@ -9,6 +9,10 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIRootWidgetViewBase : UIViewBase {
 
+        // Views
+        public abstract IEnumerable<UIViewBase> Views { get; }
+        public abstract IEnumerable<UIViewBase> ModalViews { get; }
+
         // Constructor
         public UIRootWidgetViewBase() {
         }
@@ -17,12 +21,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public abstract void AddView(UIViewBase view);
-        public abstract void RemoveView(UIViewBase view);
+        public abstract void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible);
+        public abstract void RemoveView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible);
 
         // AddModalView
-        public abstract void AddModalView(UIViewBase view);
-        public abstract void RemoveModalView(UIViewBase view);
+        public abstract void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible);
+        public abstract void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible);
 
         // OnSubmit
         public abstract void OnSubmit(EventCallback<NavigationSubmitEvent> callback);
@@ -35,8 +39,8 @@ namespace UnityEngine.Framework.UI {
         protected readonly VisualElement modalViewSlot;
 
         // Views
-        public IEnumerable<UIViewBase> Views => viewSlot.Children().Select( i => (UIViewBase) i.userData );
-        public IEnumerable<UIViewBase> ModalViews => modalViewSlot.Children().Select( i => (UIViewBase) i.userData );
+        public override IEnumerable<UIViewBase> Views => viewSlot.Children().Select( i => (UIViewBase) i.userData );
+        public override IEnumerable<UIViewBase> ModalViews => modalViewSlot.Children().Select( i => (UIViewBase) i.userData );
 
         // Constructor
         public UIRootWidgetView() {
@@ -47,40 +51,40 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public override void AddView(UIViewBase view) {
+        public override void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             var last = viewSlot.Children().LastOrDefault();
-            if (last != null) {
+            if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                 last.SetEnabled( false );
                 last.SetDisplayed( false );
             }
             viewSlot.Add( view );
         }
-        public override void RemoveView(UIViewBase view) {
+        public override void RemoveView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             viewSlot.Remove( view );
             var last = viewSlot.Children().LastOrDefault();
-            if (last != null) {
+            if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                 last.SetDisplayed( true );
                 last.SetEnabled( true );
             }
         }
 
         // AddModalView
-        public override void AddModalView(UIViewBase view) {
+        public override void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             viewSlot.SetEnabled( false );
             {
                 var last = modalViewSlot.Children().LastOrDefault();
-                if (last != null) {
+                if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                     last.SetEnabled( false );
                     last.SetDisplayed( false );
                 }
                 modalViewSlot.Add( view );
             }
         }
-        public override void RemoveModalView(UIViewBase view) {
+        public override void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             {
                 modalViewSlot.Remove( view );
                 var last = modalViewSlot.Children().LastOrDefault();
-                if (last != null) {
+                if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                     last.SetDisplayed( true );
                     last.SetEnabled( true );
                 }

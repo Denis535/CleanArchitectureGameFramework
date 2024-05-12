@@ -109,16 +109,16 @@ namespace UnityEngine.Framework.UI {
         // ShowView
         public override void ShowView(UIViewBase view) {
             if (!view.IsModal()) {
-                View.AddView( view );
+                View.AddView( view, i => true );
             } else {
-                View.AddModalView( view );
+                View.AddModalView( view, i => true );
             }
         }
         public override void HideView(UIViewBase view) {
             if (!view.IsModal()) {
-                View.RemoveView( view );
+                View.RemoveView( view, i => true );
             } else {
-                View.RemoveModalView( view );
+                View.RemoveModalView( view, i => true );
             }
         }
 
