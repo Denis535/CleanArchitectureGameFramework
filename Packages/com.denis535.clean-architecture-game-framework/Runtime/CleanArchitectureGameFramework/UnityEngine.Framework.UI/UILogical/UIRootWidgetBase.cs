@@ -108,40 +108,38 @@ namespace UnityEngine.Framework.UI {
 
         // ShowView
         public override void ShowView(UIViewBase view) {
-            if (view.IsModal()) {
-                View.ViewSlot.SetEnabled( false );
-                Push( View.ModalViewSlot, view, i => true );
+            if (!view.IsModal()) {
+                View.AddView( view );
             } else {
-                Push( View.ViewSlot, view, i => true );
+                View.AddModalView( view );
             }
         }
         public override void HideView(UIViewBase view) {
-            if (view.IsModal()) {
-                Pop( View.ModalViewSlot, view, i => true );
-                View.ViewSlot.SetEnabled( !View.ModalViewSlot.Children.Any() );
+            if (!view.IsModal()) {
+                View.RemoveView( view );
             } else {
-                Pop( View.ViewSlot, view, i => true );
+                View.RemoveModalView( view );
             }
         }
 
         // Helpers
         protected static UIRootWidgetView CreateView() {
             var view = new UIRootWidgetView();
-            view.Root.OnEvent<NavigationSubmitEvent>( evt => {
+            view.OnSubmit( evt => {
                 var button = evt.target as Button;
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
                 }
-            }, TrickleDown.TrickleDown );
-            view.Root.OnEvent<NavigationCancelEvent>( evt => {
+            } );
+            view.OnCancel( evt => {
                 var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
                 var button = widget?.Query<Button>().Where( IsCancel ).First();
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
                 }
-            }, TrickleDown.TrickleDown );
+            } );
             return view;
         }
         // Helpers
@@ -180,18 +178,6 @@ namespace UnityEngine.Framework.UI {
                 evt.target = button;
                 button.SendEvent( evt );
             }
-        }
-        // Helpers
-        protected static void Push(ViewListSlotWrapper<UIViewBase> slot, UIViewBase view, Func<UIViewBase, bool> canBeHidden) {
-            var last = slot.Children.LastOrDefault();
-            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Remove( last.__GetVisualElement__() );
-            slot.Add( view );
-        }
-        protected static void Pop(ViewListSlotWrapper<UIViewBase> slot, UIViewBase view, Func<UIViewBase, bool> canBeHidden) {
-            Assert.Operation.Message( $"Widget {view} must be last" ).Valid( view == slot.Children.LastOrDefault() );
-            slot.Remove( view );
-            var last = slot.Children.LastOrDefault();
-            if (last != null && canBeHidden( last )) slot.__GetVisualElement__().Add( last.__GetVisualElement__() );
         }
 
     }
