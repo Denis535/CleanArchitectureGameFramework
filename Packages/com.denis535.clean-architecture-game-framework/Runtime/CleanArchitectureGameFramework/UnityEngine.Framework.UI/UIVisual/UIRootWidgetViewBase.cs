@@ -35,16 +35,16 @@ namespace UnityEngine.Framework.UI {
     }
     public class UIRootWidgetView : UIRootWidgetViewBase {
 
-        protected readonly VisualElement viewSlot;
-        protected readonly VisualElement modalViewSlot;
+        protected readonly VisualElement views;
+        protected readonly VisualElement modalViews;
 
         // Views
-        public override IEnumerable<UIViewBase> Views => viewSlot.Children().Select( i => (UIViewBase) i.userData );
-        public override IEnumerable<UIViewBase> ModalViews => modalViewSlot.Children().Select( i => (UIViewBase) i.userData );
+        public override IEnumerable<UIViewBase> Views => views.Children().Select( i => (UIViewBase) i.userData );
+        public override IEnumerable<UIViewBase> ModalViews => modalViews.Children().Select( i => (UIViewBase) i.userData );
 
         // Constructor
         public UIRootWidgetView() {
-            VisualElement = CreateVisualElement( out viewSlot, out modalViewSlot );
+            VisualElement = CreateVisualElement( out views, out modalViews );
         }
         public override void Dispose() {
             base.Dispose();
@@ -52,16 +52,16 @@ namespace UnityEngine.Framework.UI {
 
         // AddView
         public override void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            var last = viewSlot.Children().LastOrDefault();
+            var last = views.Children().LastOrDefault();
             if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                 last.SetEnabled( false );
                 last.SetDisplayed( false );
             }
-            viewSlot.Add( view );
+            views.Add( view );
         }
         public override void RemoveView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            viewSlot.Remove( view );
-            var last = viewSlot.Children().LastOrDefault();
+            views.Remove( view );
+            var last = views.Children().LastOrDefault();
             if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                 last.SetDisplayed( true );
                 last.SetEnabled( true );
@@ -70,26 +70,26 @@ namespace UnityEngine.Framework.UI {
 
         // AddModalView
         public override void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            viewSlot.SetEnabled( false );
+            views.SetEnabled( false );
             {
-                var last = modalViewSlot.Children().LastOrDefault();
+                var last = modalViews.Children().LastOrDefault();
                 if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                     last.SetEnabled( false );
                     last.SetDisplayed( false );
                 }
-                modalViewSlot.Add( view );
+                modalViews.Add( view );
             }
         }
         public override void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             {
-                modalViewSlot.Remove( view );
-                var last = modalViewSlot.Children().LastOrDefault();
+                modalViews.Remove( view );
+                var last = modalViews.Children().LastOrDefault();
                 if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                     last.SetDisplayed( true );
                     last.SetEnabled( true );
                 }
             }
-            viewSlot.SetEnabled( !modalViewSlot.Children().Any() );
+            views.SetEnabled( !modalViews.Children().Any() );
         }
 
         // OnEvent
@@ -101,24 +101,24 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement viewSlot, out VisualElement modalViewSlot) {
+        protected static VisualElement CreateVisualElement(out VisualElement views, out VisualElement modalViews) {
             var visualElement = new VisualElement();
             visualElement.name = "root-widget";
             visualElement.AddToClassList( "root-widget" );
             visualElement.pickingMode = PickingMode.Ignore;
             {
-                viewSlot = new VisualElement();
-                viewSlot.name = "view-slot";
-                viewSlot.AddToClassList( "view-slot" );
-                viewSlot.pickingMode = PickingMode.Ignore;
-                visualElement.Add( viewSlot );
+                views = new VisualElement();
+                views.name = "views";
+                views.AddToClassList( "views" );
+                views.pickingMode = PickingMode.Ignore;
+                visualElement.Add( views );
             }
             {
-                modalViewSlot = new VisualElement();
-                modalViewSlot.name = "modal-view-slot";
-                modalViewSlot.AddToClassList( "modal-view-slot" );
-                modalViewSlot.pickingMode = PickingMode.Ignore;
-                visualElement.Add( modalViewSlot );
+                modalViews = new VisualElement();
+                modalViews.name = "modal-views";
+                modalViews.AddToClassList( "modal-views" );
+                modalViews.pickingMode = PickingMode.Ignore;
+                visualElement.Add( modalViews );
             }
             return visualElement;
         }

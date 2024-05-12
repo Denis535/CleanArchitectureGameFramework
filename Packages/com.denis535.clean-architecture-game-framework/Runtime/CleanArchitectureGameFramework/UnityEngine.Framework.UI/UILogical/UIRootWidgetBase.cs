@@ -133,8 +133,8 @@ namespace UnityEngine.Framework.UI {
                 }
             } );
             view.OnCancel( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().FirstOrDefault( IsWidget );
-                var button = widget?.Query<Button>().Where( IsCancel ).First();
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.enabledInHierarchy ).FirstOrDefault( IsWidget );
+                var button = widget?.Query<Button>().Where( i => i.enabledInHierarchy ).Where( IsCancel ).First();
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
@@ -144,34 +144,15 @@ namespace UnityEngine.Framework.UI {
         }
         // Helpers
         protected static bool IsWidget(VisualElement element) {
-            if (element.enabledInHierarchy) {
-                if (element.name != null) {
-                    return element.name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
-                }
-                return element.GetType().Name.Contains( "widget", StringComparison.CurrentCultureIgnoreCase );
-            }
-            return false;
+            return element.GetClasses().Any( i => i.Contains( "widget" ) );
         }
         protected static bool IsCancel(Button button) {
-            if (button.enabledInHierarchy) {
-                if (button.name != null) {
-                    return button.name.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.name.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.name.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.name.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.name.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.name.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
-                }
-                if (button.text != null) {
-                    return button.text.Contains( "resume", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.text.Contains( "cancel", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.text.Contains( "no", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.text.Contains( "back", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.text.Contains( "exit", StringComparison.CurrentCultureIgnoreCase ) ||
-                           button.text.Contains( "quit", StringComparison.CurrentCultureIgnoreCase );
-                }
-            }
-            return false;
+            return button.ClassListContains( "resume" ) ||
+                button.ClassListContains( "no" ) ||
+                button.ClassListContains( "cancel" ) ||
+                button.ClassListContains( "back" ) ||
+                button.ClassListContains( "exit" ) ||
+                button.ClassListContains( "quit" );
         }
         protected static void Click(Button button) {
             using (var evt = ClickEvent.GetPooled()) {
