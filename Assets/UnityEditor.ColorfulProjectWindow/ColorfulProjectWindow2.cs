@@ -24,9 +24,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected override void OnGUI(string guid, Rect rect) {
             base.OnGUI( guid, rect );
         }
-        protected override void OnGUI(Rect rect, string path, string module, string content) {
-            base.OnGUI( rect, path, module, content );
-        }
 
     }
 }

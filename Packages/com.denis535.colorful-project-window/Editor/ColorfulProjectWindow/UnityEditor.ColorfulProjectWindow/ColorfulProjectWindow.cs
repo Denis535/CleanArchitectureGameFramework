@@ -11,6 +11,8 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ColorfulProjectWindow : ColorfulProjectWindowBase {
 
+        // Settings
+        protected ColorfulProjectWindowSettings Settings => ColorfulProjectWindowSettings.Instance;
         // ModulePaths
         protected string[] ModulePaths { get; }
 
@@ -20,8 +22,8 @@ namespace UnityEditor.ColorfulProjectWindow {
                 .Where( i => Path.GetExtension( i ) is ".asmdef" or ".asmref" )
                 .Select( Path.GetDirectoryName )
                 .Select( i => i.Replace( '\\', '/' ) )
-                .Distinct()
                 .OrderByDescending( i => i.StartsWith( "Assets/" ) )
+                .Distinct()
                 .ToArray();
         }
         public ColorfulProjectWindow(string[] modulePaths) {
@@ -32,23 +34,35 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected override void OnGUI(string guid, Rect rect) {
             base.OnGUI( guid, rect );
         }
-        protected override void OnGUI(Rect rect, string path, string module, string content) {
-            base.OnGUI( rect, path, module, content );
+
+        // DrawItem
+        protected override void DrawItem(Rect rect, string path) {
+            base.DrawItem( rect, path );
+        }
+        protected override void DrawModule(Rect rect, string path, string module) {
+            DrawItem( rect, Settings.ModuleColor, 0 );
+        }
+        protected override void DrawContent(Rect rect, string path, string module, string content) {
+            if (content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." )) {
+                var depth = content.Count( i => i == '/' );
+                DrawItem( rect, Settings.AssetsColor, depth );
+                return;
+            }
+            if (content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." )) {
+                var depth = content.Count( i => i == '/' );
+                DrawItem( rect, Settings.ResourcesColor, depth );
+                return;
+            }
+            if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
+                var depth = content.Count( i => i == '/' );
+                DrawItem( rect, Settings.SourcesColor, depth );
+                return;
+            }
         }
 
-        // Helpers
+        // GetModulePath
         protected override string? GetModulePath(string path) {
             return ModulePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-        }
-        // Helpers
-        protected override bool IsAssets(string path, string module, string content) {
-            return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
-        }
-        protected override bool IsResources(string path, string module, string content) {
-            return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
-        }
-        protected override bool IsSources(string path, string module, string content) {
-            return AssetDatabase.IsValidFolder( path ) || content.Contains( '/' );
         }
 
     }
