@@ -36,6 +36,18 @@ namespace UnityEngine.Framework.UI {
             // try not to use this method
             return view.VisualElement;
         }
+        public static T __GetVisualElement__<T>(this UIViewBase view) where T : VisualElement {
+            // try not to use this method
+            return (T) view.VisualElement;
+        }
+
+        // GetView
+        public static UIViewBase GetView(this VisualElement element) {
+            return (UIViewBase) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+        }
+        public static T GetView<T>(this VisualElement element) where T : UIViewBase {
+            return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+        }
 
         // Add
         public static void Add(this VisualElement element, UIViewBase view) {
