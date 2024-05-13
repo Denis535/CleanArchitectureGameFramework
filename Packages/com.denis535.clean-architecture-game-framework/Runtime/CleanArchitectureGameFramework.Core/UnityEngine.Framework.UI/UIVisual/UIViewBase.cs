@@ -11,14 +11,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIViewBase : IDisposable {
 
         protected CancellationTokenSource? disposeCancellationTokenSource;
-        private VisualElement? visualElement_;
-        protected VisualElement visualElement {
-            get => visualElement_!;
-            init {
-                visualElement_ = value;
-                visualElement_.userData = this;
-            }
-        }
+        private VisualElement visualElement = default!;
         private VisualElement? focusedElement;
 
         // System
@@ -32,12 +25,17 @@ namespace UnityEngine.Framework.UI {
                 return disposeCancellationTokenSource.Token;
             }
         }
+        // VisualElement
+        protected internal VisualElement VisualElement {
+            internal get => visualElement;
+            init {
+                visualElement = value;
+                visualElement.userData = this;
+            }
+        }
 
         // Constructor
         public UIViewBase() {
-        }
-        public UIViewBase(VisualElement visualElement) {
-            this.visualElement = visualElement;
         }
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
@@ -50,12 +48,6 @@ namespace UnityEngine.Framework.UI {
 #endif
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
-        }
-
-        // GetVisualElement
-        public VisualElement __GetVisualElement__() {
-            // try not to use this method
-            return visualElement;
         }
 
         // Focus

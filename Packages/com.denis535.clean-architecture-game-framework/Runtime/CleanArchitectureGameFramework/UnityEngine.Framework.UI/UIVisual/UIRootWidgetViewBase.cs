@@ -35,6 +35,7 @@ namespace UnityEngine.Framework.UI {
     }
     public class UIRootWidgetView : UIRootWidgetViewBase {
 
+        protected readonly VisualElement widget;
         protected readonly VisualElement views;
         protected readonly VisualElement modalViews;
 
@@ -44,7 +45,7 @@ namespace UnityEngine.Framework.UI {
 
         // Constructor
         public UIRootWidgetView() {
-            visualElement = CreateVisualElement( out views, out modalViews );
+            VisualElement = CreateVisualElement( out widget, out views, out modalViews );
         }
         public override void Dispose() {
             base.Dispose();
@@ -90,33 +91,33 @@ namespace UnityEngine.Framework.UI {
 
         // OnEvent
         public override void OnSubmit(EventCallback<NavigationSubmitEvent> callback) {
-            visualElement.OnSubmit( callback, TrickleDown.TrickleDown );
+            widget.OnSubmit( callback, TrickleDown.TrickleDown );
         }
         public override void OnCancel(EventCallback<NavigationCancelEvent> callback) {
-            visualElement.OnCancel( callback, TrickleDown.TrickleDown );
+            widget.OnCancel( callback, TrickleDown.TrickleDown );
         }
 
         // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement views, out VisualElement modalViews) {
-            var visualElement = new VisualElement();
-            visualElement.name = "root-widget";
-            visualElement.AddToClassList( "root-widget" );
-            visualElement.pickingMode = PickingMode.Ignore;
+        protected static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement views, out VisualElement modalViews) {
+            widget = new VisualElement();
+            widget.name = "root-widget";
+            widget.AddToClassList( "root-widget" );
+            widget.pickingMode = PickingMode.Ignore;
             {
                 views = new VisualElement();
                 views.name = "views";
                 views.AddToClassList( "views" );
                 views.pickingMode = PickingMode.Ignore;
-                visualElement.Add( views );
+                widget.Add( views );
             }
             {
                 modalViews = new VisualElement();
                 modalViews.name = "modal-views";
                 modalViews.AddToClassList( "modal-views" );
                 modalViews.pickingMode = PickingMode.Ignore;
-                visualElement.Add( modalViews );
+                widget.Add( modalViews );
             }
-            return visualElement;
+            return widget;
         }
 
     }

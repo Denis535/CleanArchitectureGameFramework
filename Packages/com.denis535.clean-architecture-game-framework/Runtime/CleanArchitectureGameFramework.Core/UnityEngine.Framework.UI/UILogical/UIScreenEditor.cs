@@ -27,7 +27,7 @@ namespace UnityEngine.Framework.UI {
             if (EditorApplication.isPlaying) {
                 LabelField( "Widget", GetDisplayString( Target.Widget ) );
                 LabelField( "View", GetDisplayString( Target.Widget?.View ) );
-                LabelField( "VisualElement", GetDisplayString( Target.Widget?.View?.__GetVisualElement__() ) );
+                LabelField( "VisualElement", GetDisplayString( Target.Widget?.View?.VisualElement ) );
             }
         }
         public override bool RequiresConstantRepaint() {
