@@ -26,7 +26,8 @@ namespace UnityEngine.Framework.UI {
             base.OnInspectorGUI();
             if (EditorApplication.isPlaying) {
                 LabelField( "Widget", GetDisplayString( Target.Widget ) );
-                LabelField( "View", GetDisplayString( Target.Widget?.View?.VisualElement ) );
+                LabelField( "View", GetDisplayString( Target.Widget?.View ) );
+                LabelField( "VisualElement", GetDisplayString( Target.Widget?.View?.__GetVisualElement__() ) );
             }
         }
         public override bool RequiresConstantRepaint() {
@@ -47,10 +48,16 @@ namespace UnityEngine.Framework.UI {
             builder.AppendHierarchy( widget, i => i.GetType().Name, i => i.Children );
             return builder.ToString();
         }
-        private static string? GetDisplayString(VisualElement? view) {
+        private static string? GetDisplayString(UIViewBase? view) {
             if (view == null) return null;
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
+            builder.AppendHierarchy( view, i => i.GetType().Name, i => i.GetChildren() );
+            return builder.ToString();
+        }
+        private static string? GetDisplayString(VisualElement? visualElement) {
+            if (visualElement == null) return null;
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( visualElement, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
             return builder.ToString();
         }
 

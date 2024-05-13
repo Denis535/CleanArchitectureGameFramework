@@ -57,7 +57,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
             Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
             Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Add( view.VisualElement );
+            document.rootVisualElement.Add( view );
         }
         protected static void AddViewIfNeeded(UIDocument document, UIViewBase view) {
             Assert.Argument.Message( $"Argument 'document' must be non-null" ).NotNull( document is not null );
@@ -65,8 +65,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
             Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
             Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            if (!document.rootVisualElement.Contains( view.VisualElement )) {
-                document.rootVisualElement.Add( view.VisualElement );
+            if (!document.rootVisualElement.Contains( view )) {
+                document.rootVisualElement.Add( view );
             }
         }
         protected static void RemoveView(UIDocument document, UIViewBase view) {
@@ -75,7 +75,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'document' {document} must be alive" ).Valid( document );
             Assert.Argument.Message( $"Argument 'document' {document} must have rootVisualElement" ).Valid( document.rootVisualElement != null );
             Assert.Argument.Message( $"Argument 'view' must be non-null" ).NotNull( view != null );
-            document.rootVisualElement.Remove( view.VisualElement );
+            document.rootVisualElement.Remove( view );
         }
 
     }

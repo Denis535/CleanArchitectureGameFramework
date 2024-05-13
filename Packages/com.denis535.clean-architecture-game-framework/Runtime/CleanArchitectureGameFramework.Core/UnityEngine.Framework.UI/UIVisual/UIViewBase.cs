@@ -11,7 +11,14 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIViewBase : IDisposable {
 
         protected CancellationTokenSource? disposeCancellationTokenSource;
-        private VisualElement? visualElement;
+        private VisualElement? visualElement_;
+        protected VisualElement visualElement {
+            get => visualElement_!;
+            init {
+                visualElement_ = value;
+                visualElement_.userData = this;
+            }
+        }
         private VisualElement? focusedElement;
 
         // System
@@ -25,24 +32,16 @@ namespace UnityEngine.Framework.UI {
                 return disposeCancellationTokenSource.Token;
             }
         }
-        // VisualElement
-        protected internal VisualElement VisualElement {
-            get => visualElement!;
-            protected init {
-                visualElement = value;
-                visualElement.userData = this;
-            }
-        }
 
         // Constructor
         public UIViewBase() {
         }
         public UIViewBase(VisualElement visualElement) {
-            VisualElement = visualElement;
+            this.visualElement = visualElement;
         }
         public virtual void Dispose() {
             Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
-            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( VisualElement.panel == null );
+            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( visualElement.panel == null );
             foreach (var child in this.GetChildren()) {
                 child.Dispose();
             }
@@ -53,16 +52,22 @@ namespace UnityEngine.Framework.UI {
             disposeCancellationTokenSource?.Cancel();
         }
 
+        // GetVisualElement
+        public VisualElement __GetVisualElement__() {
+            // try not to use this method
+            return visualElement;
+        }
+
         // Focus
         public virtual void Focus() {
-            if (VisualElement.focusable) {
-                VisualElement.Focus();
+            if (visualElement.focusable) {
+                visualElement.Focus();
             } else {
-                VisualElement.focusable = true;
-                VisualElement.delegatesFocus = true;
-                VisualElement.Focus();
-                VisualElement.delegatesFocus = false;
-                VisualElement.focusable = false;
+                visualElement.focusable = true;
+                visualElement.delegatesFocus = true;
+                visualElement.Focus();
+                visualElement.delegatesFocus = false;
+                visualElement.focusable = false;
             }
         }
         public virtual void SaveFocus() {
@@ -78,13 +83,13 @@ namespace UnityEngine.Framework.UI {
             return false;
         }
         public bool HasFocusedElement() {
-            var focusedElement = (VisualElement) VisualElement.focusController.focusedElement;
-            if (focusedElement != null && (VisualElement == focusedElement || VisualElement.Contains( focusedElement ))) return true;
+            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
+            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
             return false;
         }
         public VisualElement? GetFocusedElement() {
-            var focusedElement = (VisualElement) VisualElement.focusController.focusedElement;
-            if (focusedElement != null && (VisualElement == focusedElement || VisualElement.Contains( focusedElement ))) return focusedElement;
+            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
+            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return focusedElement;
             return null;
         }
         private void SaveFocusedElement(VisualElement? focusedElement) {

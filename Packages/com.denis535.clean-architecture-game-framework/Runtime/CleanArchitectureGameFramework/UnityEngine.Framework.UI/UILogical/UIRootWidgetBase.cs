@@ -109,16 +109,30 @@ namespace UnityEngine.Framework.UI {
         // ShowView
         public override void ShowView(UIViewBase view) {
             if (!view.IsModal()) {
-                View.AddView( view, i => true );
+                View.Views.LastOrDefault()?.SaveFocus();
+                View.AddView( view, i => false );
+                view.Focus();
             } else {
-                View.AddModalView( view, i => true );
+                if (View.ModalViews.Any()) {
+                    View.ModalViews.Last().SaveFocus();
+                } else {
+                    View.Views.LastOrDefault()?.SaveFocus();
+                }
+                View.AddModalView( view, i => false );
+                view.Focus();
             }
         }
         public override void HideView(UIViewBase view) {
             if (!view.IsModal()) {
-                View.RemoveView( view, i => true );
+                View.RemoveView( view, i => false );
+                View.Views.LastOrDefault()?.LoadFocus();
             } else {
-                View.RemoveModalView( view, i => true );
+                View.RemoveModalView( view, i => false );
+                if (View.ModalViews.Any()) {
+                    View.ModalViews.Last().LoadFocus();
+                } else {
+                    View.Views.LastOrDefault()?.LoadFocus();
+                }
             }
         }
 

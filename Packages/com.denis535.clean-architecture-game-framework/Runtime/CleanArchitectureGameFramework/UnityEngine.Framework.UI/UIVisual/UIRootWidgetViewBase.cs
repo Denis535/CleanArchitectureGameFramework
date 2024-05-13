@@ -44,7 +44,7 @@ namespace UnityEngine.Framework.UI {
 
         // Constructor
         public UIRootWidgetView() {
-            VisualElement = CreateVisualElement( out views, out modalViews );
+            visualElement = CreateVisualElement( out views, out modalViews );
         }
         public override void Dispose() {
             base.Dispose();
@@ -54,7 +54,6 @@ namespace UnityEngine.Framework.UI {
         public override void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             var last = views.Children().LastOrDefault();
             if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                last.SetEnabled( false );
                 last.SetDisplayed( false );
             }
             views.Add( view );
@@ -64,7 +63,6 @@ namespace UnityEngine.Framework.UI {
             var last = views.Children().LastOrDefault();
             if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                 last.SetDisplayed( true );
-                last.SetEnabled( true );
             }
         }
 
@@ -74,7 +72,6 @@ namespace UnityEngine.Framework.UI {
             {
                 var last = modalViews.Children().LastOrDefault();
                 if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                    last.SetEnabled( false );
                     last.SetDisplayed( false );
                 }
                 modalViews.Add( view );
@@ -86,7 +83,6 @@ namespace UnityEngine.Framework.UI {
                 var last = modalViews.Children().LastOrDefault();
                 if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
                     last.SetDisplayed( true );
-                    last.SetEnabled( true );
                 }
             }
             views.SetEnabled( !modalViews.Children().Any() );
@@ -94,10 +90,10 @@ namespace UnityEngine.Framework.UI {
 
         // OnEvent
         public override void OnSubmit(EventCallback<NavigationSubmitEvent> callback) {
-            VisualElement.OnSubmit( callback, TrickleDown.TrickleDown );
+            visualElement.OnSubmit( callback, TrickleDown.TrickleDown );
         }
         public override void OnCancel(EventCallback<NavigationCancelEvent> callback) {
-            VisualElement.OnCancel( callback, TrickleDown.TrickleDown );
+            visualElement.OnCancel( callback, TrickleDown.TrickleDown );
         }
 
         // Helpers/CreateVisualElement
