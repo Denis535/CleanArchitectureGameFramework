@@ -186,20 +186,20 @@ namespace UnityEngine.UIElements {
         }
 
         // OnChange
-        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
+        public static void OnChange<T>(this VisualElement element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             element.RegisterCallback( callback, useTrickleDown );
         }
-        public static void OnChange<T>(this BaseField<T?> element, EventCallback<ChangeEvent<T?>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : notnull {
+        public static void OnChange<T>(this BaseField<T> element, EventCallback<ChangeEvent<T>> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             element.RegisterCallback( callback, useTrickleDown );
         }
 
         // OnChangeAny
         public static void OnChangeAny(this VisualElement element, EventCallback<IChangeEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
-            element.RegisterCallback<ChangeEvent<object?>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<string?>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<int?>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<float?>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<bool?>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<object>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<string>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<int>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<float>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<bool>>( callback, useTrickleDown );
         }
 
         // OnSubmit
