@@ -72,6 +72,27 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
+        // CreateView
+        protected virtual UIRootWidgetViewBase CreateView() {
+            var view = new UIRootWidgetView();
+            view.OnSubmit( evt => {
+                var button = evt.target as Button;
+                if (button != null) {
+                    Click( button );
+                    evt.StopPropagation();
+                }
+            } );
+            view.OnCancel( evt => {
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
+                var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
+                if (button != null) {
+                    Click( button );
+                    evt.StopPropagation();
+                }
+            } );
+            return view;
+        }
+
         // OnAttach
         public override void OnAttach(object? argument) {
         }
@@ -122,26 +143,6 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // Helpers
-        protected static UIRootWidgetView CreateView() {
-            var view = new UIRootWidgetView();
-            view.OnSubmit( evt => {
-                var button = evt.target as Button;
-                if (button != null) {
-                    Click( button );
-                    evt.StopPropagation();
-                }
-            } );
-            view.OnCancel( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
-                var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
-                if (button != null) {
-                    Click( button );
-                    evt.StopPropagation();
-                }
-            } );
-            return view;
-        }
         // Helpers
         protected static bool IsWidget(VisualElement element) {
             return element.GetClasses().Any( i => i.Contains( "widget" ) );

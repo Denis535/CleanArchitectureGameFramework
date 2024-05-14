@@ -84,12 +84,12 @@ namespace UnityEngine.Framework.UI {
 
         // AddModalView
         public override void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            views.SetEnabled( false );
+            if (views.enabledSelf) views.SetEnabled( false );
             AddView( modalViews, view, isAlwaysVisible );
         }
         public override void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
             RemoveView( modalViews, view, isAlwaysVisible );
-            views.SetEnabled( !modalViews.Children().Any() );
+            if (!views.enabledSelf && !modalViews.Children().Any()) views.SetEnabled( true );
         }
 
         // OnEvent
