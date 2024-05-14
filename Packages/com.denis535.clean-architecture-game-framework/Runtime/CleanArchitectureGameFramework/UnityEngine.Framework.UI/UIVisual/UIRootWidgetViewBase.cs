@@ -40,8 +40,8 @@ namespace UnityEngine.Framework.UI {
         protected readonly VisualElement modalViews;
 
         // Views
-        public override IEnumerable<UIViewBase> Views => views.Children().Select( i => (UIViewBase) i.userData );
-        public override IEnumerable<UIViewBase> ModalViews => modalViews.Children().Select( i => (UIViewBase) i.userData );
+        public override IEnumerable<UIViewBase> Views => views.Children().Select( i => i.GetView() );
+        public override IEnumerable<UIViewBase> ModalViews => modalViews.Children().Select( i => i.GetView() );
 
         // Constructor
         public UIRootWidgetView() {
@@ -51,54 +51,8 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // AddView
-        public override void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            var last = views.Children().LastOrDefault();
-            if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                last.SetDisplayed( false );
-            }
-            views.Add( view );
-        }
-        public override void RemoveView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            views.Remove( view );
-            var last = views.Children().LastOrDefault();
-            if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                last.SetDisplayed( true );
-            }
-        }
-
-        // AddModalView
-        public override void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            views.SetEnabled( false );
-            {
-                var last = modalViews.Children().LastOrDefault();
-                if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                    last.SetDisplayed( false );
-                }
-                modalViews.Add( view );
-            }
-        }
-        public override void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
-            {
-                modalViews.Remove( view );
-                var last = modalViews.Children().LastOrDefault();
-                if (last != null && !isAlwaysVisible( (UIViewBase) last.userData )) {
-                    last.SetDisplayed( true );
-                }
-            }
-            views.SetEnabled( !modalViews.Children().Any() );
-        }
-
-        // OnEvent
-        public override void OnSubmit(EventCallback<NavigationSubmitEvent> callback) {
-            widget.OnSubmit( callback, TrickleDown.TrickleDown );
-        }
-        public override void OnCancel(EventCallback<NavigationCancelEvent> callback) {
-            widget.OnCancel( callback, TrickleDown.TrickleDown );
-        }
-
-        // Helpers/CreateVisualElement
-        protected static VisualElement CreateVisualElement(out VisualElement widget, out VisualElement views, out VisualElement modalViews) {
+        // CreateVisualElement
+        protected virtual VisualElement CreateVisualElement(out VisualElement widget, out VisualElement views, out VisualElement modalViews) {
             widget = new VisualElement();
             widget.name = "root-widget";
             widget.AddToClassList( "root-widget" );
@@ -118,6 +72,52 @@ namespace UnityEngine.Framework.UI {
                 widget.Add( modalViews );
             }
             return widget;
+        }
+
+        // AddView
+        public override void AddView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            AddView( views, view, isAlwaysVisible );
+        }
+        public override void RemoveView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            RemoveView( views, view, isAlwaysVisible );
+        }
+
+        // AddModalView
+        public override void AddModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            views.SetEnabled( false );
+            AddView( modalViews, view, isAlwaysVisible );
+        }
+        public override void RemoveModalView(UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            RemoveView( modalViews, view, isAlwaysVisible );
+            views.SetEnabled( !modalViews.Children().Any() );
+        }
+
+        // OnEvent
+        public override void OnSubmit(EventCallback<NavigationSubmitEvent> callback) {
+            widget.OnSubmit( callback, TrickleDown.TrickleDown );
+        }
+        public override void OnCancel(EventCallback<NavigationCancelEvent> callback) {
+            widget.OnCancel( callback, TrickleDown.TrickleDown );
+        }
+
+        // Helpers
+        protected static void AddView(VisualElement views, UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            var covered = views.Children().LastOrDefault();
+            if (covered != null) {
+                if (!isAlwaysVisible( covered.GetView() )) covered.SetDisplayed( false );
+            }
+            views.Add( view );
+        }
+        protected static void RemoveView(VisualElement views, UIViewBase view, Func<UIViewBase, bool> isAlwaysVisible) {
+            if (view.VisualElement == views.Children().LastOrDefault()) {
+                views.Remove( view );
+                var uncovered = views.Children().LastOrDefault();
+                if (uncovered != null) {
+                    if (!isAlwaysVisible( uncovered.GetView() )) uncovered.SetDisplayed( true );
+                }
+            } else {
+                views.Remove( view );
+            }
         }
 
     }

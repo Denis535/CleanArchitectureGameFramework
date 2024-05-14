@@ -22,8 +22,6 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
-            EditorGUILayout.Separator();
-
             using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
                 EditorGUILayout.LabelField( "Overview", EditorStyles.boldLabel );
                 EditorGUILayout.LabelField( "This framework helping you to develop your project following the best practices." );
