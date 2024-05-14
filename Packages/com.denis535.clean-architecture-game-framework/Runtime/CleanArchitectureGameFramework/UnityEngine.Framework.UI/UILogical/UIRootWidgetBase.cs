@@ -109,30 +109,16 @@ namespace UnityEngine.Framework.UI {
         // ShowView
         public override void ShowView(UIViewBase view) {
             if (!view.IsModal()) {
-                View.Views.LastOrDefault()?.SaveFocus();
                 View.AddView( view, i => false );
-                view.Focus();
             } else {
-                if (View.ModalViews.Any()) {
-                    View.ModalViews.Last().SaveFocus();
-                } else {
-                    View.Views.LastOrDefault()?.SaveFocus();
-                }
                 View.AddModalView( view, i => false );
-                view.Focus();
             }
         }
         public override void HideView(UIViewBase view) {
             if (!view.IsModal()) {
                 View.RemoveView( view, i => false );
-                View.Views.LastOrDefault()?.LoadFocus();
             } else {
                 View.RemoveModalView( view, i => false );
-                if (View.ModalViews.Any()) {
-                    View.ModalViews.Last().LoadFocus();
-                } else {
-                    View.Views.LastOrDefault()?.LoadFocus();
-                }
             }
         }
 
@@ -147,8 +133,8 @@ namespace UnityEngine.Framework.UI {
                 }
             } );
             view.OnCancel( evt => {
-                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.enabledInHierarchy ).FirstOrDefault( IsWidget );
-                var button = widget?.Query<Button>().Where( i => i.enabledInHierarchy ).Where( IsCancel ).First();
+                var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
+                var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
                 if (button != null) {
                     Click( button );
                     evt.StopPropagation();
@@ -162,9 +148,9 @@ namespace UnityEngine.Framework.UI {
         }
         protected static bool IsCancel(Button button) {
             return button.ClassListContains( "resume" ) ||
-                button.ClassListContains( "no" ) ||
                 button.ClassListContains( "cancel" ) ||
                 button.ClassListContains( "back" ) ||
+                button.ClassListContains( "no" ) ||
                 button.ClassListContains( "exit" ) ||
                 button.ClassListContains( "quit" );
         }
