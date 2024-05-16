@@ -9,35 +9,67 @@ namespace UnityEngine {
     public static class Object2 {
 
         // Instantiate
-        public static T Instantiate<T>(T original, object? arguments) where T : Object {
+        public static Object Instantiate(Object @object, object? arguments) {
             if (arguments != null) {
-                using (Context.Begin( arguments )) return Object.Instantiate( original );
+                using (Context.Begin( arguments )) return Object.Instantiate( @object );
             }
-            return Object.Instantiate( original );
+            return Object.Instantiate( @object );
         }
-        public static T Instantiate<T>(T original, Transform? parent, object? arguments) where T : Object {
+        public static Object Instantiate(Object @object, object? arguments, Transform? parent) {
             if (arguments != null) {
-                using (Context.Begin( arguments )) return Object.Instantiate( original, parent );
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, parent );
             }
-            return Object.Instantiate( original, parent );
+            return Object.Instantiate( @object, parent );
         }
-        public static T Instantiate<T>(T original, Transform? parent, bool instantiateInWorldSpace, object? arguments) where T : Object {
+        public static Object Instantiate(Object @object, object? arguments, Transform? parent, bool instantiateInWorldSpace) {
             if (arguments != null) {
-                using (Context.Begin( arguments )) return Object.Instantiate( original, parent, instantiateInWorldSpace );
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, parent, instantiateInWorldSpace );
             }
-            return Object.Instantiate( original, parent, instantiateInWorldSpace );
+            return Object.Instantiate( @object, parent, instantiateInWorldSpace );
         }
-        public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation, object? arguments) where T : Object {
+        public static Object Instantiate(Object @object, object? arguments, Vector3 position, Quaternion rotation) {
             if (arguments != null) {
-                using (Context.Begin( arguments )) return Object.Instantiate( original, position, rotation );
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, position, rotation );
             }
-            return Object.Instantiate( original, position, rotation );
+            return Object.Instantiate( @object, position, rotation );
         }
-        public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform? parent, object? arguments) where T : Object {
+        public static Object Instantiate(Object @object, object? arguments, Vector3 position, Quaternion rotation, Transform? parent) {
             if (arguments != null) {
-                using (Context.Begin( arguments )) return Object.Instantiate( original, position, rotation, parent );
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, position, rotation, parent );
             }
-            return Object.Instantiate( original, position, rotation, parent );
+            return Object.Instantiate( @object, position, rotation, parent );
+        }
+
+        // Instantiate
+        public static T Instantiate<T>(T @object, object? arguments) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( @object );
+            }
+            return Object.Instantiate( @object );
+        }
+        public static T Instantiate<T>(T @object, object? arguments, Transform? parent) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, parent );
+            }
+            return Object.Instantiate( @object, parent );
+        }
+        public static T Instantiate<T>(T @object, object? arguments, Transform? parent, bool instantiateInWorldSpace) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, parent, instantiateInWorldSpace );
+            }
+            return Object.Instantiate( @object, parent, instantiateInWorldSpace );
+        }
+        public static T Instantiate<T>(T @object, object? arguments, Vector3 position, Quaternion rotation) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, position, rotation );
+            }
+            return Object.Instantiate( @object, position, rotation );
+        }
+        public static T Instantiate<T>(T @object, object? arguments, Vector3 position, Quaternion rotation, Transform? parent) where T : Object {
+            if (arguments != null) {
+                using (Context.Begin( arguments )) return Object.Instantiate( @object, position, rotation, parent );
+            }
+            return Object.Instantiate( @object, position, rotation, parent );
         }
 
         // Require/Object
