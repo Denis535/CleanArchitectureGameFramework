@@ -4,15 +4,12 @@ namespace UnityEngine.Framework.UI {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
     public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement {
 
         private readonly Lock @lock = new Lock();
 
-        // Document
-        protected UIDocument Document { get; set; } = default!;
         // Widget
         public UIWidgetBase? Widget { get; private set; }
 
