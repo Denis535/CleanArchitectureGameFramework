@@ -50,6 +50,17 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Add
+        public static void Add(this UIDocument document, UIViewBase view) {
+            document.rootVisualElement.Add( view.VisualElement );
+        }
+        public static void Remove(this UIDocument document, UIViewBase view) {
+            document.rootVisualElement.Remove( view.VisualElement );
+        }
+        public static bool Contains(this UIDocument document, UIViewBase view) {
+            return document.rootVisualElement.Contains( view.VisualElement );
+        }
+
+        // Add
         public static void Add(this VisualElement element, UIViewBase view) {
             element.Add( view.VisualElement );
         }
