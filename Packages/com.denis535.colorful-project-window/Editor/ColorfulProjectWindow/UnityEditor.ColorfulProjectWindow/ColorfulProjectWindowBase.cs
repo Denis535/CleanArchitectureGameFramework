@@ -40,6 +40,19 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected abstract string? GetModulePath(string path);
 
         // Helpers
+        protected static Color Lighten(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v * factor );
+            result.a = color.a;
+            return result;
+        }
+        protected static Color Darken(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v / factor );
+            result.a = color.a;
+            return result;
+        }
+        // Helpers
         protected static void DrawItem(Rect rect, Color color, int depth) {
             if (rect.height == 16) {
                 rect.x -= 16;
@@ -65,19 +78,6 @@ namespace UnityEditor.ColorfulProjectWindow {
             GUI.color = color;
             GUI.DrawTexture( rect, Texture2D.whiteTexture );
             GUI.color = prev;
-        }
-        // Helpers
-        protected static Color Lighten(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v * factor );
-            result.a = color.a;
-            return result;
-        }
-        protected static Color Darken(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v / factor );
-            result.a = color.a;
-            return result;
         }
 
     }

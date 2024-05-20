@@ -53,10 +53,15 @@ namespace UnityEditor.ColorfulProjectWindow {
                 DrawItem( rect, Settings.ResourcesColor, depth );
                 return;
             }
-            if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
-                var depth = content.Count( i => i == '/' );
-                DrawItem( rect, Settings.SourcesColor, depth );
-                return;
+            {
+                if (AssetDatabase.IsValidFolder( path ) || Path.GetExtension( path ) is ".cs") {
+                    var depth = content.Count( i => i == '/' );
+                    DrawItem( rect, Settings.ContentColor, depth );
+                } else
+                if (Path.GetExtension( path ) is not ".asmdef" and not ".asmref" and not ".rsp") {
+                    var depth = content.Count( i => i == '/' );
+                    DrawItem( rect, Settings.ContentColor, depth );
+                }
             }
         }
 

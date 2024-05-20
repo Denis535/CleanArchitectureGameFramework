@@ -8,18 +8,19 @@ namespace UnityEditor.ColorfulProjectWindow {
     public class ColorfulProjectWindowSettings {
 
         private static readonly Color DefaultModuleColor = HSVA( 000, 1, 1, 0.3f );
+        private static readonly Color DefaultContentColor = HSVA( 120, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultAssetsColor = HSVA( 060, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultResourcesColor = HSVA( 060, 1f, 1.0f, 0.3f );
-        private static readonly Color DefaultSourcesColor = HSVA( 120, 1f, 1.0f, 0.3f );
         private static ColorfulProjectWindowSettings? instance;
 
         // Instance
         public static ColorfulProjectWindowSettings Instance => instance ??= new ColorfulProjectWindowSettings();
+
         // Colors
         public Color ModuleColor { get; set; }
+        public Color ContentColor { get; set; }
         public Color AssetsColor { get; set; }
         public Color ResourcesColor { get; set; }
-        public Color SourcesColor { get; set; }
 
         // Constructor
         private ColorfulProjectWindowSettings() {
@@ -29,25 +30,25 @@ namespace UnityEditor.ColorfulProjectWindow {
         // Load
         public void Load() {
             ModuleColor = LoadColor( "ColorfulProjectWindowSettings.ModuleColor", DefaultModuleColor );
+            ContentColor = LoadColor( "ColorfulProjectWindowSettings.ContentColor", DefaultContentColor );
             AssetsColor = LoadColor( "ColorfulProjectWindowSettings.AssetsColor", DefaultAssetsColor );
             ResourcesColor = LoadColor( "ColorfulProjectWindowSettings.ResourcesColor", DefaultResourcesColor );
-            SourcesColor = LoadColor( "ColorfulProjectWindowSettings.SourcesColor", DefaultSourcesColor );
         }
 
         // Save
         public void Save() {
             SaveColor( "ColorfulProjectWindowSettings.ModuleColor", ModuleColor );
+            SaveColor( "ColorfulProjectWindowSettings.ContentColor", ContentColor );
             SaveColor( "ColorfulProjectWindowSettings.AssetsColor", AssetsColor );
             SaveColor( "ColorfulProjectWindowSettings.ResourcesColor", ResourcesColor );
-            SaveColor( "ColorfulProjectWindowSettings.SourcesColor", SourcesColor );
         }
 
         // Reset
         public void Reset() {
             ModuleColor = DefaultModuleColor;
+            ContentColor = DefaultContentColor;
             AssetsColor = DefaultAssetsColor;
             ResourcesColor = DefaultResourcesColor;
-            SourcesColor = DefaultSourcesColor;
         }
 
         // Helpers
