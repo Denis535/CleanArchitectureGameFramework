@@ -20,11 +20,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         public ColorfulProjectWindow2() {
         }
 
-        // OnGUI
-        protected override void OnGUI(string guid, Rect rect) {
-            base.OnGUI( guid, rect );
-        }
-
     }
 }
 #endif

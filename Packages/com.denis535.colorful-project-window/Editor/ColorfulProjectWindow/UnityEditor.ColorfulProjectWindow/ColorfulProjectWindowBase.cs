@@ -3,7 +3,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using UnityEditor;
     using UnityEngine;
@@ -16,42 +16,32 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
 
         // OnGUI
-        protected virtual void OnGUI(string guid, Rect rect) {
-            DrawItem( rect, AssetDatabase.GUIDToAssetPath( guid ) );
+        private void OnGUI(string guid, Rect rect) {
+            OnGUI( rect, AssetDatabase.GUIDToAssetPath( guid ) );
         }
-
-        // DrawItem
-        protected virtual void DrawItem(Rect rect, string path) {
-            var modulePath = GetModulePath( path );
-            if (modulePath != null) {
-                var module = Path.GetFileName( modulePath );
-                var content = path.Substring( modulePath.Length ).TrimStart( '/' );
+        protected virtual void OnGUI(Rect rect, string path) {
+            if (IsModule( path, out var module, out var content )) {
                 if (string.IsNullOrEmpty( content )) {
                     DrawModule( rect, path, module );
-                } else {
+                    return;
+                }
+                if (IsContent( path, module, content )) {
                     DrawContent( rect, path, module, content );
+                    return;
                 }
             }
         }
+
+        // IsModule
+        protected abstract bool IsModule(string path, [NotNullWhen( true )] out string? module, [NotNullWhen( true )] out string? content);
+        protected virtual bool IsContent(string path, string module, string content) {
+            return AssetDatabase.IsValidFolder( path ) || content.Contains( '/' );
+        }
+
+        // DrawModule
         protected abstract void DrawModule(Rect rect, string path, string module);
         protected abstract void DrawContent(Rect rect, string path, string module, string content);
 
-        // GetModulePath
-        protected abstract string? GetModulePath(string path);
-
-        // Helpers
-        protected static Color Lighten(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v * factor );
-            result.a = color.a;
-            return result;
-        }
-        protected static Color Darken(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v / factor );
-            result.a = color.a;
-            return result;
-        }
         // Helpers
         protected static void DrawItem(Rect rect, Color color, int depth) {
             if (rect.height == 16) {
@@ -78,6 +68,24 @@ namespace UnityEditor.ColorfulProjectWindow {
             GUI.color = color;
             GUI.DrawTexture( rect, Texture2D.whiteTexture );
             GUI.color = prev;
+        }
+        // Helpers
+        protected static Color HSVA(int h, float s, float v, float a) {
+            var color = Color.HSVToRGB( h / 360f, s, v );
+            color.a = a;
+            return color;
+        }
+        protected static Color Lighten(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v * factor );
+            result.a = color.a;
+            return result;
+        }
+        protected static Color Darken(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v / factor );
+            result.a = color.a;
+            return result;
         }
 
     }
