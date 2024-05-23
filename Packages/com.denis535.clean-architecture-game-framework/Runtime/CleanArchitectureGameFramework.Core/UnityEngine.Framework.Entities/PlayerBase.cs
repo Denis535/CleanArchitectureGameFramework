@@ -26,7 +26,7 @@ namespace UnityEngine.Framework.Entities {
         public PlayerBase() {
         }
         public virtual void Dispose() {
-            Assert.Object.Message( $"Player {this} must be alive" ).Alive( !IsDisposed );
+            Assert.Object.Message( $"Player {this} must be alive" ).NotDisposed( !IsDisposed );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }

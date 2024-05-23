@@ -58,7 +58,7 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public virtual void Dispose() {
-            Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
+            Assert.Object.Message( $"Widget {this} must be alive" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
                 child.Dispose();
@@ -245,7 +245,7 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            Assert.Object.Message( $"Widget {this} must be alive" ).Alive( !IsDisposed );
+            Assert.Object.Message( $"Widget {this} must be alive" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
                 child.Dispose();

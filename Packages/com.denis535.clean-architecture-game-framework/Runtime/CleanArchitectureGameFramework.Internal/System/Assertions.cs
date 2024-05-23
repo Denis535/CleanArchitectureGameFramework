@@ -67,11 +67,11 @@ namespace System {
             }
 
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void Initialized([DoesNotReturnIf( false )] bool isValid) {
-                if (!isValid) throw Exceptions.GetException<ObjectNotInitializedException>( Message );
+            public void Ready([DoesNotReturnIf( false )] bool isValid) {
+                if (!isValid) throw Exceptions.GetException<ObjectNotReadyException>( Message );
             }
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void Alive([DoesNotReturnIf( false )] bool isValid) {
+            public void NotDisposed([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<ObjectDisposedException>( Message );
             }
 

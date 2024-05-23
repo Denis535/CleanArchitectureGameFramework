@@ -38,7 +38,7 @@ namespace UnityEngine.Framework.UI {
         public UIViewBase() {
         }
         public virtual void Dispose() {
-            Assert.Object.Message( $"View {this} must be alive" ).Alive( !IsDisposed );
+            Assert.Object.Message( $"View {this} must be alive" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( visualElement.panel == null );
             foreach (var child in this.GetChildren()) {
                 child.Dispose();

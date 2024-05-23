@@ -18,7 +18,7 @@ namespace System {
         }
         // Object
         public static class Object {
-            public static ObjectNotInitializedException ObjectNotInitializedException(FormattableString? message) => GetException<ObjectNotInitializedException>( message );
+            public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => GetException<ObjectNotReadyException>( message );
             public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => GetException<ObjectDisposedException>( message );
         }
         // Internal
@@ -36,10 +36,10 @@ namespace System {
         public static Func<Type, string?, Exception> GetExceptionDelegate = GetException;
 
         // GetException
-        internal static T GetException<T>(FormattableString? message) where T : Exception {
+        public static T GetException<T>(FormattableString? message) where T : Exception {
             return GetException<T>( GetMessageStringDelegate( message ) );
         }
-        internal static T GetException<T>(string? message) where T : Exception {
+        private static T GetException<T>(string? message) where T : Exception {
             return (T) GetExceptionDelegate( typeof( T ), message );
         }
 
@@ -73,11 +73,11 @@ namespace System {
         }
 
     }
-    // ObjectNotInitializedException
-    public class ObjectNotInitializedException : InvalidOperationException {
-        public ObjectNotInitializedException(string message) : base( message ) {
+    // ObjectNotReadyException
+    public class ObjectNotReadyException : InvalidOperationException {
+        public ObjectNotReadyException(string message) : base( message ) {
         }
-        public ObjectNotInitializedException(string message, Exception? innerException) : base( message, innerException ) {
+        public ObjectNotReadyException(string message, Exception? innerException) : base( message, innerException ) {
         }
     }
 }
