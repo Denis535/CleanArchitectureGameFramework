@@ -18,19 +18,6 @@ namespace UnityEngine.AddressableAssets {
         public override bool IsSucceeded => Handle.IsSucceeded();
         public override bool IsFailed => Handle.IsFailed();
         public override Exception? Exception => Handle.OperationException;
-        // Value
-        public Scene Value {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result.Scene;
-            }
-        }
-        public Scene? ValueSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result.Scene : default;
-            }
-        }
 
         // Constructor
         public SceneHandle(string key) : base( key ) {

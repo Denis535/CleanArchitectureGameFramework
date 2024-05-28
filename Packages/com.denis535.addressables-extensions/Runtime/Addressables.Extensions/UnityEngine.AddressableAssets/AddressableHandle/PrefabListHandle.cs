@@ -5,22 +5,21 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class AssetHandle : AddressableHandle {
+    public abstract class PrefabListHandle : AddressableListHandle {
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public PrefabListHandle(string[] keys) : base( keys ) {
         }
 
         // Wait
         public abstract void Wait();
         public abstract ValueTask WaitAsync(CancellationToken cancellationToken);
 
-        // GetValue
-        public abstract UnityEngine.Object GetValueBase();
-        public abstract ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken);
+        // GetValues
+        public abstract IReadOnlyList<UnityEngine.Object> GetValuesBase();
+        public abstract ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken);
 
         // Release
         public abstract void Release();
@@ -32,14 +31,14 @@ namespace UnityEngine.AddressableAssets {
 
         // Utils
         public override string ToString() {
-            return "AssetHandle: " + Key;
+            return "PrefabListHandle: " + string.Join( ", ", Keys );
         }
 
     }
-    public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
+    public class PrefabListHandle<T> : PrefabListHandle where T : notnull, UnityEngine.Object {
 
         // Handle
-        protected AsyncOperationHandle<T> Handle { get; set; }
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
         public override bool IsDone => Handle.IsDone;
         public override bool IsSucceeded => Handle.IsSucceeded();
@@ -47,16 +46,16 @@ namespace UnityEngine.AddressableAssets {
         public override Exception? Exception => Handle.OperationException;
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public PrefabListHandle(string[] keys) : base( keys ) {
         }
-        public AssetHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public PrefabListHandle(string[] keys, AsyncOperationHandle<IReadOnlyList<T>> handle) : base( keys ) {
             Handle = handle;
         }
 
         // Load
-        public AssetHandle<T> Load() {
+        public PrefabListHandle<T> Load() {
             Assert_IsNotValid();
-            Handle = Addressables2.LoadAssetAsync<T>( Key );
+            Handle = Addressables2.LoadPrefabListAsync<T>( Keys );
             return this;
         }
 
@@ -70,20 +69,20 @@ namespace UnityEngine.AddressableAssets {
             return Handle.WaitAsync( cancellationToken );
         }
 
-        // GetValue
-        public override UnityEngine.Object GetValueBase() {
-            return GetValue();
+        // GetValues
+        public override IReadOnlyList<UnityEngine.Object> GetValuesBase() {
+            return GetValues();
         }
-        public override async ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken) {
-            return await GetValueAsync( cancellationToken );
+        public override async ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken) {
+            return await GetValuesAsync( cancellationToken );
         }
 
-        // GetValue
-        public T GetValue() {
+        // GetValues
+        public IReadOnlyList<T> GetValues() {
             Assert_IsValid();
             return Handle.GetResult();
         }
-        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
             Assert_IsValid();
             return Handle.GetResultAsync( cancellationToken );
         }

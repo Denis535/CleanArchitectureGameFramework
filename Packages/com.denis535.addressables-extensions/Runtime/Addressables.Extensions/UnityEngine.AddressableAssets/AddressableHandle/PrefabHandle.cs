@@ -8,10 +8,10 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public abstract class AssetHandle : AddressableHandle {
+    public abstract class PrefabHandle : AddressableHandle {
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public PrefabHandle(string key) : base( key ) {
         }
 
         // Wait
@@ -32,11 +32,11 @@ namespace UnityEngine.AddressableAssets {
 
         // Utils
         public override string ToString() {
-            return "AssetHandle: " + Key;
+            return "PrefabHandle: " + Key;
         }
 
     }
-    public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
+    public class PrefabHandle<T> : PrefabHandle where T : notnull, UnityEngine.Object {
 
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
@@ -47,16 +47,16 @@ namespace UnityEngine.AddressableAssets {
         public override Exception? Exception => Handle.OperationException;
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public PrefabHandle(string key) : base( key ) {
         }
-        public AssetHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public PrefabHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
             Handle = handle;
         }
 
         // Load
-        public AssetHandle<T> Load() {
+        public PrefabHandle<T> Load() {
             Assert_IsNotValid();
-            Handle = Addressables2.LoadAssetAsync<T>( Key );
+            Handle = Addressables2.LoadPrefabAsync<T>( Key );
             return this;
         }
 

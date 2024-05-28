@@ -9,10 +9,6 @@ namespace UnityEngine.AddressableAssets {
 
     public abstract class AssetListHandle : AddressableListHandle {
 
-        // Values
-        public abstract IReadOnlyList<UnityEngine.Object> ValuesBase { get; }
-        public abstract IReadOnlyList<UnityEngine.Object>? ValuesBaseSafe { get; }
-
         // Constructor
         public AssetListHandle(string[] keys) : base( keys ) {
         }
@@ -42,38 +38,12 @@ namespace UnityEngine.AddressableAssets {
     public class AssetListHandle<T> : AssetListHandle where T : notnull, UnityEngine.Object {
 
         // Handle
-        private AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
         public override bool IsDone => Handle.IsDone;
         public override bool IsSucceeded => Handle.IsSucceeded();
         public override bool IsFailed => Handle.IsFailed();
         public override Exception? Exception => Handle.OperationException;
-        // Values
-        public override IReadOnlyList<UnityEngine.Object> ValuesBase {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public override IReadOnlyList<UnityEngine.Object>? ValuesBaseSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
-        // Values
-        public IReadOnlyList<T> Values {
-            get {
-                Assert_IsValid();
-                Assert_IsSucceeded();
-                return Handle.Result;
-            }
-        }
-        public IReadOnlyList<T>? ValuesSafe {
-            get {
-                return Handle.IsValid() && Handle.IsSucceeded() ? Handle.Result : default;
-            }
-        }
 
         // Constructor
         public AssetListHandle(string[] keys) : base( keys ) {
@@ -85,7 +55,7 @@ namespace UnityEngine.AddressableAssets {
         // Load
         public AssetListHandle<T> Load() {
             Assert_IsNotValid();
-            Handle = AddressableHelper.LoadAssetListAsync<T>( Keys );
+            Handle = Addressables2.LoadAssetListAsync<T>( Keys );
             return this;
         }
 
@@ -101,12 +71,10 @@ namespace UnityEngine.AddressableAssets {
 
         // GetValues
         public override IReadOnlyList<UnityEngine.Object> GetValuesBase() {
-            Assert_IsValid();
-            return Handle.GetResult();
+            return GetValues();
         }
         public override async ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return await Handle.GetResultAsync( cancellationToken );
+            return await GetValuesAsync( cancellationToken );
         }
 
         // GetValues

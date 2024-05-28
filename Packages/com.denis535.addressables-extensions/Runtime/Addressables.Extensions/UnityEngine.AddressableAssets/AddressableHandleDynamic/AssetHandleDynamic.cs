@@ -5,14 +5,14 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class AssetHandleDynamic<T> : AddressableHandleDynamic where T : notnull, UnityEngine.Object {
+    public abstract class AssetHandleDynamic : AddressableHandleDynamic {
 
-        private AssetHandle<T>? handle;
+        protected AssetHandle? handle;
 
         // IsValid
         public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public AssetHandle<T> Handle {
+        public AssetHandle Handle {
             get {
                 Assert_IsValid();
                 return handle!;
@@ -23,16 +23,6 @@ namespace UnityEngine.AddressableAssets {
         public AssetHandleDynamic() {
         }
 
-        // SetUp
-        public AssetHandle<T> SetUp(string key) {
-            Assert_IsNotValid();
-            return this.handle = new AssetHandle<T>( key );
-        }
-        public AssetHandle<T> SetUp(AssetHandle<T> handle) {
-            Assert_IsNotValid();
-            return this.handle = handle;
-        }
-
         // Utils
         public override string ToString() {
             if (IsValid) {
@@ -40,6 +30,28 @@ namespace UnityEngine.AddressableAssets {
             } else {
                 return "AssetHandleDynamic";
             }
+        }
+
+    }
+    public class AssetHandleDynamic<T> : AssetHandleDynamic where T : notnull, UnityEngine.Object {
+
+        // Handle
+        public new AssetHandle<T> Handle => (AssetHandle<T>) base.Handle;
+
+        // Constructor
+        public AssetHandleDynamic() {
+        }
+
+        // SetUp
+        public AssetHandle<T> SetUp(string key) {
+            Assert_IsNotValid();
+            base.handle = new AssetHandle<T>( key );
+            return (AssetHandle<T>) base.handle;
+        }
+        public AssetHandle<T> SetUp(AssetHandle<T> handle) {
+            Assert_IsNotValid();
+            base.handle = handle;
+            return (AssetHandle<T>) base.handle;
         }
 
     }
