@@ -191,7 +191,7 @@ namespace UnityEngine.Framework.UI {
             }
             Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             View.Dispose();
-            base.DisposeOriginal();
+            base.DisposeInternal();
         }
 
     }

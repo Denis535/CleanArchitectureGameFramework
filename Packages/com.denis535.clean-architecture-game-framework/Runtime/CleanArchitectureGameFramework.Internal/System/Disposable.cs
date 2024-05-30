@@ -31,7 +31,7 @@ namespace System {
         }
 
         // Helpers
-        protected void DisposeOriginal() {
+        protected void DisposeInternal() {
             Assert.Object.Message( $"Disposable {this} must not be disposed" ).NotDisposed( !IsDisposed );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();

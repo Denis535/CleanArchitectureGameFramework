@@ -17,22 +17,21 @@ namespace UnityEngine.Framework {
 
         // Target
         protected ProgramBase Target => (ProgramBase) target;
-        protected virtual UIThemeBase? Theme => null;
-        protected virtual UIScreenBase? Screen => null;
-        protected virtual UIRouterBase? Router => null;
-        protected virtual ApplicationBase? Application => null;
-        protected virtual GameBase? Game => null;
+        protected virtual UIThemeBase? Theme => (Target as IDependencyContainer)?.GetDependency<UIThemeBase>();
+        protected virtual UIScreenBase? Screen => (Target as IDependencyContainer)?.GetDependency<UIScreenBase>();
+        protected virtual UIRouterBase? Router => (Target as IDependencyContainer)?.GetDependency<UIRouterBase>();
+        protected virtual ApplicationBase? Application => (Target as IDependencyContainer)?.GetDependency<ApplicationBase>();
+        protected virtual GameBase? Game => (Target as IDependencyContainer)?.GetDependency<GameBase>();
 
         // Awake
-        public virtual void Awake() {
+        protected virtual void Awake() {
         }
-        public virtual void OnDestroy() {
+        protected virtual void OnDestroy() {
         }
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
-            DrawGUI( Target );
             DrawGUI( Theme );
             DrawGUI( Screen );
             DrawGUI( Router );
@@ -47,38 +46,23 @@ namespace UnityEngine.Framework {
         }
 
         // DrawGUI
-        protected virtual void DrawGUI(ProgramBase program) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Program", program?.ToString() );
-            }
-        }
         protected virtual void DrawGUI(UIThemeBase? theme) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Theme", theme?.ToString() );
-            }
+            LabelField( "Theme", theme?.ToString() );
         }
         protected virtual void DrawGUI(UIScreenBase? screen) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Screen", screen?.ToString() );
-                LabelField( "Widget", GetDisplayString( screen?.Widget ) );
-                LabelField( "View", GetDisplayString( screen?.Widget?.View ) );
-                LabelField( "VisualElement", GetDisplayString( screen?.Widget?.View?.VisualElement ) );
-            }
+            LabelField( "Screen", screen?.ToString() );
+            LabelField( "Widget", GetDisplayString( screen?.Widget ) );
+            LabelField( "View", GetDisplayString( screen?.Widget?.View ) );
+            LabelField( "VisualElement", GetDisplayString( screen?.Widget?.View?.VisualElement ) );
         }
         protected virtual void DrawGUI(UIRouterBase? router) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Router", router?.ToString() );
-            }
+            LabelField( "Router", router?.ToString() );
         }
         protected virtual void DrawGUI(ApplicationBase? application) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Application", application?.ToString() );
-            }
+            LabelField( "Application", application?.ToString() );
         }
         protected virtual void DrawGUI(GameBase? game) {
-            using (new GUILayout.VerticalScope( EditorStyles.label )) {
-                LabelField( "Game", game?.ToString() );
-            }
+            LabelField( "Game", game?.ToString() );
         }
         // DrawHelp
         protected virtual void DrawHelp() {

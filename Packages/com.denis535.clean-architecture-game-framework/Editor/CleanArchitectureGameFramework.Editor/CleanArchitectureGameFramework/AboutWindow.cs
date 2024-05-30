@@ -15,12 +15,6 @@ namespace CleanArchitectureGameFramework {
             window.minSize = window.maxSize = new Vector2( 800, 600 );
         }
 
-        // Awake
-        public void Awake() {
-        }
-        public void OnDestroy() {
-        }
-
         // OnGUI
         public void OnGUI() {
             using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
