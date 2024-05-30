@@ -32,6 +32,34 @@ namespace UnityEngine.Framework.UI {
             foreach (var i in GetDescendants( widget )) yield return i;
         }
 
+        // OnAttach
+        public static void OnBeforeAttach(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnBeforeAttachEvent += callback;
+        }
+        public static void OnAfterAttach(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnAfterAttachEvent += callback;
+        }
+        public static void OnBeforeDetach(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnBeforeDetachEvent += callback;
+        }
+        public static void OnAfterDetach(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnAfterDetachEvent += callback;
+        }
+
+        // OnDescendantAttach
+        public static void OnBeforeDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnBeforeDescendantAttachEvent += callback;
+        }
+        public static void OnAfterDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnAfterDescendantAttachEvent += callback;
+        }
+        public static void OnBeforeDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnBeforeDescendantDetachEvent += callback;
+        }
+        public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnAfterDescendantDetachEvent += callback;
+        }
+
         // AttachChild
         //public static void AttachChild(this UIWidgetBase widget, UIWidgetBase child, object? argument = null) {
         //    Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
@@ -67,32 +95,41 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // OnAttach
-        public static void OnBeforeAttach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnBeforeAttachEvent += callback;
+        // AttachToScreen
+        internal static void AttachToScreen(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            Assert.Argument.Message( $"Argument 'widget' {widget} must be non-attached" ).Valid( widget.IsNonAttached );
+            Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == null );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
+            widget.OnBeforeAttach( argument );
+            widget.State = UIWidgetState.Attaching;
+            widget.Screen = screen;
+            {
+                widget.OnAttach( argument );
+                foreach (var child in widget.Children) {
+                    AttachToScreen( child, screen, argument );
+                }
+            }
+            widget.State = UIWidgetState.Attached;
+            widget.OnAfterAttach( argument );
         }
-        public static void OnAfterAttach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnAfterAttachEvent += callback;
-        }
-        public static void OnBeforeDetach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnBeforeDetachEvent += callback;
-        }
-        public static void OnAfterDetach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnAfterDetachEvent += callback;
-        }
-
-        // OnDescendantAttach
-        public static void OnBeforeDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnBeforeDescendantAttachEvent += callback;
-        }
-        public static void OnAfterDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnAfterDescendantAttachEvent += callback;
-        }
-        public static void OnBeforeDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnBeforeDescendantDetachEvent += callback;
-        }
-        public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnAfterDescendantDetachEvent += callback;
+        internal static void DetachFromScreen(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
+            Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            Assert.Argument.Message( $"Argument 'widget' {widget} must be attached" ).Valid( widget.IsAttached );
+            Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen != null );
+            Assert.Argument.Message( $"Argument 'widget' {widget} must be valid" ).Valid( widget.Screen == screen );
+            Assert.Argument.Message( $"Argument 'screen' must be non-null" ).NotNull( screen is not null );
+            widget.OnBeforeDetach( argument );
+            widget.State = UIWidgetState.Detaching;
+            {
+                foreach (var child in widget.Children.Reverse()) {
+                    DetachFromScreen( child, screen, argument );
+                }
+                widget.OnDetach( argument );
+            }
+            widget.Screen = null;
+            widget.State = UIWidgetState.Detached;
+            widget.OnAfterDetach( argument );
         }
 
     }

@@ -5,12 +5,14 @@ namespace UnityEngine.Framework.App {
     using System.Collections.Generic;
     using UnityEngine;
 
-    [DefaultExecutionOrder( ScriptExecutionOrders.Application )]
-    public abstract class ApplicationBase : MonoBehaviour {
+    public abstract class ApplicationBase : Disposable {
 
-        // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        // Constructor
+        public ApplicationBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }

@@ -6,12 +6,14 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    [DefaultExecutionOrder( ScriptExecutionOrders.UIAudioTheme )]
-    public abstract class UIAudioThemeBase : MonoBehaviour {
+    public abstract class UIThemeBase : Disposable {
 
-        // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        // Constructor
+        public UIThemeBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
         // Helpers
         protected static void Shuffle<T>(T[] array) {

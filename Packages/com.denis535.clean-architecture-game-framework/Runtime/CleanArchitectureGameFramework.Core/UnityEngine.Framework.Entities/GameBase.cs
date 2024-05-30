@@ -5,12 +5,14 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    [DefaultExecutionOrder( ScriptExecutionOrders.Game )]
-    public abstract class GameBase : MonoBehaviour {
+    public abstract class GameBase : Disposable {
 
-        // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        // Constructor
+        public GameBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }

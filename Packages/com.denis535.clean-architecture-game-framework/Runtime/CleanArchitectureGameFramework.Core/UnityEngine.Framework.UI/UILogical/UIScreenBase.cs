@@ -5,17 +5,19 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    [DefaultExecutionOrder( ScriptExecutionOrders.UIScreen )]
-    public abstract class UIScreenBase : MonoBehaviour, IUILogicalElement {
+    public abstract class UIScreenBase : Disposable, IUILogicalElement {
 
         private readonly Lock @lock = new Lock();
 
         // Widget
         public UIWidgetBase? Widget { get; private set; }
 
-        // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        // Constructor
+        public UIScreenBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
         // AttachWidget
         public virtual void AttachWidget(UIWidgetBase widget, object? argument = null) {
@@ -26,7 +28,7 @@ namespace UnityEngine.Framework.UI {
                 Widget = widget;
                 widget.Parent = null;
                 if (true) {
-                    UIWidgetBase.AttachToScreen( Widget, this, argument );
+                    Widget.AttachToScreen( this, argument );
                 }
             }
         }
@@ -37,7 +39,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
             using (@lock.Enter()) {
                 if (true) {
-                    UIWidgetBase.DetachFromScreen( Widget, this, argument );
+                    Widget.DetachFromScreen( this, argument );
                 }
                 widget.Parent = null;
                 Widget = null;

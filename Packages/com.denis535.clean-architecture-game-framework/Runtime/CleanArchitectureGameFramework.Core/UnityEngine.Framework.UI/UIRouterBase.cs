@@ -5,12 +5,14 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    [DefaultExecutionOrder( ScriptExecutionOrders.UIRouter )]
-    public abstract class UIRouterBase : MonoBehaviour {
+    public abstract class UIRouterBase : Disposable {
 
-        // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        // Constructor
+        public UIRouterBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }
