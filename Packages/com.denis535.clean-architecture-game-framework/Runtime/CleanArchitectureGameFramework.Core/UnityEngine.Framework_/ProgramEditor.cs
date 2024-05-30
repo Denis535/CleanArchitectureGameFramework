@@ -32,12 +32,13 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
-            DrawGUI( Theme );
-            DrawGUI( Screen );
-            DrawGUI( Router );
-            DrawGUI( Application );
-            DrawGUI( Game );
-            if (!UnityEngine.Application.isPlaying) {
+            if (UnityEngine.Application.isPlaying && Target.didAwake) {
+                DrawGUI( Theme );
+                DrawGUI( Screen );
+                DrawGUI( Router );
+                DrawGUI( Application );
+                DrawGUI( Game );
+            } else {
                 DrawHelp();
             }
         }
