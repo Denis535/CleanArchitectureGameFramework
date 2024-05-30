@@ -8,8 +8,8 @@ namespace UnityEngine.Framework {
     public abstract class ProgramBase : MonoBehaviour {
 
         // Awake
-        public abstract void Awake();
-        public abstract void OnDestroy();
+        protected abstract void Awake();
+        protected abstract void OnDestroy();
 
     }
 }
