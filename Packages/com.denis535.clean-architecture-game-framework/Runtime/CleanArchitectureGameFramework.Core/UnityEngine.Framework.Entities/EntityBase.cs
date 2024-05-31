@@ -5,14 +5,11 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class EntityBase : Disposable {
+    public abstract class EntityBase : MonoBehaviour {
 
-        // Constructor
-        public EntityBase() {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
+        // Awake
+        protected abstract void Awake();
+        protected abstract void OnDestroy();
 
     }
 }

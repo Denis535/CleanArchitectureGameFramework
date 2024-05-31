@@ -48,22 +48,22 @@ namespace UnityEngine.Framework {
 
         // DrawGUI
         protected virtual void DrawGUI(UIThemeBase? theme) {
-            LabelField( "Theme", theme?.ToString() );
+            LabelField( "Theme", theme?.ToString() ?? "Null" );
         }
         protected virtual void DrawGUI(UIScreenBase? screen) {
-            LabelField( "Screen", screen?.ToString() );
-            LabelField( "Widget", GetDisplayString( screen?.Widget ) );
-            LabelField( "View", GetDisplayString( screen?.Widget?.View ) );
-            LabelField( "VisualElement", GetDisplayString( screen?.Widget?.View?.VisualElement ) );
+            LabelField( "Screen", screen?.ToString() ?? "Null" );
+            LabelField( "Widget", GetDisplayString( screen?.Widget ) ?? "Null" );
+            LabelField( "View", GetDisplayString( screen?.Widget?.View ) ?? "Null" );
+            LabelField( "VisualElement", GetDisplayString( screen?.Widget?.View?.VisualElement ) ?? "Null" );
         }
         protected virtual void DrawGUI(UIRouterBase? router) {
-            LabelField( "Router", router?.ToString() );
+            LabelField( "Router", router?.ToString() ?? "Null" );
         }
         protected virtual void DrawGUI(ApplicationBase? application) {
-            LabelField( "Application", application?.ToString() );
+            LabelField( "Application", application?.ToString() ?? "Null" );
         }
         protected virtual void DrawGUI(GameBase? game) {
-            LabelField( "Game", game?.ToString() );
+            LabelField( "Game", game?.ToString() ?? "Null" );
         }
         // DrawHelp
         protected virtual void DrawHelp() {
