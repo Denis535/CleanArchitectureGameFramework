@@ -55,7 +55,8 @@ namespace UnityEngine.AddressableAssets {
         // Unload
         public void Unload() {
             Assert_IsValid();
-            Addressables.UnloadSceneAsync( Handle ).Wait();
+            var unload = Addressables.UnloadSceneAsync( Handle );
+            if (unload.IsValid()) unload.Wait();
             Handle = default;
         }
         public void UnloadSafe() {
@@ -67,7 +68,8 @@ namespace UnityEngine.AddressableAssets {
         // UnloadAsync
         public async ValueTask UnloadAsync() {
             Assert_IsValid();
-            await Addressables.UnloadSceneAsync( Handle ).WaitAsync( default );
+            var unload = Addressables.UnloadSceneAsync( Handle );
+            if (unload.IsValid()) await unload.WaitAsync( default );
             Handle = default;
         }
         public async ValueTask UnloadSafeAsync() {
