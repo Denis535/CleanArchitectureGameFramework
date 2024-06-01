@@ -66,6 +66,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static async ValueTask WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.IsFailed()) throw handle.OperationException;
             await handle.Task.WaitAsync( cancellationToken );
+            cancellationToken.ThrowIfCancellationRequested();
             if (handle.IsFailed()) throw handle.OperationException;
         }
 
