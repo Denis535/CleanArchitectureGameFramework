@@ -7,7 +7,7 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public static class AsyncOperationHandleExtensions {
+    public static partial class AsyncOperationHandleExtensions {
 
         // IsState
         public static bool IsNone(this AsyncOperationHandle handle) {
@@ -19,6 +19,32 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static bool IsFailed(this AsyncOperationHandle handle) {
             return handle.Status == AsyncOperationStatus.Failed;
         }
+
+        // Wait
+        public static void Wait(this AsyncOperationHandle handle) {
+            if (handle.IsFailed()) throw handle.OperationException;
+            handle.WaitForCompletion();
+            if (handle.IsFailed()) throw handle.OperationException;
+        }
+        public static async ValueTask WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
+            if (handle.IsFailed()) throw handle.OperationException;
+            await handle.Task.WaitAsync( cancellationToken );
+            cancellationToken.ThrowIfCancellationRequested();
+            if (handle.IsFailed()) throw handle.OperationException;
+        }
+
+        // GetResult
+        public static object? GetResult(this AsyncOperationHandle handle) {
+            handle.Wait();
+            return handle.Result;
+        }
+        public static async ValueTask<object?> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
+            await handle.WaitAsync( cancellationToken );
+            return handle.Result;
+        }
+
+    }
+    public static partial class AsyncOperationHandleExtensions {
 
         // IsState
         public static bool IsNone<T>(this AsyncOperationHandle<T> handle) {
@@ -32,87 +58,25 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         }
 
         // Wait
-        public static void Wait(this AsyncOperationHandle handle) {
-            if (!handle.IsFailed()) {
-                handle.WaitForCompletion();
-                if (handle.IsSucceeded()) {
-                    return;
-                }
-            }
-            throw handle.OperationException;
-        }
-        public static async ValueTask WaitAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
-            if (!handle.IsFailed()) {
-                await handle.Task.WaitAsync( cancellationToken );
-                cancellationToken.ThrowIfCancellationRequested();
-                if (handle.IsSucceeded()) {
-                    return;
-                }
-            }
-            throw handle.OperationException;
-        }
-
-        // Wait
         public static void Wait<T>(this AsyncOperationHandle<T> handle) {
-            if (!handle.IsFailed()) {
-                handle.WaitForCompletion();
-                if (handle.IsSucceeded()) {
-                    return;
-                }
-            }
-            throw handle.OperationException;
+            if (handle.IsFailed()) throw handle.OperationException;
+            handle.WaitForCompletion();
+            if (handle.IsFailed()) throw handle.OperationException;
         }
         public static async ValueTask WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
-            if (!handle.IsFailed()) {
-                await handle.Task.WaitAsync( cancellationToken );
-                cancellationToken.ThrowIfCancellationRequested();
-                if (handle.IsSucceeded()) {
-                    return;
-                }
-            }
-            throw handle.OperationException;
-        }
-
-        // GetResult
-        public static object? GetResult(this AsyncOperationHandle handle) {
-            if (!handle.IsFailed()) {
-                var result = handle.WaitForCompletion();
-                if (handle.IsSucceeded()) {
-                    return result;
-                }
-            }
-            throw handle.OperationException;
-        }
-        public static async ValueTask<object?> GetResultAsync(this AsyncOperationHandle handle, CancellationToken cancellationToken) {
-            if (!handle.IsFailed()) {
-                var result = await handle.Task.WaitAsync( cancellationToken );
-                cancellationToken.ThrowIfCancellationRequested();
-                if (handle.IsSucceeded()) {
-                    return result;
-                }
-            }
-            throw handle.OperationException;
+            if (handle.IsFailed()) throw handle.OperationException;
+            await handle.Task.WaitAsync( cancellationToken );
+            if (handle.IsFailed()) throw handle.OperationException;
         }
 
         // GetResult
         public static T GetResult<T>(this AsyncOperationHandle<T> handle) {
-            if (!handle.IsFailed()) {
-                var result = handle.WaitForCompletion();
-                if (handle.IsSucceeded()) {
-                    return result;
-                }
-            }
-            throw handle.OperationException;
+            handle.Wait();
+            return handle.Result;
         }
         public static async ValueTask<T> GetResultAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
-            if (!handle.IsFailed()) {
-                var result = await handle.Task.WaitAsync( cancellationToken );
-                cancellationToken.ThrowIfCancellationRequested();
-                if (handle.IsSucceeded()) {
-                    return result;
-                }
-            }
-            throw handle.OperationException;
+            await handle.WaitAsync( cancellationToken );
+            return handle.Result;
         }
 
         // GetResult

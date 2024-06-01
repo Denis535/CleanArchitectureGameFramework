@@ -41,10 +41,9 @@ namespace UnityEngine.AddressableAssets {
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
-        public override bool IsDone => Handle.IsDone;
-        public override bool IsSucceeded => Handle.IsSucceeded();
-        public override bool IsFailed => Handle.IsFailed();
-        public override Exception? Exception => Handle.OperationException;
+        public override bool IsDone => Handle.IsValid() && Handle.IsDone;
+        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
+        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
 
         // Constructor
         public AssetHandle(string key) : base( key ) {

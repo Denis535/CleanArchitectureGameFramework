@@ -14,7 +14,6 @@ namespace UnityEngine.AddressableAssets {
         public abstract bool IsDone { get; }
         public abstract bool IsSucceeded { get; }
         public abstract bool IsFailed { get; }
-        public abstract Exception? Exception { get; }
 
         // Constructor
         public AddressableHandle(string key) {
