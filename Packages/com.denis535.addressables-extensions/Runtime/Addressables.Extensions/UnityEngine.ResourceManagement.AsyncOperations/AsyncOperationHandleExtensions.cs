@@ -61,13 +61,13 @@ namespace UnityEngine.ResourceManagement.AsyncOperations {
         public static void Wait<T>(this AsyncOperationHandle<T> handle) {
             if (handle.IsFailed()) throw handle.OperationException;
             handle.WaitForCompletion();
-            if (handle.IsFailed()) throw handle.OperationException;
+            if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
         }
         public static async ValueTask WaitAsync<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken) {
             if (handle.IsFailed()) throw handle.OperationException;
             await handle.Task.WaitAsync( cancellationToken );
             cancellationToken.ThrowIfCancellationRequested();
-            if (handle.IsFailed()) throw handle.OperationException;
+            if (handle.IsValid() && handle.IsFailed()) throw handle.OperationException;
         }
 
         // GetResult

@@ -1,7 +1,7 @@
 {
     "name": "com.denis535.addressables-extensions",
     "displayName": "Addressables Extensions",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "This package is addition to Addressables giving you the ability to manage your assets in more convenient way.",
     "author": {
         "name": "Denis535",
