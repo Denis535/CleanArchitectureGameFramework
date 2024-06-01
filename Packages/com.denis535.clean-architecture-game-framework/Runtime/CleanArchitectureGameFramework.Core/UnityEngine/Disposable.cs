@@ -1,5 +1,5 @@
 #nullable enable
-namespace System {
+namespace UnityEngine {
     using System;
     using System.Collections;
     using System.Collections.Generic;

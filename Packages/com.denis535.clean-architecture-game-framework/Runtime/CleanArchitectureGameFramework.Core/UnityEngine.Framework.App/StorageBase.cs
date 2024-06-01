@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.App {
     using System.Linq;
     using UnityEngine;
 
-    public abstract class StorageBase {
+    public abstract class StorageBase : Disposable {
 
         // Constructor
         public StorageBase() {
