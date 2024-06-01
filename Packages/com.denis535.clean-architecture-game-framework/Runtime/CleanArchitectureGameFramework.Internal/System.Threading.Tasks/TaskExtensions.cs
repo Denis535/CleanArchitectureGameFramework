@@ -9,20 +9,20 @@ namespace System.Threading.Tasks {
 
         // WaitAsync
         public static async Task WaitAsync(this Task task, CancellationToken cancellationToken) {
-            if (task.IsCompleted) {
-                await task.ConfigureAwait( false );
-                return;
+            if (cancellationToken.IsCancellationRequested) {
+                throw new OperationCanceledException( cancellationToken );
             }
             if (!cancellationToken.CanBeCanceled) {
                 await task.ConfigureAwait( false );
                 return;
             }
-            if (cancellationToken.IsCancellationRequested) {
-                throw new OperationCanceledException( cancellationToken );
+            if (task.IsCompleted) {
+                await task.ConfigureAwait( false );
+                return;
             }
-            using (cancellationToken.WaitAsync( out var cancellationTask )) {
-                var anyTask = await Task.WhenAny( task, cancellationTask ).ConfigureAwait( false );
-                if (anyTask == cancellationTask) {
+            using (cancellationToken.WaitAsync( out var cancellationTokenTask )) {
+                var anyTask = await Task.WhenAny( task, cancellationTokenTask ).ConfigureAwait( false );
+                if (anyTask == cancellationTokenTask) {
                     throw new OperationCanceledException( cancellationToken );
                 }
             }
@@ -31,18 +31,18 @@ namespace System.Threading.Tasks {
 
         // WaitAsync
         public static async Task<T> WaitAsync<T>(this Task<T> task, CancellationToken cancellationToken) {
-            if (task.IsCompleted) {
-                return await task.ConfigureAwait( false );
+            if (cancellationToken.IsCancellationRequested) {
+                throw new OperationCanceledException( cancellationToken );
             }
             if (!cancellationToken.CanBeCanceled) {
                 return await task.ConfigureAwait( false );
             }
-            if (cancellationToken.IsCancellationRequested) {
-                throw new OperationCanceledException( cancellationToken );
+            if (task.IsCompleted) {
+                return await task.ConfigureAwait( false );
             }
-            using (cancellationToken.WaitAsync( out var cancellationTask )) {
-                var anyTask = await Task.WhenAny( task, cancellationTask ).ConfigureAwait( false );
-                if (anyTask == cancellationTask) {
+            using (cancellationToken.WaitAsync( out var cancellationTokenTask )) {
+                var anyTask = await Task.WhenAny( task, cancellationTokenTask ).ConfigureAwait( false );
+                if (anyTask == cancellationTokenTask) {
                     throw new OperationCanceledException( cancellationToken );
                 }
             }
@@ -55,9 +55,9 @@ namespace System.Threading.Tasks {
         }
 
         // Helpers
-        private static CancellationTokenRegistration WaitAsync(this CancellationToken cancellationToken, out Task task) {
+        private static CancellationTokenRegistration WaitAsync(this CancellationToken cancellationToken, out Task cancellationTokenTask) {
             var tcs = new TaskCompletionSource<object?>();
-            task = tcs.Task;
+            cancellationTokenTask = tcs.Task;
             return cancellationToken.Register( tcs => ((TaskCompletionSource<object?>) tcs).SetResult( null ), tcs );
         }
 
