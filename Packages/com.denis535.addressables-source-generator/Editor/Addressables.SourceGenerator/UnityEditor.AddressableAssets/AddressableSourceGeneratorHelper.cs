@@ -76,33 +76,37 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "Presentation" ) )
                 .ThenByDescending( i => i.Key.Equals( "UI" ) )
                 .ThenByDescending( i => i.Key.Equals( "GUI" ) )
-                .ThenByDescending( i => i.Key.Equals( "App" ) )
                 .ThenByDescending( i => i.Key.Equals( "Application" ) )
+                .ThenByDescending( i => i.Key.Equals( "App" ) )
                 .ThenByDescending( i => i.Key.Equals( "Domain" ) )
                 .ThenByDescending( i => i.Key.Equals( "Entities" ) )
-                .ThenByDescending( i => i.Key.Equals( "Worlds" ) )
-                .ThenByDescending( i => i.Key.Equals( "Levels" ) )
-                .ThenByDescending( i => i.Key.Equals( "Common" ) )
                 .ThenByDescending( i => i.Key.Equals( "Core" ) )
                 .ThenByDescending( i => i.Key.Equals( "Internal" ) )
 
                 .ThenByDescending( i => i.Key.Equals( "Launcher" ) )
-                .ThenByDescending( i => i.Key.Equals( "LauncherScene" ) )
                 .ThenByDescending( i => i.Key.Equals( "Startup" ) )
+                .ThenByDescending( i => i.Key.Equals( "Main" ) )
+                .ThenByDescending( i => i.Key.Equals( "Game" ) )
+                .ThenByDescending( i => i.Key.Equals( "World" ) )
+                .ThenByDescending( i => i.Key.Equals( "Level" ) )
+
+                .ThenByDescending( i => i.Key.Equals( "LauncherScene" ) )
                 .ThenByDescending( i => i.Key.Equals( "StartupScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "Program" ) )
-                .ThenByDescending( i => i.Key.Equals( "ProgramScene" ) )
                 .ThenByDescending( i => i.Key.Equals( "MainScene" ) )
                 .ThenByDescending( i => i.Key.Equals( "GameScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "World" ) )
                 .ThenByDescending( i => i.Key.Equals( "WorldScene" ) )
-                .ThenByDescending( i => i.Key.Equals( "Level" ) )
                 .ThenByDescending( i => i.Key.Equals( "LevelScene" ) )
 
                 .ThenByDescending( i => i.Key.Equals( "MainScreen" ) )
                 .ThenByDescending( i => i.Key.Equals( "GameScreen" ) )
                 .ThenByDescending( i => i.Key.Equals( "DebugScreen" ) )
 
+                .ThenByDescending( i => i.Key.Equals( "Characters" ) )
+                .ThenByDescending( i => i.Key.Equals( "Things" ) )
+                .ThenByDescending( i => i.Key.Equals( "Worlds" ) )
+                .ThenByDescending( i => i.Key.Equals( "Levels" ) )
+
+                .ThenByDescending( i => i.Key.Equals( "Common" ) )
                 .ThenBy( i => i.Key );
         }
         private static string GetClassName(string key) {
@@ -115,7 +119,7 @@ namespace UnityEditor.AddressableAssets {
             key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             key = key.TrimEnd( ' ', '-', '_' );
-            return key + "_Value";
+            return "Value_" + key;
         }
 
     }
