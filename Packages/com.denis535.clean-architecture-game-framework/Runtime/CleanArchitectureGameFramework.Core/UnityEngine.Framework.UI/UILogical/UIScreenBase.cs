@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
         private readonly Lock @lock = new Lock();
 
         // Widget
-        public UIWidgetBase? Widget { get; private set; }
+        public UIWidgetBase Widget { get; private set; } = default!;
 
         // Constructor
         public UIScreenBase() {
@@ -42,7 +42,7 @@ namespace UnityEngine.Framework.UI {
                     Widget.DetachFromScreen( this, argument );
                 }
                 widget.Parent = null;
-                Widget = null;
+                Widget = default!;
             }
             if (widget.DisposeWhenDetach) {
                 widget.Dispose();

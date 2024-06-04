@@ -38,42 +38,26 @@ namespace CleanArchitectureGameFramework {
         }
 
         // OpenAll
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (CSharp)", priority = 100 )]
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All", priority = 100 )]
         public static void OpenAll_CSharp() {
             OpenAssetsReverse( "Assets/(*.cs)" );
         }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UITheme)", priority = 101 )]
-        public static void OpenAll_UITheme() {
-            OpenAssetsReverse( "Assets/(*ThemeBase.cs|*Theme.cs)" );
-        }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIScreen)", priority = 102 )]
-        public static void OpenAll_UIScreen() {
-            OpenAssetsReverse( "Assets/(*ScreenBase.cs|*Screen.cs)" );
-        }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIWidget)", priority = 103 )]
-        public static void OpenAll_UIWidget() {
-            OpenAssetsReverse( "Assets/(*WidgetBase.cs|*Widget.cs)" );
-        }
-        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UIView)", priority = 104 )]
-        public static void OpenAll_UIView() {
-            OpenAssetsReverse( "Assets/(*ViewBase.cs|*View.cs)" );
+        [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UI)", priority = 101 )]
+        public static void OpenAll_UI() {
+            OpenAssetsReverse( "Assets/*(/UI/|/UI.*/)(*.cs)" );
         }
 
         // Helpers
         private static void OpenAssets(params string[] patterns) {
             foreach (var path in GetPaths().GetMatches( patterns )) {
-                if (!Path.GetFileName( path ).StartsWith( "_" )) {
-                    AssetDatabase.OpenAsset( AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( path ) );
-                    Thread.Sleep( 100 );
-                }
+                AssetDatabase.OpenAsset( AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( path ) );
+                Thread.Sleep( 100 );
             }
         }
         private static void OpenAssetsReverse(params string[] patterns) {
             foreach (var path in GetPaths().GetMatches( patterns ).Reverse()) {
-                if (!Path.GetFileName( path ).StartsWith( "_" )) {
-                    AssetDatabase.OpenAsset( AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( path ) );
-                    Thread.Sleep( 100 );
-                }
+                AssetDatabase.OpenAsset( AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( path ) );
+                Thread.Sleep( 100 );
             }
         }
         // Helpers
@@ -89,14 +73,13 @@ namespace CleanArchitectureGameFramework {
                 .OrderBy( i => i );
             var directories = Directory.EnumerateDirectories( path )
                 .OrderBy( i => !i.EndsWith( ".UI" ) )
-                .ThenBy( i => !i.EndsWith( ".UI.MainScreen" ) )
-                .ThenBy( i => !i.EndsWith( ".UI.GameScreen" ) )
-                .ThenBy( i => !i.EndsWith( ".UI.Common" ) )
+                .ThenBy( i => !i.EndsWith( ".MainScreen" ) )
+                .ThenBy( i => !i.EndsWith( ".GameScreen" ) )
                 .ThenBy( i => !i.EndsWith( ".App" ) )
                 .ThenBy( i => !i.EndsWith( ".Entities" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.Characters" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.Worlds" ) )
-                .ThenBy( i => !i.EndsWith( ".Entities.Common" ) )
+                .ThenBy( i => !i.EndsWith( ".Characters" ) )
+                .ThenBy( i => !i.EndsWith( ".Things" ) )
+                .ThenBy( i => !i.EndsWith( ".Worlds" ) )
                 .ThenBy( i => !i.EndsWith( ".Common" ) )
                 .ThenBy( i => i );
             foreach (var file in files) {

@@ -33,6 +33,8 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
+        // Priority
+        public virtual int Priority => 0;
 
         // Constructor
         public UIViewBase() {
