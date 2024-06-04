@@ -35,6 +35,10 @@ namespace UnityEngine.Framework.UI {
         }
         // Priority
         public virtual int Priority => 0;
+        // IsAlwaysVisible
+        public virtual bool IsAlwaysVisible => false;
+        // IsModal
+        public virtual bool IsModal => false;
 
         // Constructor
         public UIViewBase() {
@@ -76,20 +80,24 @@ namespace UnityEngine.Framework.UI {
             }
             return false;
         }
-        public bool HasFocusedElement() {
-            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
-            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
-            return false;
-        }
+
+        // GetFocusedElement
         public VisualElement? GetFocusedElement() {
             var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
             if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        private void SaveFocusedElement(VisualElement? focusedElement) {
+        public bool HasFocusedElement() {
+            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
+            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
+            return false;
+        }
+
+        // SaveFocusedElement
+        public void SaveFocusedElement(VisualElement? focusedElement) {
             this.focusedElement = focusedElement;
         }
-        private VisualElement? LoadFocusedElement() {
+        public VisualElement? LoadFocusedElement() {
             return focusedElement;
         }
 

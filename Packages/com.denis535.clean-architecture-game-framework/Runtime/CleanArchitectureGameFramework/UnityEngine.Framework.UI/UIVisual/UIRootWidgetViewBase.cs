@@ -50,4 +50,68 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
+    public class UIRootWidgetView : UIRootWidgetViewBase {
+
+        // Constructor
+        public UIRootWidgetView() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+        // AddView
+        public override void AddView(UIViewBase view) {
+            base.AddView( view );
+            Recalculate( Children.ToArray() );
+        }
+        public override void RemoveView(UIViewBase view) {
+            base.RemoveView( view );
+            Recalculate( Children.ToArray() );
+        }
+
+        // Helpers
+        protected static void Recalculate(UIViewBase[] views) {
+            for (var i = 0; i < views.Length; i++) {
+                var view = views[ i ];
+                var next = views.ElementAtOrDefault( i + 1 );
+                if (next == null) {
+                    Show( view );
+                } else {
+                    Hide( view, next );
+                }
+            }
+        }
+        protected static void Show(UIViewBase view) {
+            if (!view.IsAlwaysVisible) {
+                view.VisualElement.SetEnabled( true );
+                view.VisualElement.SetDisplayed( true );
+            }
+            if (!view.HasFocusedElement()) {
+                Focus( view );
+            }
+        }
+        protected static void Hide(UIViewBase view, UIViewBase next) {
+            if (view.HasFocusedElement()) {
+                view.SaveFocus();
+            }
+            if (!view.IsAlwaysVisible) {
+                if (!view.IsModal && next.IsModal) {
+                    view.VisualElement.SetEnabled( false );
+                } else {
+                    view.VisualElement.SetDisplayed( false );
+                }
+            }
+        }
+        // Helpers
+        protected static void Focus(UIViewBase view) {
+            if (!view.LoadFocus()) {
+                try {
+                    view.Focus();
+                } catch (Exception ex) {
+                    Debug.LogWarning( ex );
+                }
+            }
+        }
+
+    }
 }

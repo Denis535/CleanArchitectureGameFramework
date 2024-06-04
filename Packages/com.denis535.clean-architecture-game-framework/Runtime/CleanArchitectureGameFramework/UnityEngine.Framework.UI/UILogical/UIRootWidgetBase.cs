@@ -79,4 +79,32 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
+    public class UIRootWidget : UIRootWidgetBase<UIRootWidgetView> {
+
+        // View
+        public override UIRootWidgetView View { get; }
+
+        // Constructor
+        public UIRootWidget() {
+            View = CreateView<UIRootWidgetView>();
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+        // OnAttach
+        public override void OnAttach(object? argument) {
+        }
+        public override void OnDetach(object? argument) {
+        }
+
+        // ShowView
+        public override void ShowView(UIViewBase view) {
+            View.AddView( view );
+        }
+        public override void HideView(UIViewBase view) {
+            View.RemoveView( view );
+        }
+
+    }
 }
