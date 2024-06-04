@@ -33,11 +33,11 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public void AddView(UIViewBase view) {
+        public virtual void AddView(UIViewBase view) {
             widget.Add( view );
             widget.Sort( (a, b) => Comparer<int>.Default.Compare( a.GetView().Priority, b.GetView().Priority ) );
         }
-        public void RemoveView(UIViewBase view) {
+        public virtual void RemoveView(UIViewBase view) {
             widget.Remove( view );
         }
 

@@ -39,7 +39,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        protected static UIRootWidgetViewBase CreateView<T>() where T : UIRootWidgetViewBase, new() {
+        protected static T CreateView<T>() where T : UIRootWidgetViewBase, new() {
             var view = new T();
             view.OnSubmit( OnSubmit );
             view.OnCancel( OnCancel );
