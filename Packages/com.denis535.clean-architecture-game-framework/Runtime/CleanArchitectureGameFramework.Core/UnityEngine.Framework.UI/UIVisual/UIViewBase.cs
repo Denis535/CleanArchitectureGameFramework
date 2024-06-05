@@ -4,27 +4,14 @@ namespace UnityEngine.Framework.UI {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIViewBase : IDisposable {
+    public abstract class UIViewBase : Disposable {
 
-        protected CancellationTokenSource? disposeCancellationTokenSource;
         private VisualElement visualElement = default!;
         private VisualElement? focusedElement;
 
-        // System
-        public bool IsDisposed { get; protected set; }
-        public CancellationToken DisposeCancellationToken {
-            get {
-                if (disposeCancellationTokenSource == null) {
-                    disposeCancellationTokenSource = new CancellationTokenSource();
-                    if (IsDisposed) disposeCancellationTokenSource.Cancel();
-                }
-                return disposeCancellationTokenSource.Token;
-            }
-        }
         // VisualElement
         protected internal VisualElement VisualElement {
             internal get => visualElement;
@@ -43,8 +30,8 @@ namespace UnityEngine.Framework.UI {
         // Constructor
         public UIViewBase() {
         }
-        public virtual void Dispose() {
-            Assert.Object.Message( $"View {this} must not be disposed" ).NotDisposed( !IsDisposed );
+        public override void Dispose() {
+            this.ThrowIfDisposed();
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( visualElement.panel == null );
             foreach (var child in this.GetChildren()) {
                 child.Dispose();
@@ -52,8 +39,7 @@ namespace UnityEngine.Framework.UI {
 #if UNITY_EDITOR
             Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
 #endif
-            IsDisposed = true;
-            disposeCancellationTokenSource?.Cancel();
+            base.Dispose();
         }
 
         // Focus

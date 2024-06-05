@@ -46,7 +46,7 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            Assert.Object.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            this.ThrowIfDisposed();
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
                 child.Dispose();
@@ -110,6 +110,7 @@ namespace UnityEngine.Framework.UI {
         // AttachChild
         public virtual void AttachChild(UIWidgetBase child, object? argument = null) {
             // You can override it but you should not directly call this method
+            this.ThrowIfDisposed();
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             using (@lock.Enter()) {
@@ -124,6 +125,7 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void DetachChild(UIWidgetBase child, object? argument = null) {
             // You can override it but you should not directly call this method
+            this.ThrowIfDisposed();
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             using (@lock.Enter()) {
@@ -184,14 +186,14 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            Assert.Object.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            this.ThrowIfDisposed();
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
             foreach (var child in Children) {
                 child.Dispose();
             }
             Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             View.Dispose();
-            base.DisposeInternal();
+            Dispose( this );
         }
 
     }

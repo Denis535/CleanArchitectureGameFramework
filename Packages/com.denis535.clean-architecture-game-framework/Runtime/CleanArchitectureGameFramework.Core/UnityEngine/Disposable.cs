@@ -25,16 +25,16 @@ namespace UnityEngine {
         public Disposable() {
         }
         public virtual void Dispose() {
-            Assert.Object.Message( $"Disposable {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            this.ThrowIfDisposed();
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
 
         // Helpers
-        protected void DisposeInternal() {
-            Assert.Object.Message( $"Disposable {this} must not be disposed" ).NotDisposed( !IsDisposed );
-            IsDisposed = true;
-            disposeCancellationTokenSource?.Cancel();
+        protected static void Dispose(Disposable disposable) {
+            disposable.ThrowIfDisposed();
+            disposable.IsDisposed = true;
+            disposable.disposeCancellationTokenSource?.Cancel();
         }
 
     }

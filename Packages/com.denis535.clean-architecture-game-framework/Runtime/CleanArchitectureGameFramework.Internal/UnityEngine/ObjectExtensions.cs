@@ -7,13 +7,18 @@ namespace UnityEngine {
 
     public static class ObjectExtensions {
 
-        // Validate
-        public static T Validate<T>(this T @object) where T : Object {
+        // ThrowIfInvalid
+        public static void ThrowIfInvalid<T>(this T @object) where T : Object {
             Assert.Argument.Message( $"Argument '@object' ({typeof( T )}) must be non-null" ).NotNull( @object is not null );
             if (@object is MonoBehaviour object_MonoBehaviour) {
                 Assert.Object.Message( $"Object {object_MonoBehaviour} must be awakened" ).Ready( object_MonoBehaviour.didAwake );
             }
             Assert.Object.Message( $"Object {@object} must not be disposed" ).NotDisposed( @object );
+        }
+
+        // IfValid
+        public static T IfValid<T>(this T @object) where T : Object {
+            @object.ThrowIfInvalid();
             return @object;
         }
 

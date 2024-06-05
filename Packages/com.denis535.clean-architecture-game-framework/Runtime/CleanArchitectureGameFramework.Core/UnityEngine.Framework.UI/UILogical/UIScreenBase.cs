@@ -22,6 +22,7 @@ namespace UnityEngine.Framework.UI {
         // AttachWidget
         public virtual void AttachWidget(UIWidgetBase widget, object? argument = null) {
             // You can override it but you should not directly call this method
+            this.ThrowIfDisposed();
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             using (@lock.Enter()) {
@@ -34,6 +35,7 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void DetachWidget(UIWidgetBase widget, object? argument = null) {
             // You can override it but you should not directly call this method
+            this.ThrowIfDisposed();
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
             Assert.Operation.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
