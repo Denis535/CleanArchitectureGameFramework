@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
 
     public static class UIWidgetExtensions {
@@ -64,8 +65,8 @@ namespace UnityEngine.Framework.UI {
             using (widget.@lock.Enter()) {
                 widget.Children_.Add( child );
                 child.Parent = widget;
-                if (widget.IsAttached) {
-                    widget.Screen.Activate( child, argument );
+                if (widget.State is UIWidgetState.Actived) {
+                    child.Activate( widget.Screen!, argument );
                 } else {
                     Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
                 }
@@ -73,8 +74,8 @@ namespace UnityEngine.Framework.UI {
         }
         internal static void RemoveChildInternal(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
             using (widget.@lock.Enter()) {
-                if (widget.IsAttached) {
-                    widget.Screen.Deactivate( child, argument );
+                if (widget.State is UIWidgetState.Actived) {
+                    child.Deactivate( widget.Screen!, argument );
                 } else {
                     Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
                 }
@@ -84,6 +85,34 @@ namespace UnityEngine.Framework.UI {
             if (child.DisposeWhenDetach) {
                 child.Dispose();
             }
+        }
+
+        // Activate
+        internal static void Activate(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
+            widget.OnBeforeAttach( argument );
+            widget.State = UIWidgetState.Activating;
+            widget.Screen = screen;
+            {
+                widget.OnAttach( argument );
+                foreach (var child in widget.Children) {
+                    child.Activate( screen, argument );
+                }
+            }
+            widget.State = UIWidgetState.Actived;
+            widget.OnAfterAttach( argument );
+        }
+        internal static void Deactivate(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
+            widget.OnBeforeDetach( argument );
+            widget.State = UIWidgetState.Deactivating;
+            {
+                foreach (var child in widget.Children.Reverse()) {
+                    child.Deactivate( screen, argument );
+                }
+                widget.OnDetach( argument );
+            }
+            widget.Screen = null;
+            widget.State = UIWidgetState.Inactive;
+            widget.OnAfterDetach( argument );
         }
 
     }

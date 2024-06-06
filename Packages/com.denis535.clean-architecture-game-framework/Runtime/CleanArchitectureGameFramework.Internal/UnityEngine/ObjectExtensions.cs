@@ -13,7 +13,7 @@ namespace UnityEngine {
             if (@object is MonoBehaviour object_MonoBehaviour) {
                 Assert.Operation.Message( $"Object {object_MonoBehaviour} must be awakened" ).Ready( object_MonoBehaviour.didAwake );
             }
-            Assert.Operation.Message( $"Object {@object} must not be disposed" ).NotDisposed( @object );
+            Assert.Operation.Message( $"Object {@object} must be non-disposed" ).NotDisposed( @object );
         }
 
         // IfValid

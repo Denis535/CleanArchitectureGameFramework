@@ -30,7 +30,8 @@ namespace UnityEngine.Framework.UI {
         public UIViewBase() {
         }
         public override void Dispose() {
-            Assert.Operation.Message( $"View {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"View {this} must be hidden" ).Valid( VisualElement.parent == null );
             this.GetChildren().DisposeAll();
             base.Dispose();
         }
@@ -47,10 +48,6 @@ namespace UnityEngine.Framework.UI {
                 visualElement.focusable = false;
             }
         }
-        public virtual void SaveFocus() {
-            var focusedElement = GetFocusedElement();
-            SaveFocusedElement( focusedElement );
-        }
         public virtual bool LoadFocus() {
             var focusedElement = LoadFocusedElement();
             if (focusedElement != null) {
@@ -58,6 +55,10 @@ namespace UnityEngine.Framework.UI {
                 return true;
             }
             return false;
+        }
+        public virtual void SaveFocus() {
+            var focusedElement = GetFocusedElement();
+            SaveFocusedElement( focusedElement );
         }
 
         // GetFocusedElement
@@ -72,12 +73,12 @@ namespace UnityEngine.Framework.UI {
             return false;
         }
 
-        // SaveFocusedElement
-        public void SaveFocusedElement(VisualElement? focusedElement) {
-            this.focusedElement = focusedElement;
-        }
+        // LoadFocusedElement
         public VisualElement? LoadFocusedElement() {
             return focusedElement;
+        }
+        public void SaveFocusedElement(VisualElement? focusedElement) {
+            this.focusedElement = focusedElement;
         }
 
     }

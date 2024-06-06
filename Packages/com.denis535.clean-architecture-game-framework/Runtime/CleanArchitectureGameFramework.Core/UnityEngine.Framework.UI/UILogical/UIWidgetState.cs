@@ -6,13 +6,9 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
 
     public enum UIWidgetState {
-        // Inactive
-        Unattached,
-        // Active
-        Attaching,
-        Attached,
-        Detaching,
-        // Inactive
-        Detached
+        Inactive,
+        Activating,
+        Actived,
+        Deactivating,
     }
 }
