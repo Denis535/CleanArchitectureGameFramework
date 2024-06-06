@@ -7,10 +7,10 @@ namespace UnityEngine {
 
     public abstract class Disposable : IDisposable {
 
-        private CancellationTokenSource? disposeCancellationTokenSource;
+        internal CancellationTokenSource? disposeCancellationTokenSource;
 
         // System
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed { get; internal set; }
         public CancellationToken DisposeCancellationToken {
             get {
                 if (disposeCancellationTokenSource == null) {
@@ -25,16 +25,14 @@ namespace UnityEngine {
         public Disposable() {
         }
         public virtual void Dispose() {
-            this.ThrowIfDisposed();
+            Assert.Operation.Message( $"Disposable {this} must not be disposed" ).NotDisposed( !IsDisposed );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
         }
-
-        // Helpers
-        protected static void Dispose(Disposable disposable) {
-            disposable.ThrowIfDisposed();
-            disposable.IsDisposed = true;
-            disposable.disposeCancellationTokenSource?.Cancel();
+        protected void DisposeInternal() {
+            Assert.Operation.Message( $"Disposable {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            IsDisposed = true;
+            disposeCancellationTokenSource?.Cancel();
         }
 
     }

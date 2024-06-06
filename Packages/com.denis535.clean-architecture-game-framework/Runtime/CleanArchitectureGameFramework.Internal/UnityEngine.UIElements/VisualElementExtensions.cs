@@ -4,16 +4,10 @@ namespace UnityEngine.UIElements {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using UnityEngine;
 
     public static partial class VisualElementExtensions {
-
-        // IsAttached
-        public static bool IsAttached(this VisualElement element) {
-            return element.panel != null;
-        }
 
         // IsDisplayed
         public static bool IsDisplayedSelf(this VisualElement element) {
@@ -102,16 +96,6 @@ namespace UnityEngine.UIElements {
             var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
             Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
             return result;
-        }
-
-        // SendEvent
-        public static void SendEventImmediate(this VisualElement element, EventBase @event) {
-            Assert.Operation.Message( $"Element {element} must be attached" ).Valid( element.IsAttached() );
-            var type_VisualElement = typeof( VisualElement );
-            var type_EventBase = typeof( EventBase );
-            var type_DispatchMode = typeof( VisualElement ).Assembly.GetType( "UnityEngine.UIElements.DispatchMode" ) ?? throw Exceptions.Internal.Exception( $"Can not find 'DispatchMode' type" );
-            var method_SendEvent = type_VisualElement.GetMethod( "SendEvent", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new Type[] { type_EventBase, type_DispatchMode }, null ) ?? throw Exceptions.Internal.Exception( $"Can not find 'SendEvent' method" );
-            method_SendEvent.Invoke( element, new object[] { @event, 2 } );
         }
 
         // OnEvent

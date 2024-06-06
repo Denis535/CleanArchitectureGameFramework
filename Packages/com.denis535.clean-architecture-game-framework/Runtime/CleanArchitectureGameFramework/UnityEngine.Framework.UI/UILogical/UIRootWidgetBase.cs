@@ -22,14 +22,6 @@ namespace UnityEngine.Framework.UI {
         public override void OnDetach(object? argument) {
         }
 
-        // AttachChild
-        public override void AttachChild(UIWidgetBase child, object? argument = null) {
-            base.AttachChild( child, argument );
-        }
-        public override void DetachChild(UIWidgetBase child, object? argument = null) {
-            base.DetachChild( child, argument );
-        }
-
         // ShowView
         public override void ShowView(UIViewBase view) {
             View.AddView( view );
@@ -53,8 +45,8 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void OnCancel(NavigationCancelEvent evt) {
-            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
-            var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
+            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.panel != null && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
+            var button = widget?.Query<Button>().Where( i => i.panel != null && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
             if (button != null) {
                 Click( button );
                 evt.StopPropagation();
@@ -100,10 +92,10 @@ namespace UnityEngine.Framework.UI {
 
         // ShowView
         public override void ShowView(UIViewBase view) {
-            View.AddView( view );
+            base.ShowView( view );
         }
         public override void HideView(UIViewBase view) {
-            View.RemoveView( view );
+            base.HideView( view );
         }
 
     }

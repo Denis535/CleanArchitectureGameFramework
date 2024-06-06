@@ -15,9 +15,6 @@ namespace System {
         // Operation
         public static class Operation {
             public static InvalidOperationException InvalidOperationException(FormattableString? message) => GetException<InvalidOperationException>( message );
-        }
-        // Object
-        public static class Object {
             public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => GetException<ObjectNotReadyException>( message );
             public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => GetException<ObjectDisposedException>( message );
         }

@@ -3,7 +3,6 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -31,14 +30,8 @@ namespace UnityEngine.Framework.UI {
         public UIViewBase() {
         }
         public override void Dispose() {
-            this.ThrowIfDisposed();
-            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( visualElement.panel == null );
-            foreach (var child in this.GetChildren()) {
-                child.Dispose();
-            }
-#if UNITY_EDITOR
-            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
-#endif
+            Assert.Operation.Message( $"View {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            this.GetChildren().DisposeAll();
             base.Dispose();
         }
 

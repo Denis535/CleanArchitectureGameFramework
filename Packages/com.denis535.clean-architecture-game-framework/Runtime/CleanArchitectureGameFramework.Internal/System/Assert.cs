@@ -11,8 +11,5 @@ namespace System {
         public static class Operation {
             public static Assertions.Operation Message(FormattableString? value) => new Assertions.Operation( value );
         }
-        public static class Object {
-            public static Assertions.Object Message(FormattableString? value) => new Assertions.Object( value );
-        }
     }
 }

@@ -7,48 +7,42 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIScreenBase : Disposable, IUILogicalElement {
 
-        private readonly Lock @lock = new Lock();
+        internal readonly Lock @lock = new Lock();
 
         // Widget
-        public UIWidgetBase Widget { get; private set; } = default!;
+        public UIWidgetBase Widget { get; internal set; } = default!;
 
         // Constructor
         public UIScreenBase() {
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Screen {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Widget.Dispose();
+            Widget = null!;
             base.Dispose();
         }
 
-        // AttachWidget
-        public virtual void AttachWidget(UIWidgetBase widget, object? argument = null) {
-            // You can override it but you should not directly call this method
-            this.ThrowIfDisposed();
+        // AddWidget
+        public virtual void AddWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
+            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
+            Assert.Operation.Message( $"Screen {this} must not be disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-            using (@lock.Enter()) {
-                Widget = widget;
-                widget.Parent = null;
-                if (true) {
-                    Widget.AttachToScreen( this, argument );
-                }
-            }
+            this.AddWidgetInternal( widget, argument );
         }
-        public virtual void DetachWidget(UIWidgetBase widget, object? argument = null) {
-            // You can override it but you should not directly call this method
-            this.ThrowIfDisposed();
+
+        // RemoveWidget
+        public virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
-            Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
-            Assert.Operation.Message( $"Screen {this} must have widget {widget} widget" ).Valid( Widget == widget );
-            using (@lock.Enter()) {
-                if (true) {
-                    Widget.DetachFromScreen( this, argument );
-                }
-                widget.Parent = null;
-                Widget = default!;
-            }
-            if (widget.DisposeWhenDetach) {
-                widget.Dispose();
-            }
+            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
+            Assert.Operation.Message( $"Screen {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
+            this.RemoveWidgetInternal( widget, argument );
+        }
+        public void RemoveWidget<T>(object? argument = null) where T : UIWidgetBase {
+            Assert.Operation.Message( $"Screen {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Screen {this} must have {typeof( T )} widget" ).Valid( Widget is T );
+            this.RemoveWidgetInternal( Widget, argument );
         }
 
     }

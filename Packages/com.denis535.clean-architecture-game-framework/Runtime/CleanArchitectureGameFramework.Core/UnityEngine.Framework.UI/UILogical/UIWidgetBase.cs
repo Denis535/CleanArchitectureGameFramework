@@ -9,7 +9,7 @@ namespace UnityEngine.Framework.UI {
 
     public abstract partial class UIWidgetBase : Disposable, IUILogicalElement, IDisposable {
 
-        private readonly Lock @lock = new Lock();
+        internal readonly Lock @lock = new Lock();
 
         // System
         public bool DisposeWhenDetach { get; protected init; } = true;
@@ -23,13 +23,13 @@ namespace UnityEngine.Framework.UI {
         [MemberNotNullWhen( true, "Screen" )] public bool IsDetaching => State is UIWidgetState.Detaching;
         [MemberNotNullWhen( false, "Screen" )] public bool IsNonAttached => State is UIWidgetState.Unattached or UIWidgetState.Detached;
         // Screen
-        public UIScreenBase? Screen { get; internal set; }
+        internal UIScreenBase? Screen { get; set; }
         // Parent
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase? Parent { get; internal set; }
         // Children
         public bool HasChildren => Children_.Any();
-        private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
+        internal List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
         // OnAttach
         public event Action<object?>? OnBeforeAttachEvent;
@@ -46,16 +46,14 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            this.ThrowIfDisposed();
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
-            foreach (var child in Children) {
-                child.Dispose();
-            }
-#if UNITY_EDITOR
-            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
-#endif
+            Children.DisposeAll();
             base.Dispose();
         }
+
+    }
+    public abstract partial class UIWidgetBase {
 
         // OnAttach
         public virtual void OnBeforeAttach(object? argument) {
@@ -69,8 +67,6 @@ namespace UnityEngine.Framework.UI {
             OnAfterAttachEvent?.Invoke( argument );
             Parent?.OnAfterDescendantAttach( this, argument );
         }
-
-        // OnDetach
         public virtual void OnBeforeDetach(object? argument) {
             Parent?.OnBeforeDescendantDetach( this, argument );
             OnBeforeDetachEvent?.Invoke( argument );
@@ -94,8 +90,6 @@ namespace UnityEngine.Framework.UI {
             OnAfterDescendantAttachEvent?.Invoke( descendant, argument );
             Parent?.OnAfterDescendantAttach( descendant, argument );
         }
-
-        // OnDescendantDetach
         public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
             Parent?.OnBeforeDescendantDetach( descendant, argument );
             OnBeforeDescendantDetachEvent?.Invoke( descendant, argument );
@@ -107,38 +101,45 @@ namespace UnityEngine.Framework.UI {
             Parent?.OnAfterDescendantDetach( descendant, argument );
         }
 
-        // AttachChild
-        public virtual void AttachChild(UIWidgetBase child, object? argument = null) {
-            // You can override it but you should not directly call this method
-            this.ThrowIfDisposed();
+        // AddChild
+        public virtual void AddChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
+            Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
-            using (@lock.Enter()) {
-                Children_.Add( child );
-                child.Parent = this;
-                if (IsAttached) {
-                    child.AttachToScreen( Screen, argument );
-                } else {
-                    Assert.Operation.Message( $"You are trying to attach child {child} with argument {argument}, but widget {this} must be attached" ).Valid( argument == null );
-                }
+            this.AddChildInternal( child, argument );
+        }
+
+        // RemoveChild
+        public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
+            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
+            Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
+            this.RemoveChildInternal( child, argument );
+        }
+        public void RemoveChild<T>(object? argument = null) where T : UIWidgetBase {
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must have child {typeof( T )} widget" ).Valid( Children.OfType<T>().Any() );
+            this.RemoveChildInternal( Children.OfType<T>().Last(), argument );
+        }
+
+        // RemoveChildren
+        public void RemoveChildren(object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            foreach (var child in Children.Reverse()) {
+                RemoveChild( child, argument );
             }
         }
-        public virtual void DetachChild(UIWidgetBase child, object? argument = null) {
-            // You can override it but you should not directly call this method
-            this.ThrowIfDisposed();
-            Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
-            using (@lock.Enter()) {
-                if (IsAttached) {
-                    child.DetachFromScreen( Screen, argument );
-                } else {
-                    Assert.Operation.Message( $"You are trying to detach child {child} with argument {argument}, but widget {this} must be attached" ).Valid( argument == null );
-                }
-                child.Parent = null;
-                Children_.Remove( child );
-            }
-            if (child.DisposeWhenDetach) {
-                child.Dispose();
+
+        // RemoveSelf
+        public void RemoveSelf(object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must have parent or screen" ).Valid( Parent != null || Screen != null );
+            if (Parent != null) {
+                Parent.RemoveChild( this, argument );
+            } else {
+                Screen!.RemoveWidget( this, argument );
             }
         }
 
@@ -149,7 +150,7 @@ namespace UnityEngine.Framework.UI {
         public void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be viewable" ).Valid( IsViewable );
             Assert.Operation.Message( $"Widget {this} must be attaching" ).Valid( IsAttaching );
-            Assert.Operation.Message( $"Widget {this} must be non-shown" ).Valid( View.VisualElement.parent == null );
+            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( View.VisualElement.parent == null );
             Parent!.ShowView( View );
             Assert.Operation.Message( $"Widget {this} was not shown" ).Valid( View.VisualElement.parent != null );
         }
@@ -186,14 +187,11 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            this.ThrowIfDisposed();
+            Assert.Operation.Message( $"Widget {this} must not be disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-attached" ).Valid( IsNonAttached );
-            foreach (var child in Children) {
-                child.Dispose();
-            }
-            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
+            Children.DisposeAll();
             View.Dispose();
-            Dispose( this );
+            DisposeInternal();
         }
 
     }
