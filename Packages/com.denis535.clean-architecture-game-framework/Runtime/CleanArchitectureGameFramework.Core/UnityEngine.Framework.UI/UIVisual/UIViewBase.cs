@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -32,7 +33,7 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be hidden" ).Valid( VisualElement.parent == null );
-            this.GetChildren().DisposeAll();
+            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
             base.Dispose();
         }
 

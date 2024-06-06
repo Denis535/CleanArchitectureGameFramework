@@ -44,7 +44,7 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
-            Children.DisposeAll();
+            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             base.Dispose();
         }
 
@@ -153,7 +153,7 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
-            Children.DisposeAll();
+            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             View.Dispose();
             DisposeInternal();
         }
