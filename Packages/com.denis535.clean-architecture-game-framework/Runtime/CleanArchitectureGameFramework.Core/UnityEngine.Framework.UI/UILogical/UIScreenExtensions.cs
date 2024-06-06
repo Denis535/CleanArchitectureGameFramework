@@ -25,9 +25,6 @@ namespace UnityEngine.Framework.UI {
                 widget.Parent = null;
                 screen.Widget = null!;
             }
-            if (widget.DisposeWhenDetach) {
-                widget.Dispose();
-            }
         }
 
     }

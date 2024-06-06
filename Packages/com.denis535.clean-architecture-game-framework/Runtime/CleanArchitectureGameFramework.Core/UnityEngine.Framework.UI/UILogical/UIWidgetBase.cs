@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.UI {
         internal readonly Lock @lock = new Lock();
 
         // System
-        public bool DisposeWhenDetach { get; protected init; } = true;
+        public bool DisposeWhenDeactivate { get; protected init; } = true;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         public UIViewBase? View => (this as IUIViewable)?.View;
@@ -27,16 +27,16 @@ namespace UnityEngine.Framework.UI {
         public bool HasChildren => Children_.Any();
         internal List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
-        // OnAttach
-        public event Action<object?>? OnBeforeAttachEvent;
-        public event Action<object?>? OnAfterAttachEvent;
-        public event Action<object?>? OnBeforeDetachEvent;
-        public event Action<object?>? OnAfterDetachEvent;
-        // OnDescendantAttach
-        public event Action<UIWidgetBase, object?>? OnBeforeDescendantAttachEvent;
-        public event Action<UIWidgetBase, object?>? OnAfterDescendantAttachEvent;
-        public event Action<UIWidgetBase, object?>? OnBeforeDescendantDetachEvent;
-        public event Action<UIWidgetBase, object?>? OnAfterDescendantDetachEvent;
+        // OnActivate
+        public Action<object?>? OnBefore_ActivateEvent { get; set; }
+        public Action<object?>? OnAfter_ActivateEvent { get; set; }
+        public Action<object?>? OnBefore_DeactivateEvent { get; set; }
+        public Action<object?>? OnAfter_DeactivateEvent { get; set; }
+        // OnDescendantActivate
+        public Action<UIWidgetBase, object?>? OnBefore_DescendantActivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnAfter_DescendantActivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnBefore_DescendantDeactivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnAfter_DescendantDeactivateEvent { get; set; }
 
         // Constructor
         public UIWidgetBase() {
@@ -51,51 +51,19 @@ namespace UnityEngine.Framework.UI {
     }
     public abstract partial class UIWidgetBase {
 
-        // OnAttach
-        public virtual void OnBeforeAttach(object? argument) {
-            Parent?.OnBeforeDescendantAttach( this, argument );
-            OnBeforeAttachEvent?.Invoke( argument );
-            // override here
-        }
-        public abstract void OnAttach(object? argument); // override to init and show self
-        public virtual void OnAfterAttach(object? argument) {
-            // override here
-            OnAfterAttachEvent?.Invoke( argument );
-            Parent?.OnAfterDescendantAttach( this, argument );
-        }
-        public virtual void OnBeforeDetach(object? argument) {
-            Parent?.OnBeforeDescendantDetach( this, argument );
-            OnBeforeDetachEvent?.Invoke( argument );
-            // override here
-        }
-        public abstract void OnDetach(object? argument); // override to hide self and deinit
-        public virtual void OnAfterDetach(object? argument) {
-            // override here
-            OnAfterDetachEvent?.Invoke( argument );
-            Parent?.OnAfterDescendantDetach( this, argument );
-        }
+        // OnActivate
+        public virtual void OnBefore_Activate(object? argument) { }
+        public abstract void OnActivate(object? argument); // override to init and show self
+        public virtual void OnAfter_Activate(object? argument) { }
+        public virtual void OnBefore_Deactivate(object? argument) { }
+        public abstract void OnDeactivate(object? argument); // override to hide self and deinit
+        public virtual void OnAfter_Deactivate(object? argument) { }
 
-        // OnDescendantAttach
-        public virtual void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
-            Parent?.OnBeforeDescendantAttach( descendant, argument );
-            OnBeforeDescendantAttachEvent?.Invoke( descendant, argument );
-            // override here
-        }
-        public virtual void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
-            // override here
-            OnAfterDescendantAttachEvent?.Invoke( descendant, argument );
-            Parent?.OnAfterDescendantAttach( descendant, argument );
-        }
-        public virtual void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
-            Parent?.OnBeforeDescendantDetach( descendant, argument );
-            OnBeforeDescendantDetachEvent?.Invoke( descendant, argument );
-            // override here
-        }
-        public virtual void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
-            // override here
-            OnAfterDescendantDetachEvent?.Invoke( descendant, argument );
-            Parent?.OnAfterDescendantDetach( descendant, argument );
-        }
+        // OnDescendantActivate
+        public virtual void OnBefore_DescendantActivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnAfter_DescendantActivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnBefore_DescendantDeactivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnAfter_DescendantDeactivate(UIWidgetBase descendant, object? argument) { }
 
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {

@@ -32,32 +32,32 @@ namespace UnityEngine.Framework.UI {
             foreach (var i in GetDescendants( widget )) yield return i;
         }
 
-        // OnAttach
-        public static void OnBeforeAttach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnBeforeAttachEvent += callback;
+        // OnActivate
+        public static void OnBefore_Activate(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnBefore_ActivateEvent += callback;
         }
-        public static void OnAfterAttach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnAfterAttachEvent += callback;
+        public static void OnAfter_Activate(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnAfter_ActivateEvent += callback;
         }
-        public static void OnBeforeDetach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnBeforeDetachEvent += callback;
+        public static void OnBefore_Deactivate(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnBefore_DeactivateEvent += callback;
         }
-        public static void OnAfterDetach(this UIWidgetBase widget, Action<object?>? callback) {
-            widget.OnAfterDetachEvent += callback;
+        public static void OnAfter_Deactivate(this UIWidgetBase widget, Action<object?>? callback) {
+            widget.OnAfter_DeactivateEvent += callback;
         }
 
-        // OnDescendantAttach
-        public static void OnBeforeDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnBeforeDescendantAttachEvent += callback;
+        // OnDescendantActivate
+        public static void OnBefore_DescendantActivate(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnBefore_DescendantActivateEvent += callback;
         }
-        public static void OnAfterDescendantAttach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnAfterDescendantAttachEvent += callback;
+        public static void OnAfter_DescendantActivate(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnAfter_DescendantActivateEvent += callback;
         }
-        public static void OnBeforeDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnBeforeDescendantDetachEvent += callback;
+        public static void OnBefore_DescendantDeactivate(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnBefore_DescendantDeactivateEvent += callback;
         }
-        public static void OnAfterDescendantDetach(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
-            widget.OnAfterDescendantDetachEvent += callback;
+        public static void OnAfter_DescendantDeactivate(this UIWidgetBase widget, Action<UIWidgetBase, object?>? callback) {
+            widget.OnAfter_DescendantDeactivateEvent += callback;
         }
 
         // AddChildInternal
@@ -82,37 +82,53 @@ namespace UnityEngine.Framework.UI {
                 child.Parent = null;
                 widget.Children_.Remove( child );
             }
-            if (child.DisposeWhenDetach) {
-                child.Dispose();
-            }
         }
 
         // Activate
         internal static void Activate(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
-            widget.OnBeforeAttach( argument );
-            widget.State = UIWidgetState.Activating;
-            widget.Screen = screen;
+            widget.Parent?.OnBefore_DescendantActivateEvent?.Invoke( widget, argument );
+            widget.Parent?.OnBefore_DescendantActivate( widget, argument );
             {
-                widget.OnAttach( argument );
-                foreach (var child in widget.Children) {
-                    child.Activate( screen, argument );
+                widget.OnBefore_ActivateEvent?.Invoke( argument );
+                widget.OnBefore_Activate( argument );
+                {
+                    widget.State = UIWidgetState.Activating;
+                    widget.Screen = screen;
+                    widget.OnActivate( argument );
+                    foreach (var child in widget.Children) {
+                        child.Activate( screen, argument );
+                    }
+                    widget.State = UIWidgetState.Actived;
                 }
+                widget.OnAfter_Activate( argument );
+                widget.OnAfter_ActivateEvent?.Invoke( argument );
             }
-            widget.State = UIWidgetState.Actived;
-            widget.OnAfterAttach( argument );
+            widget.Parent?.OnAfter_DescendantActivate( widget, argument );
+            widget.Parent?.OnAfter_DescendantActivateEvent?.Invoke( widget, argument );
         }
         internal static void Deactivate(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
-            widget.OnBeforeDetach( argument );
-            widget.State = UIWidgetState.Deactivating;
+            widget.Parent?.OnBefore_DescendantDeactivateEvent?.Invoke( widget, argument );
+            widget.Parent?.OnBefore_DescendantDeactivate( widget, argument );
             {
-                foreach (var child in widget.Children.Reverse()) {
-                    child.Deactivate( screen, argument );
+                widget.OnBefore_DeactivateEvent?.Invoke( argument );
+                widget.OnBefore_Deactivate( argument );
+                {
+                    widget.State = UIWidgetState.Deactivating;
+                    foreach (var child in widget.Children.Reverse()) {
+                        child.Deactivate( screen, argument );
+                    }
+                    widget.OnDeactivate( argument );
+                    widget.Screen = null;
+                    widget.State = UIWidgetState.Inactive;
                 }
-                widget.OnDetach( argument );
+                widget.OnAfter_Deactivate( argument );
+                widget.OnAfter_DeactivateEvent?.Invoke( argument );
             }
-            widget.Screen = null;
-            widget.State = UIWidgetState.Inactive;
-            widget.OnAfterDetach( argument );
+            widget.Parent?.OnAfter_DescendantDeactivate( widget, argument );
+            widget.Parent?.OnAfter_DescendantDeactivateEvent?.Invoke( widget, argument );
+            if (widget.DisposeWhenDeactivate) {
+                widget.Dispose();
+            }
         }
 
     }

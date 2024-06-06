@@ -36,43 +36,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // Focus
-        public virtual void Focus() {
-            if (visualElement.focusable) {
-                visualElement.Focus();
-            } else {
-                visualElement.focusable = true;
-                visualElement.delegatesFocus = true;
-                visualElement.Focus();
-                visualElement.delegatesFocus = false;
-                visualElement.focusable = false;
-            }
-        }
-        public virtual bool LoadFocus() {
-            var focusedElement = LoadFocusedElement();
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return true;
-            }
-            return false;
-        }
-        public virtual void SaveFocus() {
-            var focusedElement = GetFocusedElement();
-            SaveFocusedElement( focusedElement );
-        }
-
-        // GetFocusedElement
-        public VisualElement? GetFocusedElement() {
-            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
-            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return focusedElement;
-            return null;
-        }
-        public bool HasFocusedElement() {
-            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
-            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
-            return false;
-        }
-
         // LoadFocusedElement
         public VisualElement? LoadFocusedElement() {
             return focusedElement;

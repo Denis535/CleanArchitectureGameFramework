@@ -17,8 +17,7 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Widget.Dispose();
-            Widget = null!;
+            Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             base.Dispose();
         }
 

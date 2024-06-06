@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public enum DetachReason {
+    public enum DeactivateReason {
         Submit,
         Cancel
     }

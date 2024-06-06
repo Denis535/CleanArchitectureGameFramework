@@ -76,30 +76,32 @@ namespace UnityEngine.Framework.UI {
             Recalculate( Children.ToArray() );
         }
 
-        // Helpers
-        protected static void Recalculate(UIViewBase[] views) {
+        // Recalculate
+        protected virtual void Recalculate(UIViewBase[] views) {
             for (var i = 0; i < views.Length; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
                 if (next == null) {
-                    Show( view );
+                    ShowView( view );
                 } else {
-                    Hide( view, next );
+                    HideView( view, next );
                 }
             }
         }
-        protected static void Show(UIViewBase view) {
+        protected virtual void ShowView(UIViewBase view) {
             if (!view.IsAlwaysVisible) {
                 view.VisualElement.SetEnabled( true );
                 view.VisualElement.SetDisplayed( true );
             }
-            if (!view.HasFocusedElement()) {
-                Focus( view );
+            if (!HasFocusedElement( view.VisualElement )) {
+                if (!LoadFocus( view )) {
+                    Focus( view );
+                }
             }
         }
-        protected static void Hide(UIViewBase view, UIViewBase next) {
-            if (view.HasFocusedElement()) {
-                view.SaveFocus();
+        protected virtual void HideView(UIViewBase view, UIViewBase next) {
+            if (HasFocusedElement( view.VisualElement )) {
+                SaveFocus( view );
             }
             if (!view.IsAlwaysVisible) {
                 if (!view.IsModal && next.IsModal) {
@@ -109,15 +111,46 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        // Helpers
-        protected static void Focus(UIViewBase view) {
-            if (!view.LoadFocus()) {
-                try {
-                    view.Focus();
-                } catch (Exception ex) {
-                    Debug.LogWarning( ex );
+
+        // Focus
+        protected virtual void Focus(UIViewBase view) {
+            try {
+                if (view.VisualElement.focusable) {
+                    view.VisualElement.Focus();
+                } else {
+                    view.VisualElement.focusable = true;
+                    view.VisualElement.delegatesFocus = true;
+                    view.VisualElement.Focus();
+                    view.VisualElement.delegatesFocus = false;
+                    view.VisualElement.focusable = false;
                 }
+            } catch (Exception ex) {
+                Debug.LogWarning( ex );
             }
+        }
+        protected virtual bool LoadFocus(UIViewBase view) {
+            var focusedElement = view.LoadFocusedElement();
+            if (focusedElement != null) {
+                focusedElement.Focus();
+                return true;
+            }
+            return false;
+        }
+        protected virtual void SaveFocus(UIViewBase view) {
+            var focusedElement = GetFocusedElement( view );
+            view.SaveFocusedElement( focusedElement );
+        }
+
+        // Helpers
+        protected static VisualElement? GetFocusedElement(UIViewBase view) {
+            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
+            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return focusedElement;
+            return null;
+        }
+        protected static bool HasFocusedElement(VisualElement visualElement) {
+            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
+            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
+            return false;
         }
 
     }

@@ -16,10 +16,10 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // OnAttach
-        public override void OnAttach(object? argument) {
+        // OnActivate
+        public override void OnActivate(object? argument) {
         }
-        public override void OnDetach(object? argument) {
+        public override void OnDeactivate(object? argument) {
         }
 
         // ShowView
@@ -28,6 +28,34 @@ namespace UnityEngine.Framework.UI {
         }
         public override void HideView(UIViewBase view) {
             View.RemoveView( view );
+        }
+
+    }
+    public class UIRootWidget : UIRootWidgetBase<UIRootWidgetView> {
+
+        // View
+        public override UIRootWidgetView View { get; }
+
+        // Constructor
+        public UIRootWidget() {
+            View = CreateView<UIRootWidgetView>();
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+        // OnActivate
+        public override void OnActivate(object? argument) {
+        }
+        public override void OnDeactivate(object? argument) {
+        }
+
+        // ShowView
+        public override void ShowView(UIViewBase view) {
+            base.ShowView( view );
+        }
+        public override void HideView(UIViewBase view) {
+            base.HideView( view );
         }
 
         // Helpers
@@ -68,34 +96,6 @@ namespace UnityEngine.Framework.UI {
                 evt.target = button;
                 button.SendEvent( evt );
             }
-        }
-
-    }
-    public class UIRootWidget : UIRootWidgetBase<UIRootWidgetView> {
-
-        // View
-        public override UIRootWidgetView View { get; }
-
-        // Constructor
-        public UIRootWidget() {
-            View = CreateView<UIRootWidgetView>();
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // OnAttach
-        public override void OnAttach(object? argument) {
-        }
-        public override void OnDetach(object? argument) {
-        }
-
-        // ShowView
-        public override void ShowView(UIViewBase view) {
-            base.ShowView( view );
-        }
-        public override void HideView(UIViewBase view) {
-            base.HideView( view );
         }
 
     }
