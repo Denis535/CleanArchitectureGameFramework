@@ -52,6 +52,13 @@ namespace UnityEngine.Framework.UI {
     }
     public class UIRootWidgetView : UIRootWidgetViewBase {
 
+        // Priority
+        public override int Priority => 0;
+        // IsAlwaysVisible
+        public override bool IsAlwaysVisible => false;
+        // IsModal
+        public override bool IsModal => false;
+
         // Constructor
         public UIRootWidgetView() {
         }

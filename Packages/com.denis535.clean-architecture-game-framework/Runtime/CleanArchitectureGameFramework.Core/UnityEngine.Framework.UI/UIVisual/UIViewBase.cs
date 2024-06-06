@@ -21,11 +21,11 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // Priority
-        public virtual int Priority => 0;
+        public abstract int Priority { get; }
         // IsAlwaysVisible
-        public virtual bool IsAlwaysVisible => false;
+        public abstract bool IsAlwaysVisible { get; }
         // IsModal
-        public virtual bool IsModal => false;
+        public abstract bool IsModal { get; }
 
         // Constructor
         public UIViewBase() {
