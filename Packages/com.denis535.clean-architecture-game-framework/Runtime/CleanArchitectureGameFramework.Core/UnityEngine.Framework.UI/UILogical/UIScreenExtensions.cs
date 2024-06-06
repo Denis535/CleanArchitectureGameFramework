@@ -12,16 +12,12 @@ namespace UnityEngine.Framework.UI {
             using (screen.@lock.Enter()) {
                 screen.Widget = widget;
                 widget.Parent = null;
-                if (true) {
-                    widget.Activate( screen, argument );
-                }
+                widget.Activate( screen, argument );
             }
         }
         internal static void RemoveWidgetInternal(this UIScreenBase screen, UIWidgetBase widget, object? argument) {
             using (screen.@lock.Enter()) {
-                if (true) {
-                    widget.Deactivate( screen, argument );
-                }
+                widget.Deactivate( screen, argument );
                 widget.Parent = null;
                 screen.Widget = null!;
             }

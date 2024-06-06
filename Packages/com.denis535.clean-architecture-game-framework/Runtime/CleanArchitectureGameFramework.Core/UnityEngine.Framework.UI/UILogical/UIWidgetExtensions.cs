@@ -62,31 +62,39 @@ namespace UnityEngine.Framework.UI {
 
         // AddChildInternal
         internal static void AddChildInternal(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
-            using (widget.@lock.Enter()) {
-                widget.Children_.Add( child );
-                child.Parent = widget;
-                if (widget.State is UIWidgetState.Actived) {
+            if (widget.State is UIWidgetState.Actived) {
+                using (widget.@lock.Enter()) {
+                    widget.Children_.Add( child );
+                    child.Parent = widget;
                     child.Activate( widget.Screen!, argument );
-                } else {
+                }
+            } else {
+                using (widget.@lock.Enter()) {
+                    widget.Children_.Add( child );
+                    child.Parent = widget;
                     Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
                 }
             }
         }
         internal static void RemoveChildInternal(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
-            using (widget.@lock.Enter()) {
-                if (widget.State is UIWidgetState.Actived) {
+            if (widget.State is UIWidgetState.Actived) {
+                using (widget.@lock.Enter()) {
                     child.Deactivate( widget.Screen!, argument );
-                } else {
-                    Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                    child.Parent = null;
+                    widget.Children_.Remove( child );
                 }
-                child.Parent = null;
-                widget.Children_.Remove( child );
+            } else {
+                using (widget.@lock.Enter()) {
+                    Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                    child.Parent = null;
+                    widget.Children_.Remove( child );
+                }
             }
         }
 
         // Activate
         internal static void Activate(this UIWidgetBase widget, UIScreenBase screen, object? argument) {
-            widget.Parent?.OnBefore_DescendantActivateEvent?.Invoke( widget, argument );
+            widget.Parent?.OnBefore_DescendantActivateEvent?.Invoke( widget, argument ); // todo:
             widget.Parent?.OnBefore_DescendantActivate( widget, argument );
             {
                 widget.OnBefore_ActivateEvent?.Invoke( argument );
