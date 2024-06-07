@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static class UIViewExtensions {
+    public static partial class UIViewExtensions {
 
         // GetParent
         public static UIViewBase? GetParent(this UIViewBase view) {
@@ -39,14 +39,6 @@ namespace UnityEngine.Framework.UI {
         public static T __GetVisualElement__<T>(this UIViewBase view) where T : VisualElement {
             // try not to use this method
             return (T) view.VisualElement;
-        }
-
-        // GetView
-        public static UIViewBase GetView(this VisualElement element) {
-            return (UIViewBase) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
-        }
-        public static T GetView<T>(this VisualElement element) where T : UIViewBase {
-            return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
         }
 
         // Focus
@@ -88,6 +80,17 @@ namespace UnityEngine.Framework.UI {
             var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
             if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return true;
             return false;
+        }
+
+    }
+    public static partial class UIViewExtensions {
+
+        // GetView
+        public static UIViewBase GetView(this VisualElement element) {
+            return (UIViewBase) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+        }
+        public static T GetView<T>(this VisualElement element) where T : UIViewBase {
+            return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
         }
 
         // Add

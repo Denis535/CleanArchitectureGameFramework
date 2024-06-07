@@ -73,8 +73,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             this.AddChildInternal( child, argument );
         }
-
-        // RemoveChild
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
@@ -82,21 +80,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             this.RemoveChildInternal( child, argument );
         }
-        public void RemoveChild<T>(object? argument = null) where T : UIWidgetBase {
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must have child {typeof( T )} widget" ).Valid( Children.OfType<T>().Any() );
-            this.RemoveChildInternal( Children.OfType<T>().Last(), argument );
-        }
-
-        // RemoveChildren
-        public void RemoveChildren(object? argument = null) {
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            foreach (var child in Children.Reverse()) {
-                RemoveChild( child, argument );
-            }
-        }
-
-        // RemoveSelf
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have parent or screen" ).Valid( Parent != null || Screen != null );

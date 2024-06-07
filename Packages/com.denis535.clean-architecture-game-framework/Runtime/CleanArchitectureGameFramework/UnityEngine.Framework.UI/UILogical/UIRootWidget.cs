@@ -7,31 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetBase<TView> : UIWidgetBase<TView> where TView : UIRootWidgetViewBase {
-
-        // Constructor
-        public UIRootWidgetBase() {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // OnActivate
-        public override void OnActivate(object? argument) {
-        }
-        public override void OnDeactivate(object? argument) {
-        }
-
-        // ShowView
-        public override void ShowView(UIViewBase view) {
-            View.AddView( view );
-        }
-        public override void HideView(UIViewBase view) {
-            View.RemoveView( view );
-        }
-
-    }
-    public class UIRootWidget : UIRootWidgetBase<UIRootWidgetView> {
+    public class UIRootWidget : UIWidgetBase<UIRootWidgetView> {
 
         // View
         public override UIRootWidgetView View { get; }
@@ -52,14 +28,14 @@ namespace UnityEngine.Framework.UI {
 
         // ShowView
         public override void ShowView(UIViewBase view) {
-            base.ShowView( view );
+            View.AddView( view );
         }
         public override void HideView(UIViewBase view) {
-            base.HideView( view );
+            View.RemoveView( view );
         }
 
         // Helpers
-        protected static T CreateView<T>() where T : UIRootWidgetViewBase, new() {
+        protected static T CreateView<T>() where T : UIRootWidgetView, new() {
             var view = new T();
             view.OnSubmit( OnSubmit );
             view.OnCancel( OnCancel );

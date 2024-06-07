@@ -7,15 +7,21 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetViewBase : UIViewBase {
+    public class UIRootWidgetView : UIViewBase {
 
         protected readonly VisualElement widget;
 
+        // Priority
+        public override int Priority => 0;
+        // IsAlwaysVisible
+        public override bool IsAlwaysVisible => false;
+        // IsModal
+        public override bool IsModal => false;
         // Children
         public IEnumerable<UIViewBase> Children => widget.Children().Select( i => i.GetView() );
 
         // Constructor
-        public UIRootWidgetViewBase() {
+        public UIRootWidgetView() {
             VisualElement = CreateVisualElement( out widget );
         }
         public override void Dispose() {
@@ -36,9 +42,11 @@ namespace UnityEngine.Framework.UI {
         public virtual void AddView(UIViewBase view) {
             widget.Add( view );
             widget.Sort( (a, b) => Comparer<int>.Default.Compare( a.GetView().Priority, b.GetView().Priority ) );
+            Recalculate( Children.ToArray() );
         }
         public virtual void RemoveView(UIViewBase view) {
             widget.Remove( view );
+            Recalculate( Children.ToArray() );
         }
 
         // OnEvent
@@ -47,33 +55,6 @@ namespace UnityEngine.Framework.UI {
         }
         public void OnCancel(EventCallback<NavigationCancelEvent> callback) {
             widget.OnCancel( callback, TrickleDown.TrickleDown );
-        }
-
-    }
-    public class UIRootWidgetView : UIRootWidgetViewBase {
-
-        // Priority
-        public override int Priority => 0;
-        // IsAlwaysVisible
-        public override bool IsAlwaysVisible => false;
-        // IsModal
-        public override bool IsModal => false;
-
-        // Constructor
-        public UIRootWidgetView() {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // AddView
-        public override void AddView(UIViewBase view) {
-            base.AddView( view );
-            Recalculate( Children.ToArray() );
-        }
-        public override void RemoveView(UIViewBase view) {
-            base.RemoveView( view );
-            Recalculate( Children.ToArray() );
         }
 
         // Recalculate
