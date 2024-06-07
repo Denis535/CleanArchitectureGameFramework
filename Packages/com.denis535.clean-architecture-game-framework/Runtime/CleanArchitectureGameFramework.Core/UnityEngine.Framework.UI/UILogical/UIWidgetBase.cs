@@ -80,6 +80,12 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             this.RemoveChildInternal( child, argument );
         }
+        public void RemoveChildren(IEnumerable<UIWidgetBase> children, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            foreach (var child in children) {
+                RemoveChild( child );
+            }
+        }
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have parent or screen" ).Valid( Parent != null || Screen != null );

@@ -32,7 +32,6 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"View {this} must be hidden" ).Valid( VisualElement.parent == null );
             Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
             base.Dispose();
         }
