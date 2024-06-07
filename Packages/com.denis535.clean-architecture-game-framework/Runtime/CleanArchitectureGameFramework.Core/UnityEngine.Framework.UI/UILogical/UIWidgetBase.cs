@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.UI {
         internal readonly Lock @lock = new Lock();
 
         // System
-        public bool DisposeWhenDeactivate { get; protected init; } = true;
+        public virtual bool DisposeWhenDeactivate => true;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
         public UIViewBase? View => (this as IUIViewable)?.View;
@@ -28,15 +28,15 @@ namespace UnityEngine.Framework.UI {
         internal List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
         // OnActivate
-        public Action<object?>? OnBefore_ActivateEvent { get; set; }
-        public Action<object?>? OnAfter_ActivateEvent { get; set; }
-        public Action<object?>? OnBefore_DeactivateEvent { get; set; }
-        public Action<object?>? OnAfter_DeactivateEvent { get; set; }
+        public Action<object?>? OnBeforeActivateEvent { get; set; }
+        public Action<object?>? OnAfterActivateEvent { get; set; }
+        public Action<object?>? OnBeforeDeactivateEvent { get; set; }
+        public Action<object?>? OnAfterDeactivateEvent { get; set; }
         // OnDescendantActivate
-        public Action<UIWidgetBase, object?>? OnBefore_DescendantActivateEvent { get; set; }
-        public Action<UIWidgetBase, object?>? OnAfter_DescendantActivateEvent { get; set; }
-        public Action<UIWidgetBase, object?>? OnBefore_DescendantDeactivateEvent { get; set; }
-        public Action<UIWidgetBase, object?>? OnAfter_DescendantDeactivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnBeforeDescendantActivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnAfterDescendantActivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnBeforeDescendantDeactivateEvent { get; set; }
+        public Action<UIWidgetBase, object?>? OnAfterDescendantDeactivateEvent { get; set; }
 
         // Constructor
         public UIWidgetBase() {
@@ -52,18 +52,18 @@ namespace UnityEngine.Framework.UI {
     public abstract partial class UIWidgetBase {
 
         // OnActivate
-        public virtual void OnBefore_Activate(object? argument) { }
+        public virtual void OnBeforeActivate(object? argument) { }
         public abstract void OnActivate(object? argument); // override to init and show self
-        public virtual void OnAfter_Activate(object? argument) { }
-        public virtual void OnBefore_Deactivate(object? argument) { }
+        public virtual void OnAfterActivate(object? argument) { }
+        public virtual void OnBeforeDeactivate(object? argument) { }
         public abstract void OnDeactivate(object? argument); // override to hide self and deinit
-        public virtual void OnAfter_Deactivate(object? argument) { }
+        public virtual void OnAfterDeactivate(object? argument) { }
 
         // OnDescendantActivate
-        public virtual void OnBefore_DescendantActivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnAfter_DescendantActivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnBefore_DescendantDeactivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnAfter_DescendantDeactivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) { }
+        public virtual void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) { }
 
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
