@@ -52,12 +52,16 @@ namespace UnityEngine.Framework.UI {
     public abstract partial class UIWidgetBase {
 
         // OnActivate
-        public virtual void OnBeforeActivate(object? argument) { }
+        public virtual void OnBeforeActivate(object? argument) {
+        }
         public abstract void OnActivate(object? argument); // override to init and show self
-        public virtual void OnAfterActivate(object? argument) { }
-        public virtual void OnBeforeDeactivate(object? argument) { }
+        public virtual void OnAfterActivate(object? argument) {
+        }
+        public virtual void OnBeforeDeactivate(object? argument) {
+        }
         public abstract void OnDeactivate(object? argument); // override to hide self and deinit
-        public virtual void OnAfterDeactivate(object? argument) { }
+        public virtual void OnAfterDeactivate(object? argument) {
+        }
 
         // OnDescendantActivate
         public abstract void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument);
@@ -80,11 +84,16 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             this.RemoveChildInternal( child, argument );
         }
-        public void RemoveChildren(IEnumerable<UIWidgetBase> children, object? argument = null) {
+        public int RemoveChildren(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            foreach (var child in children) {
-                RemoveChild( child );
+            var count = 0;
+            foreach (var child in Children.Reverse().ToList()) {
+                if (predicate( child )) {
+                    RemoveChild( child, argument );
+                    count++;
+                }
             }
+            return count;
         }
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
