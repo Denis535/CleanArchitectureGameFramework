@@ -60,10 +60,10 @@ namespace UnityEngine.Framework.UI {
         public virtual void OnAfterDeactivate(object? argument) { }
 
         // OnDescendantActivate
-        public virtual void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) { }
-        public virtual void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) { }
+        public abstract void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument);
+        public abstract void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument);
+        public abstract void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument);
+        public abstract void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument);
 
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
