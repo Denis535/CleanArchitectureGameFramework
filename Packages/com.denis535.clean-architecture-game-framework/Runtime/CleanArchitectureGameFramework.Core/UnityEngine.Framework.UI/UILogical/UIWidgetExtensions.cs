@@ -62,7 +62,7 @@ namespace UnityEngine.Framework.UI {
 
         // AddChildInternal
         internal static void AddChildInternal(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
-            if (widget.State is UIWidgetState.Actived) {
+            if (widget.State is UIWidgetState.Active) {
                 using (widget.@lock.Enter()) {
                     widget.Children_.Add( child );
                     child.Parent = widget;
@@ -77,7 +77,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         internal static void RemoveChildInternal(this UIWidgetBase widget, UIWidgetBase child, object? argument) {
-            if (widget.State is UIWidgetState.Actived) {
+            if (widget.State is UIWidgetState.Active) {
                 using (widget.@lock.Enter()) {
                     child.Deactivate( widget.Screen!, argument );
                     child.Parent = null;
@@ -108,7 +108,7 @@ namespace UnityEngine.Framework.UI {
                     foreach (var child in widget.Children) {
                         child.Activate( screen, argument );
                     }
-                    widget.State = UIWidgetState.Actived;
+                    widget.State = UIWidgetState.Active;
                 }
                 widget.OnAfterActivate( argument );
                 widget.OnAfterActivateEvent?.Invoke( argument );

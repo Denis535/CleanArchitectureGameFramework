@@ -8,7 +8,7 @@ namespace UnityEngine.Framework.UI {
     public enum UIWidgetState {
         Inactive,
         Activating,
-        Actived,
+        Active,
         Deactivating,
     }
 }

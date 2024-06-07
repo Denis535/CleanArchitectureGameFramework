@@ -93,15 +93,15 @@ namespace UnityEngine.Framework.UI {
                 view.VisualElement.SetEnabled( true );
                 view.VisualElement.SetDisplayed( true );
             }
-            if (!HasFocusedElement( view.VisualElement )) {
-                if (!LoadFocus( view )) {
-                    Focus( view );
+            if (!view.HasFocusedElement()) {
+                if (!view.LoadFocus()) {
+                    view.Focus();
                 }
             }
         }
         protected virtual void HideView(UIViewBase view, UIViewBase next) {
-            if (HasFocusedElement( view.VisualElement )) {
-                SaveFocus( view );
+            if (view.HasFocusedElement()) {
+                view.SaveFocus();
             }
             if (!view.IsAlwaysVisible) {
                 if (!view.IsModal && next.IsModal) {
@@ -110,47 +110,6 @@ namespace UnityEngine.Framework.UI {
                     view.VisualElement.SetDisplayed( false );
                 }
             }
-        }
-
-        // Focus
-        protected virtual void Focus(UIViewBase view) {
-            try {
-                if (view.VisualElement.focusable) {
-                    view.VisualElement.Focus();
-                } else {
-                    view.VisualElement.focusable = true;
-                    view.VisualElement.delegatesFocus = true;
-                    view.VisualElement.Focus();
-                    view.VisualElement.delegatesFocus = false;
-                    view.VisualElement.focusable = false;
-                }
-            } catch (Exception ex) {
-                Debug.LogWarning( ex );
-            }
-        }
-        protected virtual bool LoadFocus(UIViewBase view) {
-            var focusedElement = view.LoadFocusedElement();
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return true;
-            }
-            return false;
-        }
-        protected virtual void SaveFocus(UIViewBase view) {
-            var focusedElement = GetFocusedElement( view );
-            view.SaveFocusedElement( focusedElement );
-        }
-
-        // Helpers
-        protected static VisualElement? GetFocusedElement(UIViewBase view) {
-            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
-            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return focusedElement;
-            return null;
-        }
-        protected static bool HasFocusedElement(VisualElement visualElement) {
-            var focusedElement = (VisualElement) visualElement.focusController.focusedElement;
-            if (focusedElement != null && (visualElement == focusedElement || visualElement.Contains( focusedElement ))) return true;
-            return false;
         }
 
     }

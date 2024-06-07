@@ -49,6 +49,47 @@ namespace UnityEngine.Framework.UI {
             return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
         }
 
+        // Focus
+        public static void Focus(this UIViewBase view) {
+            try {
+                if (view.VisualElement.focusable) {
+                    view.VisualElement.Focus();
+                } else {
+                    view.VisualElement.focusable = true;
+                    view.VisualElement.delegatesFocus = true;
+                    view.VisualElement.Focus();
+                    view.VisualElement.delegatesFocus = false;
+                    view.VisualElement.focusable = false;
+                }
+            } catch (Exception ex) {
+                Debug.LogWarning( ex );
+            }
+        }
+        public static bool LoadFocus(this UIViewBase view) {
+            var focusedElement = view.LoadFocusedElement();
+            if (focusedElement != null) {
+                focusedElement.Focus();
+                return true;
+            }
+            return false;
+        }
+        public static void SaveFocus(this UIViewBase view) {
+            var focusedElement = GetFocusedElement( view );
+            view.SaveFocusedElement( focusedElement );
+        }
+
+        // GetFocusedElement
+        public static VisualElement? GetFocusedElement(this UIViewBase view) {
+            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
+            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return focusedElement;
+            return null;
+        }
+        public static bool HasFocusedElement(this UIViewBase view) {
+            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
+            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return true;
+            return false;
+        }
+
         // Add
         public static void Add(this UIDocument document, UIViewBase view) {
             document.rootVisualElement.Add( view.VisualElement );
