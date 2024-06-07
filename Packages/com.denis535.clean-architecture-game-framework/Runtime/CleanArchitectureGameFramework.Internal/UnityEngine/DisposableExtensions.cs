@@ -9,21 +9,13 @@ namespace UnityEngine {
         // DisposeAll
         public static void DisposeAll(this IEnumerable<Disposable> disposables) {
             foreach (var disposable in disposables) {
-                Assert.Operation.Message( $"Disposable {disposable} must be non-disposed" ).NotDisposed( !disposable.IsDisposed );
-                disposable.IsDisposed = true;
-                disposable.disposeCancellationTokenSource?.Cancel();
+                disposable.Dispose();
             }
         }
 
         // ThrowIfDisposed
         public static void ThrowIfDisposed(this Disposable disposable) {
             Assert.Operation.Message( $"Disposable {disposable} must be non-disposed" ).NotDisposed( !disposable.IsDisposed );
-        }
-
-        // IfNotDisposed
-        public static T IfNotDisposed<T>(this T disposable) where T : Disposable {
-            disposable.ThrowIfDisposed();
-            return disposable;
         }
 
     }

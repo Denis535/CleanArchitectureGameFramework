@@ -7,10 +7,10 @@ namespace UnityEngine {
 
     public abstract class Disposable : IDisposable {
 
-        internal CancellationTokenSource? disposeCancellationTokenSource;
+        private CancellationTokenSource? disposeCancellationTokenSource;
 
         // System
-        public bool IsDisposed { get; internal set; }
+        public bool IsDisposed { get; private set; }
         public CancellationToken DisposeCancellationToken {
             get {
                 if (disposeCancellationTokenSource == null) {

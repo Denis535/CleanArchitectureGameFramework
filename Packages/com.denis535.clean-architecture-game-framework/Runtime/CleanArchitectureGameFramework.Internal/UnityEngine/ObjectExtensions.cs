@@ -16,11 +16,5 @@ namespace UnityEngine {
             Assert.Operation.Message( $"Object {@object} must be non-disposed" ).NotDisposed( @object );
         }
 
-        // IfValid
-        public static T IfValid<T>(this T @object) where T : Object {
-            @object.ThrowIfInvalid();
-            return @object;
-        }
-
     }
 }
