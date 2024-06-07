@@ -24,15 +24,13 @@ namespace System {
             public void Valid([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<ArgumentException>( Message );
             }
-
-            [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void InRange([DoesNotReturnIf( false )] bool isValid) {
-                if (!isValid) throw Exceptions.GetException<ArgumentOutOfRangeException>( Message );
-            }
-
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
             public void NotNull([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<ArgumentNullException>( Message );
+            }
+            [MethodImpl( MethodImplOptions.AggressiveInlining )]
+            public void InRange([DoesNotReturnIf( false )] bool isValid) {
+                if (!isValid) throw Exceptions.GetException<ArgumentOutOfRangeException>( Message );
             }
 
             public override string? ToString() {
@@ -53,12 +51,10 @@ namespace System {
             public void Valid([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<InvalidOperationException>( Message );
             }
-
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
             public void Ready([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<ObjectNotReadyException>( Message );
             }
-
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
             public void NotDisposed([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.GetException<ObjectDisposedException>( Message );

@@ -9,8 +9,8 @@ namespace System {
         // Argument
         public static class Argument {
             public static ArgumentException ArgumentException(FormattableString? message) => GetException<ArgumentException>( message );
-            public static ArgumentOutOfRangeException ArgumentOutOfRangeException(FormattableString? message) => GetException<ArgumentOutOfRangeException>( message );
             public static ArgumentNullException ArgumentNullException(FormattableString? message) => GetException<ArgumentNullException>( message );
+            public static ArgumentOutOfRangeException ArgumentOutOfRangeException(FormattableString? message) => GetException<ArgumentOutOfRangeException>( message );
         }
         // Operation
         public static class Operation {

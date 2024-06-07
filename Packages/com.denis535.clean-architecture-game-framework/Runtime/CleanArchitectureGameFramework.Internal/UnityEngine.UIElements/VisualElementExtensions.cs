@@ -39,11 +39,6 @@ namespace UnityEngine.UIElements {
             }
         }
 
-        // IsContentValid
-        public static bool IsContentValid(this VisualElement element) {
-            return element.GetDescendants().All( IsValidSelf );
-        }
-
         // SetUp
         public static T Name<T>(this T element, string? name) where T : VisualElement {
             element.name = name;
@@ -177,21 +172,24 @@ namespace UnityEngine.UIElements {
             element.RegisterCallback( callback, useTrickleDown );
         }
 
-        // OnChangeAny
-        public static void OnChangeAny(this VisualElement element, EventCallback<IChangeEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
-            element.RegisterCallback<ChangeEvent<object>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<string>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<int>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<float>>( callback, useTrickleDown );
-            element.RegisterCallback<ChangeEvent<bool>>( callback, useTrickleDown );
-        }
-
         // OnSubmit
         public static void OnSubmit(this VisualElement element, EventCallback<NavigationSubmitEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             element.RegisterCallback( callback, useTrickleDown );
         }
         public static void OnCancel(this VisualElement element, EventCallback<NavigationCancelEvent> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
             element.RegisterCallback( callback, useTrickleDown );
+        }
+
+        // OnValidate
+        public static void OnValidate(this VisualElement element, EventCallback<EventBase> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) {
+            // todo: how to handle any event?
+            //element.RegisterCallback<EventBase>( callback, useTrickleDown );
+            element.RegisterCallback<AttachToPanelEvent>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<object>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<string>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<int>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<float>>( callback, useTrickleDown );
+            element.RegisterCallback<ChangeEvent<bool>>( callback, useTrickleDown );
         }
 
     }
