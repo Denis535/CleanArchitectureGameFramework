@@ -54,7 +54,7 @@ namespace UnityEngine.Framework.UI {
                     view.VisualElement.focusable = false;
                 }
             } catch (Exception ex) {
-                Debug.LogWarning( ex );
+                // sometimes it throws an error
             }
         }
         public static bool LoadFocus(this UIViewBase view) {
@@ -72,12 +72,12 @@ namespace UnityEngine.Framework.UI {
 
         // GetFocusedElement
         public static VisualElement? GetFocusedElement(this UIViewBase view) {
-            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
+            var focusedElement = (VisualElement?) view.VisualElement.focusController?.focusedElement;
             if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return focusedElement;
             return null;
         }
         public static bool HasFocusedElement(this UIViewBase view) {
-            var focusedElement = (VisualElement) view.VisualElement.focusController.focusedElement;
+            var focusedElement = (VisualElement?) view.VisualElement.focusController?.focusedElement;
             if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return true;
             return false;
         }
