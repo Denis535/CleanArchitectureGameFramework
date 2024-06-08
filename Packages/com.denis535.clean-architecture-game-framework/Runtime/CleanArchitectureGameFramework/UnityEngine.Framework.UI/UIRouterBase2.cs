@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.UI {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public UIRouterState State {
+        public virtual UIRouterState State {
             get => state;
             protected set {
                 var prev = state;

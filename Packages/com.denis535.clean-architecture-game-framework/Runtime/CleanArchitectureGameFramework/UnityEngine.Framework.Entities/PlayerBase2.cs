@@ -12,7 +12,7 @@ namespace UnityEngine.Framework.Entities {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public PlayerState State {
+        public virtual PlayerState State {
             get => state;
             protected set {
                 var prev = state;

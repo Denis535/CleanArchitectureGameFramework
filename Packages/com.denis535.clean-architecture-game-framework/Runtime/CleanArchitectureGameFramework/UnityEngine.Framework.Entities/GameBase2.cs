@@ -13,7 +13,7 @@ namespace UnityEngine.Framework.Entities {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public GameState State {
+        public virtual GameState State {
             get => state;
             protected set {
                 var prev = state;
@@ -25,7 +25,7 @@ namespace UnityEngine.Framework.Entities {
         // IsPaused
         public virtual bool IsPaused {
             get => isPaused;
-            protected set {
+            set {
                 if (value) {
                     if (!IsPaused) {
                         isPaused = true;
