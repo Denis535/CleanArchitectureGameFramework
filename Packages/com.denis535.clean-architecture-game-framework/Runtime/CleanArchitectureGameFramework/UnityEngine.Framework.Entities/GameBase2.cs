@@ -5,7 +5,9 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase2<TMode, TLevel, TInput> : GameBase where TInput : IDisposable, new() {
+    public abstract class GameBase2<TMode, TLevel> : GameBase
+        where TMode : Enum
+        where TLevel : Enum {
 
         private GameState state;
         private bool isPaused;
@@ -41,8 +43,6 @@ namespace UnityEngine.Framework.Entities {
             }
         }
         public event Action<bool>? OnPauseChangeEvent;
-        // Input
-        protected TInput Input { get; }
 
         // Constructor
         public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) {
@@ -50,10 +50,8 @@ namespace UnityEngine.Framework.Entities {
             Name = name;
             Mode = mode;
             Level = level;
-            Input = new TInput();
         }
         public override void Dispose() {
-            Input.Dispose();
             base.Dispose();
         }
 

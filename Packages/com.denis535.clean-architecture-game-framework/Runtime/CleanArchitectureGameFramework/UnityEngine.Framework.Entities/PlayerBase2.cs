@@ -5,7 +5,8 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase2<TKind, TInput> : PlayerBase where TKind : Enum where TInput : IDisposable, new() {
+    public abstract class PlayerBase2<TKind, TInput> : PlayerBase
+        where TKind : Enum {
 
         private PlayerState state;
 
@@ -26,18 +27,14 @@ namespace UnityEngine.Framework.Entities {
             }
         }
         public event Action<PlayerState>? OnStateChangeEvent;
-        // Input
-        protected TInput Input { get; }
 
         // Constructor
         public PlayerBase2(IDependencyContainer container, string name, TKind kind) {
             Container = container;
             Name = name;
             Kind = kind;
-            Input = new TInput();
         }
         public override void Dispose() {
-            Input.Dispose();
             base.Dispose();
         }
 
