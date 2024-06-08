@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase2<TKind, TInput> : PlayerBase
+    public abstract class PlayerBase2<TKind> : PlayerBase
         where TKind : Enum {
 
         private PlayerState state;
