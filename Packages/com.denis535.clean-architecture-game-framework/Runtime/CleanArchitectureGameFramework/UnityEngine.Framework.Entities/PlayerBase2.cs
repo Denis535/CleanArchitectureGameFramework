@@ -17,10 +17,10 @@ namespace UnityEngine.Framework.Entities {
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChangeEvent?.Invoke( this, state, prev );
             }
         }
-        public event Action<PlayerState, PlayerState>? OnStateChangeEvent;
+        public event Action<PlayerBase2, PlayerState, PlayerState>? OnStateChangeEvent;
 
         // Constructor
         public PlayerBase2(IDependencyContainer container) {

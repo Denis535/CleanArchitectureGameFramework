@@ -17,10 +17,10 @@ namespace UnityEngine.Framework.UI {
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChangeEvent?.Invoke( this, state, prev );
             }
         }
-        public event Action<UIRouterState, UIRouterState>? OnStateChangeEvent;
+        public event Action<UIRouterBase2, UIRouterState, UIRouterState>? OnStateChangeEvent;
 
         // Constructor
         public UIRouterBase2(IDependencyContainer container) {

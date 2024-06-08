@@ -18,10 +18,10 @@ namespace UnityEngine.Framework.Entities {
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChangeEvent?.Invoke( this, state, prev );
             }
         }
-        public event Action<GameState, GameState>? OnStateChangeEvent;
+        public event Action<GameBase2, GameState, GameState>? OnStateChangeEvent;
         // IsPaused
         public virtual bool IsPaused {
             get => isPaused;
@@ -29,17 +29,17 @@ namespace UnityEngine.Framework.Entities {
                 if (value) {
                     if (!IsPaused) {
                         isPaused = true;
-                        OnPauseEvent?.Invoke( true );
+                        OnPauseEvent?.Invoke( this, true );
                     }
                 } else {
                     if (IsPaused) {
                         isPaused = false;
-                        OnPauseEvent?.Invoke( false );
+                        OnPauseEvent?.Invoke( this, false );
                     }
                 }
             }
         }
-        public event Action<bool>? OnPauseEvent;
+        public event Action<GameBase2, bool>? OnPauseEvent;
 
         // Constructor
         public GameBase2(IDependencyContainer container) {

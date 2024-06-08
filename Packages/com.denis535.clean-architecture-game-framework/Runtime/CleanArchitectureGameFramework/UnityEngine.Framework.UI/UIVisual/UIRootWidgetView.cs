@@ -17,8 +17,8 @@ namespace UnityEngine.Framework.UI {
         public override bool IsAlwaysVisible => false;
         // IsModal
         public override bool IsModal => false;
-        // Children
-        public IEnumerable<UIViewBase> Children => widget.Children().Select( i => i.GetView() );
+        // Views
+        public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
 
         // Constructor
         public UIRootWidgetView() {
@@ -42,11 +42,11 @@ namespace UnityEngine.Framework.UI {
         public virtual void AddView(UIViewBase view) {
             widget.Add( view );
             widget.Sort( (a, b) => Comparer<int>.Default.Compare( a.GetView().Priority, b.GetView().Priority ) );
-            Recalculate( Children.ToArray() );
+            Recalculate( Views.ToArray() );
         }
         public virtual void RemoveView(UIViewBase view) {
             widget.Remove( view );
-            Recalculate( Children.ToArray() );
+            Recalculate( Views.ToArray() );
         }
 
         // OnEvent
@@ -63,13 +63,13 @@ namespace UnityEngine.Framework.UI {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
                 if (next == null) {
-                    ShowView( view );
+                    Show( view );
                 } else {
-                    HideView( view, next );
+                    Hide( view, next );
                 }
             }
         }
-        protected virtual void ShowView(UIViewBase view) {
+        protected virtual void Show(UIViewBase view) {
             if (!view.IsAlwaysVisible) {
                 view.VisualElement.SetEnabled( true );
                 view.VisualElement.SetDisplayed( true );
@@ -80,7 +80,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void HideView(UIViewBase view, UIViewBase next) {
+        protected virtual void Hide(UIViewBase view, UIViewBase next) {
             if (view.HasFocusedElement()) {
                 view.SaveFocus();
             }
