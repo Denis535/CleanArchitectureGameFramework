@@ -5,13 +5,19 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase2 : GameBase {
+    public abstract class GameBase2<TMode, TLevel, TInput> : GameBase where TInput : IDisposable, new() {
 
         private GameState state;
         private bool isPaused;
 
         // Container
         protected IDependencyContainer Container { get; }
+        // Name
+        public string Name { get; }
+        // Mode
+        public TMode Mode { get; }
+        // Level
+        public TLevel Level { get; }
         // State
         public GameState State {
             get => state;
@@ -35,30 +41,32 @@ namespace UnityEngine.Framework.Entities {
             }
         }
         public event Action<bool>? OnPauseChangeEvent;
+        // Input
+        protected TInput Input { get; }
 
         // Constructor
-        public GameBase2(IDependencyContainer container) {
+        public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) {
             Container = container;
+            Name = name;
+            Mode = mode;
+            Level = level;
+            Input = new TInput();
         }
         public override void Dispose() {
+            Input.Dispose();
             base.Dispose();
         }
 
         // Update
-        public virtual void FixedUpdate() {
-        }
-        public virtual void Update() {
-        }
-        public virtual void LateUpdate() {
-        }
+        public abstract void FixedUpdate();
+        public abstract void Update();
+        public abstract void LateUpdate();
 
         // OnStateChange
-        protected virtual void OnStateChange(GameState state) {
-        }
+        protected abstract void OnStateChange(GameState state);
 
         // OnPauseChange
-        protected virtual void OnPauseChange(bool isPaused) {
-        }
+        protected abstract void OnPauseChange(bool isPaused);
 
         // Helpers
         private static GameState GetState(GameState state, GameState prev) {

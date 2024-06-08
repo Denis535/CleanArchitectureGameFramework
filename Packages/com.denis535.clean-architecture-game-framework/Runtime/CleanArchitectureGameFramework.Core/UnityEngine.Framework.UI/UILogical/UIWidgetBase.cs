@@ -73,6 +73,7 @@ namespace UnityEngine.Framework.UI {
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
+            Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Inactive );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             this.AddChildInternal( child, argument );
@@ -80,6 +81,7 @@ namespace UnityEngine.Framework.UI {
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
+            Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Active );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             this.RemoveChildInternal( child, argument );
