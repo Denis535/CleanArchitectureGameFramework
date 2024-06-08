@@ -18,10 +18,10 @@ namespace UnityEngine.Framework.Entities {
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( this, state, prev );
+                OnStateChangeEvent?.Invoke( state, prev );
             }
         }
-        public event Action<GameBase2, GameState, GameState>? OnStateChangeEvent;
+        public event Action<GameState, GameState>? OnStateChangeEvent;
         // IsPaused
         public virtual bool IsPaused {
             get => isPaused;
