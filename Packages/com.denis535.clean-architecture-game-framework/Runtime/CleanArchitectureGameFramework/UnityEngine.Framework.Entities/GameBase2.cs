@@ -13,33 +13,28 @@ namespace UnityEngine.Framework.Entities {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public virtual GameState State {
+        public GameState State {
             get => state;
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChange( state );
+                OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<GameState, GameState>? OnStateChangeEvent;
+        public event Action<GameState>? OnStateChangeEvent;
         // IsPaused
-        public virtual bool IsPaused {
+        public bool IsPaused {
             get => isPaused;
             set {
-                if (value) {
-                    if (!IsPaused) {
-                        isPaused = true;
-                        OnPauseEvent?.Invoke( this, true );
-                    }
-                } else {
-                    if (IsPaused) {
-                        isPaused = false;
-                        OnPauseEvent?.Invoke( this, false );
-                    }
+                if (value != isPaused) {
+                    isPaused = value;
+                    OnPauseChange( isPaused );
+                    OnPauseChangeEvent?.Invoke( isPaused );
                 }
             }
         }
-        public event Action<GameBase2, bool>? OnPauseEvent;
+        public event Action<bool>? OnPauseChangeEvent;
 
         // Constructor
         public GameBase2(IDependencyContainer container) {
@@ -55,6 +50,14 @@ namespace UnityEngine.Framework.Entities {
         public virtual void Update() {
         }
         public virtual void LateUpdate() {
+        }
+
+        // OnStateChange
+        protected virtual void OnStateChange(GameState state) {
+        }
+
+        // OnPauseChange
+        protected virtual void OnPauseChange(bool isPaused) {
         }
 
         // Helpers

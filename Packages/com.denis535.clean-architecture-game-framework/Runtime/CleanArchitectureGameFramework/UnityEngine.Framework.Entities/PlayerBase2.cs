@@ -12,15 +12,16 @@ namespace UnityEngine.Framework.Entities {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public virtual PlayerState State {
+        public PlayerState State {
             get => state;
-            protected set {
+            set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChange( state );
+                OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<PlayerState, PlayerState>? OnStateChangeEvent;
+        public event Action<PlayerState>? OnStateChangeEvent;
 
         // Constructor
         public PlayerBase2(IDependencyContainer container) {
@@ -28,6 +29,10 @@ namespace UnityEngine.Framework.Entities {
         }
         public override void Dispose() {
             base.Dispose();
+        }
+
+        // OnStateChange
+        protected virtual void OnStateChange(PlayerState state) {
         }
 
         // Helpers

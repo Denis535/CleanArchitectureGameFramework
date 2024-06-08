@@ -12,15 +12,15 @@ namespace UnityEngine.Framework.UI {
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public virtual UIRouterState State {
+        public UIRouterState State {
             get => state;
             protected set {
                 var prev = state;
                 state = GetState( value, prev );
-                OnStateChangeEvent?.Invoke( state, prev );
+                OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<UIRouterState, UIRouterState>? OnStateChangeEvent;
+        public event Action<UIRouterState>? OnStateChangeEvent;
 
         // Constructor
         public UIRouterBase2(IDependencyContainer container) {
