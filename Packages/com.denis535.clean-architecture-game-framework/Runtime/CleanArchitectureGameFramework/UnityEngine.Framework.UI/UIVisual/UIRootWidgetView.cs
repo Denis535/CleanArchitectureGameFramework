@@ -11,12 +11,8 @@ namespace UnityEngine.Framework.UI {
 
         protected readonly VisualElement widget;
 
-        // Priority
-        public override int Priority => 0;
-        // IsAlwaysVisible
-        public override bool IsAlwaysVisible => false;
-        // IsModal
-        public override bool IsModal => false;
+        // Layer
+        public override int Layer => throw Exceptions.Internal.NotImplemented( $"Property 'Layer' is not implemented" );
         // Views
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
 
@@ -41,7 +37,7 @@ namespace UnityEngine.Framework.UI {
         // AddView
         public virtual void AddView(UIViewBase view) {
             widget.Add( view );
-            widget.Sort( (a, b) => Comparer<int>.Default.Compare( a.GetView().Priority, b.GetView().Priority ) );
+            widget.Sort( Compare );
             Recalculate( Views.ToArray() );
         }
         public virtual void RemoveView(UIViewBase view) {
@@ -59,38 +55,40 @@ namespace UnityEngine.Framework.UI {
 
         // Recalculate
         protected virtual void Recalculate(UIViewBase[] views) {
+            foreach (var view in views.SkipLast( 1 )) {
+                if (view.HasFocusedElement()) {
+                    view.SaveFocus();
+                }
+            }
             for (var i = 0; i < views.Length; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
                 if (next == null) {
-                    Show( view );
+                    view.VisualElement.SetEnabled( true );
+                    view.VisualElement.SetDisplayed( true );
                 } else {
-                    Hide( view, next );
+                    if (view.Layer == next.Layer) {
+                        view.VisualElement.SetEnabled( false );
+                        view.VisualElement.SetDisplayed( false );
+                    } else {
+                        view.VisualElement.SetEnabled( false );
+                        view.VisualElement.SetDisplayed( true );
+                    }
+                }
+            }
+            if (views.Any()) {
+                var view = views.Last();
+                if (!view.HasFocusedElement()) {
+                    if (!view.LoadFocus()) {
+                        view.Focus();
+                    }
                 }
             }
         }
-        protected virtual void Show(UIViewBase view) {
-            if (!view.IsAlwaysVisible) {
-                view.VisualElement.SetEnabled( true );
-                view.VisualElement.SetDisplayed( true );
-            }
-            if (!view.HasFocusedElement()) {
-                if (!view.LoadFocus()) {
-                    view.Focus();
-                }
-            }
-        }
-        protected virtual void Hide(UIViewBase view, UIViewBase next) {
-            if (view.HasFocusedElement()) {
-                view.SaveFocus();
-            }
-            if (!view.IsAlwaysVisible) {
-                if (!view.IsModal && next.IsModal) {
-                    view.VisualElement.SetEnabled( false );
-                } else {
-                    view.VisualElement.SetDisplayed( false );
-                }
-            }
+
+        // Helpers
+        private static int Compare(VisualElement x, VisualElement y) {
+            return Comparer<int>.Default.Compare( x.GetView().Layer, y.GetView().Layer );
         }
 
     }

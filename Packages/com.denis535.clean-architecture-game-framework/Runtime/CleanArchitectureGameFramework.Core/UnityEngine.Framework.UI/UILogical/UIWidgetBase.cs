@@ -86,16 +86,22 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             this.RemoveChildInternal( child, argument );
         }
+        public bool RemoveChild(Func<UIWidgetBase, bool> predicate, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            var child = Children.LastOrDefault( predicate );
+            if (child != null) {
+                RemoveChild( child, argument );
+                return true;
+            }
+            return false;
+        }
         public int RemoveChildren(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            var count = 0;
-            foreach (var child in Children.Reverse().ToList()) {
-                if (predicate( child )) {
-                    RemoveChild( child, argument );
-                    count++;
-                }
+            var children = Children.Where( predicate ).Reverse().ToList();
+            foreach (var child in children) {
+                RemoveChild( child, argument );
             }
-            return count;
+            return children.Count;
         }
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );

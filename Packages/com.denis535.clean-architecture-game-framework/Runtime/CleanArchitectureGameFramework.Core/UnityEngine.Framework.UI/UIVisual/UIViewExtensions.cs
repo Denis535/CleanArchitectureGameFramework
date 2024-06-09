@@ -49,12 +49,11 @@ namespace UnityEngine.Framework.UI {
                 } else {
                     view.VisualElement.focusable = true;
                     view.VisualElement.delegatesFocus = true;
-                    view.VisualElement.Focus();
+                    view.VisualElement.Focus(); // sometimes it throws an error
                     view.VisualElement.delegatesFocus = false;
                     view.VisualElement.focusable = false;
                 }
             } catch (Exception ex) {
-                // sometimes it throws an error
             }
         }
         public static bool LoadFocus(this UIViewBase view) {

@@ -20,12 +20,8 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
-        // Priority
-        public abstract int Priority { get; }
-        // IsAlwaysVisible
-        public abstract bool IsAlwaysVisible { get; }
-        // IsModal
-        public abstract bool IsModal { get; }
+        // Layer
+        public abstract int Layer { get; }
 
         // Constructor
         public UIViewBase() {
