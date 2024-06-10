@@ -22,7 +22,16 @@ namespace UnityEngine.Framework.UI {
 
         // GetChildren
         public static IEnumerable<UIViewBase> GetChildren(this UIViewBase view) {
-            return view.VisualElement.GetDescendants( i => i.userData == view || i.userData is not UIViewBase ).Select( i => i.userData ).OfType<UIViewBase>();
+            return GetChildren( view.VisualElement );
+            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
+                foreach (var child in element.Children()) {
+                    if (child.userData is UIViewBase) {
+                        yield return (UIViewBase) child.userData;
+                    } else {
+                        foreach (var i in GetChildren( child )) yield return i;
+                    }
+                }
+            }
         }
         public static IEnumerable<UIViewBase> GetDescendants(this UIViewBase view) {
             return view.VisualElement.GetDescendants().Select( i => i.userData ).OfType<UIViewBase>();
@@ -53,7 +62,7 @@ namespace UnityEngine.Framework.UI {
                     view.VisualElement.delegatesFocus = false;
                     view.VisualElement.focusable = false;
                 }
-            } catch (Exception ex) {
+            } catch {
             }
         }
         public static bool LoadFocus(this UIViewBase view) {

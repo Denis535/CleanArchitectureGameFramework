@@ -18,7 +18,7 @@ namespace UnityEngine.UIElements {
 
         // SendEvent
         public static void SendEventImmediate(this VisualElement element, EventBase @event) {
-            Assert.Operation.Message( $"Element {element} must have panel" ).Valid( element.panel != null );
+            Assert.Operation.Message( $"Element {element} must be attached" ).Valid( element.IsAttached() );
             var type_VisualElement = typeof( VisualElement );
             var type_EventBase = typeof( EventBase );
             var type_DispatchMode = typeof( VisualElement ).Assembly.GetType( "UnityEngine.UIElements.DispatchMode" ) ?? throw Exceptions.Internal.Exception( $"Can not find 'DispatchMode' type" );

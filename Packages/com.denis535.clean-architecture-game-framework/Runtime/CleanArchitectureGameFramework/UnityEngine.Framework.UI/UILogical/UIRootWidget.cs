@@ -21,26 +21,26 @@ namespace UnityEngine.Framework.UI {
         }
 
         // OnActivate
-        public override void OnActivate(object? argument) {
+        protected override void OnActivate(object? argument) {
         }
-        public override void OnDeactivate(object? argument) {
+        protected override void OnDeactivate(object? argument) {
         }
 
         // OnDescendantActivate
-        public override void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) {
+        protected override void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) {
         }
-        public override void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) {
+        protected override void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) {
         }
-        public override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
+        protected override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
         }
-        public override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
+        protected override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
         }
 
         // ShowView
-        public override void ShowView(UIViewBase view) {
+        protected override void ShowView(UIViewBase view) {
             View.AddView( view );
         }
-        public override void HideView(UIViewBase view) {
+        protected override void HideView(UIViewBase view) {
             View.RemoveView( view );
         }
 
@@ -59,8 +59,8 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void OnCancel(NavigationCancelEvent evt) {
-            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.panel != null && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
-            var button = widget?.Query<Button>().Where( i => i.panel != null && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
+            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
+            var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
             if (button != null) {
                 Click( button );
                 evt.StopPropagation();

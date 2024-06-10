@@ -9,6 +9,11 @@ namespace UnityEngine.UIElements {
 
     public static partial class VisualElementExtensions {
 
+        // IsAttached
+        public static bool IsAttached(this VisualElement element) {
+            return element.panel != null;
+        }
+
         // IsDisplayed
         public static bool IsDisplayedSelf(this VisualElement element) {
             return element.resolvedStyle.display == DisplayStyle.Flex;

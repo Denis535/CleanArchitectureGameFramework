@@ -42,18 +42,18 @@ namespace UnityEngine.UIElements {
         }
 
         // GetDescendants
-        public static IEnumerable<VisualElement> GetDescendants(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
-            if (descentIntoElement( element )) {
-                foreach (var child in element.Children()) {
-                    yield return child;
-                    foreach (var i in child.GetDescendants( descentIntoElement )) yield return i;
-                }
-            }
-        }
-        public static IEnumerable<VisualElement> GetDescendantsAndSelf(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
-            yield return element;
-            foreach (var i in element.GetDescendants( descentIntoElement )) yield return i;
-        }
+        //public static IEnumerable<VisualElement> GetDescendants(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
+        //    if (descentIntoElement( element )) {
+        //        foreach (var child in element.Children()) {
+        //            yield return child;
+        //            foreach (var i in child.GetDescendants( descentIntoElement )) yield return i;
+        //        }
+        //    }
+        //}
+        //public static IEnumerable<VisualElement> GetDescendantsAndSelf(this VisualElement element, Func<VisualElement, bool> descentIntoElement) {
+        //    yield return element;
+        //    foreach (var i in element.GetDescendants( descentIntoElement )) yield return i;
+        //}
 
         // Add
         //public static void Add(this VisualElement element, VisualElement child) {
