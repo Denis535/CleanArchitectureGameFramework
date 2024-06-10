@@ -21,25 +21,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // Update
-        public virtual void Update() {
-        }
-        public virtual void LateUpdate() {
-        }
-
-        // Helpers
-        protected static bool IsMainTheme(UIRouterState state) {
-            if (state is UIRouterState.MainSceneLoading or UIRouterState.MainSceneLoaded or UIRouterState.GameSceneLoading) {
-                return true;
-            }
-            return false;
-        }
-        protected static bool IsGameTheme(UIRouterState state) {
-            if (state is UIRouterState.GameSceneLoaded) {
-                return true;
-            }
-            return false;
-        }
         // Helpers
         protected static void Play(AudioSource source, AudioClip clip) {
             Assert.Operation.Message( $"AudioClip {source.clip} must be null" ).Valid( source.clip == null );

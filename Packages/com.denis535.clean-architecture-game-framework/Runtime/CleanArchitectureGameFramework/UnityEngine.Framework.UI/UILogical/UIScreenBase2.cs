@@ -25,12 +25,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // Update
-        public virtual void Update() {
-        }
-        public virtual void LateUpdate() {
-        }
-
         // AddWidget
         public override void AddWidget(UIWidgetBase widget, object? argument = null) {
             base.AddWidget( widget, argument );
@@ -39,20 +33,6 @@ namespace UnityEngine.Framework.UI {
         public override void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             if (Document && Document.rootVisualElement != null) Document.Remove( widget.View! );
             base.RemoveWidget( widget, argument );
-        }
-
-        // Helpers
-        protected static bool IsMainScreen(UIRouterState state) {
-            if (state is UIRouterState.MainSceneLoading or UIRouterState.MainSceneLoaded or UIRouterState.GameSceneLoading) {
-                return true;
-            }
-            return false;
-        }
-        protected static bool IsGameScreen(UIRouterState state) {
-            if (state is UIRouterState.GameSceneLoaded) {
-                return true;
-            }
-            return false;
         }
 
     }

@@ -5,11 +5,12 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase2<TMode, TLevel> : GameBase
+    public abstract class GameBase2<TMode, TLevel, TState> : GameBase
         where TMode : Enum
-        where TLevel : Enum {
+        where TLevel : Enum
+        where TState : Enum {
 
-        private GameState state;
+        private TState state = default!;
         private bool isPaused;
 
         // Container
@@ -21,16 +22,16 @@ namespace UnityEngine.Framework.Entities {
         // Level
         public TLevel Level { get; }
         // State
-        public GameState State {
+        public TState State {
             get => state;
             protected set {
                 var prev = state;
-                state = GetState( value, prev );
+                state = value;
                 OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<GameState>? OnStateChangeEvent;
+        public event Action<TState>? OnStateChangeEvent;
         // IsPaused
         public bool IsPaused {
             get => isPaused;
@@ -61,25 +62,10 @@ namespace UnityEngine.Framework.Entities {
         public abstract void LateUpdate();
 
         // OnStateChange
-        protected abstract void OnStateChange(GameState state);
+        protected abstract void OnStateChange(TState state);
 
         // OnPauseChange
         protected abstract void OnPauseChange(bool isPaused);
 
-        // Helpers
-        private static GameState GetState(GameState state, GameState prev) {
-            switch (state) {
-                case GameState.Completed:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is GameState.Playing );
-                    return state;
-                default:
-                    throw Exceptions.Internal.NotSupported( $"Transition from {prev} to {state} is not supported" );
-            }
-        }
-
-    }
-    public enum GameState {
-        Playing,
-        Completed
     }
 }

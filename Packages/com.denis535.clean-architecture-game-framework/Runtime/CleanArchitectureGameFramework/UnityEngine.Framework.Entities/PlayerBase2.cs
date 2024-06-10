@@ -5,10 +5,11 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase2<TKind> : PlayerBase
-        where TKind : Enum {
+    public abstract class PlayerBase2<TKind, TState> : PlayerBase
+        where TKind : Enum
+        where TState : Enum {
 
-        private PlayerState state;
+        private TState state = default!;
 
         // Container
         protected IDependencyContainer Container { get; }
@@ -17,16 +18,16 @@ namespace UnityEngine.Framework.Entities {
         // Kind
         public TKind Kind { get; }
         // State
-        public PlayerState State {
+        public TState State {
             get => state;
             set {
                 var prev = state;
-                state = GetState( value, prev );
+                state = value;
                 OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<PlayerState>? OnStateChangeEvent;
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public PlayerBase2(IDependencyContainer container, string name, TKind kind) {
@@ -38,30 +39,8 @@ namespace UnityEngine.Framework.Entities {
             base.Dispose();
         }
 
-        // Update
-        public abstract void Update();
-
         // OnStateChange
-        protected abstract void OnStateChange(PlayerState state);
+        protected abstract void OnStateChange(TState state);
 
-        // Helpers
-        private static PlayerState GetState(PlayerState state, PlayerState prev) {
-            switch (state) {
-                case PlayerState.Winner:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is PlayerState.Playing );
-                    return state;
-                case PlayerState.Looser:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is PlayerState.Playing );
-                    return state;
-                default:
-                    throw Exceptions.Internal.NotSupported( $"Transition from {prev} to {state} is not supported" );
-            }
-        }
-
-    }
-    public enum PlayerState {
-        Playing,
-        Winner,
-        Looser
     }
 }

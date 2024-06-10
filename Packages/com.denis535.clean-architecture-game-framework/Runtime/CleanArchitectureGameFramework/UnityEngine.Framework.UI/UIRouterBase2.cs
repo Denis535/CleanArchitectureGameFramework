@@ -5,22 +5,23 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase2 : UIRouterBase {
+    public abstract class UIRouterBase2<TState> : UIRouterBase
+        where TState : Enum {
 
-        private UIRouterState state;
+        private TState state = default!;
 
         // Container
         protected IDependencyContainer Container { get; }
         // State
-        public UIRouterState State {
+        public TState State {
             get => state;
             protected set {
                 var prev = state;
-                state = GetState( value, prev );
+                state = value;
                 OnStateChangeEvent?.Invoke( state );
             }
         }
-        public event Action<UIRouterState>? OnStateChangeEvent;
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public UIRouterBase2(IDependencyContainer container) {
@@ -30,43 +31,5 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // Helpers
-        private static UIRouterState GetState(UIRouterState state, UIRouterState prev) {
-            switch (state) {
-                case UIRouterState.MainSceneLoading:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.None or UIRouterState.GameSceneLoaded );
-                    return state;
-                case UIRouterState.MainSceneLoaded:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.MainSceneLoading );
-                    return state;
-                case UIRouterState.GameSceneLoading:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.None or UIRouterState.MainSceneLoaded );
-                    return state;
-                case UIRouterState.GameSceneLoaded:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.GameSceneLoading );
-                    return state;
-                case UIRouterState.Quitting:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.MainSceneLoaded or UIRouterState.GameSceneLoaded );
-                    return state;
-                case UIRouterState.Quited:
-                    Assert.Operation.Message( $"Transition from {prev} to {state} is invalid" ).Valid( prev is UIRouterState.Quitting );
-                    return state;
-                default:
-                    throw Exceptions.Internal.NotSupported( $"Transition from {prev} to {state} is not supported" );
-            }
-        }
-
-    }
-    public enum UIRouterState {
-        None,
-        // MainSceneLoading
-        MainSceneLoading,
-        MainSceneLoaded,
-        // GameSceneLoading
-        GameSceneLoading,
-        GameSceneLoaded,
-        // Quitting
-        Quitting,
-        Quited,
     }
 }
