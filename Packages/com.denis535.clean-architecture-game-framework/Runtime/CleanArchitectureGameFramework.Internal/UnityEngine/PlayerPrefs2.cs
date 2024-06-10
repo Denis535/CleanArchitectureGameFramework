@@ -7,7 +7,7 @@ namespace UnityEngine {
 
     public static class PlayerPrefs2 {
 
-        // Get
+        // GetValue
         public static bool GetBool(string key, bool @default) {
             var result = PlayerPrefs.GetString( key, null );
             return result != null && bool.TryParse( result, out var result2 ) ? result2 : @default;
@@ -21,7 +21,7 @@ namespace UnityEngine {
             return result != null && Enum.TryParse( enumType, result, true, out var result2 ) ? (Enum) result2 : @default;
         }
 
-        // Set
+        // SetValue
         public static void SetBool(string key, bool value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
