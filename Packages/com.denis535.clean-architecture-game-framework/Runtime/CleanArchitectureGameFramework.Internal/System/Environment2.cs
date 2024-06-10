@@ -7,7 +7,7 @@ namespace System {
 
     // Example:
     // --key --key2 val --key3 val val val
-    public static class CommandLineInterface {
+    public static class Environment2 {
 
         public static bool HasArgument(string key) {
             Assert.Argument.Message( $"Key {key} must start with '-'" ).Valid( key.StartsWith( '-' ) );

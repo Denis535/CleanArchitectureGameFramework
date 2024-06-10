@@ -7,28 +7,28 @@ namespace UnityEngine {
 
     public static class PlayerPrefs2 {
 
-        // Load
-        public static decimal Load(string key, decimal @default) {
-            var result = PlayerPrefs.GetString( key, null );
-            return result != null && decimal.TryParse( result, out var result2 ) ? result2 : @default;
-        }
-        public static bool Load(string key, bool @default) {
+        // Get
+        public static bool GetBool(string key, bool @default) {
             var result = PlayerPrefs.GetString( key, null );
             return result != null && bool.TryParse( result, out var result2 ) ? result2 : @default;
         }
-        public static Enum Load(string key, Enum @default, Type enumType) {
+        public static decimal GetDecimal(string key, decimal @default) {
+            var result = PlayerPrefs.GetString( key, null );
+            return result != null && decimal.TryParse( result, out var result2 ) ? result2 : @default;
+        }
+        public static Enum GetEnum(string key, Enum @default, Type enumType) {
             var result = PlayerPrefs.GetString( key, null );
             return result != null && Enum.TryParse( enumType, result, true, out var result2 ) ? (Enum) result2 : @default;
         }
 
-        // Save
-        public static void Save(string key, decimal value) {
+        // Set
+        public static void SetBool(string key, bool value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
-        public static void Save(string key, bool value) {
+        public static void SetDecimal(string key, decimal value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
-        public static void Save(string key, Enum value) {
+        public static void SetEnum(string key, Enum value) {
             PlayerPrefs.SetString( key, value.ToString() );
         }
 
