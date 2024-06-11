@@ -19,4 +19,18 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
+    public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : UIViewBase {
+
+        // System
+        protected IDependencyContainer Container { get; }
+
+        // Constructor
+        public UIWidgetBase2(IDependencyContainer container) {
+            Container = container;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
 }
