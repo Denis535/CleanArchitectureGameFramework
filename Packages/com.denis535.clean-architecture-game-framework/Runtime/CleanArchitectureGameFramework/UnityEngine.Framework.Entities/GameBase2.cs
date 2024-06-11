@@ -13,6 +13,8 @@ namespace UnityEngine.Framework.Entities {
         private TState state = default!;
         private bool isPaused;
 
+        // System
+        protected IDependencyContainer Container { get; }
         // Name
         public string Name { get; }
         // Mode
@@ -42,14 +44,16 @@ namespace UnityEngine.Framework.Entities {
             }
         }
         public event Action<bool>? OnPauseChangeEvent;
-        // Container
-        protected abstract IDependencyContainer Container { get; }
 
         // Constructor
-        public GameBase2(string name, TMode mode, TLevel level) {
+        public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) {
+            Container = container;
             Name = name;
             Mode = mode;
             Level = level;
+        }
+        public override void Dispose() {
+            base.Dispose();
         }
 
         // Update
