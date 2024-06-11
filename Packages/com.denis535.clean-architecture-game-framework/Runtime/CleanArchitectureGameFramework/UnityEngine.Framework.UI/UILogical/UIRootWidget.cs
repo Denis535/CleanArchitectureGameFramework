@@ -47,8 +47,8 @@ namespace UnityEngine.Framework.UI {
         // Helpers
         protected static T CreateView<T>() where T : UIRootWidgetView, new() {
             var view = new T();
-            view.OnSubmit( OnSubmit );
-            view.OnCancel( OnCancel );
+            view.OnSubmit.RegisterCallback( OnSubmit );
+            view.OnCancel.RegisterCallback( OnCancel );
             return view;
         }
         protected static void OnSubmit(NavigationSubmitEvent evt) {

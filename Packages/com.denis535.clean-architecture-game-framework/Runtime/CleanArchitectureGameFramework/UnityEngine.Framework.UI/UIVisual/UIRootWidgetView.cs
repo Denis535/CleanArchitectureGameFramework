@@ -15,6 +15,9 @@ namespace UnityEngine.Framework.UI {
         public override int Layer => throw Exceptions.Internal.NotImplemented( $"Property 'Layer' is not implemented" );
         // Views
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
+        // OnSubmit
+        public Observable<NavigationSubmitEvent> OnSubmit => widget.AsObservable<NavigationSubmitEvent>();
+        public Observable<NavigationCancelEvent> OnCancel => widget.AsObservable<NavigationCancelEvent>();
 
         // Constructor
         public UIRootWidgetView() {
@@ -43,14 +46,6 @@ namespace UnityEngine.Framework.UI {
         public virtual void RemoveView(UIViewBase view) {
             widget.Remove( view );
             Recalculate( Views.ToArray() );
-        }
-
-        // OnEvent
-        public void OnSubmit(EventCallback<NavigationSubmitEvent> callback) {
-            widget.OnSubmit( callback, TrickleDown.TrickleDown );
-        }
-        public void OnCancel(EventCallback<NavigationCancelEvent> callback) {
-            widget.OnCancel( callback, TrickleDown.TrickleDown );
         }
 
         // Recalculate
