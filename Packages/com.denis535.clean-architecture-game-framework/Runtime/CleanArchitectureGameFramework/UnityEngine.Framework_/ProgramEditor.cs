@@ -12,16 +12,18 @@ namespace UnityEngine.Framework {
     using UnityEngine.Framework.UI;
     using UnityEngine.UIElements;
 
-    [CustomEditor( typeof( ProgramBase ), true )]
+    [CustomEditor( typeof( ProgramBase2 ), true )]
     public class ProgramEditor : Editor {
 
         // Target
-        protected ProgramBase Target => (ProgramBase) target;
-        protected virtual UIThemeBase? Theme => (Target as IDependencyContainer)?.GetDependency<UIThemeBase>();
-        protected virtual UIScreenBase? Screen => (Target as IDependencyContainer)?.GetDependency<UIScreenBase>();
-        protected virtual UIRouterBase? Router => (Target as IDependencyContainer)?.GetDependency<UIRouterBase>();
-        protected virtual ApplicationBase? Application => (Target as IDependencyContainer)?.GetDependency<ApplicationBase>();
-        protected virtual GameBase? Game => (Target as IDependencyContainer)?.GetDependency<GameBase>();
+        protected ProgramBase2 Target => (ProgramBase2) target;
+        // Container
+        protected virtual IDependencyContainer Container => Target;
+        protected virtual UIThemeBase? Theme => Container.GetDependency<UIThemeBase>();
+        protected virtual UIScreenBase? Screen => Container.GetDependency<UIScreenBase>();
+        protected virtual UIRouterBase? Router => Container.GetDependency<UIRouterBase>();
+        protected virtual ApplicationBase? Application => Container.GetDependency<ApplicationBase>();
+        protected virtual GameBase? Game => Container.GetDependency<GameBase>();
 
         // Awake
         protected virtual void Awake() {

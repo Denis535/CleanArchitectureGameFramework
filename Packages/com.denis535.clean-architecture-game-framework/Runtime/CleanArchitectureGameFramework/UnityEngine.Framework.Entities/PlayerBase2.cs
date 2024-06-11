@@ -11,8 +11,6 @@ namespace UnityEngine.Framework.Entities {
 
         private TState state = default!;
 
-        // Container
-        protected IDependencyContainer Container { get; }
         // Name
         public string Name { get; }
         // Kind
@@ -28,15 +26,13 @@ namespace UnityEngine.Framework.Entities {
             }
         }
         public event Action<TState>? OnStateChangeEvent;
+        // Container
+        protected abstract IDependencyContainer Container { get; }
 
         // Constructor
-        public PlayerBase2(IDependencyContainer container, string name, TKind kind) {
-            Container = container;
+        public PlayerBase2(string name, TKind kind) {
             Name = name;
             Kind = kind;
-        }
-        public override void Dispose() {
-            base.Dispose();
         }
 
         // OnStateChange

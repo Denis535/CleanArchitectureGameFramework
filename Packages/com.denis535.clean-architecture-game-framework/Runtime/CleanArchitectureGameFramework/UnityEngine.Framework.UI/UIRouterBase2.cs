@@ -10,8 +10,6 @@ namespace UnityEngine.Framework.UI {
 
         private TState state = default!;
 
-        // Container
-        protected IDependencyContainer Container { get; }
         // State
         public TState State {
             get => state;
@@ -22,13 +20,11 @@ namespace UnityEngine.Framework.UI {
             }
         }
         public event Action<TState>? OnStateChangeEvent;
+        // Container
+        protected abstract IDependencyContainer Container { get; }
 
         // Constructor
-        public UIRouterBase2(IDependencyContainer container) {
-            Container = container;
-        }
-        public override void Dispose() {
-            base.Dispose();
+        public UIRouterBase2() {
         }
 
     }

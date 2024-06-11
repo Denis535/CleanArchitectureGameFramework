@@ -8,21 +8,17 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIScreenBase2 : UIScreenBase {
 
-        // Container
-        protected IDependencyContainer Container { get; }
         // Document
         protected UIDocument Document { get; }
         // AudioSource
         protected AudioSource AudioSource { get; }
+        // Container
+        protected abstract IDependencyContainer Container { get; }
 
         // Constructor
-        public UIScreenBase2(IDependencyContainer container, UIDocument document, AudioSource audioSource) {
-            Container = container;
+        public UIScreenBase2(UIDocument document, AudioSource audioSource) {
             Document = document;
             AudioSource = audioSource;
-        }
-        public override void Dispose() {
-            base.Dispose();
         }
 
         // AddWidget

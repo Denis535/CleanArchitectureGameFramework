@@ -7,18 +7,14 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIThemeBase2 : UIThemeBase {
 
-        // Container
-        protected IDependencyContainer Container { get; }
         // AudioSource
         protected AudioSource AudioSource { get; }
+        // Container
+        protected abstract IDependencyContainer Container { get; }
 
         // Constructor
-        public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
-            Container = container;
+        public UIThemeBase2(AudioSource audioSource) {
             AudioSource = audioSource;
-        }
-        public override void Dispose() {
-            base.Dispose();
         }
 
         // Helpers
