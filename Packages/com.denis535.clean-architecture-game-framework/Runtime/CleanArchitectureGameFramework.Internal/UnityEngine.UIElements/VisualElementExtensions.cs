@@ -98,27 +98,6 @@ namespace UnityEngine.UIElements {
             return element;
         }
 
-        // GetValueMinMax
-        public static ValueMinMax<T> GetValueMinMax<T>(this BaseSlider<T> field) where T : IComparable<T> {
-            return new ValueMinMax<T>( field.value, field.lowValue, field.highValue );
-        }
-        public static void GetValueMinMax<T>(this BaseSlider<T> field, ValueMinMax<T> value) where T : IComparable<T> {
-            (field.value, field.lowValue, field.highValue) = (value.Value, value.Min, value.Max);
-        }
-
-        // GetValueChoices
-        public static ValueChoices<T> GetValueChoices<T>(this PopupField<T> field) {
-            return new ValueChoices<T>( field.value, field.choices );
-        }
-        public static void SetValueChoices<T>(this PopupField<T> field, ValueChoices<T> value) {
-            (field.value, field.choices) = (value.Value, value.Choices);
-        }
-
-        // AsObservable
-        public static Observable<T> AsObservable<T>(this VisualElement element) where T : notnull, EventBase<T>, new() {
-            return new Observable<T>( element );
-        }
-
         //// OnEvent
         //public static void OnEvent<T>(this VisualElement element, EventCallback<T> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where T : EventBase<T>, new() {
         //    element.RegisterCallback( callback, useTrickleDown );
@@ -218,47 +197,5 @@ namespace UnityEngine.UIElements {
         //    element.RegisterCallback<ChangeEvent<bool>>( callback, useTrickleDown );
         //}
 
-    }
-    public struct ValueMinMax<T> where T : IComparable<T> {
-        public readonly T Value;
-        public readonly T Min;
-        public readonly T Max;
-        public ValueMinMax(T value, T min, T max) {
-            Value = value;
-            Min = min;
-            Max = max;
-        }
-        public override string ToString() {
-            return Value.ToString();
-        }
-    }
-    public struct ValueChoices<T> {
-        public readonly T Value;
-        public readonly List<T> Choices;
-        public ValueChoices(T value, List<T> choices) {
-            Value = value;
-            Choices = choices;
-        }
-        public override string ToString() {
-            return Value?.ToString() ?? "Null";
-        }
-    }
-    public struct Observable<T> where T : notnull, EventBase<T>, new() {
-        private readonly VisualElement visualElement;
-        public Observable(VisualElement visualElement) {
-            this.visualElement = visualElement;
-        }
-        public void RegisterCallback(EventCallback<T> callback) {
-            visualElement.RegisterCallback( callback );
-        }
-        public void RegisterCallbackOnce(EventCallback<T> callback) {
-            visualElement.RegisterCallbackOnce( callback );
-        }
-        public void UnregisterCallback(EventCallback<T> callback) {
-            visualElement.UnregisterCallback( callback );
-        }
-        public override string ToString() {
-            return base.ToString();
-        }
     }
 }

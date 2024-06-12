@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static partial class UIViewExtensions {
+    public static class UIViewExtensions {
 
         // GetParent
         public static UIViewBase? GetParent(this UIViewBase view) {
@@ -91,7 +91,7 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public static partial class UIViewExtensions {
+    public static class VisualElementExtensions {
 
         // GetView
         public static UIViewBase GetView(this VisualElement element) {
@@ -123,5 +123,78 @@ namespace UnityEngine.Framework.UI {
             return element.Contains( view.VisualElement );
         }
 
+        // AsValue
+        public static ValueField<T> AsValue<T>(this BaseField<T> field) {
+            return new ValueField<T>( field );
+        }
+        public static ValueMinMaxField<T> AsValueMinMax<T>(this BaseSlider<T> field) where T : IComparable<T> {
+            return new ValueMinMaxField<T>( field );
+        }
+        public static ValueChoicesField<T> AsValueChoices<T>(this PopupField<T> field) {
+            return new ValueChoicesField<T>( field );
+        }
+
+        // AsObservable
+        public static Observable<T> AsObservable<T>(this VisualElement element) where T : notnull, EventBase<T>, new() {
+            return new Observable<T>( element );
+        }
+
+    }
+    public struct ValueField<T> {
+        private readonly BaseField<T> field;
+        public T Value {
+            get => field.value;
+            set => field.value = value;
+        }
+        public ValueField(BaseField<T> field) {
+            this.field = field;
+        }
+    }
+    public struct ValueMinMaxField<T> where T : IComparable<T> {
+        private readonly BaseSlider<T> field;
+        public T Value {
+            get => field.value;
+            set => field.value = value;
+        }
+        public T Min {
+            get => field.lowValue;
+            set => field.lowValue = value;
+        }
+        public T Max {
+            get => field.highValue;
+            set => field.highValue = value;
+        }
+        public ValueMinMaxField(BaseSlider<T> field) {
+            this.field = field;
+        }
+    }
+    public struct ValueChoicesField<T> {
+        private readonly PopupField<T> field;
+        public T Value {
+            get => field.value;
+            set => field.value = value;
+        }
+        public List<T> Choices {
+            get => field.choices;
+            set => field.choices = value;
+        }
+        public ValueChoicesField(PopupField<T> field) {
+            this.field = field;
+        }
+    }
+    public struct Observable<T> where T : notnull, EventBase<T>, new() {
+        private readonly VisualElement visualElement;
+        public Observable(VisualElement visualElement) {
+            this.visualElement = visualElement;
+        }
+        public void Register(EventCallback<T> callback) {
+            visualElement.RegisterCallback( callback );
+        }
+        public void RegisterOnce(EventCallback<T> callback) {
+            visualElement.RegisterCallbackOnce( callback );
+        }
+        public void Unregister(EventCallback<T> callback) {
+            visualElement.UnregisterCallback( callback );
+        }
     }
 }
