@@ -102,17 +102,6 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Add
-        public static void Add(this UIDocument document, UIViewBase view) {
-            document.rootVisualElement.Add( view.VisualElement );
-        }
-        public static void Remove(this UIDocument document, UIViewBase view) {
-            document.rootVisualElement.Remove( view.VisualElement );
-        }
-        public static bool Contains(this UIDocument document, UIViewBase view) {
-            return document.rootVisualElement.Contains( view.VisualElement );
-        }
-
-        // Add
         public static void Add(this VisualElement element, UIViewBase view) {
             element.Add( view.VisualElement );
         }
@@ -124,16 +113,16 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AsObservable
-        public static Observable<T> AsObservable<T>(this VisualElement element) where T : notnull, EventBase<T>, new() {
-            return new Observable<T>( element );
+        public static UIObservable<T> AsObservable<T>(this VisualElement element) where T : notnull, EventBase<T>, new() {
+            return new UIObservable<T>( element );
         }
 
     }
-    public struct Observable<T> where T : notnull, EventBase<T>, new() {
+    public struct UIObservable<T> where T : notnull, EventBase<T>, new() {
 
         private readonly VisualElement visualElement;
 
-        public Observable(VisualElement visualElement) {
+        public UIObservable(VisualElement visualElement) {
             this.visualElement = visualElement;
         }
 

@@ -26,10 +26,10 @@ namespace UnityEngine.Framework.UI {
         // AddWidget
         public override void AddWidget(UIWidgetBase widget, object? argument = null) {
             base.AddWidget( widget, argument );
-            Document.Add( widget.View! );
+            Document.rootVisualElement.Add( widget.View! );
         }
         public override void RemoveWidget(UIWidgetBase widget, object? argument = null) {
-            if (Document && Document.rootVisualElement != null) Document.Remove( widget.View! );
+            if (Document && Document.rootVisualElement != null) Document.rootVisualElement.Remove( widget.View! );
             base.RemoveWidget( widget, argument );
         }
 

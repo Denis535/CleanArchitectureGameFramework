@@ -16,8 +16,8 @@ namespace UnityEngine.Framework.UI {
         // Views
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
         // OnSubmit
-        public Observable<NavigationSubmitEvent> OnSubmit => widget.AsObservable<NavigationSubmitEvent>();
-        public Observable<NavigationCancelEvent> OnCancel => widget.AsObservable<NavigationCancelEvent>();
+        public UIObservable<NavigationSubmitEvent> OnSubmit => widget.AsObservable<NavigationSubmitEvent>();
+        public UIObservable<NavigationCancelEvent> OnCancel => widget.AsObservable<NavigationCancelEvent>();
 
         // Constructor
         public UIRootWidgetView() {
