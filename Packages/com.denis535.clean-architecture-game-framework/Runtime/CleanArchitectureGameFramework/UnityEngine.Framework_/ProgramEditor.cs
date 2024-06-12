@@ -112,7 +112,7 @@ namespace UnityEngine.Framework {
         protected static string? GetDisplayString(UIViewBase? view) {
             if (view == null) return null;
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => i.GetType().Name, i => i.GetChildren() );
+            builder.AppendHierarchy( view, i => i.GetType().Name, GetChildren );
             return builder.ToString();
         }
         protected static string? GetDisplayString(VisualElement? visualElement) {
@@ -120,6 +120,19 @@ namespace UnityEngine.Framework {
             var builder = new StringBuilder();
             builder.AppendHierarchy( visualElement, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
             return builder.ToString();
+        }
+        // Helpers
+        protected static IEnumerable<UIViewBase> GetChildren(UIViewBase view) {
+            return GetChildren( view.VisualElement );
+            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
+                foreach (var child in element.Children()) {
+                    if (child.userData is UIViewBase) {
+                        yield return (UIViewBase) child.userData;
+                    } else {
+                        foreach (var i in GetChildren( child )) yield return i;
+                    }
+                }
+            }
         }
 
     }

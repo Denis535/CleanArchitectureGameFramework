@@ -12,6 +12,8 @@ namespace UnityEngine.Framework.UI {
         private VisualElement visualElement = default!;
         private VisualElement? focusedElement;
 
+        // Layer
+        public abstract int Layer { get; }
         // VisualElement
         protected internal VisualElement VisualElement {
             internal get => visualElement;
@@ -20,8 +22,6 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
-        // Layer
-        public abstract int Layer { get; }
 
         // Constructor
         public UIViewBase() {
@@ -29,7 +29,7 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !VisualElement.IsAttached() );
-            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( this.GetChildren().All( i => i.IsDisposed ) );
+            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( GetChildren().All( i => i.IsDisposed ) );
             base.Dispose();
         }
 
@@ -39,6 +39,20 @@ namespace UnityEngine.Framework.UI {
         }
         public void SaveFocusedElement(VisualElement? focusedElement) {
             this.focusedElement = focusedElement;
+        }
+
+        // Helpers
+        protected IEnumerable<UIViewBase> GetChildren() {
+            return GetChildren( visualElement );
+            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
+                foreach (var child in element.Children()) {
+                    if (child.userData is UIViewBase) {
+                        yield return (UIViewBase) child.userData;
+                    } else {
+                        foreach (var i in GetChildren( child )) yield return i;
+                    }
+                }
+            }
         }
 
     }
