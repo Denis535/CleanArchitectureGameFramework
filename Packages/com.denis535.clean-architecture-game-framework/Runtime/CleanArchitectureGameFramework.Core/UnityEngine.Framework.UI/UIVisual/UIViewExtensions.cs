@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static class UIViewExtensions {
+    public static partial class UIViewExtensions {
 
         // GetParent
         public static UIViewBase? GetParent(this UIViewBase view) {
@@ -91,7 +91,7 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public static class VisualElementExtensions {
+    public static partial class UIViewExtensions {
 
         // GetView
         public static UIViewBase GetView(this VisualElement element) {
@@ -110,30 +110,6 @@ namespace UnityEngine.Framework.UI {
         }
         public static bool Contains(this VisualElement element, UIViewBase view) {
             return element.Contains( view.VisualElement );
-        }
-
-        // AsObservable
-        public static UIObservable<T> AsObservable<T>(this VisualElement element) where T : notnull, EventBase<T>, new() {
-            return new UIObservable<T>( element );
-        }
-
-    }
-    public struct UIObservable<T> where T : notnull, EventBase<T>, new() {
-
-        private readonly VisualElement visualElement;
-
-        public UIObservable(VisualElement visualElement) {
-            this.visualElement = visualElement;
-        }
-
-        public void Register(EventCallback<T> callback) {
-            visualElement.RegisterCallback( callback );
-        }
-        public void RegisterOnce(EventCallback<T> callback) {
-            visualElement.RegisterCallbackOnce( callback );
-        }
-        public void Unregister(EventCallback<T> callback) {
-            visualElement.UnregisterCallback( callback );
         }
 
     }
