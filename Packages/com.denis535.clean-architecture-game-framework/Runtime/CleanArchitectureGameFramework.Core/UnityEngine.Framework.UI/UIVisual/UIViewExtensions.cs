@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -67,6 +68,14 @@ namespace UnityEngine.Framework.UI {
         }
         public static T GetView<T>(this VisualElement element) where T : UIViewBase {
             return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+        }
+
+        // Children
+        public static IEnumerable<UIViewBase> Children2(this VisualElement element) {
+            return element.Children().Select( i => i.GetView() );
+        }
+        public static IEnumerable<T> Children2<T>(this VisualElement element) where T : UIViewBase {
+            return element.Children().Select( i => i.GetView<T>() );
         }
 
         // Add
