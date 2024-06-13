@@ -64,10 +64,10 @@ namespace UnityEngine.Framework.UI {
 
         // GetView
         public static UIViewBase GetView(this VisualElement element) {
-            return (UIViewBase) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+            return (UIViewBase) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have view" );
         }
         public static T GetView<T>(this VisualElement element) where T : UIViewBase {
-            return (T) element.userData ?? throw Exceptions.Internal.NullReference( $"View is null" );
+            return (T) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have {typeof( T )} view" );
         }
 
         // Children
@@ -79,14 +79,14 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Add
-        public static void Add(this VisualElement element, UIViewBase view) {
-            element.Add( view.VisualElement );
+        public static void Add(this VisualElement element, UIViewBase child) {
+            element.Add( child.VisualElement );
         }
-        public static void Remove(this VisualElement element, UIViewBase view) {
-            element.Remove( view.VisualElement );
+        public static void Remove(this VisualElement element, UIViewBase child) {
+            element.Remove( child.VisualElement );
         }
-        public static bool Contains(this VisualElement element, UIViewBase view) {
-            return element.Contains( view.VisualElement );
+        public static bool Contains(this VisualElement element, UIViewBase child) {
+            return element.Contains( child.VisualElement );
         }
 
     }
