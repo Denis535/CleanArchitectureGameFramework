@@ -6,25 +6,11 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    public abstract class UIThemeBase2<TState> : UIThemeBase where TState : Enum {
-
-        private TState state = default!;
+    public abstract class UIThemeBase2 : UIThemeBase {
 
         // System
         protected IDependencyContainer Container { get; }
         protected AudioSource AudioSource { get; }
-        // State
-        public TState State {
-            get => state;
-            protected internal set {
-                if (!EqualityComparer<TState>.Default.Equals( value, state )) {
-                    state = value;
-                    OnStateChange( state );
-                    OnStateChangeEvent?.Invoke( state );
-                }
-            }
-        }
-        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
@@ -35,9 +21,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // OnStateChange
-        protected abstract void OnStateChange(TState state);
-
         // Helpers
         protected static void Play(AudioSource source, AudioClip clip) {
             Assert.Operation.Message( $"AudioClip {source.clip} must be null" ).Valid( source.clip == null );
@@ -46,17 +29,17 @@ namespace UnityEngine.Framework.UI {
             source.pitch = 1;
             source.Play();
         }
-        protected static void Pause(AudioSource source, bool value) {
+        protected static void Stop(AudioSource source) {
+            Assert.Operation.Message( $"AudioClip must be non-null" ).Valid( source.clip != null );
+            source.Stop();
+            source.clip = null;
+        }
+        protected static void SetPaused(AudioSource source, bool value) {
             if (value) {
                 source.Pause();
             } else {
                 source.UnPause();
             }
-        }
-        protected static void Stop(AudioSource source) {
-            Assert.Operation.Message( $"AudioClip must be non-null" ).Valid( source.clip != null );
-            source.Stop();
-            source.clip = null;
         }
         protected static bool IsCompleted(AudioSource source) {
             return source.clip is not null && Mathf.Approximately( source.time, source.clip.length );
@@ -95,6 +78,34 @@ namespace UnityEngine.Framework.UI {
             }
             return array[ 0 ];
         }
+
+    }
+    public abstract class UIThemeBase2<TState> : UIThemeBase2 where TState : Enum {
+
+        private TState state = default!;
+
+        // State
+        public TState State {
+            get => state;
+            protected internal set {
+                if (!EqualityComparer<TState>.Default.Equals( value, state )) {
+                    state = value;
+                    OnStateChange( state );
+                    OnStateChangeEvent?.Invoke( state );
+                }
+            }
+        }
+        public event Action<TState>? OnStateChangeEvent;
+
+        // Constructor
+        public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) : base( container, audioSource ) {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+        // OnStateChange
+        protected abstract void OnStateChange(TState state);
 
     }
 }

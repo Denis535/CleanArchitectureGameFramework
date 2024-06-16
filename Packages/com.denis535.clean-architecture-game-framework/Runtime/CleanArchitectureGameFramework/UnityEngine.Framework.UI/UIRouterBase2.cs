@@ -5,12 +5,24 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase2<TState> : UIRouterBase where TState : Enum {
-
-        private TState state = default!;
+    public abstract class UIRouterBase2 : UIRouterBase {
 
         // System
         protected IDependencyContainer Container { get; }
+
+        // Constructor
+        public UIRouterBase2(IDependencyContainer container) {
+            Container = container;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    public abstract class UIRouterBase2<TState> : UIRouterBase2 where TState : Enum {
+
+        private TState state = default!;
+
         // State
         public TState State {
             get => state;
@@ -24,8 +36,7 @@ namespace UnityEngine.Framework.UI {
         public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
-        public UIRouterBase2(IDependencyContainer container) {
-            Container = container;
+        public UIRouterBase2(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();
