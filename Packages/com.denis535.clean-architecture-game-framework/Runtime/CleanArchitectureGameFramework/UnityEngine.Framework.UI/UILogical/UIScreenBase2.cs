@@ -18,10 +18,11 @@ namespace UnityEngine.Framework.UI {
         public TState State {
             get => state;
             protected internal set {
-                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
-                state = value;
-                OnStateChange( state );
-                OnStateChangeEvent?.Invoke( state );
+                if (!EqualityComparer<TState>.Default.Equals( value, state )) {
+                    state = value;
+                    OnStateChange( state );
+                    OnStateChangeEvent?.Invoke( state );
+                }
             }
         }
         public event Action<TState>? OnStateChangeEvent;
