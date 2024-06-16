@@ -16,11 +16,11 @@ namespace UnityEngine.Framework.UI {
         // Views
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
         // OnSubmit
-        public event EventCallback<NavigationSubmitEvent> OnSubmit {
+        public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
             add => widget.RegisterCallback( value );
             remove => widget.UnregisterCallback( value );
         }
-        public event EventCallback<NavigationCancelEvent> OnCancel {
+        public event EventCallback<NavigationCancelEvent> OnCancelEvent {
             add => widget.RegisterCallback( value );
             remove => widget.UnregisterCallback( value );
         }

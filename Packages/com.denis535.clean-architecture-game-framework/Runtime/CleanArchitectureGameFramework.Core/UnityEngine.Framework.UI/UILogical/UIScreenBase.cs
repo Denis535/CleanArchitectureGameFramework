@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
         private readonly Lock @lock = new Lock();
 
         // Widget
-        public UIWidgetBase Widget { get; private set; } = default!;
+        protected internal UIWidgetBase Widget { get; private set; } = default!;
 
         // Constructor
         public UIScreenBase() {

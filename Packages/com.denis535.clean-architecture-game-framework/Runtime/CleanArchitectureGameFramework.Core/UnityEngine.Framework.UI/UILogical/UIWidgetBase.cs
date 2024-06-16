@@ -19,7 +19,7 @@ namespace UnityEngine.Framework.UI {
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
-        internal UIScreenBase? Screen { get; private set; }
+        private UIScreenBase? Screen { get; set; }
         // Root
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase Root => IsRoot ? this : Parent.Root;
