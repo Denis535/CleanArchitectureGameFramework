@@ -6,12 +6,25 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIScreenBase2 : UIScreenBase {
+    public abstract class UIScreenBase2<TState> : UIScreenBase where TState : Enum {
+
+        private TState state = default!;
 
         // System
         protected IDependencyContainer Container { get; }
         protected UIDocument Document { get; }
         protected AudioSource AudioSource { get; }
+        // State
+        public TState State {
+            get => state;
+            protected internal set {
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
+                state = value;
+                OnStateChange( state );
+                OnStateChangeEvent?.Invoke( state );
+            }
+        }
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public UIScreenBase2(IDependencyContainer container, UIDocument document, AudioSource audioSource) {
@@ -32,6 +45,9 @@ namespace UnityEngine.Framework.UI {
             if (Document && Document.rootVisualElement != null) Document.rootVisualElement.Remove( widget.View! );
             base.RemoveWidget( widget, argument );
         }
+
+        // OnStateChange
+        protected abstract void OnStateChange(TState state);
 
     }
 }

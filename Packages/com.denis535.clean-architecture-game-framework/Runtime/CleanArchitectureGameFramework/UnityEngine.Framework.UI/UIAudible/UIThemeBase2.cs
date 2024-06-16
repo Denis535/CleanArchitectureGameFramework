@@ -5,11 +5,24 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIThemeBase2 : UIThemeBase {
+    public abstract class UIThemeBase2<TState> : UIThemeBase where TState : Enum {
+
+        private TState state = default!;
 
         // System
         protected IDependencyContainer Container { get; }
         protected AudioSource AudioSource { get; }
+        // State
+        public TState State {
+            get => state;
+            protected internal set {
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
+                state = value;
+                OnStateChange( state );
+                OnStateChangeEvent?.Invoke( state );
+            }
+        }
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
@@ -19,6 +32,9 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             base.Dispose();
         }
+
+        // OnStateChange
+        protected abstract void OnStateChange(TState state);
 
         // Helpers
         protected static void Play(AudioSource source, AudioClip clip) {

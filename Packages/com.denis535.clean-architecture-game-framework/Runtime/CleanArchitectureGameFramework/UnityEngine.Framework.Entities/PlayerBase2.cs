@@ -5,23 +5,17 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase2<TKind, TState> : PlayerBase
-        where TKind : Enum
-        where TState : Enum {
+    public abstract class PlayerBase2<TState> : PlayerBase where TState : Enum {
 
         private TState state = default!;
 
         // System
         protected IDependencyContainer Container { get; }
-        // Name
-        public string Name { get; }
-        // Kind
-        public TKind Kind { get; }
         // State
         public TState State {
             get => state;
-            set {
-                var prev = state;
+            protected internal set {
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
                 state = value;
                 OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
@@ -30,10 +24,8 @@ namespace UnityEngine.Framework.Entities {
         public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
-        public PlayerBase2(IDependencyContainer container, string name, TKind kind) {
+        public PlayerBase2(IDependencyContainer container) {
             Container = container;
-            Name = name;
-            Kind = kind;
         }
         public override void Dispose() {
             base.Dispose();
@@ -41,6 +33,23 @@ namespace UnityEngine.Framework.Entities {
 
         // OnStateChange
         protected abstract void OnStateChange(TState state);
+
+    }
+    public abstract class PlayerBase2<TKind, TState> : PlayerBase2<TState> where TKind : Enum where TState : Enum {
+
+        // Name
+        public string Name { get; }
+        // Kind
+        public TKind Kind { get; }
+
+        // Constructor
+        public PlayerBase2(IDependencyContainer container, string name, TKind kind) : base( container ) {
+            Name = name;
+            Kind = kind;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }

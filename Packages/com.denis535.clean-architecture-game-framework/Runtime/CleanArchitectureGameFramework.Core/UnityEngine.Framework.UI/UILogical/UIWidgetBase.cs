@@ -48,9 +48,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-    }
-    public abstract partial class UIWidgetBase {
-
         // Activate
         internal void Activate(UIScreenBase screen, object? argument) {
             foreach (var ancestor in this.GetAncestors().Reverse()) {
@@ -123,6 +120,9 @@ namespace UnityEngine.Framework.UI {
         protected abstract void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument);
         protected abstract void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument);
         protected abstract void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument);
+
+    }
+    public abstract partial class UIWidgetBase {
 
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {

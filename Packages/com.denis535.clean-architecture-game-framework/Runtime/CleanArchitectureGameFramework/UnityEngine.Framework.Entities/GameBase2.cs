@@ -5,27 +5,18 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase2<TMode, TLevel, TState> : GameBase
-        where TMode : Enum
-        where TLevel : Enum
-        where TState : Enum {
+    public abstract class GameBase2<TState> : GameBase where TState : Enum {
 
         private TState state = default!;
         private bool isPaused;
 
         // System
         protected IDependencyContainer Container { get; }
-        // Name
-        public string Name { get; }
-        // Mode
-        public TMode Mode { get; }
-        // Level
-        public TLevel Level { get; }
         // State
         public TState State {
             get => state;
             protected set {
-                var prev = state;
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
                 state = value;
                 OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
@@ -46,11 +37,8 @@ namespace UnityEngine.Framework.Entities {
         public event Action<bool>? OnPauseChangeEvent;
 
         // Constructor
-        public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) {
+        public GameBase2(IDependencyContainer container) {
             Container = container;
-            Name = name;
-            Mode = mode;
-            Level = level;
         }
         public override void Dispose() {
             base.Dispose();
@@ -66,6 +54,31 @@ namespace UnityEngine.Framework.Entities {
 
         // OnPauseChange
         protected abstract void OnPauseChange(bool isPaused);
+
+        // Helpers
+        protected static void SetState<T>(PlayerBase2<T> player, T state) where T : Enum {
+            player.State = state;
+        }
+
+    }
+    public abstract class GameBase2<TMode, TLevel, TState> : GameBase2<TState> where TState : Enum {
+
+        // Name
+        public string Name { get; }
+        // Mode
+        public TMode Mode { get; }
+        // Level
+        public TLevel Level { get; }
+
+        // Constructor
+        public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) : base( container ) {
+            Name = name;
+            Mode = mode;
+            Level = level;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }
