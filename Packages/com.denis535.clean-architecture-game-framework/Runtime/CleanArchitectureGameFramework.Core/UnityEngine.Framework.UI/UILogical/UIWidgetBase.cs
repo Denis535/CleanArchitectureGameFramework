@@ -20,13 +20,35 @@ namespace UnityEngine.Framework.UI {
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
         internal UIScreenBase? Screen { get; private set; }
-        // Parent
+        // Root
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
-        public UIWidgetBase? Parent { get; internal set; }
+        public UIWidgetBase Root => IsRoot ? this : Parent.Root;
+        // Parent
+        public UIWidgetBase? Parent { get; private set; }
+        // Ancestors
+        public IEnumerable<UIWidgetBase> Ancestors {
+            get {
+                if (Parent != null) {
+                    yield return Parent;
+                    foreach (var i in Parent.Ancestors) yield return i;
+                }
+            }
+        }
+        public IEnumerable<UIWidgetBase> AncestorsAndSelf => Ancestors.Prepend( this );
         // Children
         public bool HasChildren => Children_.Any();
         private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
+        // Descendants
+        public IEnumerable<UIWidgetBase> Descendants {
+            get {
+                foreach (var child in Children) {
+                    yield return child;
+                    foreach (var i in child.Descendants) yield return i;
+                }
+            }
+        }
+        public IEnumerable<UIWidgetBase> DescendantsAndSelf => Descendants.Prepend( this );
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
         public event Action<object?>? OnAfterActivateEvent;
@@ -50,7 +72,7 @@ namespace UnityEngine.Framework.UI {
 
         // Activate
         internal void Activate(UIScreenBase screen, object? argument) {
-            foreach (var ancestor in this.GetAncestors().Reverse()) {
+            foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantActivateEvent?.Invoke( this, argument );
                 ancestor.OnBeforeDescendantActivate( this, argument );
             }
@@ -69,13 +91,13 @@ namespace UnityEngine.Framework.UI {
                 OnAfterActivate( argument );
                 OnAfterActivateEvent?.Invoke( argument );
             }
-            foreach (var ancestor in this.GetAncestors()) {
+            foreach (var ancestor in Ancestors) {
                 ancestor.OnAfterDescendantActivate( this, argument );
                 ancestor.OnAfterDescendantActivateEvent?.Invoke( this, argument );
             }
         }
         internal void Deactivate(UIScreenBase screen, object? argument) {
-            foreach (var ancestor in this.GetAncestors().Reverse()) {
+            foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantDeactivateEvent?.Invoke( this, argument );
                 ancestor.OnBeforeDescendantDeactivate( this, argument );
             }
@@ -94,7 +116,7 @@ namespace UnityEngine.Framework.UI {
                 OnAfterDeactivate( argument );
                 OnAfterDeactivateEvent?.Invoke( argument );
             }
-            foreach (var ancestor in this.GetAncestors()) {
+            foreach (var ancestor in Ancestors) {
                 ancestor.OnAfterDescendantDeactivate( this, argument );
                 ancestor.OnAfterDescendantDeactivateEvent?.Invoke( this, argument );
             }

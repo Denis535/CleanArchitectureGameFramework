@@ -30,7 +30,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             using (@lock.Enter()) {
                 Widget = widget;
-                widget.Parent = null;
                 widget.Activate( this, argument );
             }
         }
@@ -42,7 +41,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
             using (@lock.Enter()) {
                 widget.Deactivate( this, argument );
-                widget.Parent = null;
                 Widget = null!;
             }
         }
