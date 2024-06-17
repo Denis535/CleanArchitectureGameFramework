@@ -34,32 +34,4 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class UIScreenBase2<TState> : UIScreenBase2 where TState : Enum {
-
-        private TState state = default!;
-
-        // State
-        public TState State {
-            get => state;
-            protected internal set {
-                if (!EqualityComparer<TState>.Default.Equals( value, state )) {
-                    state = value;
-                    OnStateChange( state );
-                    OnStateChangeEvent?.Invoke( state );
-                }
-            }
-        }
-        public event Action<TState>? OnStateChangeEvent;
-
-        // Constructor
-        public UIScreenBase2(IDependencyContainer container, UIDocument document, AudioSource audioSource) : base( container, document, audioSource ) {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // OnStateChange
-        protected abstract void OnStateChange(TState state);
-
-    }
 }
