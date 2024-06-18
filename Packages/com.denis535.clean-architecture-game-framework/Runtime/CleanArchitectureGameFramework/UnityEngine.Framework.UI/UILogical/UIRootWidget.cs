@@ -47,6 +47,7 @@ namespace UnityEngine.Framework.UI {
             view.OnCancelEvent += OnCancel;
             return view;
         }
+        // Helpers
         protected static void OnSubmit(NavigationSubmitEvent evt) {
             var button = evt.target as Button;
             if (button != null) {
@@ -55,8 +56,8 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void OnCancel(NavigationCancelEvent evt) {
-            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
-            var button = widget?.Query<Button>().Where( i => i.IsAttached() && i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
+            var widget = ((VisualElement) evt.target).GetAncestorsAndSelf().Where( i => i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).FirstOrDefault( IsWidget );
+            var button = widget?.Query<Button>().Where( i => i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
             if (button != null) {
                 Click( button );
                 evt.StopPropagation();

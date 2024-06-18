@@ -15,12 +15,12 @@ namespace UnityEngine.Framework.UI {
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
         // OnSubmit
         public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
-            add => widget.RegisterCallback( value );
-            remove => widget.UnregisterCallback( value );
+            add => widget.RegisterCallback( value, TrickleDown.TrickleDown );
+            remove => widget.UnregisterCallback( value, TrickleDown.TrickleDown );
         }
         public event EventCallback<NavigationCancelEvent> OnCancelEvent {
-            add => widget.RegisterCallback( value );
-            remove => widget.UnregisterCallback( value );
+            add => widget.RegisterCallback( value, TrickleDown.TrickleDown );
+            remove => widget.UnregisterCallback( value, TrickleDown.TrickleDown );
         }
 
         // Constructor
