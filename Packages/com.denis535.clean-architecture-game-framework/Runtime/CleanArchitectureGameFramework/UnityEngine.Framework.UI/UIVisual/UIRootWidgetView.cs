@@ -55,6 +55,9 @@ namespace UnityEngine.Framework.UI {
         // Sort
         protected virtual void Sort(VisualElement widget) {
             widget.Sort( Compare );
+            int Compare(VisualElement x, VisualElement y) {
+                return Comparer<int>.Default.Compare( GetPriority( x.GetView() ), GetPriority( y.GetView() ) );
+            }
         }
 
         // Recalculate
@@ -99,10 +102,7 @@ namespace UnityEngine.Framework.UI {
             view.VisualElement.SetDisplayed( true );
         }
 
-        // Heleprs
-        protected virtual int Compare(VisualElement x, VisualElement y) {
-            return Comparer<int>.Default.Compare( GetPriority( x.GetView() ), GetPriority( y.GetView() ) );
-        }
+        // GetPriority
         protected virtual int GetPriority(UIViewBase view) {
             return 0;
         }

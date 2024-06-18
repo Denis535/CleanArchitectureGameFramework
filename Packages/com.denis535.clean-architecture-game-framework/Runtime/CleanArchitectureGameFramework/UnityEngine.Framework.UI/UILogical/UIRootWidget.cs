@@ -7,14 +7,10 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class UIRootWidget : UIWidgetBase<UIRootWidgetView> {
-
-        // View
-        public override UIRootWidgetView View { get; }
+    public abstract class UIRootWidget<TView> : UIWidgetBase<TView> where TView : UIRootWidgetView {
 
         // Constructor
         public UIRootWidget() {
-            View = CreateView<UIRootWidgetView>();
         }
         public override void Dispose() {
             base.Dispose();
@@ -82,6 +78,20 @@ namespace UnityEngine.Framework.UI {
                 evt.target = button;
                 button.SendEvent( evt );
             }
+        }
+
+    }
+    public class UIRootWidget : UIRootWidget<UIRootWidgetView> {
+
+        // View
+        public override UIRootWidgetView View { get; }
+
+        // Constructor
+        public UIRootWidget() {
+            View = CreateView<UIRootWidgetView>();
+        }
+        public override void Dispose() {
+            base.Dispose();
         }
 
     }
