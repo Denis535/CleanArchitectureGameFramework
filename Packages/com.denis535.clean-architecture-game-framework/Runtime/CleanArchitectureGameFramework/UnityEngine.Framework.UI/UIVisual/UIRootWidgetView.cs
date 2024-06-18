@@ -89,7 +89,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected virtual void Recalculate(UIViewBase view, UIViewBase next) {
-            if (GetPriority( view ) == GetPriority( next )) {
+            if (GetLayer( view ) == GetLayer( next )) {
                 view.VisualElement.SetEnabled( false );
                 view.VisualElement.SetDisplayed( false );
             } else {
@@ -104,6 +104,11 @@ namespace UnityEngine.Framework.UI {
 
         // GetPriority
         protected virtual int GetPriority(UIViewBase view) {
+            return 0;
+        }
+
+        // GetLayer
+        protected virtual int GetLayer(UIViewBase view) {
             return 0;
         }
 
