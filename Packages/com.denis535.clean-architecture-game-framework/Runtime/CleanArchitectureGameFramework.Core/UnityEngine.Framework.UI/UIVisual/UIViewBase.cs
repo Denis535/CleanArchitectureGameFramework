@@ -12,8 +12,6 @@ namespace UnityEngine.Framework.UI {
         private VisualElement visualElement = default!;
         private VisualElement? focusedElement;
 
-        // Layer
-        public abstract int Layer { get; }
         // VisualElement
         protected internal VisualElement VisualElement {
             internal get => visualElement;

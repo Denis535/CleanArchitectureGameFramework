@@ -11,8 +11,6 @@ namespace UnityEngine.Framework.UI {
 
         protected readonly VisualElement widget;
 
-        // Layer
-        public override int Layer => throw Exceptions.Internal.NotImplemented( $"Property 'Layer' is not implemented" );
         // Views
         public IEnumerable<UIViewBase> Views => widget.Children().Select( i => i.GetView() );
         // OnSubmit
@@ -46,15 +44,23 @@ namespace UnityEngine.Framework.UI {
         // AddView
         public virtual void AddView(UIViewBase view) {
             widget.Add( view );
-            widget.Sort( Compare );
-            Recalculate( Views.ToArray() );
+            Sort( widget );
+            Recalculate( widget );
         }
         public virtual void RemoveView(UIViewBase view) {
             widget.Remove( view );
-            Recalculate( Views.ToArray() );
+            Recalculate( widget );
+        }
+
+        // Sort
+        protected virtual void Sort(VisualElement widget) {
+            widget.Sort( Compare );
         }
 
         // Recalculate
+        protected virtual void Recalculate(VisualElement widget) {
+            Recalculate( widget.Children().Select( i => i.GetView() ).ToArray() );
+        }
         protected virtual void Recalculate(UIViewBase[] views) {
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
@@ -64,17 +70,10 @@ namespace UnityEngine.Framework.UI {
             for (var i = 0; i < views.Length; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
-                if (next == null) {
-                    view.VisualElement.SetEnabled( true );
-                    view.VisualElement.SetDisplayed( true );
+                if (next != null) {
+                    Recalculate( view, next );
                 } else {
-                    if (view.Layer == next.Layer) {
-                        view.VisualElement.SetEnabled( false );
-                        view.VisualElement.SetDisplayed( false );
-                    } else {
-                        view.VisualElement.SetEnabled( false );
-                        view.VisualElement.SetDisplayed( true );
-                    }
+                    Recalculate( view );
                 }
             }
             if (views.Any()) {
@@ -86,10 +85,26 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
+        protected virtual void Recalculate(UIViewBase view, UIViewBase next) {
+            if (GetPriority( view ) == GetPriority( next )) {
+                view.VisualElement.SetEnabled( false );
+                view.VisualElement.SetDisplayed( false );
+            } else {
+                view.VisualElement.SetEnabled( false );
+                view.VisualElement.SetDisplayed( true );
+            }
+        }
+        protected virtual void Recalculate(UIViewBase view) {
+            view.VisualElement.SetEnabled( true );
+            view.VisualElement.SetDisplayed( true );
+        }
 
-        // Helpers
-        private static int Compare(VisualElement x, VisualElement y) {
-            return Comparer<int>.Default.Compare( x.GetView().Layer, y.GetView().Layer );
+        // Heleprs
+        protected virtual int Compare(VisualElement x, VisualElement y) {
+            return Comparer<int>.Default.Compare( GetPriority( x.GetView() ), GetPriority( y.GetView() ) );
+        }
+        protected virtual int GetPriority(UIViewBase view) {
+            return 0;
         }
 
     }
