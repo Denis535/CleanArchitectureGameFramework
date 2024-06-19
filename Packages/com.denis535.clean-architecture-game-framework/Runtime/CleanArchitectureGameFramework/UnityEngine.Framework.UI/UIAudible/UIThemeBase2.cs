@@ -25,8 +25,6 @@ namespace UnityEngine.Framework.UI {
         protected static void Play(AudioSource source, AudioClip clip) {
             Assert.Operation.Message( $"AudioSource {source} must have no clip" ).Valid( source.clip == null );
             source.clip = clip;
-            source.volume = 1;
-            source.pitch = 1;
             source.Play();
         }
         protected static void Stop(AudioSource source) {
@@ -42,7 +40,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static bool IsCompleted(AudioSource source) {
-            return source.clip is not null && Mathf.Approximately( source.time, source.clip.length );
+            return source.clip != null && Mathf.Approximately( source.time, source.clip.length );
         }
         // Helpers
         protected static void Shuffle<T>(T[] array) {
@@ -52,15 +50,11 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static T[] GetShuffled<T>(T[] array) {
-            var random = new System.Random();
             var result = array.ToArray();
-            for (int i = 0, j = result.Length; i < result.Length; i++, j--) {
-                var rnd = i + random.Next( 0, j );
-                (result[ i ], result[ rnd ]) = (result[ rnd ], result[ i ]);
-            }
+            Shuffle( result );
             return result;
         }
-        protected static T GetNextValue<T>(T[] array, T? value) {
+        protected static T GetNext<T>(T[] array, T? value) {
             var index = array.IndexOf( value );
             if (index != -1) {
                 index = (index + 1) % array.Length;
@@ -68,11 +62,11 @@ namespace UnityEngine.Framework.UI {
             }
             return array[ 0 ];
         }
-        protected static T GetRandomValue<T>(T[] array, T? value) {
+        protected static T GetRandom<T>(T[] array, T? value) {
             var index = UnityEngine.Random.Range( 0, array.Length );
             if (index != -1) {
                 if (ReferenceEquals( array[ index ], value ) && array.Length > 1) {
-                    return GetRandomValue( array, value );
+                    return GetRandom( array, value );
                 }
                 return array[ index ];
             }
