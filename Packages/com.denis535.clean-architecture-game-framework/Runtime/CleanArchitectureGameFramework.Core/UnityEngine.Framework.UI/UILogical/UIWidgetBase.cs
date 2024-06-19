@@ -9,8 +9,6 @@ namespace UnityEngine.Framework.UI {
 
     public abstract partial class UIWidgetBase : Disposable, IUILogicalElement, IDisposable {
 
-        private readonly Lock @lock = new Lock();
-
         // System
         protected virtual bool DisposeWhenDeactivate => true;
         // View
@@ -153,16 +151,14 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Inactive );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
-            using (@lock.Enter()) {
-                if (State is UIWidgetState.Active) {
-                    Children_.Add( child );
-                    child.Parent = this;
-                    child.Activate( Screen!, argument );
-                } else {
-                    Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
-                    Children_.Add( child );
-                    child.Parent = this;
-                }
+            if (State is UIWidgetState.Active) {
+                Children_.Add( child );
+                child.Parent = this;
+                child.Activate( Screen!, argument );
+            } else {
+                Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                Children_.Add( child );
+                child.Parent = this;
             }
         }
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
@@ -171,16 +167,14 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Active );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
-            using (@lock.Enter()) {
-                if (State is UIWidgetState.Active) {
-                    child.Deactivate( Screen!, argument );
-                    child.Parent = null;
-                    Children_.Remove( child );
-                } else {
-                    Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
-                    child.Parent = null;
-                    Children_.Remove( child );
-                }
+            if (State is UIWidgetState.Active) {
+                child.Deactivate( Screen!, argument );
+                child.Parent = null;
+                Children_.Remove( child );
+            } else {
+                Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                child.Parent = null;
+                Children_.Remove( child );
             }
         }
         public bool RemoveChild(Func<UIWidgetBase, bool> predicate, object? argument = null) {

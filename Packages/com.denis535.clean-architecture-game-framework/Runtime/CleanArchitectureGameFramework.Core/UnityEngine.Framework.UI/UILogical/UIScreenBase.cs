@@ -7,8 +7,6 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIScreenBase : Disposable, IUILogicalElement {
 
-        private readonly Lock @lock = new Lock();
-
         // Widget
         protected internal UIWidgetBase Widget { get; private set; } = default!;
 
@@ -28,10 +26,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Inactive );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-            using (@lock.Enter()) {
-                Widget = widget;
-                widget.Activate( this, argument );
-            }
+            Widget = widget;
+            widget.Activate( this, argument );
         }
         public virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
@@ -39,10 +35,8 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Active );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
-            using (@lock.Enter()) {
-                widget.Deactivate( this, argument );
-                Widget = null!;
-            }
+            widget.Deactivate( this, argument );
+            Widget = default!;
         }
 
     }

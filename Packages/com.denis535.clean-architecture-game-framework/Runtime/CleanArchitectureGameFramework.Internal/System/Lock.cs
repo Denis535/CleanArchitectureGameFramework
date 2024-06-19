@@ -6,12 +6,10 @@ namespace System {
 
     public class Lock {
 
-        private bool isLocked;
-        public bool IsLocked { get => isLocked; internal set => isLocked = value; }
-        public bool CanEnter => !isLocked;
+        internal bool IsLocked { get; set; }
+        public bool CanEnter => !IsLocked;
 
         public Lock() {
-            IsLocked = false;
         }
 
         public IDisposable Enter() {
