@@ -39,8 +39,11 @@ namespace UnityEngine.Framework.UI {
                 source.UnPause();
             }
         }
+        protected static bool IsPlaying(AudioSource source) {
+            return source.clip != null && source.time < source.clip.length;
+        }
         protected static bool IsCompleted(AudioSource source) {
-            return source.clip != null && Mathf.Approximately( source.time, source.clip.length );
+            return !IsPlaying( source );
         }
         // Helpers
         protected static void Shuffle<T>(T[] array) {
