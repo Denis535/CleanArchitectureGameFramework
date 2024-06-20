@@ -17,7 +17,6 @@ namespace UnityEngine.Framework.Entities {
             protected internal set {
                 Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
                 state = value;
-                OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
             }
         }
@@ -30,9 +29,6 @@ namespace UnityEngine.Framework.Entities {
         public override void Dispose() {
             base.Dispose();
         }
-
-        // OnStateChange
-        protected abstract void OnStateChange(TState state);
 
     }
     public abstract class PlayerBase2<TKind, TState> : PlayerBase2<TState> where TKind : Enum where TState : Enum {

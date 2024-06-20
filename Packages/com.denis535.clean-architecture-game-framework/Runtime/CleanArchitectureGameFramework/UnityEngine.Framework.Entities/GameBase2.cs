@@ -18,7 +18,6 @@ namespace UnityEngine.Framework.Entities {
             protected set {
                 Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
                 state = value;
-                OnStateChange( state );
                 OnStateChangeEvent?.Invoke( state );
             }
         }
@@ -29,7 +28,6 @@ namespace UnityEngine.Framework.Entities {
             set {
                 if (value != isPaused) {
                     isPaused = value;
-                    OnPauseChange( isPaused );
                     OnPauseChangeEvent?.Invoke( isPaused );
                 }
             }
@@ -48,12 +46,6 @@ namespace UnityEngine.Framework.Entities {
         public abstract void FixedUpdate();
         public abstract void Update();
         public abstract void LateUpdate();
-
-        // OnStateChange
-        protected abstract void OnStateChange(TState state);
-
-        // OnPauseChange
-        protected abstract void OnPauseChange(bool isPaused);
 
         // Helpers
         protected static void SetState<T>(PlayerBase2<T> player, T state) where T : Enum {
