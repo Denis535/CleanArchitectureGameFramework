@@ -5,22 +5,10 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase2<TState> : PlayerBase where TState : Enum {
-
-        private TState state = default!;
+    public abstract class PlayerBase2 : PlayerBase {
 
         // System
         protected IDependencyContainer Container { get; }
-        // State
-        public TState State {
-            get => state;
-            protected internal set {
-                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
-                state = value;
-                OnStateChangeEvent?.Invoke( state );
-            }
-        }
-        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
         public PlayerBase2(IDependencyContainer container) {
@@ -31,17 +19,27 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
-    public abstract class PlayerBase2<TKind, TState> : PlayerBase2<TState> where TKind : Enum where TState : Enum {
+    public abstract class PlayerBase2<TKind, TState> : PlayerBase2 where TKind : Enum where TState : Enum {
+
+        private TState state = default!;
 
         // Name
-        public string Name { get; }
+        public abstract string Name { get; }
         // Kind
-        public TKind Kind { get; }
+        public abstract TKind Kind { get; }
+        // State
+        public virtual TState State {
+            get => state;
+            set {
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
+                state = value;
+                OnStateChangeEvent?.Invoke( state );
+            }
+        }
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
-        public PlayerBase2(IDependencyContainer container, string name, TKind kind) : base( container ) {
-            Name = name;
-            Kind = kind;
+        public PlayerBase2(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();

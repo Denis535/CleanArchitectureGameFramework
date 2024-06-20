@@ -5,23 +5,12 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase2<TState> : GameBase where TState : Enum {
+    public abstract class GameBase2 : GameBase {
 
-        private TState state = default!;
         private bool isPaused;
 
         // System
         protected IDependencyContainer Container { get; }
-        // State
-        public TState State {
-            get => state;
-            protected set {
-                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
-                state = value;
-                OnStateChangeEvent?.Invoke( state );
-            }
-        }
-        public event Action<TState>? OnStateChangeEvent;
         // IsPaused
         public bool IsPaused {
             get => isPaused;
@@ -47,26 +36,30 @@ namespace UnityEngine.Framework.Entities {
         public abstract void Update();
         public abstract void LateUpdate();
 
-        // Helpers
-        protected static void SetState<T>(PlayerBase2<T> player, T state) where T : Enum {
-            player.State = state;
-        }
-
     }
-    public abstract class GameBase2<TMode, TLevel, TState> : GameBase2<TState> where TState : Enum {
+    public abstract class GameBase2<TMode, TLevel, TState> : GameBase2 where TState : Enum {
+
+        private TState state = default!;
 
         // Name
-        public string Name { get; }
+        public abstract string Name { get; }
         // Mode
-        public TMode Mode { get; }
+        public abstract TMode Mode { get; }
         // Level
-        public TLevel Level { get; }
+        public abstract TLevel Level { get; }
+        // State
+        public virtual TState State {
+            get => state;
+            set {
+                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
+                state = value;
+                OnStateChangeEvent?.Invoke( state );
+            }
+        }
+        public event Action<TState>? OnStateChangeEvent;
 
         // Constructor
-        public GameBase2(IDependencyContainer container, string name, TMode mode, TLevel level) : base( container ) {
-            Name = name;
-            Mode = mode;
-            Level = level;
+        public GameBase2(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();
