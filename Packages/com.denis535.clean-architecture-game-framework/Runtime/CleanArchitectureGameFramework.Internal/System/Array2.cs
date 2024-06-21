@@ -12,6 +12,14 @@ namespace System {
             return array;
         }
 
+        // IndexOf
+        public static int IndexOf<T>(this T[] array, T value, int startIndex = 0) {
+            return Array.IndexOf( array, value, startIndex );
+        }
+        public static int LastIndexOf<T>(this T[] array, T value, int startIndex = 0) {
+            return Array.LastIndexOf( array, value, startIndex );
+        }
+
         // Find
         public static T Find<T>(this T[] array, Predicate<T> match) {
             return Array.Find( array, match );
@@ -23,14 +31,6 @@ namespace System {
             return Array.FindAll( array, match );
         }
 
-        // IndexOf
-        public static int IndexOf<T>(this T[] array, T value, int startIndex = 0) {
-            return Array.IndexOf( array, value, startIndex );
-        }
-        public static int LastIndexOf<T>(this T[] array, T value, int startIndex = 0) {
-            return Array.LastIndexOf( array, value, startIndex );
-        }
-
         // FindIndex
         public static int FindIndex<T>(this T[] array, int startIndex, Predicate<T> match) {
             return Array.FindIndex( array, startIndex, match );
@@ -39,7 +39,7 @@ namespace System {
             return Array.FindLastIndex( array, startIndex, match );
         }
 
-        // NullIf
+        // NullIfEmpty
         public static T[]? NullIfEmpty<T>(this T[] array) {
             return array.Any() ? array : null;
         }

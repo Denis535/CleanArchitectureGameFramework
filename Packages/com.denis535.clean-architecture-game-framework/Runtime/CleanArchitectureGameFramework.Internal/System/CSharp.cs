@@ -20,19 +20,16 @@ namespace System {
             foreach (var value in values) callback( value );
             return values;
         }
-        // Pipe/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static List<T> PipeAll<T>(this List<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // Pipe/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static IReadOnlyCollection<T> PipeAll<T>(this IReadOnlyCollection<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // Pipe/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static IReadOnlyList<T> PipeAll<T>(this IReadOnlyList<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
@@ -49,17 +46,14 @@ namespace System {
         public static TOutput[] ChainAll<TInput, TOutput>(this TInput[] values, Converter<TInput, TOutput> callback) {
             return Array.ConvertAll( values, callback );
         }
-        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static List<TOutput> ChainAll<TInput, TOutput>(this List<TInput> values, Converter<TInput, TOutput> callback) {
             return values.Select( i => callback( i ) ).ToList();
         }
-        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static IReadOnlyCollection<TOutput> ChainAll<TInput, TOutput>(this IReadOnlyCollection<TInput> values, Converter<TInput, TOutput> callback) {
             return values.Select( i => callback( i ) ).ToList();
         }
-        // Chain/All
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static IReadOnlyList<TOutput> ChainAll<TInput, TOutput>(this IReadOnlyList<TInput> values, Converter<TInput, TOutput> callback) {
             return values.Select( i => callback( i ) ).ToList();

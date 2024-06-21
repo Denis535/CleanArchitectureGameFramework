@@ -17,11 +17,11 @@ namespace UnityEngine.Framework.Entities {
             set {
                 if (value != isPaused) {
                     isPaused = value;
-                    OnPauseChangeEvent?.Invoke( isPaused );
+                    OnPauseEvent?.Invoke( isPaused );
                 }
             }
         }
-        public event Action<bool>? OnPauseChangeEvent;
+        public event Action<bool>? OnPauseEvent;
 
         // Constructor
         public GameBase2(IDependencyContainer container) {
@@ -35,35 +35,6 @@ namespace UnityEngine.Framework.Entities {
         public abstract void FixedUpdate();
         public abstract void Update();
         public abstract void LateUpdate();
-
-    }
-    public abstract class GameBase2<TMode, TLevel, TState> : GameBase2 where TState : Enum {
-
-        private TState state = default!;
-
-        // Name
-        public abstract string Name { get; }
-        // Mode
-        public abstract TMode Mode { get; }
-        // Level
-        public abstract TLevel Level { get; }
-        // State
-        public virtual TState State {
-            get => state;
-            set {
-                Assert.Operation.Message( $"Transition from {state} to {value} is invalid" ).Valid( !EqualityComparer<TState>.Default.Equals( value, state ) );
-                state = value;
-                OnStateChangeEvent?.Invoke( state );
-            }
-        }
-        public event Action<TState>? OnStateChangeEvent;
-
-        // Constructor
-        public GameBase2(IDependencyContainer container) : base( container ) {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
 
     }
 }

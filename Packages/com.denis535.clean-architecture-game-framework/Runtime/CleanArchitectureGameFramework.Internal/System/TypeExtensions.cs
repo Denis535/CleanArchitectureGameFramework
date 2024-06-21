@@ -11,34 +11,34 @@ namespace System {
         // Is
         public static bool Is(this Type type, Type general) {
             // Example:
-            // Option<object> == Option<object>
-            // Option<object> == Option<>
+            // Type<object> == Type<object>
+            // Type<object> == Type<>
             return type.Iz( general );
         }
         // Is/BaseTypeOf
         public static bool IsBaseTypeOf(this Type type, Type derived) {
             // Example:
-            // Base<object> is base type of Child<object>
-            // Base<>       is base type of Child<object>
+            // Base<object> is base type of Derived<object>
+            // Base<>       is base type of Derived<object>
             return derived.IsChildOf( type );
         }
         public static bool IsAncesorOf(this Type type, Type derived) {
             // Example:
-            // Base<object> is ancesor type of Child<object>
-            // Base<>       is ancesor type of Child<object>
+            // Base<object> is ancesor type of Derived<object>
+            // Base<>       is ancesor type of Derived<object>
             return derived.IsDescendentOf( type );
         }
         // Is/ChildOf
         public static bool IsChildOf(this Type type, Type @base) {
             // Example:
-            // Child<object> is child of Base<object>
-            // Child<object> is child of Base<>
+            // Derived<object> is child of Base<object>
+            // Derived<object> is child of Base<>
             return type.BaseType != null && type.BaseType.Iz( @base );
         }
         public static bool IsDescendentOf(this Type type, Type @base) {
             // Example:
-            // Child<object> is descendent of Base<object>
-            // Child<object> is descendent of Base<>
+            // Derived<object> is descendent of Base<object>
+            // Derived<object> is descendent of Base<>
             while (type.BaseType != null) {
                 if (type.BaseType.Iz( @base )) return true;
                 type = type.BaseType;
@@ -61,33 +61,24 @@ namespace System {
             }
         }
         // Get/Children
-        public static IEnumerable<Type> GetChildren(this Type type) => type.GetChildren( type.Assembly );
-        public static IEnumerable<Type> GetChildren(this Type type, params Assembly[] assemblies) => assemblies.SelectMany( i => type.GetChildren( i ) );
         public static IEnumerable<Type> GetChildren(this Type type, Assembly assembly) {
             foreach (var type_ in assembly.GetTypes()) {
                 if (type_.IsChildOf( type )) yield return type_;
             }
         }
-        public static IEnumerable<Type> GetDescendents(this Type type) => type.GetDescendents( type.Assembly );
-        public static IEnumerable<Type> GetDescendents(this Type type, params Assembly[] assemblies) => assemblies.SelectMany( i => type.GetDescendents( i ) );
         public static IEnumerable<Type> GetDescendents(this Type type, Assembly assembly) {
             foreach (var type_ in assembly.GetTypes()) {
                 if (type_.IsDescendentOf( type )) yield return type_;
             }
         }
         // Get/Implementations
-        public static IEnumerable<Type> GetImplementations(this Type type) => type.GetImplementations( type.Assembly );
-        public static IEnumerable<Type> GetImplementations(this Type type, params Assembly[] assemblies) => assemblies.SelectMany( i => type.GetImplementations( i ) );
         public static IEnumerable<Type> GetImplementations(this Type type, Assembly assembly) {
             foreach (var type_ in assembly.GetTypes()) {
                 if (type_.IsImplementationOf( type )) yield return type_;
             }
         }
 
-        // IsAssignableFrom
-        //public static bool IsAssignableFrom(this Type type, Type specific) {
-        //    return type.IsAssignableFrom( specific );
-        //}
+        // IsAssignableTo
         public static bool IsAssignableTo(this Type type, Type general) {
             return general.IsAssignableFrom( type );
         }
@@ -123,8 +114,8 @@ namespace System {
         // Helpers
         private static bool Iz(this Type type, Type general) {
             // Example:
-            // Option<object> == Option<object>
-            // Option<object> == Option<>
+            // Type<object> == Type<object>
+            // Type<object> == Type<>
             if (type.IsGenericType && !type.IsGenericTypeDefinition) {
                 if (general.IsGenericType && general.IsGenericTypeDefinition) {
                     return type.GetGenericTypeDefinition() == general;

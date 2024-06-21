@@ -5,9 +5,9 @@ namespace System.Text {
     using System.Collections.Generic;
     using UnityEngine;
 
-    internal static class StringBuilderExtensions {
+    public static class StringBuilderExtensions {
 
-        public static int IndentSize { get; set; } = 4;
+        private static readonly int IndentSize = 4;
 
         public static StringBuilder AppendHierarchy<T>(this StringBuilder builder, T @object, Func<T, string?> textSelector, Func<T, IEnumerable<T>?> childrenSelector) {
             return builder.AppendHierarchy( 0, @object, textSelector, childrenSelector );
@@ -25,12 +25,12 @@ namespace System.Text {
             return builder;
         }
 
-        public static StringBuilder AppendIndent(this StringBuilder builder, int indent) {
-            return builder.Append( ' ', indent * IndentSize );
-        }
-
         public static StringBuilder AppendLineFormat(this StringBuilder builder, string format, params object?[] args) {
             return builder.AppendFormat( format, args ).AppendLine();
+        }
+
+        public static StringBuilder AppendIndent(this StringBuilder builder, int indent) {
+            return builder.Append( ' ', indent * IndentSize );
         }
 
     }

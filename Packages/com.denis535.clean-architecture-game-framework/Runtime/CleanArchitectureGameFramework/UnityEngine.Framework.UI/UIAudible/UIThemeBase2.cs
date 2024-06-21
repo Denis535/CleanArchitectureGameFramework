@@ -58,7 +58,7 @@ namespace UnityEngine.Framework.UI {
             return result;
         }
         protected static T GetNext<T>(T[] array, T? value) {
-            var index = array.IndexOf( value );
+            var index = Array.IndexOf( array, value );
             if (index != -1) {
                 index = (index + 1) % array.Length;
                 return array[ index ];

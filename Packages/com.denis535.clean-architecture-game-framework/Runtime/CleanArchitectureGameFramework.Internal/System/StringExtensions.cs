@@ -23,33 +23,33 @@ namespace System {
             return null;
         }
 
-        // TakeLeftOf (before of)
-        public static string? TakeLeftOf(this string value, int index) {
+        // TakeBeforeOf
+        public static string? TakeBeforeOf(this string value, int index) {
             if (index != -1) return value.Substring( 0, index );
             return null;
         }
-        public static string? TakeLeftOf(this string value, char separator) {
+        public static string? TakeBeforeOf(this string value, char separator) {
             var i = value.IndexOf( separator );
             if (i != -1) return value.Substring( 0, i );
             return null;
         }
-        public static string? TakeLeftOf(this string value, string separator) {
+        public static string? TakeBeforeOf(this string value, string separator) {
             var i = value.IndexOf( separator );
             if (i != -1) return value.Substring( 0, i );
             return null;
         }
 
-        // TakeRightOf (after of)
-        public static string? TakeRightOf(this string value, int index) {
+        // TakeAfterOf
+        public static string? TakeAfterOf(this string value, int index) {
             if (index != -1) return value.Substring( index + 1 );
             return null;
         }
-        public static string? TakeRightOf(this string value, char separator) {
+        public static string? TakeAfterOf(this string value, char separator) {
             var i = value.IndexOf( separator );
             if (i != -1) return value.Substring( i + 1 );
             return null;
         }
-        public static string? TakeRightOf(this string value, string separator) {
+        public static string? TakeAfterOf(this string value, string separator) {
             var i = value.IndexOf( separator );
             if (i != -1) return value.Substring( i + separator.Length );
             return null;
