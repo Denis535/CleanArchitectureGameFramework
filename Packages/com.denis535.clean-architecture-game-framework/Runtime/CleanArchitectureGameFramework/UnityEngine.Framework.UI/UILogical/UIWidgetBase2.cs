@@ -19,7 +19,7 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : notnull, UIViewBase {
+    public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : notnull, UIViewBase2 {
 
         // System
         protected IDependencyContainer Container { get; }

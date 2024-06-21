@@ -44,30 +44,6 @@ namespace UnityEngine.UIElements {
             }
         }
 
-        // FindElement
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
-            return element.Query<T>( name, classes ).First();
-        }
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T[] FindElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
-            return element.Query<T>( name, classes ).ToList().ToArray();
-        }
-
-        // RequireElement
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T RequireElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
-            var result = element.Query<T>( name, classes ).First();
-            Assert.Operation.Message( $"Element {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
-            return result;
-        }
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T[] RequireElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
-            var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
-            Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
-            return result;
-        }
-
         // SetUp
         public static T Name<T>(this T element, string? name) where T : VisualElement {
             element.name = name;
@@ -96,6 +72,30 @@ namespace UnityEngine.UIElements {
                 element.Add( child );
             }
             return element;
+        }
+
+        // FindElement
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+            return element.Query<T>( name, classes ).First();
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static T[] FindElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+            return element.Query<T>( name, classes ).ToList().ToArray();
+        }
+
+        // RequireElement
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static T RequireElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+            var result = element.Query<T>( name, classes ).First();
+            Assert.Operation.Message( $"Element {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
+            return result;
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static T[] RequireElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+            var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
+            Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
+            return result;
         }
 
     }

@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class UIRootWidgetView : UIViewBase {
+    public class UIRootWidgetView : UIViewBase2 {
 
         protected readonly VisualElement widget;
 
@@ -42,12 +42,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public virtual void AddView(UIViewBase view) {
+        public virtual void AddView(UIViewBase2 view) {
             widget.Add( view );
             Sort( widget );
             Recalculate( widget );
         }
-        public virtual void RemoveView(UIViewBase view) {
+        public virtual void RemoveView(UIViewBase2 view) {
             widget.Remove( view );
             Recalculate( widget );
         }
@@ -64,7 +64,7 @@ namespace UnityEngine.Framework.UI {
         protected virtual void Recalculate(VisualElement widget) {
             Recalculate( widget.Children().Select( i => i.GetView() ).ToArray() );
         }
-        protected virtual void Recalculate(UIViewBase[] views) {
+        protected virtual void Recalculate(UIViewBase2[] views) {
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
@@ -88,7 +88,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void Recalculate(UIViewBase view, UIViewBase next) {
+        protected virtual void Recalculate(UIViewBase2 view, UIViewBase2 next) {
             if (GetLayer( view ) == GetLayer( next )) {
                 view.VisualElement.SetEnabled( false );
                 view.VisualElement.SetDisplayed( false );
@@ -97,7 +97,7 @@ namespace UnityEngine.Framework.UI {
                 view.VisualElement.SetDisplayed( true );
             }
         }
-        protected virtual void Recalculate(UIViewBase view) {
+        protected virtual void Recalculate(UIViewBase2 view) {
             view.VisualElement.SetEnabled( true );
             view.VisualElement.SetDisplayed( true );
         }

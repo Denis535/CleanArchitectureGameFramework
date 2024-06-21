@@ -10,7 +10,6 @@ namespace UnityEngine.Framework {
     using UnityEngine.Framework.App;
     using UnityEngine.Framework.Entities;
     using UnityEngine.Framework.UI;
-    using UnityEngine.UIElements;
 
     [CustomEditor( typeof( ProgramBase2 ), true )]
     public class ProgramEditor : Editor {
@@ -56,7 +55,6 @@ namespace UnityEngine.Framework {
             LabelField( "Screen", screen?.ToString() ?? "Null" );
             LabelField( "Widget", GetDisplayString( screen?.Widget ) ?? "Null" );
             LabelField( "View", GetDisplayString( screen?.Widget?.View ) ?? "Null" );
-            LabelField( "VisualElement", GetDisplayString( screen?.Widget?.View?.VisualElement ) ?? "Null" );
         }
         protected virtual void DrawGUI(UIRouterBase? router) {
             LabelField( "Router", router?.ToString() ?? "Null" );
@@ -112,27 +110,8 @@ namespace UnityEngine.Framework {
         protected static string? GetDisplayString(UIViewBase? view) {
             if (view == null) return null;
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => i.GetType().Name, GetChildren );
+            builder.AppendHierarchy( view, i => i.GetType().Name, i => i.Children );
             return builder.ToString();
-        }
-        protected static string? GetDisplayString(VisualElement? visualElement) {
-            if (visualElement == null) return null;
-            var builder = new StringBuilder();
-            builder.AppendHierarchy( visualElement, i => string.Format( "{0} ({1})", i.GetType().Name, i.name ), i => i.Children() );
-            return builder.ToString();
-        }
-        // Helpers
-        protected static IEnumerable<UIViewBase> GetChildren(UIViewBase view) {
-            return GetChildren( view.VisualElement );
-            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
-                foreach (var child in element.Children()) {
-                    if (child.userData is UIViewBase) {
-                        yield return (UIViewBase) child.userData;
-                    } else {
-                        foreach (var i in GetChildren( child )) yield return i;
-                    }
-                }
-            }
         }
 
     }

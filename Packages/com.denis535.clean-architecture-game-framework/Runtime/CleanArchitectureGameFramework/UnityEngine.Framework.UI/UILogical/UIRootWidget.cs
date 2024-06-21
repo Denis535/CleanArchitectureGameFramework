@@ -7,10 +7,10 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidget<TView> : UIWidgetBase<TView> where TView : UIRootWidgetView {
+    public abstract class UIRootWidget<TView> : UIWidgetBase2<TView> where TView : UIRootWidgetView {
 
         // Constructor
-        public UIRootWidget() {
+        public UIRootWidget(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();
@@ -34,10 +34,10 @@ namespace UnityEngine.Framework.UI {
 
         // ShowView
         protected override void ShowView(UIViewBase view) {
-            View.AddView( view );
+            View.AddView( (UIViewBase2) view );
         }
         protected override void HideView(UIViewBase view) {
-            View.RemoveView( view );
+            View.RemoveView( (UIViewBase2) view );
         }
 
         // Helpers
@@ -88,7 +88,7 @@ namespace UnityEngine.Framework.UI {
         public override UIRootWidgetView View { get; }
 
         // Constructor
-        public UIRootWidget() {
+        public UIRootWidget(IDependencyContainer container) : base( container ) {
             View = CreateView<UIRootWidgetView>();
         }
         public override void Dispose() {
