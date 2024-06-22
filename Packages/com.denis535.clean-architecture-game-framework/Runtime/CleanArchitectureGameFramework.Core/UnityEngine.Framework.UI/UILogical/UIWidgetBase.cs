@@ -35,8 +35,8 @@ namespace UnityEngine.Framework.UI {
         public IEnumerable<UIWidgetBase> AncestorsAndSelf => Ancestors.Prepend( this );
         // Children
         public bool HasChildren => Children_.Any();
-        private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
+        private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         // Descendants
         public IEnumerable<UIWidgetBase> Descendants {
             get {

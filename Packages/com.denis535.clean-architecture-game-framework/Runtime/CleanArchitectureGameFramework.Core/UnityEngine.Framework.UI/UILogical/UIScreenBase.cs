@@ -20,7 +20,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddWidget
-        public virtual void AddWidget(UIWidgetBase widget, object? argument = null) {
+        protected internal virtual void AddWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Inactive );
@@ -29,7 +29,7 @@ namespace UnityEngine.Framework.UI {
             Widget = widget;
             widget.Activate( this, argument );
         }
-        public virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
+        protected internal virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
             Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Active );
