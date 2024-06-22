@@ -10,7 +10,9 @@ namespace UnityEngine.Framework.UI {
 
         // System
         protected IDependencyContainer Container { get; }
+        // Document
         protected UIDocument Document { get; }
+        // AudioSource
         protected AudioSource AudioSource { get; }
 
         // Constructor

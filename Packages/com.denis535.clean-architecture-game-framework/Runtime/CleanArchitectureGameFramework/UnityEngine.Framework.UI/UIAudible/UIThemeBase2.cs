@@ -3,14 +3,34 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
 
     public abstract class UIThemeBase2 : UIThemeBase {
 
         // System
         protected IDependencyContainer Container { get; }
+        // AudioSource
         protected AudioSource AudioSource { get; }
+        // IsPlaying
+        protected bool IsPlaying {
+            get => AudioSource.clip != null;
+        }
+        protected bool IsPaused {
+            set {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                if (value) {
+                    AudioSource.Pause();
+                } else {
+                    AudioSource.UnPause();
+                }
+            }
+        }
+        protected bool IsCompleted {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                return !AudioSource.isPlaying && AudioSource.time == AudioSource.clip.length;
+            }
+        }
 
         // Constructor
         public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
@@ -21,41 +41,25 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
+        // Play
+        protected void Play(AudioClip clip) {
+            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( AudioSource.clip == null );
+            AudioSource.clip = clip;
+            AudioSource.Play();
+        }
+        protected void Stop() {
+            Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+            AudioSource.Stop();
+            AudioSource.clip = null;
+        }
+
         // Helpers
-        protected static void Play(AudioSource source, AudioClip clip) {
-            Assert.Operation.Message( $"AudioSource {source} must have no clip" ).Valid( source.clip == null );
-            source.clip = clip;
-            source.Play();
-        }
-        protected static void Stop(AudioSource source) {
-            Assert.Operation.Message( $"AudioSource {source} must have clip" ).Valid( source.clip != null );
-            source.Stop();
-            source.clip = null;
-        }
-        protected static void SetPaused(AudioSource source, bool value) {
-            if (value) {
-                source.Pause();
-            } else {
-                source.UnPause();
-            }
-        }
-        protected static bool IsPlaying(AudioSource source) {
-            return source.clip != null && source.time < source.clip.length;
-        }
-        protected static bool IsCompleted(AudioSource source) {
-            return !IsPlaying( source );
-        }
-        // Helpers
-        protected static void Shuffle<T>(T[] array) {
+        protected static T[] Shuffle<T>(T[] array) {
             for (int i = 0, j = array.Length; i < array.Length; i++, j--) {
                 var rnd = i + UnityEngine.Random.Range( 0, j );
                 (array[ i ], array[ rnd ]) = (array[ rnd ], array[ i ]);
             }
-        }
-        protected static T[] GetShuffled<T>(T[] array) {
-            var result = array.ToArray();
-            Shuffle( result );
-            return result;
+            return array;
         }
         protected static T GetNext<T>(T[] array, T? value) {
             var index = Array.IndexOf( array, value );
