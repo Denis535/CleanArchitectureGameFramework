@@ -15,6 +15,36 @@ namespace UnityEngine.Framework.UI {
         protected bool IsPlaying {
             get => AudioSource.clip != null;
         }
+        protected bool Mute {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                return AudioSource.mute;
+            }
+            set {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                AudioSource.mute = value;
+            }
+        }
+        protected float Volume {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                return AudioSource.volume;
+            }
+            set {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                AudioSource.volume = value;
+            }
+        }
+        protected float Pitch {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                return AudioSource.pitch;
+            }
+            set {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                AudioSource.pitch = value;
+            }
+        }
         protected bool IsPaused {
             set {
                 Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
