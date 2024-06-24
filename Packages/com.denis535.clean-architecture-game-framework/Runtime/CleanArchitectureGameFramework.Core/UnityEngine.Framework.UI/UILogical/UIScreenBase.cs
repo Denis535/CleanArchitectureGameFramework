@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIScreenBase : Disposable, IUILogicalElement {
+    public abstract class UIScreenBase : Disposable {
 
         // Widget
         protected internal UIWidgetBase Widget { get; private set; } = default!;

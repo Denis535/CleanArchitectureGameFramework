@@ -7,13 +7,13 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    public abstract partial class UIWidgetBase : Disposable, IUILogicalElement, IDisposable {
+    public abstract partial class UIWidgetBase : Disposable, IDisposable {
 
         // System
         protected virtual bool DisposeWhenDeactivate => true;
         // View
-        [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewable;
-        public UIViewBase? View => (this as IUIViewable)?.View;
+        [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
+        public UIViewBase? View => (this as IUIViewableWidget)?.View;
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
@@ -238,11 +238,11 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewable where TView : notnull, UIViewBase {
+    public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
 
         // View
         public abstract new TView View { get; }
-        UIViewBase IUIViewable.View => View;
+        UIViewBase IUIViewableWidget.View => View;
 
         // Constructor
         public UIWidgetBase() {

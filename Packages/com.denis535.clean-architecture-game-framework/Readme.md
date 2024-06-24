@@ -11,7 +11,6 @@ This package contains classes that define the entire architecture of your game p
 
 ## Namespaces
 - Framework - the root module.
-    - IDependencyContainer - this provides you with your dependencies.
     - Program              - the entry point.
 - Framework.UI - the presentation (user interface) module.
     - UITheme              - the audio theme.
@@ -28,19 +27,20 @@ This package contains classes that define the entire architecture of your game p
     - Entity               - the entity (player's character/avatar, NPC/bot or any other scene's object).
 
 # Media
-- [![YouTube](https://img.youtube.com/vi/JQobAqfakJQ/0.jpg)](https://youtu.be/JQobAqfakJQ)
+- [![YouTube](https://img.youtube.com/vi/WmLJHRg0EI4/0.jpg)](https://youtu.be/WmLJHRg0EI4?feature=shared)
 
 # Example
-- https://denis535.github.io/#clean-architecture-game-template
+- https://denis535.github.io/#clean-game-example
 
 # Links
 - https://denis535.github.io
 - https://github.com/Denis535/CleanArchitectureGameFramework/
-- https://assetstore.unity.com/publishers/90787
-- https://openupm.com/packages/?sort=downloads&q=denis535
+- https://github.com/Denis535/CleanGameExample/
 - https://www.nuget.org/profiles/Denis535
-- https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
+- https://openupm.com/packages/?sort=downloads&q=denis535
+- https://assetstore.unity.com/publishers/90787
 - https://denis535.itch.io/
+- https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
 
 # If you want to support me
 If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos.

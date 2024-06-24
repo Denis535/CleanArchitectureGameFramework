@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    internal interface IUIViewable {
+    internal interface IUIViewableWidget {
         UIViewBase View { get; }
     }
 }
