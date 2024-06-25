@@ -14,8 +14,12 @@ namespace UnityEngine.Framework.Entities {
     }
     public abstract class EntityBodyBase : Disposable {
 
+        protected GameObject GameObject { get; }
+        protected Transform Transform => GameObject.transform;
+
         // Constructor
-        public EntityBodyBase() {
+        public EntityBodyBase(GameObject gameObject) {
+            GameObject = gameObject;
         }
         public override void Dispose() {
             base.Dispose();
@@ -24,8 +28,12 @@ namespace UnityEngine.Framework.Entities {
     }
     public abstract class EntityViewBase : Disposable {
 
+        protected GameObject GameObject { get; }
+        protected Transform Transform => GameObject.transform;
+
         // Constructor
-        public EntityViewBase() {
+        public EntityViewBase(GameObject gameObject) {
+            GameObject = gameObject;
         }
         public override void Dispose() {
             base.Dispose();
