@@ -10,7 +10,7 @@ namespace UnityEngine.UIElements {
 
         public static T Instantiate<T>(this VisualTreeAsset asset) where T : VisualElement, new() {
             var view = asset.Instantiate().Children().OfType<T>().FirstOrDefault();
-            Assert.Operation.Message( $"VisualElement {typeof( T )} ({asset.name}) could not be instantiated" ).Valid( view != null );
+            Assert.Operation.Message( $"VisualTreeAsset {asset.name} ({typeof( T )}) can not be instantiated" ).Valid( view != null );
             return view;
         }
 

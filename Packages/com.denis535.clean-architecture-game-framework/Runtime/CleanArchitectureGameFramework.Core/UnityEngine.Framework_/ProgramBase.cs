@@ -56,20 +56,8 @@ namespace UnityEngine.Framework {
         }
         protected virtual void OnInspectorGUI(UIScreenBase screen) {
             LabelField( "Screen", screen.ToString() );
-            LabelField( "Widget", screen?.Widget.Chain( GetWidgetString ) ?? "Null" );
-            LabelField( "View", screen?.Widget?.View.Chain( GetViewString ) ?? "Null" );
-            static string? GetWidgetString(UIWidgetBase? widget) {
-                if (widget == null) return null;
-                var builder = new StringBuilder();
-                builder.AppendHierarchy( widget, i => i.GetType().Name, i => i.Children );
-                return builder.ToString();
-            }
-            static string? GetViewString(UIViewBase? view) {
-                if (view == null) return null;
-                var builder = new StringBuilder();
-                builder.AppendHierarchy( view, i => i.GetType().Name, i => i.Children );
-                return builder.ToString();
-            }
+            LabelField( "Widget", screen?.Widget.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "View", screen?.Widget?.View.Chain( GetDisplayString ) ?? "Null" );
         }
         protected virtual void OnInspectorGUI(UIRouterBase router) {
             LabelField( "Router", router.ToString() );
@@ -87,6 +75,19 @@ namespace UnityEngine.Framework {
                 EditorGUILayout.PrefixLabel( label );
                 EditorGUI.SelectableLabel( GUILayoutUtility.GetRect( new GUIContent( text ), GUI.skin.textField ), text, GUI.skin.textField );
             }
+        }
+        // Helpers
+        protected static string? GetDisplayString(UIWidgetBase? widget) {
+            if (widget == null) return null;
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( widget, i => i.GetType().Name, i => i.Children );
+            return builder.ToString();
+        }
+        protected static string? GetDisplayString(UIViewBase? view) {
+            if (view == null) return null;
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( view, i => i.GetType().Name, i => i.Children );
+            return builder.ToString();
         }
 #endif
 
