@@ -13,16 +13,9 @@ namespace UnityEngine.Framework {
     [DefaultExecutionOrder( 1000 )]
     public abstract class ProgramBase : MonoBehaviour {
 
-        // Framework
-        protected UIThemeBase Theme { get; set; } = default!;
-        protected UIScreenBase Screen { get; set; } = default!;
-        protected UIRouterBase Router { get; set; } = default!;
-        protected ApplicationBase Application { get; set; } = default!;
-        protected GameBase? Game { get; set; }
-
         // Awake
         protected virtual void Awake() {
-            UnityEngine.Application.wantsToQuit += OnQuit;
+            Application.wantsToQuit += OnQuit;
         }
         protected virtual void OnDestroy() {
         }
@@ -44,12 +37,7 @@ namespace UnityEngine.Framework {
 
 #if UNITY_EDITOR
         // OnInspectorGUI
-        protected internal void OnInspectorGUI() {
-            OnInspectorGUI( Theme );
-            OnInspectorGUI( Screen );
-            OnInspectorGUI( Router );
-            OnInspectorGUI( Application );
-            OnInspectorGUI( Game );
+        protected internal virtual void OnInspectorGUI() {
         }
         protected virtual void OnInspectorGUI(UIThemeBase theme) {
             LabelField( "Theme", theme.ToString() );
