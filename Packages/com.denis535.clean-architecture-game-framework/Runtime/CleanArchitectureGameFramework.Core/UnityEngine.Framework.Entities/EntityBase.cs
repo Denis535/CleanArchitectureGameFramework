@@ -12,4 +12,24 @@ namespace UnityEngine.Framework.Entities {
         protected abstract void OnDestroy();
 
     }
+    public abstract class EntityBodyBase : Disposable {
+
+        // Constructor
+        public EntityBodyBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    public abstract class EntityViewBase : Disposable {
+
+        // Constructor
+        public EntityViewBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
 }
