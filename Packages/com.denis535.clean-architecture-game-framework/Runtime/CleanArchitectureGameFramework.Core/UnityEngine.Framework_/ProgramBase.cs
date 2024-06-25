@@ -15,7 +15,7 @@ namespace UnityEngine.Framework {
 
         // Framework
         protected UIThemeBase Theme { get; set; } = default!;
-        protected UIThemeBase Screen { get; set; } = default!;
+        protected UIScreenBase Screen { get; set; } = default!;
         protected UIRouterBase Router { get; set; } = default!;
         protected ApplicationBase Application { get; set; } = default!;
         protected GameBase? Game { get; set; }
