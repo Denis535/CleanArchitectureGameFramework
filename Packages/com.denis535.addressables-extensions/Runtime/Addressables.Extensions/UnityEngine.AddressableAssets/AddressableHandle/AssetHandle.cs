@@ -11,7 +11,7 @@ namespace UnityEngine.AddressableAssets {
     public abstract class AssetHandle : AddressableHandle {
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public AssetHandle() {
         }
 
         // Wait
@@ -36,8 +36,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class AssetHandle<T> : AssetHandle where T : notnull, UnityEngine.Object {
+    public class AssetHandle<T> : AssetHandle, IAssetHandle<AssetHandle<T>, T> where T : notnull, UnityEngine.Object {
 
+        // Key
+        public override string Key { get; }
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
@@ -46,9 +48,11 @@ namespace UnityEngine.AddressableAssets {
         public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
 
         // Constructor
-        public AssetHandle(string key) : base( key ) {
+        public AssetHandle(string key) {
+            Key = key;
         }
-        public AssetHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public AssetHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
             Handle = handle;
         }
 

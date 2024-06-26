@@ -3,55 +3,113 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
+    using System.Threading.Tasks;
     using UnityEngine;
 
-    public abstract class PrefabHandleDynamic : AddressableHandleDynamic {
+    public class PrefabHandleDynamic<T> : AddressableHandleDynamic, IPrefabHandle<PrefabHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
 
-        protected PrefabHandle? handle;
-
-        // IsValid
-        public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public PrefabHandle Handle {
+        [MemberNotNullWhen( true, "Handle" )]
+        public override bool IsValid {
+            get {
+                return Handle != null;
+            }
+        }
+        public PrefabHandle<T>? Handle { get; private set; }
+        public override string Key {
             get {
                 Assert_IsValid();
-                return handle!;
+                return Handle!.Key;
             }
         }
-
-        // Constructor
-        public PrefabHandleDynamic() {
-        }
-
-        // Utils
-        public override string ToString() {
-            if (IsValid) {
-                return "PrefabHandleDynamic: " + Handle.Key;
-            } else {
-                return "PrefabHandleDynamic";
+        public override bool IsDone {
+            get {
+                Assert_IsValid();
+                return Handle!.IsDone;
             }
         }
-
-    }
-    public class PrefabHandleDynamic<T> : PrefabHandleDynamic where T : notnull, UnityEngine.Object {
-
-        // Handle
-        public new PrefabHandle<T> Handle => (PrefabHandle<T>) base.Handle;
+        public override bool IsSucceeded {
+            get {
+                Assert_IsValid();
+                return Handle!.IsSucceeded;
+            }
+        }
+        public override bool IsFailed {
+            get {
+                Assert_IsValid();
+                return Handle!.IsFailed;
+            }
+        }
 
         // Constructor
         public PrefabHandleDynamic() {
         }
 
         // SetUp
-        public PrefabHandle<T> SetUp(string key) {
+        public PrefabHandleDynamic<T> SetUp(string key) {
             Assert_IsNotValid();
-            base.handle = new PrefabHandle<T>( key );
-            return (PrefabHandle<T>) base.Handle;
+            Handle = new PrefabHandle<T>( key );
+            return this;
         }
-        public PrefabHandle<T> SetUp(PrefabHandle<T> handle) {
+        public PrefabHandleDynamic<T> SetUp(PrefabHandle<T> handle) {
             Assert_IsNotValid();
-            base.handle = handle;
-            return (PrefabHandle<T>) base.Handle;
+            Handle = handle;
+            return this;
+        }
+
+        // Load
+        public PrefabHandleDynamic<T> Load() {
+            Assert_IsValid();
+            Handle!.Load();
+            return this;
+        }
+
+        // Wait
+        public void Wait() {
+            Assert_IsValid();
+            Handle!.Wait();
+        }
+        public ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.WaitAsync( cancellationToken );
+        }
+
+        // GetValue
+        public UnityEngine.Object GetValueBase() {
+            Assert_IsValid();
+            return Handle!.GetValueBase();
+        }
+        public ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.GetValueBaseAsync( cancellationToken );
+        }
+
+        // GetValue
+        public T GetValue() {
+            Assert_IsValid();
+            return Handle!.GetValue();
+        }
+        public ValueTask<T> GetValueAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.GetValueAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Handle!.Release();
+            Handle = null;
+        }
+
+        // Utils
+        public override string ToString() {
+            if (IsValid) {
+                return "PrefabHandleDynamic: " + Key;
+            } else {
+                return "PrefabHandleDynamic";
+            }
         }
 
     }

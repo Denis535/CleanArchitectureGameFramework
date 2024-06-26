@@ -11,7 +11,7 @@ namespace UnityEngine.AddressableAssets {
     public abstract class PrefabHandle : AddressableHandle {
 
         // Constructor
-        public PrefabHandle(string key) : base( key ) {
+        public PrefabHandle() {
         }
 
         // Wait
@@ -36,8 +36,10 @@ namespace UnityEngine.AddressableAssets {
         }
 
     }
-    public class PrefabHandle<T> : PrefabHandle where T : notnull, UnityEngine.Object {
+    public class PrefabHandle<T> : PrefabHandle, IPrefabHandle<PrefabHandle<T>, T> where T : notnull, UnityEngine.Object {
 
+        // Key
+        public override string Key { get; }
         // Handle
         protected AsyncOperationHandle<T> Handle { get; set; }
         public override bool IsValid => Handle.IsValid();
@@ -46,9 +48,11 @@ namespace UnityEngine.AddressableAssets {
         public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
 
         // Constructor
-        public PrefabHandle(string key) : base( key ) {
+        public PrefabHandle(string key) {
+            Key = key;
         }
-        public PrefabHandle(string key, AsyncOperationHandle<T> handle) : base( key ) {
+        public PrefabHandle(string key, AsyncOperationHandle<T> handle) {
+            Key = key;
             Handle = handle;
         }
 

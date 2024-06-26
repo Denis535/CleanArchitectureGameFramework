@@ -3,55 +3,113 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
+    using System.Threading.Tasks;
     using UnityEngine;
 
-    public abstract class AssetListHandleDynamic : AddressableListHandleDynamic {
+    public class AssetListHandleDynamic<T> : AddressableListHandleDynamic, IAssetListHandle<AssetListHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
 
-        protected AssetListHandle? handle;
-
-        // IsValid
-        public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public AssetListHandle Handle {
+        [MemberNotNullWhen( true, "Handle" )]
+        public override bool IsValid {
+            get {
+                return Handle != null;
+            }
+        }
+        public AssetListHandle<T>? Handle { get; private set; }
+        public override string[] Keys {
             get {
                 Assert_IsValid();
-                return handle!;
+                return Handle!.Keys;
             }
         }
-
-        // Constructor
-        public AssetListHandleDynamic() {
-        }
-
-        // Utils
-        public override string ToString() {
-            if (IsValid) {
-                return "AssetListHandleDynamic: " + string.Join( ", ", Handle.Keys );
-            } else {
-                return "AssetListHandleDynamic";
+        public override bool IsDone {
+            get {
+                Assert_IsValid();
+                return Handle!.IsDone;
             }
         }
-
-    }
-    public class AssetListHandleDynamic<T> : AssetListHandleDynamic where T : notnull, UnityEngine.Object {
-
-        // Handle
-        public new AssetListHandle<T> Handle => (AssetListHandle<T>) base.Handle;
+        public override bool IsSucceeded {
+            get {
+                Assert_IsValid();
+                return Handle!.IsSucceeded;
+            }
+        }
+        public override bool IsFailed {
+            get {
+                Assert_IsValid();
+                return Handle!.IsFailed;
+            }
+        }
 
         // Constructor
         public AssetListHandleDynamic() {
         }
 
         // SetUp
-        public AssetListHandle<T> SetUp(string[] keys) {
+        public AssetListHandleDynamic<T> SetUp(params string[] keys) {
             Assert_IsNotValid();
-            base.handle = new AssetListHandle<T>( keys );
-            return (AssetListHandle<T>) base.handle;
+            Handle = new AssetListHandle<T>( keys );
+            return this;
         }
-        public AssetListHandle<T> SetUp(AssetListHandle<T> handle) {
+        public AssetListHandleDynamic<T> SetUp(AssetListHandle<T> handle) {
             Assert_IsNotValid();
-            base.handle = handle;
-            return (AssetListHandle<T>) base.handle;
+            Handle = handle;
+            return this;
+        }
+
+        // Load
+        public AssetListHandleDynamic<T> Load() {
+            Assert_IsValid();
+            Handle!.Load();
+            return this;
+        }
+
+        // Wait
+        public void Wait() {
+            Assert_IsValid();
+            Handle!.Wait();
+        }
+        public ValueTask WaitAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.WaitAsync( cancellationToken );
+        }
+
+        // GetValue
+        public IReadOnlyList<UnityEngine.Object> GetValuesBase() {
+            Assert_IsValid();
+            return Handle!.GetValuesBase();
+        }
+        public ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.GetValuesBaseAsync( cancellationToken );
+        }
+
+        // GetValue
+        public IReadOnlyList<T> GetValues() {
+            Assert_IsValid();
+            return Handle!.GetValues();
+        }
+        public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
+            Assert_IsValid();
+            return Handle!.GetValuesAsync( cancellationToken );
+        }
+
+        // Release
+        public void Release() {
+            Assert_IsValid();
+            Handle!.Release();
+            Handle = null;
+        }
+
+        // Utils
+        public override string ToString() {
+            if (IsValid) {
+                return "AssetListHandleDynamic: " + string.Join( ", ", Keys );
+            } else {
+                return "AssetListHandleDynamic";
+            }
         }
 
     }

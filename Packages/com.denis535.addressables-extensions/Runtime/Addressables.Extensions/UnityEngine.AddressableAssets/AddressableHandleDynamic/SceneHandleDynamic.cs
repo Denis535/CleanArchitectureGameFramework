@@ -3,19 +3,43 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
 
-    public class SceneHandleDynamic : AddressableHandleDynamic {
+    public class SceneHandleDynamic : AddressableHandleDynamic, ISceneHandle<SceneHandleDynamic> {
 
-        private SceneHandle? handle;
-
-        // IsValid
-        public override bool IsValid => handle != null && handle.IsValid;
         // Handle
-        public SceneHandle Handle {
+        [MemberNotNullWhen( true, "Handle" )]
+        public override bool IsValid {
+            get {
+                return Handle != null;
+            }
+        }
+        public SceneHandle? Handle { get; private set; }
+        public override string Key {
             get {
                 Assert_IsValid();
-                return handle!;
+                return Handle!.Key;
+            }
+        }
+        public override bool IsDone {
+            get {
+                Assert_IsValid();
+                return Handle!.IsDone;
+            }
+        }
+        public override bool IsSucceeded {
+            get {
+                Assert_IsValid();
+                return Handle!.IsSucceeded;
+            }
+        }
+        public override bool IsFailed {
+            get {
+                Assert_IsValid();
+                return Handle!.IsFailed;
             }
         }
 
@@ -24,19 +48,66 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // SetUp
-        public SceneHandle SetUp(string key) {
+        public SceneHandleDynamic SetUp(string key) {
             Assert_IsNotValid();
-            return this.handle = new SceneHandle( key );
+            Handle = new SceneHandle( key );
+            return this;
         }
-        public SceneHandle SetUp(SceneHandle handle) {
+        public SceneHandleDynamic SetUp(SceneHandle handle) {
             Assert_IsNotValid();
-            return this.handle = handle;
+            Handle = handle;
+            return this;
+        }
+
+        // Load
+        public SceneHandleDynamic Load(LoadSceneMode loadMode, bool activateOnLoad) {
+            Assert_IsValid();
+            Handle!.Load( loadMode, activateOnLoad );
+            return this;
+        }
+
+        // Wait
+        public ValueTask WaitAsync() {
+            Assert_IsValid();
+            return Handle!.WaitAsync();
+        }
+
+        // GetValue
+        public ValueTask<Scene> GetValueAsync() {
+            Assert_IsValid();
+            return Handle!.GetValueAsync();
+        }
+
+        // Activate
+        public ValueTask ActivateAsync() {
+            Assert_IsValid();
+            return Handle!.ActivateAsync();
+        }
+
+        // Unload
+        public void Unload() {
+            Assert_IsValid();
+            Handle!.Unload();
+        }
+        public void UnloadSafe() {
+            Assert_IsValid();
+            Handle!.UnloadSafe();
+        }
+
+        // Unload
+        public ValueTask UnloadAsync() {
+            Assert_IsValid();
+            return Handle!.UnloadAsync();
+        }
+        public ValueTask UnloadSafeAsync() {
+            Assert_IsValid();
+            return Handle!.UnloadSafeAsync();
         }
 
         // Utils
         public override string ToString() {
             if (IsValid) {
-                return "SceneHandleDynamic: " + Handle.Key;
+                return "SceneHandleDynamic: " + Key;
             } else {
                 return "SceneHandleDynamic";
             }

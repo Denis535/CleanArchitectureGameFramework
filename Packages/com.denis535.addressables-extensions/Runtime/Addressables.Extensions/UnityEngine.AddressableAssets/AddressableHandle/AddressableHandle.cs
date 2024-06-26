@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     public abstract class AddressableHandle {
 
         // Key
-        public string Key { get; }
+        public abstract string Key { get; }
         // Handle
         public abstract bool IsValid { get; }
         public abstract bool IsDone { get; }
@@ -16,8 +16,7 @@ namespace UnityEngine.AddressableAssets {
         public abstract bool IsFailed { get; }
 
         // Constructor
-        public AddressableHandle(string key) {
-            Key = key;
+        public AddressableHandle() {
         }
 
         // Heleprs

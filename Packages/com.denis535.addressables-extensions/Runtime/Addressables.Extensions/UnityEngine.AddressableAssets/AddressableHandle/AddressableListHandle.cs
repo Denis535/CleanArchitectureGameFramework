@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     public abstract class AddressableListHandle {
 
         // Keys
-        public string[] Keys { get; }
+        public abstract string[] Keys { get; }
         // Handle
         public abstract bool IsValid { get; }
         public abstract bool IsDone { get; }
@@ -16,8 +16,7 @@ namespace UnityEngine.AddressableAssets {
         public abstract bool IsFailed { get; }
 
         // Constructor
-        public AddressableListHandle(string[] keys) {
-            Keys = keys;
+        public AddressableListHandle() {
         }
 
         // Heleprs

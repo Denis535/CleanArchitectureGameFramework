@@ -7,8 +7,13 @@ namespace UnityEngine.AddressableAssets {
 
     public abstract class AddressableListHandleDynamic {
 
-        // IsValid
+        // Keys
+        public abstract string[] Keys { get; }
+        // Handle
         public abstract bool IsValid { get; }
+        public abstract bool IsDone { get; }
+        public abstract bool IsSucceeded { get; }
+        public abstract bool IsFailed { get; }
 
         // Constructor
         public AddressableListHandleDynamic() {
