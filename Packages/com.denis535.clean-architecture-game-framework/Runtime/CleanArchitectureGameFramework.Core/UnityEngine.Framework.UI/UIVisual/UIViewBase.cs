@@ -7,8 +7,8 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIViewBase : Disposable {
 
-        // IsActive
-        internal abstract bool IsActive { get; }
+        // IsAttached
+        internal abstract bool IsAttached { get; }
         // IsShown
         internal abstract bool IsShown { get; }
         // Parent
@@ -21,7 +21,7 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"View {this} must be inactive" ).Valid( !IsActive );
+            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !IsAttached );
             foreach (var child in Children) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }

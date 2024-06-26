@@ -19,8 +19,8 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
-        // IsActive
-        internal override bool IsActive => VisualElement.panel != null;
+        // IsAttached
+        internal override bool IsAttached => VisualElement.IsAttached();
         // IsShown
         internal override bool IsShown => VisualElement.parent != null;
         // Parent

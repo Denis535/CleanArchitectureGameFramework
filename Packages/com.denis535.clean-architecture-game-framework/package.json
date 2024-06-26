@@ -1,7 +1,7 @@
 {
     "name": "com.denis535.clean-architecture-game-framework",
     "displayName": "Clean Architecture Game Framework",
-    "version": "1.1.71",
+    "version": "1.1.72",
     "description": "This package provides you with the architecture game framework that helping you to develop your project following the best practices.",
     "author": {
         "name": "Denis535",
