@@ -84,9 +84,6 @@ namespace UnityEngine.Framework.UI {
     }
     public class UIRootWidget : UIRootWidget<UIRootWidgetView> {
 
-        // View
-        public override UIRootWidgetView View { get; }
-
         // Constructor
         public UIRootWidget(IDependencyContainer container) : base( container ) {
             View = CreateView<UIRootWidgetView>();

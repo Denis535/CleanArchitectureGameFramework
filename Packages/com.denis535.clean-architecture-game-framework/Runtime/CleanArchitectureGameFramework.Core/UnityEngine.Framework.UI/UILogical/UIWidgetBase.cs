@@ -64,7 +64,10 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
-            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
+            if (IsViewable) Assert.Operation.Message( $"View {View} must be disposed" ).Valid( View.IsDisposed );
+            foreach (var child in Children) {
+                Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
+            }
             base.Dispose();
         }
 
@@ -241,18 +244,14 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
 
         // View
-        public abstract new TView View { get; }
+        public new TView View { get; init; } = default!;
         UIViewBase IUIViewableWidget.View => View;
 
         // Constructor
         public UIWidgetBase() {
         }
         public override void Dispose() {
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
-            Assert.Operation.Message( $"Widget {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
-            View.Dispose();
-            DisposeInternal();
+            base.Dispose();
         }
 
     }

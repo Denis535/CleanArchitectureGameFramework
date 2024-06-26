@@ -12,8 +12,18 @@ namespace UnityEngine.Framework.Entities {
         protected abstract void OnDestroy();
 
     }
+    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
+
+        // Body
+        protected TBody Body { get; init; } = default!;
+        // View
+        protected TView View { get; init; } = default!;
+
+    }
+    // EntityBodyBase
     public abstract class EntityBodyBase : Disposable {
 
+        // GameObject
         protected GameObject GameObject { get; }
         protected Transform Transform => GameObject.transform;
 
@@ -26,8 +36,10 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
+    // EntityViewBase
     public abstract class EntityViewBase : Disposable {
 
+        // GameObject
         protected GameObject GameObject { get; }
         protected Transform Transform => GameObject.transform;
 

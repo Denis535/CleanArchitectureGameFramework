@@ -3,7 +3,6 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -20,6 +19,8 @@ namespace UnityEngine.Framework.UI {
                 visualElement.userData = this;
             }
         }
+        // IsActive
+        internal override bool IsActive => VisualElement.panel != null;
         // IsShown
         internal override bool IsShown => VisualElement.parent != null;
         // Parent
@@ -31,9 +32,6 @@ namespace UnityEngine.Framework.UI {
         public UIViewBase2() {
         }
         public override void Dispose() {
-            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !VisualElement.IsAttached() );
-            Assert.Operation.Message( $"View {this} children must be disposed" ).Valid( Children.All( i => i.IsDisposed ) );
             base.Dispose();
         }
 
