@@ -33,10 +33,10 @@ namespace System {
         public static Func<Type, string?, Exception> GetExceptionDelegate = GetException;
 
         // GetException
-        public static T GetException<T>(FormattableString? message) where T : Exception {
+        public static T GetException<T>(FormattableString? message) where T : notnull, Exception {
             return GetException<T>( GetMessageStringDelegate( message ) );
         }
-        private static T GetException<T>(string? message) where T : Exception {
+        private static T GetException<T>(string? message) where T : notnull, Exception {
             return (T) GetExceptionDelegate( typeof( T ), message );
         }
 

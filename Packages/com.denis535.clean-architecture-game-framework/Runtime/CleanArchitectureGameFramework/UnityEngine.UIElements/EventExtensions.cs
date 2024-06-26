@@ -12,7 +12,7 @@ namespace UnityEngine.UIElements {
         public static VisualElement GetTarget(this EventBase @event) {
             return (VisualElement) @event.target;
         }
-        public static VisualElement GetTarget<T>(this EventBase @event) where T : VisualElement {
+        public static VisualElement GetTarget<T>(this EventBase @event) where T : notnull, VisualElement {
             return (T) @event.target;
         }
 

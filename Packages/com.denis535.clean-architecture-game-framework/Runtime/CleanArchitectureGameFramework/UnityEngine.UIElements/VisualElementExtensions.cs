@@ -45,29 +45,29 @@ namespace UnityEngine.UIElements {
         }
 
         // SetUp
-        public static T Name<T>(this T element, string? name) where T : VisualElement {
+        public static T Name<T>(this T element, string? name) where T : notnull, VisualElement {
             element.name = name;
             return element;
         }
-        public static T Classes<T>(this T element, params string?[] classes) where T : VisualElement {
+        public static T Classes<T>(this T element, params string?[] classes) where T : notnull, VisualElement {
             foreach (var @class in classes) {
                 element.AddToClassList( @class );
             }
             return element;
         }
-        public static T Style<T>(this T element, Action<IStyle> callback) where T : VisualElement {
+        public static T Style<T>(this T element, Action<IStyle> callback) where T : notnull, VisualElement {
             callback( element.style );
             return element;
         }
-        public static T Text<T>(this T element, string? text) where T : TextElement {
+        public static T Text<T>(this T element, string? text) where T : notnull, TextElement {
             element.text = text;
             return element;
         }
-        public static T UserData<T>(this T element, object? userData) where T : VisualElement {
+        public static T UserData<T>(this T element, object? userData) where T : notnull, VisualElement {
             element.userData = userData;
             return element;
         }
-        public static T Children<T>(this T element, params VisualElement?[] children) where T : VisualElement {
+        public static T Children<T>(this T element, params VisualElement?[] children) where T : notnull, VisualElement {
             foreach (var child in children) {
                 element.Add( child );
             }
@@ -76,23 +76,23 @@ namespace UnityEngine.UIElements {
 
         // FindElement
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+        public static T FindElement<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             return element.Query<T>( name, classes ).First();
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T[] FindElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+        public static T[] FindElements<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             return element.Query<T>( name, classes ).ToList().ToArray();
         }
 
         // RequireElement
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T RequireElement<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+        public static T RequireElement<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             var result = element.Query<T>( name, classes ).First();
             Assert.Operation.Message( $"Element {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
             return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T[] RequireElements<T>(this VisualElement element, string? name, params string[] classes) where T : VisualElement {
+        public static T[] RequireElements<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
             Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
             return result;

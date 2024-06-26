@@ -11,18 +11,18 @@ namespace UnityEngine.Framework.UI {
 
         // System
         protected virtual bool DisposeWhenDeactivate => true;
-        // View
-        [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
-        public UIViewBase? View => (this as IUIViewableWidget)?.View;
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
         private UIScreenBase? Screen { get; set; }
+        // View
+        [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
+        public UIViewBase? View => (this as IUIViewableWidget)?.View;
+        // Parent
+        public UIWidgetBase? Parent { get; private set; }
         // Root
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase Root => IsRoot ? this : Parent.Root;
-        // Parent
-        public UIWidgetBase? Parent { get; private set; }
         // Ancestors
         public IEnumerable<UIWidgetBase> Ancestors {
             get {
@@ -34,7 +34,6 @@ namespace UnityEngine.Framework.UI {
         }
         public IEnumerable<UIWidgetBase> AncestorsAndSelf => Ancestors.Prepend( this );
         // Children
-        public bool HasChildren => Children_.Any();
         public IReadOnlyList<UIWidgetBase> Children => Children_;
         private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
         // Descendants
@@ -64,7 +63,9 @@ namespace UnityEngine.Framework.UI {
         public override void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
-            if (IsViewable) Assert.Operation.Message( $"View {View} must be disposed" ).Valid( View.IsDisposed );
+            if (IsViewable) {
+                Assert.Operation.Message( $"View {View} must be disposed" ).Valid( View.IsDisposed );
+            }
             foreach (var child in Children) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }

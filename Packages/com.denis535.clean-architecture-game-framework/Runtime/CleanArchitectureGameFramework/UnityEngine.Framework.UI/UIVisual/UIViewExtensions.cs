@@ -62,7 +62,7 @@ namespace UnityEngine.Framework.UI {
         public static UIViewBase2 GetView(this VisualElement element) {
             return (UIViewBase2) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have view" );
         }
-        public static T GetView<T>(this VisualElement element) where T : UIViewBase2 {
+        public static T GetView<T>(this VisualElement element) where T : notnull, UIViewBase2 {
             return (T) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have {typeof( T )} view" );
         }
 
@@ -70,7 +70,7 @@ namespace UnityEngine.Framework.UI {
         public static IEnumerable<UIViewBase2> GetViews(this VisualElement element) {
             return element.Children().Select( i => i.GetView() );
         }
-        public static IEnumerable<T> GetViews<T>(this VisualElement element) where T : UIViewBase2 {
+        public static IEnumerable<T> GetViews<T>(this VisualElement element) where T : notnull, UIViewBase2 {
             return element.Children().Select( i => i.GetView<T>() );
         }
 

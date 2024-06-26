@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidget<TView> : UIWidgetBase2<TView> where TView : UIRootWidgetView {
+    public abstract class UIRootWidget<TView> : UIWidgetBase2<TView> where TView : notnull, UIRootWidgetView {
 
         // Constructor
         public UIRootWidget(IDependencyContainer container) : base( container ) {
@@ -41,7 +41,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        protected static T CreateView<T>() where T : UIRootWidgetView, new() {
+        protected static T CreateView<T>() where T : notnull, UIRootWidgetView, new() {
             var view = new T();
             view.OnSubmitEvent += OnSubmit;
             view.OnCancelEvent += OnCancel;
