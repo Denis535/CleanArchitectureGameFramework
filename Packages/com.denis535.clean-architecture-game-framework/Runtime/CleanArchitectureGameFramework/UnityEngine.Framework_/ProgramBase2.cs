@@ -29,7 +29,7 @@ namespace UnityEngine.Framework {
         protected abstract TScreen Screen { get; set; }
         protected abstract TRouter Router { get; set; }
         protected abstract TApplication Application { get; set; }
-        protected abstract TGame Game { get; }
+        protected abstract TGame? Game { get; }
 
 #if UNITY_EDITOR
         // OnInspectorGUI
