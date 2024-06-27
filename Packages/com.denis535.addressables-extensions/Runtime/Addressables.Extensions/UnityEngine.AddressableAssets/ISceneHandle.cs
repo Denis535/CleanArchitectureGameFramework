@@ -19,12 +19,12 @@ namespace UnityEngine.AddressableAssets {
 
         ValueTask WaitAsync();
         ValueTask<Scene> GetValueAsync();
-        ValueTask ActivateAsync();
+        ValueTask<Scene> ActivateAsync();
 
         void Unload();
-        void UnloadSafe();
-
         ValueTask UnloadAsync();
+
+        void UnloadSafe();
         ValueTask UnloadSafeAsync();
 
     }

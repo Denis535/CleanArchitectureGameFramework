@@ -27,6 +27,7 @@ namespace UnityEngine.AddressableAssets {
         ValueTask<T> GetValueAsync(CancellationToken cancellationToken);
 
         void Release();
+        void ReleaseSafe();
 
     }
 }

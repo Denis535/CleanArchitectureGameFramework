@@ -102,6 +102,11 @@ namespace UnityEngine.AddressableAssets {
             Handle!.Release();
             Handle = null;
         }
+        public void ReleaseSafe() {
+            if (IsValid) {
+                Release();
+            }
+        }
 
         // Utils
         public override string ToString() {

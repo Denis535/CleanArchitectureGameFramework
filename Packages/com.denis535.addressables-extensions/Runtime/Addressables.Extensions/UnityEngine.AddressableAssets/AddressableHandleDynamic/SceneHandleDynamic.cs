@@ -79,7 +79,7 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // Activate
-        public ValueTask ActivateAsync() {
+        public ValueTask<Scene> ActivateAsync() {
             Assert_IsValid();
             return Handle!.ActivateAsync();
         }
@@ -88,20 +88,24 @@ namespace UnityEngine.AddressableAssets {
         public void Unload() {
             Assert_IsValid();
             Handle!.Unload();
+            Handle = null;
         }
-        public void UnloadSafe() {
+        public async ValueTask UnloadAsync() {
             Assert_IsValid();
-            Handle!.UnloadSafe();
+            await Handle!.UnloadAsync();
+            Handle = null;
         }
 
-        // Unload
-        public ValueTask UnloadAsync() {
-            Assert_IsValid();
-            return Handle!.UnloadAsync();
+        // UnloadSafe
+        public void UnloadSafe() {
+            if (IsValid) {
+                Unload();
+            }
         }
-        public ValueTask UnloadSafeAsync() {
-            Assert_IsValid();
-            return Handle!.UnloadSafeAsync();
+        public async ValueTask UnloadSafeAsync() {
+            if (IsValid) {
+                await UnloadAsync();
+            }
         }
 
         // Utils

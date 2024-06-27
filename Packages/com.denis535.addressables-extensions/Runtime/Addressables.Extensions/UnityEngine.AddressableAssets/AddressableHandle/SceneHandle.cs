@@ -50,10 +50,11 @@ namespace UnityEngine.AddressableAssets {
         }
 
         // ActivateAsync
-        public async ValueTask ActivateAsync() {
+        public async ValueTask<Scene> ActivateAsync() {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( default );
             await value.ActivateAsync();
+            return value.Scene;
         }
 
         // Unload
@@ -62,17 +63,17 @@ namespace UnityEngine.AddressableAssets {
             Addressables.UnloadSceneAsync( Handle ).Wait();
             Handle = default;
         }
-        public void UnloadSafe() {
-            if (Handle.IsValid()) {
-                Unload();
-            }
-        }
-
-        // UnloadAsync
         public async ValueTask UnloadAsync() {
             Assert_IsValid();
             await Addressables.UnloadSceneAsync( Handle ).WaitAsync( default );
             Handle = default;
+        }
+
+        // UnloadSafe
+        public void UnloadSafe() {
+            if (Handle.IsValid()) {
+                Unload();
+            }
         }
         public async ValueTask UnloadSafeAsync() {
             if (Handle.IsValid()) {
