@@ -1,5 +1,10 @@
 #nullable enable
 namespace System.Diagnostics.CodeAnalysis {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+
     // https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis
 
     // Input:  field (set), property (set), argument
@@ -61,6 +66,7 @@ namespace System.Diagnostics.CodeAnalysis {
     //}
 
     // Ensure
+    [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
     public sealed class MemberNotNullAttribute : Attribute {
         public string[] Members { get; }
@@ -71,6 +77,7 @@ namespace System.Diagnostics.CodeAnalysis {
             Members = members;
         }
     }
+    [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
     public sealed class MemberNotNullWhenAttribute : Attribute {
         public bool ReturnValue { get; }
