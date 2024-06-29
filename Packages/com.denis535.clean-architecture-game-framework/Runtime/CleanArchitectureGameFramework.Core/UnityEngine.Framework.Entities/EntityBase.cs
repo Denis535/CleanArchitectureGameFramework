@@ -5,19 +5,45 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class EntityBase : MonoBehaviour {
+    public abstract class EntityBase : Disposable {
+
+        // Constructor
+        public EntityBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
+
+        // Body
+        protected TBody Body { get; init; } = default!;
+        // View
+        protected TView View { get; init; } = default!;
+
+        // Constructor
+        public EntityBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    // UEntityBase
+    public abstract class UEntityBase : MonoBehaviour {
 
         // Awake
         protected abstract void Awake();
         protected abstract void OnDestroy();
 
     }
-    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
+    public abstract class UEntityBase<TBody, TView> : UEntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
 
         // Body
-        protected TBody Body { get; set; } = default!;
+        protected TBody Body { get; init; } = default!;
         // View
-        protected TView View { get; set; } = default!;
+        protected TView View { get; init; } = default!;
 
     }
     // EntityBodyBase
@@ -25,6 +51,7 @@ namespace UnityEngine.Framework.Entities {
 
         // GameObject
         protected GameObject GameObject { get; }
+        // Transform
         protected Transform Transform => GameObject.transform;
 
         // Constructor
@@ -41,6 +68,7 @@ namespace UnityEngine.Framework.Entities {
 
         // GameObject
         protected GameObject GameObject { get; }
+        // Transform
         protected Transform Transform => GameObject.transform;
 
         // Constructor

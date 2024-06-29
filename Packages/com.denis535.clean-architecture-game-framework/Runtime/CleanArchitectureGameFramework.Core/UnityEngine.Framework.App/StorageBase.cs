@@ -10,6 +10,9 @@ namespace UnityEngine.Framework.App {
         // Constructor
         public StorageBase() {
         }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }
