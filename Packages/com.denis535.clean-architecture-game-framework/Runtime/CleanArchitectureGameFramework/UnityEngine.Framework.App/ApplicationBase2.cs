@@ -14,6 +14,9 @@ namespace UnityEngine.Framework.App {
         public ApplicationBase2(IDependencyContainer container) {
             Container = container;
         }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
     }
 }

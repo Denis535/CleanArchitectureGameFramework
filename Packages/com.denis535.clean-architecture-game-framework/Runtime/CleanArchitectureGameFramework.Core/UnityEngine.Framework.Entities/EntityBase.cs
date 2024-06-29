@@ -22,13 +22,22 @@ namespace UnityEngine.Framework.Entities {
         // View
         protected TView View { get; init; } = default!;
 
+        // Constructor
+        public EntityBase() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
     }
     // UEntityBase
     public abstract class UEntityBase : MonoBehaviour {
 
         // Awake
-        protected abstract void Awake();
-        protected abstract void OnDestroy();
+        protected virtual void Awake() {
+        }
+        protected virtual void OnDestroy() {
+        }
 
     }
     public abstract class UEntityBase<TBody, TView> : UEntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
@@ -37,6 +46,14 @@ namespace UnityEngine.Framework.Entities {
         protected TBody Body { get; set; } = default!;
         // View
         protected TView View { get; set; } = default!;
+
+        // Awake
+        protected override void Awake() {
+            base.Awake();
+        }
+        protected override void OnDestroy() {
+            base.OnDestroy();
+        }
 
     }
     // EntityBodyBase

@@ -13,12 +13,6 @@ namespace UnityEngine.Framework {
         // Target
         protected ProgramBase Target => (ProgramBase) target;
 
-        // Awake
-        protected virtual void Awake() {
-        }
-        protected virtual void OnDestroy() {
-        }
-
         // OnInspectorGUI
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
