@@ -41,9 +41,9 @@ namespace UnityEngine.Framework.Entities {
     public abstract class UEntityBase<TBody, TView> : UEntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
 
         // Body
-        protected TBody Body { get; init; } = default!;
+        protected TBody Body { get; set; } = default!;
         // View
-        protected TView View { get; init; } = default!;
+        protected TView View { get; set; } = default!;
 
     }
     // EntityBodyBase
