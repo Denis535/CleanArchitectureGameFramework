@@ -22,13 +22,6 @@ namespace UnityEngine.Framework.Entities {
         // View
         protected TView View { get; init; } = default!;
 
-        // Constructor
-        public EntityBase() {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
     }
     // UEntityBase
     public abstract class UEntityBase : MonoBehaviour {
