@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class SceneObjectBase : MonoBehaviour {
+    public abstract class ActorBase : MonoBehaviour {
 
         // Entity
         public EntityBase Entity { get; protected set; } = default!;
@@ -17,13 +17,10 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
-    public abstract class SceneObjectBase<TEntity> : SceneObjectBase where TEntity : notnull, EntityBase {
+    public abstract class ActorBase<TEntity> : ActorBase where TEntity : notnull, EntityBase {
 
         // Entity
-        public new TEntity Entity {
-            get => (TEntity) base.Entity;
-            protected set => base.Entity = value;
-        }
+        public new TEntity Entity { get => (TEntity) base.Entity; protected set => base.Entity = value; }
 
         // Awake
         protected override void Awake() {
