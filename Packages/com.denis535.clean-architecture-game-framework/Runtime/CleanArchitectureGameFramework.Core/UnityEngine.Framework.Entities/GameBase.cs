@@ -14,9 +14,5 @@ namespace UnityEngine.Framework.Entities {
             base.Dispose();
         }
 
-        // RegisterEntity
-        protected internal abstract void RegisterEntity(EntityBase entity);
-        protected internal abstract void UnregisterEntity(EntityBase entity);
-
     }
 }

@@ -7,16 +7,16 @@ namespace UnityEngine.Framework.Entities {
 
     public abstract class EntityBase : Disposable {
 
-        // Game
-        protected GameBase Game { get; }
+        // System
+        protected IEntityRegistry Registry { get; }
 
         // Constructor
-        public EntityBase(GameBase game) {
-            Game = game;
-            Game.RegisterEntity( this );
+        public EntityBase(IEntityRegistry registry) {
+            Registry = registry;
+            Registry.RegisterEntity( this );
         }
         public override void Dispose() {
-            Game.UnregisterEntity( this );
+            Registry.UnregisterEntity( this );
             base.Dispose();
         }
 
@@ -29,7 +29,7 @@ namespace UnityEngine.Framework.Entities {
         protected TView View { get; }
 
         // Constructor
-        public EntityBase(GameBase game, TBody body, TView view) : base( game ) {
+        public EntityBase(IEntityRegistry registry, TBody body, TView view) : base( registry ) {
             Body = body;
             View = view;
         }

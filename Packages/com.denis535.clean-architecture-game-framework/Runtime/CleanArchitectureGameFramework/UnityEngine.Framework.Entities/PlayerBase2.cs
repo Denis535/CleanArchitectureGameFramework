@@ -11,7 +11,7 @@ namespace UnityEngine.Framework.Entities {
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public PlayerBase2(IDependencyContainer container, GameBase game) : base( game ) {
+        public PlayerBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {
