@@ -7,15 +7,16 @@ namespace UnityEngine.Framework.Entities {
 
     public abstract class EntityBase : Disposable {
 
-        // GameObject
-        protected GameObject GameObject { get; init; } = default!;
-        // Transform
-        protected Transform Transform => GameObject.transform;
+        // Game
+        protected GameBase Game { get; }
 
         // Constructor
-        public EntityBase() {
+        public EntityBase(GameBase game) {
+            Game = game;
+            Game.RegisterEntity( this );
         }
         public override void Dispose() {
+            Game.UnregisterEntity( this );
             base.Dispose();
         }
 
@@ -23,12 +24,14 @@ namespace UnityEngine.Framework.Entities {
     public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, BodyBase where TView : notnull, ViewBase {
 
         // Body
-        protected TBody Body { get; init; } = default!;
+        protected TBody Body { get; }
         // View
-        protected TView View { get; init; } = default!;
+        protected TView View { get; }
 
         // Constructor
-        public EntityBase() {
+        public EntityBase(GameBase game, TBody body, TView view) : base( game ) {
+            Body = body;
+            View = view;
         }
         public override void Dispose() {
             base.Dispose();
@@ -37,11 +40,6 @@ namespace UnityEngine.Framework.Entities {
     }
     // BodyBase
     public abstract class BodyBase : Disposable {
-
-        // GameObject
-        protected GameObject GameObject { get; init; } = default!;
-        // Transform
-        protected Transform Transform => GameObject.transform;
 
         // Constructor
         public BodyBase() {
@@ -53,11 +51,6 @@ namespace UnityEngine.Framework.Entities {
     }
     // ViewBase
     public abstract class ViewBase : Disposable {
-
-        // GameObject
-        protected GameObject GameObject { get; init; } = default!;
-        // Transform
-        protected Transform Transform => GameObject.transform;
 
         // Constructor
         public ViewBase() {

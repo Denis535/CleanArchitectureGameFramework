@@ -7,8 +7,12 @@ namespace UnityEngine.Framework.Entities {
 
     public abstract class PlayerBase : Disposable {
 
+        // Game
+        protected GameBase Game { get; }
+
         // Constructor
-        public PlayerBase() {
+        public PlayerBase(GameBase game) {
+            Game = game;
         }
         public override void Dispose() {
             base.Dispose();
