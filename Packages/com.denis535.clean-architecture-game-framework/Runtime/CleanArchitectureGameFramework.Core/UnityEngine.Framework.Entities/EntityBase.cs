@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 namespace UnityEngine.Framework.Entities {
     using System;
     using System.Collections;
@@ -15,7 +15,7 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
-    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
+    public abstract class EntityBase<TBody, TView> : EntityBase where TBody : notnull, BodyBase where TView : notnull, ViewBase {
 
         // Body
         protected TBody Body { get; init; } = default!;
@@ -30,34 +30,8 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
-    // UEntityBase
-    public abstract class UEntityBase : MonoBehaviour {
-
-        // Awake
-        protected virtual void Awake() {
-        }
-        protected virtual void OnDestroy() {
-        }
-
-    }
-    public abstract class UEntityBase<TBody, TView> : UEntityBase where TBody : notnull, EntityBodyBase where TView : notnull, EntityViewBase {
-
-        // Body
-        protected TBody Body { get; set; } = default!;
-        // View
-        protected TView View { get; set; } = default!;
-
-        // Awake
-        protected override void Awake() {
-            base.Awake();
-        }
-        protected override void OnDestroy() {
-            base.OnDestroy();
-        }
-
-    }
-    // EntityBodyBase
-    public abstract class EntityBodyBase : Disposable {
+    // BodyBase
+    public abstract class BodyBase : Disposable {
 
         // GameObject
         protected GameObject GameObject { get; }
@@ -65,7 +39,7 @@ namespace UnityEngine.Framework.Entities {
         protected Transform Transform => GameObject.transform;
 
         // Constructor
-        public EntityBodyBase(GameObject gameObject) {
+        public BodyBase(GameObject gameObject) {
             GameObject = gameObject;
         }
         public override void Dispose() {
@@ -73,8 +47,8 @@ namespace UnityEngine.Framework.Entities {
         }
 
     }
-    // EntityViewBase
-    public abstract class EntityViewBase : Disposable {
+    // ViewBase
+    public abstract class ViewBase : Disposable {
 
         // GameObject
         protected GameObject GameObject { get; }
@@ -82,7 +56,7 @@ namespace UnityEngine.Framework.Entities {
         protected Transform Transform => GameObject.transform;
 
         // Constructor
-        public EntityViewBase(GameObject gameObject) {
+        public ViewBase(GameObject gameObject) {
             GameObject = gameObject;
         }
         public override void Dispose() {

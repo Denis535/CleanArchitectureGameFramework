@@ -7,21 +7,8 @@ namespace UnityEngine.Framework.Entities {
 
     public abstract class GameBase2 : GameBase {
 
-        private bool isPaused;
-
         // System
         protected IDependencyContainer Container { get; }
-        // IsPaused
-        public bool IsPaused {
-            get => isPaused;
-            set {
-                if (value != isPaused) {
-                    isPaused = value;
-                    OnPauseEvent?.Invoke( isPaused );
-                }
-            }
-        }
-        public event Action<bool>? OnPauseEvent;
 
         // Constructor
         public GameBase2(IDependencyContainer container) {
