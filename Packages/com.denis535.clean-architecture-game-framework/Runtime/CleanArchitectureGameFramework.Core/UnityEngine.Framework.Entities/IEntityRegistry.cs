@@ -7,8 +7,8 @@ namespace UnityEngine.Framework.Entities {
 
     public interface IEntityRegistry {
 
-        void RegisterEntity(EntityBase entity);
-        void UnregisterEntity(EntityBase entity);
+        protected internal void RegisterEntity(EntityBase entity);
+        protected internal void UnregisterEntity(EntityBase entity);
 
     }
 }

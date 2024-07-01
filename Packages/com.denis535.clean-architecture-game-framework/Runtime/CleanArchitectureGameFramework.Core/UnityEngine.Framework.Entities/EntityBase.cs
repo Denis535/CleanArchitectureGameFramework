@@ -16,8 +16,8 @@ namespace UnityEngine.Framework.Entities {
             Registry.RegisterEntity( this );
         }
         public override void Dispose() {
-            Registry.UnregisterEntity( this );
             base.Dispose();
+            Registry.UnregisterEntity( this );
         }
 
     }
