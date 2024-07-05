@@ -7,16 +7,18 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ColorfulProjectWindowSettings {
 
-        private static readonly Color DefaultAssemblyColor = HSVA( 000, 1f, 1.0f, 0.3f );
-        private static readonly Color DefaultAssetsColor = HSVA( 060, 1f, 1.0f, 0.3f );
-        private static readonly Color DefaultResourcesColor = HSVA( 060, 1f, 1.0f, 0.3f );
-        private static readonly Color DefaultSourcesColor = HSVA( 120, 1f, 1.0f, 0.3f );
+        private static readonly Color DefaultPackageColor   = HSVA( 000, 0.0f, 0.0f, 0.3f );
+        private static readonly Color DefaultAssemblyColor  = HSVA( 000, 1.0f, 1.0f, 0.3f );
+        private static readonly Color DefaultAssetsColor    = HSVA( 060, 1.0f, 1.0f, 0.3f );
+        private static readonly Color DefaultResourcesColor = HSVA( 060, 1.0f, 1.0f, 0.3f );
+        private static readonly Color DefaultSourcesColor   = HSVA( 120, 1.0f, 1.0f, 0.3f );
         private static ColorfulProjectWindowSettings? instance;
 
         // Instance
         public static ColorfulProjectWindowSettings Instance => instance ??= new ColorfulProjectWindowSettings();
 
         // Colors
+        public Color PackageColor { get; internal set; }
         public Color AssemblyColor { get; internal set; }
         public Color AssetsColor { get; internal set; }
         public Color ResourcesColor { get; internal set; }
@@ -29,22 +31,25 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // Load
         public void Load() {
-            AssemblyColor = LoadColor( "ColorfulProjectWindowSettings.AssemblyColor", DefaultAssemblyColor );
-            AssetsColor = LoadColor( "ColorfulProjectWindowSettings.AssetsColor", DefaultAssetsColor );
-            ResourcesColor = LoadColor( "ColorfulProjectWindowSettings.ResourcesColor", DefaultResourcesColor );
-            SourcesColor = LoadColor( "ColorfulProjectWindowSettings.SourcesColor", DefaultSourcesColor );
+            PackageColor = GetColor( "ColorfulProjectWindowSettings.PackageColor", DefaultPackageColor );
+            AssemblyColor = GetColor( "ColorfulProjectWindowSettings.AssemblyColor", DefaultAssemblyColor );
+            AssetsColor = GetColor( "ColorfulProjectWindowSettings.AssetsColor", DefaultAssetsColor );
+            ResourcesColor = GetColor( "ColorfulProjectWindowSettings.ResourcesColor", DefaultResourcesColor );
+            SourcesColor = GetColor( "ColorfulProjectWindowSettings.SourcesColor", DefaultSourcesColor );
         }
 
         // Save
         public void Save() {
-            SaveColor( "ColorfulProjectWindowSettings.AssemblyColor", AssemblyColor );
-            SaveColor( "ColorfulProjectWindowSettings.AssetsColor", AssetsColor );
-            SaveColor( "ColorfulProjectWindowSettings.ResourcesColor", ResourcesColor );
-            SaveColor( "ColorfulProjectWindowSettings.SourcesColor", SourcesColor );
+            SetColor( "ColorfulProjectWindowSettings.PackageColor", PackageColor );
+            SetColor( "ColorfulProjectWindowSettings.AssemblyColor", AssemblyColor );
+            SetColor( "ColorfulProjectWindowSettings.AssetsColor", AssetsColor );
+            SetColor( "ColorfulProjectWindowSettings.ResourcesColor", ResourcesColor );
+            SetColor( "ColorfulProjectWindowSettings.SourcesColor", SourcesColor );
         }
 
         // Reset
         public void Reset() {
+            PackageColor = DefaultPackageColor;
             AssemblyColor = DefaultAssemblyColor;
             AssetsColor = DefaultAssetsColor;
             ResourcesColor = DefaultResourcesColor;
@@ -52,14 +57,14 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
 
         // Helpers
-        private static Color LoadColor(string key, Color @default) {
+        private static Color GetColor(string key, Color @default) {
             var result = EditorPrefs.GetString( key, ColorUtility.ToHtmlStringRGBA( @default ) );
             if (ColorUtility.TryParseHtmlString( $"#{result}", out var result2 )) {
                 return result2;
             }
             return @default;
         }
-        private static void SaveColor(string key, Color value) {
+        private static void SetColor(string key, Color value) {
             EditorPrefs.SetString( key, ColorUtility.ToHtmlStringRGBA( value ) );
         }
         // Helpers

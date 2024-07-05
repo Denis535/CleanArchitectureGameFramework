@@ -20,15 +20,20 @@ namespace UnityEditor.ColorfulProjectWindow {
             OnGUI( rect, AssetDatabase.GUIDToAssetPath( guid ) );
         }
         protected virtual void OnGUI(Rect rect, string path) {
-            if (IsAssembly( path, out var assembly, out var content )) {
+            if (IsPackage( path, out var package, out var content )) {
+                DrawPackage( rect, path, package, content );
+            }
+            if (IsAssembly( path, out var assembly, out content )) {
                 DrawAssembly( rect, path, assembly, content );
             }
         }
 
-        // IsAssembly
+        // IsPackage
+        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content);
         protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
 
-        // DrawAssembly
+        // DrawPackage
+        protected abstract void DrawPackage(Rect rect, string path, string package, string content);
         protected abstract void DrawAssembly(Rect rect, string path, string assembly, string content);
 
         // Helpers
