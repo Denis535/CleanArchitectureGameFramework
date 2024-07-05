@@ -7,7 +7,7 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ColorfulProjectWindowSettings {
 
-        private static readonly Color DefaultModuleColor = HSVA( 000, 1f, 1.0f, 0.3f );
+        private static readonly Color DefaultAssemblyColor = HSVA( 000, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultAssetsColor = HSVA( 060, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultResourcesColor = HSVA( 060, 1f, 1.0f, 0.3f );
         private static readonly Color DefaultSourcesColor = HSVA( 120, 1f, 1.0f, 0.3f );
@@ -17,7 +17,7 @@ namespace UnityEditor.ColorfulProjectWindow {
         public static ColorfulProjectWindowSettings Instance => instance ??= new ColorfulProjectWindowSettings();
 
         // Colors
-        public Color ModuleColor { get; internal set; }
+        public Color AssemblyColor { get; internal set; }
         public Color AssetsColor { get; internal set; }
         public Color ResourcesColor { get; internal set; }
         public Color SourcesColor { get; internal set; }
@@ -29,7 +29,7 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // Load
         public void Load() {
-            ModuleColor = LoadColor( "ColorfulProjectWindowSettings.ModuleColor", DefaultModuleColor );
+            AssemblyColor = LoadColor( "ColorfulProjectWindowSettings.AssemblyColor", DefaultAssemblyColor );
             AssetsColor = LoadColor( "ColorfulProjectWindowSettings.AssetsColor", DefaultAssetsColor );
             ResourcesColor = LoadColor( "ColorfulProjectWindowSettings.ResourcesColor", DefaultResourcesColor );
             SourcesColor = LoadColor( "ColorfulProjectWindowSettings.SourcesColor", DefaultSourcesColor );
@@ -37,7 +37,7 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // Save
         public void Save() {
-            SaveColor( "ColorfulProjectWindowSettings.ModuleColor", ModuleColor );
+            SaveColor( "ColorfulProjectWindowSettings.AssemblyColor", AssemblyColor );
             SaveColor( "ColorfulProjectWindowSettings.AssetsColor", AssetsColor );
             SaveColor( "ColorfulProjectWindowSettings.ResourcesColor", ResourcesColor );
             SaveColor( "ColorfulProjectWindowSettings.SourcesColor", SourcesColor );
@@ -45,7 +45,7 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // Reset
         public void Reset() {
-            ModuleColor = DefaultModuleColor;
+            AssemblyColor = DefaultAssemblyColor;
             AssetsColor = DefaultAssetsColor;
             ResourcesColor = DefaultResourcesColor;
             SourcesColor = DefaultSourcesColor;

@@ -28,7 +28,7 @@ namespace UnityEditor.ColorfulProjectWindow {
         public override void OnGUI(string searchContext) {
             using (var scope = new EditorGUI.ChangeCheckScope()) {
                 using (new EditorGUILayout.VerticalScope( GUI.skin.box )) {
-                    Settings.ModuleColor = EditorGUILayout.ColorField( "Module Color", Settings.ModuleColor );
+                    Settings.AssemblyColor = EditorGUILayout.ColorField( "Assembly Color", Settings.AssemblyColor );
                     Settings.AssetsColor = EditorGUILayout.ColorField( "Assets Color", Settings.AssetsColor );
                     Settings.ResourcesColor = EditorGUILayout.ColorField( "Resources Color", Settings.ResourcesColor );
                     Settings.SourcesColor = EditorGUILayout.ColorField( "Sources Color", Settings.SourcesColor );
