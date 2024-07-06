@@ -40,6 +40,9 @@ namespace UnityEditor.ColorfulProjectWindow {
             PackagePaths = packagePaths;
             AssemblyPaths = assemblyPaths;
         }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
         // OnGUI
         protected override void OnGUI(Rect rect, string path) {

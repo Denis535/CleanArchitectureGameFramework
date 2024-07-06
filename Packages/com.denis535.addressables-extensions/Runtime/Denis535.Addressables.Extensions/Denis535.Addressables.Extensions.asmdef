@@ -1,5 +1,5 @@
 {
-    "name": "Addressables.Extensions",
+    "name": "Denis535.Addressables.Extensions",
     "rootNamespace": "UnityEngine.AddressableAssets",
     "references": [
         "GUID:84651a3751eca9349aac36a66bba901b",
@@ -10,7 +10,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
