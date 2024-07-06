@@ -7,13 +7,19 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class ColorfulProjectWindowSettingsProvider : SettingsProvider {
+    public class SettingsProvider : UnityEditor.SettingsProvider {
 
         // Settings
-        private ColorfulProjectWindowSettings Settings => ColorfulProjectWindowSettings.Instance;
+        private Settings Settings => Settings.Instance;
 
         // Constructor
-        public ColorfulProjectWindowSettingsProvider() : base( "Preferences/Colorful Project Window", SettingsScope.User, new[] { "Colorful Project Window" } ) {
+        public SettingsProvider() : base( "Preferences/Colorful Project Window", SettingsScope.User, new[] { "Colorful Project Window" } ) {
+        }
+
+        // GetSettingsProvider
+        [SettingsProvider]
+        public static UnityEditor.SettingsProvider? GetSettingsProvider() {
+            return new SettingsProvider();
         }
 
         // OnActivate
@@ -49,12 +55,6 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // OnUpdate
         public override void OnInspectorUpdate() {
-        }
-
-        // GetSettingsProvider
-        [SettingsProvider]
-        public static SettingsProvider? GetSettingsProvider() {
-            return new ColorfulProjectWindowSettingsProvider();
         }
 
     }

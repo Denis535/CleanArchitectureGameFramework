@@ -9,15 +9,18 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEngine;
 
     [InitializeOnLoad]
-    public class ColorfulProjectWindow2 : ColorfulProjectWindow {
+    public class ProjectWindow2 : ProjectWindow {
 
         // Constructor
-        static ColorfulProjectWindow2() {
-            new ColorfulProjectWindow2();
+        static ProjectWindow2() {
+            new ProjectWindow2();
         }
 
         // Constructor
-        public ColorfulProjectWindow2() {
+        public ProjectWindow2() {
+        }
+        public override void Dispose() {
+            base.Dispose();
         }
 
     }

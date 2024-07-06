@@ -8,10 +8,10 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEditor;
     using UnityEngine;
 
-    public abstract class ColorfulProjectWindowBase : IDisposable {
+    public abstract class ProjectWindowBase : IDisposable {
 
         // Constructor
-        public ColorfulProjectWindowBase() {
+        public ProjectWindowBase() {
             EditorApplication.projectWindowItemOnGUI += OnGUI;
         }
         public virtual void Dispose() {

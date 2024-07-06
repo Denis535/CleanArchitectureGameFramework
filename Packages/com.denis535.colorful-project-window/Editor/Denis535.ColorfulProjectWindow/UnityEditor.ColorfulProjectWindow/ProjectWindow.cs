@@ -10,17 +10,17 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEditor;
     using UnityEngine;
 
-    public class ColorfulProjectWindow : ColorfulProjectWindowBase {
+    public class ProjectWindow : ProjectWindowBase {
 
         // PackagePaths
         protected string[] PackagePaths { get; }
         // AssemblyPaths
         protected string[] AssemblyPaths { get; }
         // Settings
-        private ColorfulProjectWindowSettings Settings => ColorfulProjectWindowSettings.Instance;
+        private Settings Settings => Settings.Instance;
 
         // Constructor
-        public ColorfulProjectWindow() {
+        public ProjectWindow() {
             PackagePaths = AssetDatabase.GetAllAssetPaths()
                 .Where( i => Path.GetFileName( i ) is "package.json" )
                 .Select( Path.GetDirectoryName )
@@ -36,7 +36,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                     .Distinct()
                     .ToArray();
         }
-        public ColorfulProjectWindow(string[] packagePaths, string[] assemblyPaths) {
+        public ProjectWindow(string[] packagePaths, string[] assemblyPaths) {
             PackagePaths = packagePaths;
             AssemblyPaths = assemblyPaths;
         }
