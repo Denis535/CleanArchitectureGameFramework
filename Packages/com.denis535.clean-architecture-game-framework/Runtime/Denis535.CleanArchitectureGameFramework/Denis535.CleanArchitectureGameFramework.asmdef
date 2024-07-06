@@ -1,13 +1,16 @@
 {
-    "name": "CleanArchitectureGameFramework.Internal",
+    "name": "Denis535.CleanArchitectureGameFramework",
     "rootNamespace": "UnityEngine",
-    "references": [],
+    "references": [
+        "GUID:b3fe3ef184551854c9825e624a617826",
+        "GUID:5d84abae7084afd45a745ed680d4fb0e"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
