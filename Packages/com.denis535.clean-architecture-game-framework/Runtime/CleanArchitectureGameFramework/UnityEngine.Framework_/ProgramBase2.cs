@@ -9,6 +9,7 @@ namespace UnityEngine.Framework {
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
     using UnityEngine.Framework.Entities;
+    using UnityEngine.UIElements;
 
     public abstract class ProgramBase2 : ProgramBase, IDependencyContainer {
 
@@ -45,7 +46,7 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
             OnInspectorGUI( Theme );
-            OnInspectorGUI( Screen );
+            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget.View, (Screen.Widget.View as UIViewBase2)?.VisualElement );
             OnInspectorGUI( Router );
             OnInspectorGUI( Application );
             OnInspectorGUI( Game );
@@ -53,10 +54,11 @@ namespace UnityEngine.Framework {
         protected virtual void OnInspectorGUI(UIThemeBase theme) {
             LabelField( "Theme", theme.ToString() );
         }
-        protected virtual void OnInspectorGUI(UIScreenBase screen) {
+        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view, VisualElement? element) {
             LabelField( "Screen", screen.ToString() );
-            LabelField( "Widget", screen?.Widget.Chain( GetDisplayString ) ?? "Null" );
-            LabelField( "View", screen?.Widget?.View.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "Widget", widget?.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "View", view?.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "Element", element?.Chain( GetDisplayString ) ?? "Null" );
         }
         protected virtual void OnInspectorGUI(UIRouterBase router) {
             LabelField( "Router", router.ToString() );
@@ -76,16 +78,19 @@ namespace UnityEngine.Framework {
             }
         }
         // Helpers
-        protected static string? GetDisplayString(UIWidgetBase? widget) {
-            if (widget == null) return null;
+        protected static string? GetDisplayString(UIWidgetBase widget) {
             var builder = new StringBuilder();
-            builder.AppendHierarchy( widget, i => i.GetType().Name, i => i.Children );
+            builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );
             return builder.ToString();
         }
-        protected static string? GetDisplayString(UIViewBase? view) {
-            if (view == null) return null;
+        protected static string? GetDisplayString(UIViewBase view) {
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => i.GetType().Name, i => i.Children );
+            builder.AppendHierarchy( view, i => i.ToString(), i => i.Children );
+            return builder.ToString();
+        }
+        protected static string? GetDisplayString(VisualElement element) {
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( element, i => i.GetType().FullName, i => i.Children() );
             return builder.ToString();
         }
 #endif
