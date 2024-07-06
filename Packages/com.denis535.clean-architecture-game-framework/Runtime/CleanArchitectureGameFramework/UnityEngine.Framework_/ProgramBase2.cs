@@ -90,7 +90,7 @@ namespace UnityEngine.Framework {
         }
         protected static string? GetDisplayString(VisualElement visualElement) {
             var builder = new StringBuilder();
-            builder.AppendHierarchy( visualElement, i => $"{i.GetType().FullName} ({visualElement.name})", i => i.Children() );
+            builder.AppendHierarchy( visualElement, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
             return builder.ToString();
         }
 #endif
