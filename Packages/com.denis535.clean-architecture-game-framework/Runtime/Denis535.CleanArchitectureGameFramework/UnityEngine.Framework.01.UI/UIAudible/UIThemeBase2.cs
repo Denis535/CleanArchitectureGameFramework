@@ -11,9 +11,39 @@ namespace UnityEngine.Framework.UI {
         protected IDependencyContainer Container { get; }
         // AudioSource
         protected AudioSource AudioSource { get; }
-        // IsPlaying
+
+        // Constructor
+        public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
+            Container = container;
+            AudioSource = audioSource;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
+    }
+    public abstract class UIThemeStateBase2 : UIThemeStateBase {
+
+        // AudioSource
+        protected AudioSource AudioSource { get; }
         protected bool IsPlaying {
             get => AudioSource.clip != null;
+        }
+        protected bool IsCompleted {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                return !AudioSource.isPlaying && AudioSource.time == AudioSource.clip.length;
+            }
+        }
+        protected bool IsPaused {
+            set {
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                if (value) {
+                    AudioSource.Pause();
+                } else {
+                    AudioSource.UnPause();
+                }
+            }
         }
         protected bool Mute {
             get {
@@ -45,26 +75,9 @@ namespace UnityEngine.Framework.UI {
                 AudioSource.pitch = value;
             }
         }
-        protected bool IsPaused {
-            set {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                if (value) {
-                    AudioSource.Pause();
-                } else {
-                    AudioSource.UnPause();
-                }
-            }
-        }
-        protected bool IsCompleted {
-            get {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                return !AudioSource.isPlaying && AudioSource.time == AudioSource.clip.length;
-            }
-        }
 
         // Constructor
-        public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
-            Container = container;
+        public UIThemeStateBase2(AudioSource audioSource) {
             AudioSource = audioSource;
         }
         public override void Dispose() {
