@@ -45,14 +45,15 @@ namespace UnityEngine.Framework {
 #if UNITY_EDITOR
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
-            OnInspectorGUI( Theme );
-            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget.View, (Screen.Widget.View as UIViewBase2)?.VisualElement );
+            OnInspectorGUI( Theme, Theme.State );
+            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View, (Screen.Widget?.View as UIViewBase2)?.VisualElement );
             OnInspectorGUI( Router );
             OnInspectorGUI( Application );
             OnInspectorGUI( Game );
         }
-        protected virtual void OnInspectorGUI(UIThemeBase theme) {
+        protected virtual void OnInspectorGUI(UIThemeBase theme, UIThemeStateBase? state) {
             LabelField( "Theme", theme.ToString() );
+            LabelField( "Theme State", state?.ToString() ?? "Null" );
         }
         protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view, VisualElement? visualElement) {
             LabelField( "Screen", screen.ToString() );

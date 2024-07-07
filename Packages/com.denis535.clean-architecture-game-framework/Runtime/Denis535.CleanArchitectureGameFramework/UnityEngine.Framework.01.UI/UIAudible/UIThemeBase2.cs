@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
         // System
         protected IDependencyContainer Container { get; }
         // AudioSource
-        protected AudioSource AudioSource { get; }
+        protected internal AudioSource AudioSource { get; }
 
         // Constructor
         public UIThemeBase2(IDependencyContainer container, AudioSource audioSource) {
@@ -24,62 +24,61 @@ namespace UnityEngine.Framework.UI {
     }
     public abstract class UIThemeStateBase2 : UIThemeStateBase {
 
-        // AudioSource
-        protected AudioSource AudioSource { get; }
+        // Context
+        protected new UIThemeBase2 Context => (UIThemeBase2) base.Context;
         // IsPlaying
         protected bool IsPlaying {
-            get => AudioSource.clip != null;
+            get => Context.AudioSource.clip != null;
         }
         protected bool IsCompleted {
             get {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                return !AudioSource.isPlaying && AudioSource.time == AudioSource.clip.length;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                return !Context.AudioSource.isPlaying && Context.AudioSource.time == Context.AudioSource.clip.length;
             }
         }
         protected bool IsPaused {
             set {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 if (value) {
-                    AudioSource.Pause();
+                    Context.AudioSource.Pause();
                 } else {
-                    AudioSource.UnPause();
+                    Context.AudioSource.UnPause();
                 }
             }
         }
         protected bool Mute {
             get {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                return AudioSource.mute;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                return Context.AudioSource.mute;
             }
             set {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                AudioSource.mute = value;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Context.AudioSource.mute = value;
             }
         }
         protected float Volume {
             get {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                return AudioSource.volume;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                return Context.AudioSource.volume;
             }
             set {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                AudioSource.volume = value;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Context.AudioSource.volume = value;
             }
         }
         protected float Pitch {
             get {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                return AudioSource.pitch;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                return Context.AudioSource.pitch;
             }
             set {
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-                AudioSource.pitch = value;
+                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Context.AudioSource.pitch = value;
             }
         }
 
         // Constructor
-        public UIThemeStateBase2(AudioSource audioSource) {
-            AudioSource = audioSource;
+        public UIThemeStateBase2(UIThemeBase2 context) : base( context ) {
         }
         public override void Dispose() {
             base.Dispose();
@@ -87,14 +86,14 @@ namespace UnityEngine.Framework.UI {
 
         // Play
         protected void Play(AudioClip clip) {
-            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( AudioSource.clip == null );
-            AudioSource.clip = clip;
-            AudioSource.Play();
+            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( Context.AudioSource.clip == null );
+            Context.AudioSource.clip = clip;
+            Context.AudioSource.Play();
         }
         protected void Stop() {
-            Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( AudioSource.clip != null );
-            AudioSource.Stop();
-            AudioSource.clip = null;
+            Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( Context.AudioSource.clip != null );
+            Context.AudioSource.Stop();
+            Context.AudioSource.clip = null;
         }
 
     }

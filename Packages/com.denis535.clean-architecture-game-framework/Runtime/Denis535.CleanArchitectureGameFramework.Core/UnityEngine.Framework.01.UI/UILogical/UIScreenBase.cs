@@ -8,7 +8,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIScreenBase : Disposable {
 
         // Widget
-        protected internal UIWidgetBase Widget { get; private set; } = default!;
+        protected internal UIWidgetBase? Widget { get; private set; }
 
         // Constructor
         public UIScreenBase() {
@@ -36,7 +36,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
             widget.Deactivate( this, argument );
-            Widget = default!;
+            Widget = null;
         }
 
     }
