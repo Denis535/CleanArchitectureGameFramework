@@ -26,6 +26,7 @@ namespace UnityEngine.Framework.UI {
 
         // AudioSource
         protected AudioSource AudioSource { get; }
+        // IsPlaying
         protected bool IsPlaying {
             get => AudioSource.clip != null;
         }

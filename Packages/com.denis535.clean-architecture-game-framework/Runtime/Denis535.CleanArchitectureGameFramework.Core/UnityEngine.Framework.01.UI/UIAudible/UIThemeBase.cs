@@ -7,20 +7,6 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIThemeBase : Disposable {
 
-        private UIThemeStateBase? state;
-
-        // State
-        protected UIThemeStateBase? State {
-            get => state;
-            set {
-                if (state != null) {
-                    state.Dispose();
-                    state = null;
-                }
-                state = value;
-            }
-        }
-
         // Constructor
         public UIThemeBase() {
         }
