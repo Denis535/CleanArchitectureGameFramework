@@ -4,6 +4,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.ResourceManagement.AsyncOperations;
 
     public abstract class AddressableListHandle {
 
@@ -19,14 +20,27 @@ namespace UnityEngine.AddressableAssets {
         public AddressableListHandle() {
         }
 
+    }
+    public abstract class AddressableListHandle<T> : AddressableListHandle where T : notnull {
+
+        // Keys
+        public override string[] Keys { get; }
+        // Handle
+        protected AsyncOperationHandle<IReadOnlyList<T>> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsValid() && Handle.IsDone;
+        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
+        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+
+        // Constructor
+        public AddressableListHandle(string[] keys) {
+            Keys = keys;
+        }
+
         // Heleprs
         protected void Assert_IsValid() {
             if (IsValid) return;
             throw new InvalidOperationException( $"AddressableListHandle `{this}` must be valid" );
-        }
-        protected void Assert_IsSucceeded() {
-            if (IsSucceeded) return;
-            throw new InvalidOperationException( $"AddressableListHandle `{this}` must be succeeded" );
         }
         protected void Assert_IsNotValid() {
             if (!IsValid) return;

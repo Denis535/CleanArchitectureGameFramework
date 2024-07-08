@@ -3,115 +3,63 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public class PrefabListHandleDynamic<T> : AddressableListHandleDynamic, IPrefabListHandle<PrefabListHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
-
-        // Handle
-        [MemberNotNullWhen( true, "Handle" )]
-        public override bool IsValid {
-            get {
-                return Handle != null;
-            }
-        }
-        public PrefabListHandle<T>? Handle { get; private set; }
-        public override string[] Keys {
-            get {
-                Assert_IsValid();
-                return Handle!.Keys;
-            }
-        }
-        public override bool IsDone {
-            get {
-                Assert_IsValid();
-                return Handle!.IsDone;
-            }
-        }
-        public override bool IsSucceeded {
-            get {
-                Assert_IsValid();
-                return Handle!.IsSucceeded;
-            }
-        }
-        public override bool IsFailed {
-            get {
-                Assert_IsValid();
-                return Handle!.IsFailed;
-            }
-        }
+    public class PrefabListHandleDynamic<T> : AddressableListHandleDynamic<PrefabListHandle<T>>, IPrefabListHandle<PrefabListHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public PrefabListHandleDynamic() {
         }
 
         // SetUp
-        public PrefabListHandleDynamic<T> SetUp(string[] keys) {
-            Assert_IsNotValid();
-            Handle = new PrefabListHandle<T>( keys );
-            return this;
-        }
-        public PrefabListHandleDynamic<T> SetUp(PrefabListHandle<T> handle) {
-            Assert_IsNotValid();
-            Handle = handle;
-            return this;
+        public new PrefabListHandleDynamic<T> SetUp(PrefabListHandle<T>? handle) {
+            return (PrefabListHandleDynamic<T>) base.SetUp( handle );
         }
 
         // Load
         public PrefabListHandleDynamic<T> Load() {
-            Assert_IsValid();
-            Handle!.Load();
+            Assert_HasHandle();
+            Handle.Load();
             return this;
         }
 
         // Wait
         public void Wait() {
-            Assert_IsValid();
-            Handle!.Wait();
+            Assert_HasHandle();
+            Handle.Wait();
         }
         public ValueTask WaitAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.WaitAsync( cancellationToken );
-        }
-
-        // GetValue
-        public IReadOnlyList<UnityEngine.Object> GetValuesBase() {
-            Assert_IsValid();
-            return Handle!.GetValuesBase();
-        }
-        public ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.GetValuesBaseAsync( cancellationToken );
+            Assert_HasHandle();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValue
         public IReadOnlyList<T> GetValues() {
-            Assert_IsValid();
-            return Handle!.GetValues();
+            Assert_HasHandle();
+            return Handle.GetValues();
         }
         public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.GetValuesAsync( cancellationToken );
+            Assert_HasHandle();
+            return Handle.GetValuesAsync( cancellationToken );
         }
 
         // Release
         public void Release() {
-            Assert_IsValid();
-            Handle!.Release();
-            Handle = null;
+            Assert_HasHandle();
+            Handle.Release();
         }
         public void ReleaseSafe() {
-            if (IsValid) {
+            if (Handle != null && Handle.IsValid) {
                 Release();
             }
         }
 
         // Utils
         public override string ToString() {
-            if (IsValid) {
-                return "PrefabListHandleDynamic: " + string.Join( ", ", Keys );
+            if (Handle != null) {
+                return "PrefabListHandleDynamic: " + string.Join( ", ", Handle.Keys );
             } else {
                 return "PrefabListHandleDynamic";
             }

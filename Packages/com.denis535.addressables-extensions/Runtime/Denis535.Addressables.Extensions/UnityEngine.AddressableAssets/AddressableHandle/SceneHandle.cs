@@ -9,24 +9,10 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableHandle, ISceneHandle<SceneHandle> {
-
-        // Key
-        public override string Key { get; }
-        // Handle
-        private AsyncOperationHandle<SceneInstance> Handle { get; set; }
-        public override bool IsValid => Handle.IsValid();
-        public override bool IsDone => Handle.IsValid() && Handle.IsDone;
-        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
-        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+    public class SceneHandle : AddressableHandle<SceneInstance>, ISceneHandle<SceneHandle> {
 
         // Constructor
-        public SceneHandle(string key) {
-            Key = key;
-        }
-        public SceneHandle(string key, AsyncOperationHandle<SceneInstance> handle) {
-            Key = key;
-            Handle = handle;
+        public SceneHandle(string key) : base( key ) {
         }
 
         // Load

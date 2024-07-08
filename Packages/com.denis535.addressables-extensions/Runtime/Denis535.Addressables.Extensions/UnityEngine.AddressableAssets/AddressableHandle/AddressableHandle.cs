@@ -4,6 +4,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.ResourceManagement.AsyncOperations;
 
     public abstract class AddressableHandle {
 
@@ -19,14 +20,27 @@ namespace UnityEngine.AddressableAssets {
         public AddressableHandle() {
         }
 
+    }
+    public abstract class AddressableHandle<T> : AddressableHandle where T : notnull {
+
+        // Key
+        public override string Key { get; }
+        // Handle
+        protected AsyncOperationHandle<T> Handle { get; set; }
+        public override bool IsValid => Handle.IsValid();
+        public override bool IsDone => Handle.IsValid() && Handle.IsDone;
+        public override bool IsSucceeded => Handle.IsValid() && Handle.IsSucceeded();
+        public override bool IsFailed => Handle.IsValid() && Handle.IsFailed();
+
+        // Constructor
+        public AddressableHandle(string key) {
+            Key = key;
+        }
+
         // Heleprs
         protected void Assert_IsValid() {
             if (IsValid) return;
             throw new InvalidOperationException( $"AddressableHandle `{this}` must be valid" );
-        }
-        protected void Assert_IsSucceeded() {
-            if (IsSucceeded) return;
-            throw new InvalidOperationException( $"AddressableHandle `{this}` must be succeeded" );
         }
         protected void Assert_IsNotValid() {
             if (!IsValid) return;

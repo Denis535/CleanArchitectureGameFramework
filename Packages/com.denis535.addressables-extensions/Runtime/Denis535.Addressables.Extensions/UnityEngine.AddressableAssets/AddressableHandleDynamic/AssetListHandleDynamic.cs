@@ -3,115 +3,63 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public class AssetListHandleDynamic<T> : AddressableListHandleDynamic, IAssetListHandle<AssetListHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
-
-        // Handle
-        [MemberNotNullWhen( true, "Handle" )]
-        public override bool IsValid {
-            get {
-                return Handle != null;
-            }
-        }
-        public AssetListHandle<T>? Handle { get; private set; }
-        public override string[] Keys {
-            get {
-                Assert_IsValid();
-                return Handle!.Keys;
-            }
-        }
-        public override bool IsDone {
-            get {
-                Assert_IsValid();
-                return Handle!.IsDone;
-            }
-        }
-        public override bool IsSucceeded {
-            get {
-                Assert_IsValid();
-                return Handle!.IsSucceeded;
-            }
-        }
-        public override bool IsFailed {
-            get {
-                Assert_IsValid();
-                return Handle!.IsFailed;
-            }
-        }
+    public class AssetListHandleDynamic<T> : AddressableListHandleDynamic<AssetListHandle<T>>, IAssetListHandle<AssetListHandleDynamic<T>, T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public AssetListHandleDynamic() {
         }
 
         // SetUp
-        public AssetListHandleDynamic<T> SetUp(params string[] keys) {
-            Assert_IsNotValid();
-            Handle = new AssetListHandle<T>( keys );
-            return this;
-        }
-        public AssetListHandleDynamic<T> SetUp(AssetListHandle<T> handle) {
-            Assert_IsNotValid();
-            Handle = handle;
-            return this;
+        public new AssetListHandleDynamic<T> SetUp(AssetListHandle<T>? handle) {
+            return (AssetListHandleDynamic<T>) base.SetUp( handle );
         }
 
         // Load
         public AssetListHandleDynamic<T> Load() {
-            Assert_IsValid();
-            Handle!.Load();
+            Assert_HasHandle();
+            Handle.Load();
             return this;
         }
 
         // Wait
         public void Wait() {
-            Assert_IsValid();
-            Handle!.Wait();
+            Assert_HasHandle();
+            Handle.Wait();
         }
         public ValueTask WaitAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.WaitAsync( cancellationToken );
-        }
-
-        // GetValue
-        public IReadOnlyList<UnityEngine.Object> GetValuesBase() {
-            Assert_IsValid();
-            return Handle!.GetValuesBase();
-        }
-        public ValueTask<IReadOnlyList<UnityEngine.Object>> GetValuesBaseAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.GetValuesBaseAsync( cancellationToken );
+            Assert_HasHandle();
+            return Handle.WaitAsync( cancellationToken );
         }
 
         // GetValue
         public IReadOnlyList<T> GetValues() {
-            Assert_IsValid();
-            return Handle!.GetValues();
+            Assert_HasHandle();
+            return Handle.GetValues();
         }
         public ValueTask<IReadOnlyList<T>> GetValuesAsync(CancellationToken cancellationToken) {
-            Assert_IsValid();
-            return Handle!.GetValuesAsync( cancellationToken );
+            Assert_HasHandle();
+            return Handle.GetValuesAsync( cancellationToken );
         }
 
         // Release
         public void Release() {
-            Assert_IsValid();
-            Handle!.Release();
-            Handle = null;
+            Assert_HasHandle();
+            Handle.Release();
         }
         public void ReleaseSafe() {
-            if (IsValid) {
+            if (Handle != null && Handle.IsValid) {
                 Release();
             }
         }
 
         // Utils
         public override string ToString() {
-            if (IsValid) {
-                return "AssetListHandleDynamic: " + string.Join( ", ", Keys );
+            if (Handle != null) {
+                return "AssetListHandleDynamic: " + string.Join( ", ", Handle.Keys );
             } else {
                 return "AssetListHandleDynamic";
             }

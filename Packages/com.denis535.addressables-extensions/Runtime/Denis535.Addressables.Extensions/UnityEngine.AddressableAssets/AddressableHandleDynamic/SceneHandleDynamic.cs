@@ -3,115 +3,72 @@ namespace UnityEngine.AddressableAssets {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandleDynamic : AddressableHandleDynamic, ISceneHandle<SceneHandleDynamic> {
-
-        // Handle
-        [MemberNotNullWhen( true, "Handle" )]
-        public override bool IsValid {
-            get {
-                return Handle != null;
-            }
-        }
-        public SceneHandle? Handle { get; private set; }
-        public override string Key {
-            get {
-                Assert_IsValid();
-                return Handle!.Key;
-            }
-        }
-        public override bool IsDone {
-            get {
-                Assert_IsValid();
-                return Handle!.IsDone;
-            }
-        }
-        public override bool IsSucceeded {
-            get {
-                Assert_IsValid();
-                return Handle!.IsSucceeded;
-            }
-        }
-        public override bool IsFailed {
-            get {
-                Assert_IsValid();
-                return Handle!.IsFailed;
-            }
-        }
+    public class SceneHandleDynamic : AddressableHandleDynamic<SceneHandle>, ISceneHandle<SceneHandleDynamic> {
 
         // Constructor
         public SceneHandleDynamic() {
         }
 
         // SetUp
-        public SceneHandleDynamic SetUp(string key) {
-            Assert_IsNotValid();
-            Handle = new SceneHandle( key );
-            return this;
-        }
-        public SceneHandleDynamic SetUp(SceneHandle handle) {
-            Assert_IsNotValid();
-            Handle = handle;
-            return this;
+        public new SceneHandleDynamic SetUp(SceneHandle? handle) {
+            return (SceneHandleDynamic) base.SetUp( handle );
         }
 
         // Load
         public SceneHandleDynamic Load(LoadSceneMode loadMode, bool activateOnLoad) {
-            Assert_IsValid();
-            Handle!.Load( loadMode, activateOnLoad );
+            Assert_HasHandle();
+            Handle.Load( loadMode, activateOnLoad );
             return this;
         }
 
         // Wait
         public ValueTask WaitAsync() {
-            Assert_IsValid();
-            return Handle!.WaitAsync();
+            Assert_HasHandle();
+            return Handle.WaitAsync();
         }
 
         // GetValue
         public ValueTask<Scene> GetValueAsync() {
-            Assert_IsValid();
-            return Handle!.GetValueAsync();
+            Assert_HasHandle();
+            return Handle.GetValueAsync();
         }
 
         // Activate
         public ValueTask<Scene> ActivateAsync() {
-            Assert_IsValid();
-            return Handle!.ActivateAsync();
+            Assert_HasHandle();
+            return Handle.ActivateAsync();
         }
 
         // Unload
         public void Unload() {
-            Assert_IsValid();
-            Handle!.Unload();
-            Handle = null;
+            Assert_HasHandle();
+            Handle.Unload();
         }
         public async ValueTask UnloadAsync() {
-            Assert_IsValid();
-            await Handle!.UnloadAsync();
-            Handle = null;
+            Assert_HasHandle();
+            await Handle.UnloadAsync();
         }
 
         // UnloadSafe
         public void UnloadSafe() {
-            if (IsValid) {
+            if (Handle != null && Handle.IsValid) {
                 Unload();
             }
         }
         public async ValueTask UnloadSafeAsync() {
-            if (IsValid) {
+            if (Handle != null && Handle.IsValid) {
                 await UnloadAsync();
             }
         }
 
         // Utils
         public override string ToString() {
-            if (IsValid) {
-                return "SceneHandleDynamic: " + Key;
+            if (Handle != null) {
+                return "SceneHandleDynamic: " + Handle.Key;
             } else {
                 return "SceneHandleDynamic";
             }

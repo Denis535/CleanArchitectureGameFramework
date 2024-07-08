@@ -20,9 +20,6 @@ namespace UnityEngine.AddressableAssets {
         void Wait();
         ValueTask WaitAsync(CancellationToken cancellationToken);
 
-        UnityEngine.Object GetValueBase();
-        ValueTask<UnityEngine.Object> GetValueBaseAsync(CancellationToken cancellationToken);
-
         T GetValue();
         ValueTask<T> GetValueAsync(CancellationToken cancellationToken);
 

@@ -18,7 +18,9 @@ namespace UnityEngine.AddressableAssets {
         TThis Load(LoadSceneMode loadMode, bool activateOnLoad);
 
         ValueTask WaitAsync();
+
         ValueTask<Scene> GetValueAsync();
+
         ValueTask<Scene> ActivateAsync();
 
         void Unload();
