@@ -13,9 +13,16 @@ namespace UnityEngine.AddressableAssets {
         public PrefabHandleDynamic() {
         }
 
-        // SetUp
-        public new PrefabHandleDynamic<T> SetUp(PrefabHandle<T>? handle) {
-            return (PrefabHandleDynamic<T>) base.SetUp( handle );
+        // SetHandle
+        public PrefabHandleDynamic<T> SetHandle(string? key) {
+            if (key != null) {
+                return (PrefabHandleDynamic<T>) base.SetHandle( new PrefabHandle<T>( key ) );
+            } else {
+                return (PrefabHandleDynamic<T>) base.SetHandle( null );
+            }
+        }
+        public new PrefabHandleDynamic<T> SetHandle(PrefabHandle<T>? handle) {
+            return (PrefabHandleDynamic<T>) base.SetHandle( handle );
         }
 
         // Load

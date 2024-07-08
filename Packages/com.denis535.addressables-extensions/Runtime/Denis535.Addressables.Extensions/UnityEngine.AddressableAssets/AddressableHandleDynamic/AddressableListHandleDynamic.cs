@@ -24,7 +24,7 @@ namespace UnityEngine.AddressableAssets {
     public abstract class AddressableListHandleDynamic<THandle> : AddressableListHandleDynamic where THandle : notnull, AddressableListHandle {
 
         // Handle
-        protected THandle? Handle { get; private set; }
+        public THandle? Handle { get; private set; }
         [MemberNotNullWhen( true, "Handle" )] public override bool HasHandle => Handle != null;
         public override string[] Keys {
             get {
@@ -61,8 +61,8 @@ namespace UnityEngine.AddressableAssets {
         public AddressableListHandleDynamic() {
         }
 
-        // SetUp
-        public AddressableListHandleDynamic<THandle> SetUp(THandle? handle) {
+        // SetHandle
+        protected AddressableListHandleDynamic<THandle> SetHandle(THandle? handle) {
             if (Handle != null && Handle.IsValid) throw new InvalidOperationException( $"AddressableListHandleDynamic `{this}` already has valid '{Handle}' handle" );
             Handle = handle;
             return this;

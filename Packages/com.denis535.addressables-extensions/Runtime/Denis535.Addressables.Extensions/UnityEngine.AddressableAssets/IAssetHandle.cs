@@ -7,7 +7,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine;
 
-    internal interface IAssetHandle<TThis, T> where T : notnull, UnityEngine.Object {
+    internal interface IAssetHandle<TThis, T> {
 
         string Key { get; }
         bool IsValid { get; }
