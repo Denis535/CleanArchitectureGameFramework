@@ -8,7 +8,6 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIViewBase2 : UIViewBase {
 
-        private VisualElement visualElement = default!;
         private VisualElement? focusedElement;
 
         // VisualElement
@@ -38,14 +37,14 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Helpers
-        private static UIViewBase2? GetParent(UIViewBase2 view) {
-            return GetParent( view.visualElement );
+        private static UIViewBase? GetParent(UIViewBase2 view) {
+            return GetParent( view.VisualElement );
         }
-        private static IEnumerable<UIViewBase2> GetChildren(UIViewBase2 view) {
-            return GetChildren( view.visualElement );
+        private static IEnumerable<UIViewBase> GetChildren(UIViewBase2 view) {
+            return GetChildren( view.VisualElement );
         }
         // Helpers
-        private static UIViewBase2? GetParent(VisualElement element) {
+        private static UIViewBase? GetParent(VisualElement element) {
             if (element.parent is VisualElement parent) {
                 if (parent.userData is UIViewBase2) {
                     return (UIViewBase2) parent.userData;
@@ -55,10 +54,10 @@ namespace UnityEngine.Framework.UI {
             }
             return null;
         }
-        private static IEnumerable<UIViewBase2> GetChildren(VisualElement element) {
+        private static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
             foreach (var child in element.Children()) {
-                if (child.userData is UIViewBase2) {
-                    yield return (UIViewBase2) child.userData;
+                if (child.userData is UIViewBase) {
+                    yield return (UIViewBase) child.userData;
                 } else {
                     foreach (var i in GetChildren( child )) yield return i;
                 }
