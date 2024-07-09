@@ -64,11 +64,7 @@ namespace UnityEngine.Framework.UI {
             for (var i = 0; i < views.Length; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
-                if (next != null) {
-                    Recalculate( view, next );
-                } else {
-                    Recalculate( view );
-                }
+                Recalculate( view, next );
             }
             if (views.Any()) {
                 var view = views.Last();
@@ -79,18 +75,19 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void Recalculate(UIViewBase2 view, UIViewBase2 next) {
-            if (GetLayer( view ) == GetLayer( next )) {
-                view.VisualElement.SetEnabled( false );
-                view.VisualElement.SetDisplayed( false );
+        protected virtual void Recalculate(UIViewBase2 view, UIViewBase2? next) {
+            if (next != null) {
+                if (GetLayer( view ) == GetLayer( next )) {
+                    view.VisualElement.SetEnabled( false );
+                    view.VisualElement.SetDisplayed( false );
+                } else {
+                    view.VisualElement.SetEnabled( false );
+                    view.VisualElement.SetDisplayed( true );
+                }
             } else {
-                view.VisualElement.SetEnabled( false );
+                view.VisualElement.SetEnabled( true );
                 view.VisualElement.SetDisplayed( true );
             }
-        }
-        protected virtual void Recalculate(UIViewBase2 view) {
-            view.VisualElement.SetEnabled( true );
-            view.VisualElement.SetDisplayed( true );
         }
 
         // GetPriority
