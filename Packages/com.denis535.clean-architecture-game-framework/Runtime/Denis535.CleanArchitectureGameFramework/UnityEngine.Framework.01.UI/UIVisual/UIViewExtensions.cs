@@ -58,20 +58,20 @@ namespace UnityEngine.Framework.UI {
     }
     public static partial class UIViewExtensions {
 
-        // GetView
-        public static UIViewBase2 GetView(this VisualElement element) {
+        // ToView
+        public static UIViewBase2 ToView(this VisualElement element) {
             return (UIViewBase2) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have view" );
         }
-        public static T GetView<T>(this VisualElement element) where T : notnull, UIViewBase2 {
+        public static T ToView<T>(this VisualElement element) where T : notnull, UIViewBase2 {
             return (T) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have {typeof( T )} view" );
         }
 
         // GetViews
         public static IEnumerable<UIViewBase2> GetViews(this VisualElement element) {
-            return element.Children().Select( i => i.GetView() );
+            return element.Children().Select( i => i.ToView() );
         }
         public static IEnumerable<T> GetViews<T>(this VisualElement element) where T : notnull, UIViewBase2 {
-            return element.Children().Select( i => i.GetView<T>() );
+            return element.Children().Select( i => i.ToView<T>() );
         }
 
         // AddView

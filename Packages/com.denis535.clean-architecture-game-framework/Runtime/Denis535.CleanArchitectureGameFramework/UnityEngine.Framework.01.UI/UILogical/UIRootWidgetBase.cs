@@ -7,10 +7,10 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidget<TView> : UIWidgetBase2<TView> where TView : notnull, UIRootWidgetView {
+    public abstract class UIRootWidgetBase : UIWidgetBase2<UIRootWidgetViewBase> {
 
         // Constructor
-        public UIRootWidget(IDependencyContainer container) : base( container ) {
+        public UIRootWidgetBase(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();
@@ -40,13 +40,6 @@ namespace UnityEngine.Framework.UI {
             View.RemoveView( (UIViewBase2) view );
         }
 
-        // Helpers
-        protected static T CreateView<T>() where T : notnull, UIRootWidgetView, new() {
-            var view = new T();
-            view.OnSubmitEvent += OnSubmit;
-            view.OnCancelEvent += OnCancel;
-            return view;
-        }
         // Helpers
         protected static void OnSubmit(NavigationSubmitEvent evt) {
             var button = evt.target as Button;
@@ -82,11 +75,13 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public class UIRootWidget : UIRootWidget<UIRootWidgetView> {
+    public class UIRootWidget : UIRootWidgetBase {
 
         // Constructor
         public UIRootWidget(IDependencyContainer container) : base( container ) {
-            View = CreateView<UIRootWidgetView>();
+            View = new UIRootWidgetView();
+            View.OnSubmitEvent += OnSubmit;
+            View.OnCancelEvent += OnCancel;
         }
         public override void Dispose() {
             base.Dispose();

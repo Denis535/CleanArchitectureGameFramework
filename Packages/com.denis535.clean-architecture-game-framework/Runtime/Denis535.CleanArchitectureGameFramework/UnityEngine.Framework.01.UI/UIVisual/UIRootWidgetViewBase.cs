@@ -7,56 +7,47 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class UIRootWidgetView : UIViewBase2 {
+    public abstract class UIRootWidgetViewBase : UIViewBase2 {
 
-        protected readonly VisualElement widget;
-
+        // VisualElement
+        protected internal override VisualElement VisualElement => Widget;
+        // Widget
+        protected VisualElement Widget { get; init; } = default!;
         // Views
-        public IEnumerable<UIViewBase> Views => widget.GetViews();
+        public IEnumerable<UIViewBase> Views => Widget.GetViews();
         // OnSubmit
         public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
-            add => widget.RegisterCallback( value, TrickleDown.TrickleDown );
-            remove => widget.UnregisterCallback( value, TrickleDown.TrickleDown );
+            add => Widget.RegisterCallback( value, TrickleDown.TrickleDown );
+            remove => Widget.UnregisterCallback( value, TrickleDown.TrickleDown );
         }
         public event EventCallback<NavigationCancelEvent> OnCancelEvent {
-            add => widget.RegisterCallback( value, TrickleDown.TrickleDown );
-            remove => widget.UnregisterCallback( value, TrickleDown.TrickleDown );
+            add => Widget.RegisterCallback( value, TrickleDown.TrickleDown );
+            remove => Widget.UnregisterCallback( value, TrickleDown.TrickleDown );
         }
 
         // Constructor
-        public UIRootWidgetView() {
-            VisualElement = CreateVisualElement( out widget );
+        public UIRootWidgetViewBase() {
         }
         public override void Dispose() {
             base.Dispose();
         }
 
-        // CreateVisualElement
-        protected virtual VisualElement CreateVisualElement(out VisualElement widget) {
-            widget = new VisualElement();
-            widget.name = "root-widget";
-            widget.AddToClassList( "widget" );
-            widget.AddToClassList( "root-widget" );
-            widget.pickingMode = PickingMode.Ignore;
-            return widget;
-        }
-
         // AddView
         public virtual void AddView(UIViewBase2 view) {
-            widget.AddView( view );
-            Sort( widget );
-            Recalculate( widget );
+            Widget.AddView( view );
+            Sort( Widget );
+            Recalculate( Widget );
         }
         public virtual void RemoveView(UIViewBase2 view) {
-            widget.RemoveView( view );
-            Recalculate( widget );
+            Widget.RemoveView( view );
+            Recalculate( Widget );
         }
 
         // Sort
         protected virtual void Sort(VisualElement widget) {
             widget.Sort( Compare );
             int Compare(VisualElement x, VisualElement y) {
-                return Comparer<int>.Default.Compare( GetPriority( x.GetView() ), GetPriority( y.GetView() ) );
+                return Comparer<int>.Default.Compare( GetPriority( x.ToView() ), GetPriority( y.ToView() ) );
             }
         }
 
@@ -110,6 +101,21 @@ namespace UnityEngine.Framework.UI {
         // GetLayer
         protected virtual int GetLayer(UIViewBase view) {
             return 0;
+        }
+
+    }
+    public class UIRootWidgetView : UIRootWidgetViewBase {
+
+        // Constructor
+        public UIRootWidgetView() {
+            Widget = new VisualElement();
+            Widget.name = "root-widget";
+            Widget.AddToClassList( "widget" );
+            Widget.AddToClassList( "root-widget" );
+            Widget.pickingMode = PickingMode.Ignore;
+        }
+        public override void Dispose() {
+            base.Dispose();
         }
 
     }

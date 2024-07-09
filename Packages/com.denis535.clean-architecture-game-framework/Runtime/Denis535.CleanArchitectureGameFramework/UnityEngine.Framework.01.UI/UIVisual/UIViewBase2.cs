@@ -12,13 +12,7 @@ namespace UnityEngine.Framework.UI {
         private VisualElement? focusedElement;
 
         // VisualElement
-        protected internal VisualElement VisualElement {
-            internal get => visualElement;
-            init {
-                visualElement = value;
-                visualElement.userData = this;
-            }
-        }
+        protected internal abstract VisualElement VisualElement { get; }
         // IsAttached
         internal override bool IsAttached => VisualElement.IsAttached();
         // IsShown
