@@ -3,7 +3,6 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -66,22 +65,26 @@ namespace UnityEngine.Framework.UI {
             return (T) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have {typeof( T )} view" );
         }
 
-        // GetViews
-        public static IEnumerable<UIViewBase2> GetViews(this VisualElement element) {
-            return element.Children().Select( i => i.ToView() );
+        // ToViews
+        public static IEnumerable<UIViewBase2> ToViews(this IEnumerable<VisualElement> elements) {
+            foreach (var element in elements) {
+                yield return element.ToView();
+            }
         }
-        public static IEnumerable<T> GetViews<T>(this VisualElement element) where T : notnull, UIViewBase2 {
-            return element.Children().Select( i => i.ToView<T>() );
+        public static IEnumerable<T> ToViews<T>(this IEnumerable<VisualElement> elements) where T : notnull, UIViewBase2 {
+            foreach (var element in elements) {
+                yield return element.ToView<T>();
+            }
         }
 
-        // AddView
-        public static void AddView(this VisualElement element, UIViewBase2 child) {
+        // Add
+        public static void Add(this VisualElement element, UIViewBase2 child) {
             element.Add( child.VisualElement );
         }
-        public static void RemoveView(this VisualElement element, UIViewBase2 child) {
+        public static void Remove(this VisualElement element, UIViewBase2 child) {
             element.Remove( child.VisualElement );
         }
-        public static bool ContainsView(this VisualElement element, UIViewBase2 child) {
+        public static bool Contains(this VisualElement element, UIViewBase2 child) {
             return element.Contains( child.VisualElement );
         }
 

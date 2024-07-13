@@ -12,9 +12,9 @@ namespace UnityEngine.Framework.UI {
         // VisualElement
         protected internal override VisualElement VisualElement => Widget;
         // Widget
-        protected VisualElement Widget { get; init; } = default!;
+        public VisualElement Widget { get; init; } = default!;
         // Views
-        public IEnumerable<UIViewBase> Views => Widget.GetViews();
+        public IEnumerable<UIViewBase> Views => Widget.Children().ToViews();
         // OnSubmit
         public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
             add => Widget.RegisterCallback( value, TrickleDown.TrickleDown );
@@ -34,12 +34,12 @@ namespace UnityEngine.Framework.UI {
 
         // AddView
         public virtual void AddView(UIViewBase2 view) {
-            Widget.AddView( view );
+            Widget.Add( view );
             Sort( Widget );
             Recalculate( Widget );
         }
         public virtual void RemoveView(UIViewBase2 view) {
-            Widget.RemoveView( view );
+            Widget.Remove( view );
             Recalculate( Widget );
         }
 
@@ -53,7 +53,7 @@ namespace UnityEngine.Framework.UI {
 
         // Recalculate
         protected virtual void Recalculate(VisualElement widget) {
-            Recalculate( widget.GetViews().ToArray() );
+            Recalculate( widget.Children().ToViews().ToArray() );
         }
         protected virtual void Recalculate(UIViewBase2[] views) {
             foreach (var view in views.SkipLast( 1 )) {

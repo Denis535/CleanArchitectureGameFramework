@@ -17,7 +17,7 @@ namespace UnityEngine.Framework.UI {
         private UIScreenBase? Screen { get; set; }
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
-        public UIViewBase? View => (this as IUIViewableWidget)?.View;
+        protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
         // Parent
         public UIWidgetBase? Parent { get; private set; }
         // Root
@@ -245,7 +245,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
 
         // View
-        public new TView View { get; init; } = default!;
+        protected internal new TView View { get; init; } = default!;
         UIViewBase IUIViewableWidget.View => View;
 
         // Constructor
