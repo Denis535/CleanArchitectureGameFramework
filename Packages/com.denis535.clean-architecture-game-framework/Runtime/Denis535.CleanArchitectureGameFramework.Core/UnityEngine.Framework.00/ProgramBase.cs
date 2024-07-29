@@ -5,7 +5,6 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    [DefaultExecutionOrder( 1000 )]
     public abstract class ProgramBase : MonoBehaviour {
 
         // Awake
