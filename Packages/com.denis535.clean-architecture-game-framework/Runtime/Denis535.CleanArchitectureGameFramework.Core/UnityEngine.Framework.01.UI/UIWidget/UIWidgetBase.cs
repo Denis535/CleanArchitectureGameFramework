@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    public abstract partial class UIWidgetBase : Disposable, IDisposable {
+    public abstract class UIWidgetBase : Disposable, IDisposable {
 
         // System
         protected virtual bool DisposeWhenDeactivate => true;
@@ -145,9 +145,6 @@ namespace UnityEngine.Framework.UI {
         protected abstract void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument);
         protected abstract void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument);
 
-    }
-    public abstract partial class UIWidgetBase {
-
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
@@ -181,6 +178,12 @@ namespace UnityEngine.Framework.UI {
                 Children_.Remove( child );
             }
         }
+        public void RemoveChildren(IEnumerable<UIWidgetBase> children, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            foreach (var child in children) {
+                RemoveChild( child, argument );
+            }
+        }
         public bool RemoveChild(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             var child = Children.LastOrDefault( predicate );
@@ -193,10 +196,11 @@ namespace UnityEngine.Framework.UI {
         public int RemoveChildren(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             var children = Children.Where( predicate ).Reverse().ToList();
-            foreach (var child in children) {
-                RemoveChild( child, argument );
+            if (children.Any()) {
+                RemoveChildren( children, argument );
+                return children.Count;
             }
-            return children.Count;
+            return 0;
         }
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -208,33 +212,14 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-    }
-    public abstract partial class UIWidgetBase {
-
-        // ShowSelf
-        protected void ShowSelf() {
-            Assert.Operation.Message( $"Widget {this} must be viewable" ).Valid( IsViewable );
-            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
-            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
-            Parent!.ShowView( View );
-            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
-        }
-        protected void HideSelf() {
-            Assert.Operation.Message( $"Widget {this} must be viewable" ).Valid( IsViewable );
-            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
-            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
-            Parent!.HideView( View );
-            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
-        }
-
         // ShowView
-        protected virtual void ShowView(UIViewBase view) {
+        protected internal virtual void ShowView(UIViewBase view) {
             // override here
             Assert.Operation.Message( $"View {view} must be hidden" ).Valid( !view.IsShown );
             Parent!.ShowView( view );
             Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
         }
-        protected virtual void HideView(UIViewBase view) {
+        protected internal virtual void HideView(UIViewBase view) {
             // override here
             Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
             Parent!.HideView( view );
@@ -253,6 +238,20 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             base.Dispose();
+        }
+
+        // ShowSelf
+        protected void ShowSelf() {
+            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
+            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
+            Parent!.ShowView( View );
+            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
+        }
+        protected void HideSelf() {
+            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
+            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
+            Parent!.HideView( View );
+            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
         }
 
     }
