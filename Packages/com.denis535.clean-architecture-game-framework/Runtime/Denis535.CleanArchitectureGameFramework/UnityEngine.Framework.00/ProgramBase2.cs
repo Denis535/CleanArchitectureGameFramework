@@ -46,7 +46,7 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
             OnInspectorGUI( Theme, Theme.State );
-            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View, (Screen.Widget?.View as UIViewBase2)?.VisualElement );
+            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View, Screen.Widget?.View?.VisualElement );
             OnInspectorGUI( Router );
             OnInspectorGUI( Application );
             OnInspectorGUI( Game );

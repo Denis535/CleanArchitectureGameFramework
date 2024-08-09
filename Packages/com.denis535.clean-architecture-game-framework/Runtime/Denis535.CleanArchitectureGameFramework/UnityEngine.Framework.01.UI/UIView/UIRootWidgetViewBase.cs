@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetViewBase : UIViewBase2 {
+    public abstract class UIRootWidgetViewBase : UIViewBase {
 
         // VisualElement
         protected internal override VisualElement VisualElement => Widget;
@@ -33,12 +33,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public virtual void AddView(UIViewBase2 view) {
+        public virtual void AddView(UIViewBase view) {
             Widget.Add( view );
             Sort( Widget );
             Recalculate( Widget );
         }
-        public virtual void RemoveView(UIViewBase2 view) {
+        public virtual void RemoveView(UIViewBase view) {
             Widget.Remove( view );
             Recalculate( Widget );
         }
@@ -55,7 +55,7 @@ namespace UnityEngine.Framework.UI {
         protected virtual void Recalculate(VisualElement widget) {
             Recalculate( widget.Children().ToViews().ToArray() );
         }
-        protected virtual void Recalculate(UIViewBase2[] views) {
+        protected virtual void Recalculate(UIViewBase[] views) {
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
@@ -75,7 +75,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void Recalculate(UIViewBase2 view, UIViewBase2? next) {
+        protected virtual void Recalculate(UIViewBase view, UIViewBase? next) {
             if (next != null) {
                 if (GetLayer( view ) == GetLayer( next )) {
                     view.VisualElement.SetEnabled( false );
