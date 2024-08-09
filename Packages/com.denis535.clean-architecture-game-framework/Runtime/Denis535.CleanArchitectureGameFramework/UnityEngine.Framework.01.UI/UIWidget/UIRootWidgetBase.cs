@@ -40,6 +40,19 @@ namespace UnityEngine.Framework.UI {
             View.RemoveView( view );
         }
 
+    }
+    public class UIRootWidget : UIRootWidgetBase {
+
+        // Constructor
+        public UIRootWidget(IDependencyContainer container) : base( container ) {
+            View = new UIRootWidgetView();
+            View.OnSubmitEvent += OnSubmit;
+            View.OnCancelEvent += OnCancel;
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
+
         // Helpers
         protected static void OnSubmit(NavigationSubmitEvent evt) {
             var button = evt.target as Button;
@@ -72,19 +85,6 @@ namespace UnityEngine.Framework.UI {
                 evt.target = button;
                 button.SendEvent( evt );
             }
-        }
-
-    }
-    public class UIRootWidget : UIRootWidgetBase {
-
-        // Constructor
-        public UIRootWidget(IDependencyContainer container) : base( container ) {
-            View = new UIRootWidgetView();
-            View.OnSubmitEvent += OnSubmit;
-            View.OnCancelEvent += OnCancel;
-        }
-        public override void Dispose() {
-            base.Dispose();
         }
 
     }

@@ -45,21 +45,19 @@ namespace UnityEngine.Framework {
 #if UNITY_EDITOR
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
-            OnInspectorGUI( Theme, Theme.State );
-            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View, Screen.Widget?.View?.VisualElement );
+            OnInspectorGUI( Theme );
+            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View );
             OnInspectorGUI( Router );
             OnInspectorGUI( Application );
             OnInspectorGUI( Game );
         }
-        protected virtual void OnInspectorGUI(UIThemeBase theme, UIThemeStateBase? state) {
+        protected virtual void OnInspectorGUI(UIThemeBase theme) {
             LabelField( "Theme", theme.ToString() );
-            LabelField( "Theme State", state?.ToString() ?? "Null" );
         }
-        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view, VisualElement? visualElement) {
+        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view) {
             LabelField( "Screen", screen.ToString() );
             LabelField( "Widget", widget?.Chain( GetDisplayString ) ?? "Null" );
             LabelField( "View", view?.Chain( GetDisplayString ) ?? "Null" );
-            LabelField( "VisualElement", visualElement?.Chain( GetDisplayString ) ?? "Null" );
         }
         protected virtual void OnInspectorGUI(UIRouterBase router) {
             LabelField( "Router", router.ToString() );
@@ -86,7 +84,7 @@ namespace UnityEngine.Framework {
         }
         protected static string? GetDisplayString(UIViewBase view) {
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => i.ToString(), i => i.Children );
+            builder.AppendHierarchy( view, i => i.ToString(), i => i.GetChildren() );
             return builder.ToString();
         }
         protected static string? GetDisplayString(VisualElement visualElement) {

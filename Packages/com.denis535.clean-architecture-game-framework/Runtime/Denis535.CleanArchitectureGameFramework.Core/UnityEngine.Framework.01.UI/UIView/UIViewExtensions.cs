@@ -6,25 +6,19 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static partial class UIViewExtensions {
-
-        // GetVisualElement
-        public static VisualElement __GetVisualElement__(this UIViewBase view) {
-            // try not to use this method
-            return view.VisualElement;
-        }
+    public static class UIViewExtensions {
 
         // Focus
         public static void Focus(this UIViewBase view) {
             try {
-                if (view.VisualElement.focusable) {
-                    view.VisualElement.Focus();
+                if (view.focusable) {
+                    view.Focus();
                 } else {
-                    view.VisualElement.focusable = true;
-                    view.VisualElement.delegatesFocus = true;
-                    view.VisualElement.Focus(); // sometimes it throws an error
-                    view.VisualElement.delegatesFocus = false;
-                    view.VisualElement.focusable = false;
+                    view.focusable = true;
+                    view.delegatesFocus = true;
+                    view.Focus(); // sometimes it throws an error
+                    view.delegatesFocus = false;
+                    view.focusable = false;
                 }
             } catch {
             }
@@ -44,48 +38,14 @@ namespace UnityEngine.Framework.UI {
 
         // GetFocusedElement
         public static VisualElement? GetFocusedElement(this UIViewBase view) {
-            var focusedElement = (VisualElement?) view.VisualElement.focusController?.focusedElement;
-            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return focusedElement;
+            var focusedElement = (VisualElement?) view.focusController?.focusedElement;
+            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return focusedElement;
             return null;
         }
         public static bool HasFocusedElement(this UIViewBase view) {
-            var focusedElement = (VisualElement?) view.VisualElement.focusController?.focusedElement;
-            if (focusedElement != null && (view.VisualElement == focusedElement || view.VisualElement.Contains( focusedElement ))) return true;
+            var focusedElement = (VisualElement?) view.focusController?.focusedElement;
+            if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return true;
             return false;
-        }
-
-    }
-    public static partial class UIViewExtensions {
-
-        // ToView
-        public static UIViewBase ToView(this VisualElement element) {
-            return (UIViewBase) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have view" );
-        }
-        public static T ToView<T>(this VisualElement element) where T : notnull, UIViewBase {
-            return (T) element.userData ?? throw Exceptions.Operation.InvalidOperationException( $"Element {element} must have {typeof( T )} view" );
-        }
-
-        // ToViews
-        public static IEnumerable<UIViewBase> ToViews(this IEnumerable<VisualElement> elements) {
-            foreach (var element in elements) {
-                yield return element.ToView();
-            }
-        }
-        public static IEnumerable<T> ToViews<T>(this IEnumerable<VisualElement> elements) where T : notnull, UIViewBase {
-            foreach (var element in elements) {
-                yield return element.ToView<T>();
-            }
-        }
-
-        // Add
-        public static void Add(this VisualElement element, UIViewBase child) {
-            element.Add( child.VisualElement );
-        }
-        public static void Remove(this VisualElement element, UIViewBase child) {
-            element.Remove( child.VisualElement );
-        }
-        public static bool Contains(this VisualElement element, UIViewBase child) {
-            return element.Contains( child.VisualElement );
         }
 
     }
