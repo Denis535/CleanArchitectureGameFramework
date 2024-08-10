@@ -32,29 +32,11 @@ namespace UnityEngine.Framework.UI {
         // AddView
         public virtual void AddView(UIViewBase view) {
             Add( view );
-        }
-        public virtual void RemoveView(UIViewBase view) {
-            Remove( view );
-        }
-
-    }
-    public class UIRootWidgetView : UIRootWidgetViewBase {
-
-        // Constructor
-        public UIRootWidgetView() {
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-        // AddView
-        public override void AddView(UIViewBase view) {
-            base.AddView( view );
             Sort();
             Recalculate();
         }
-        public override void RemoveView(UIViewBase view) {
-            base.RemoveView( view );
+        public virtual void RemoveView(UIViewBase view) {
+            Remove( view );
             Recalculate();
         }
 

@@ -75,17 +75,4 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public class UIRootWidget : UIRootWidgetBase {
-
-        // Constructor
-        public UIRootWidget(IDependencyContainer container) : base( container ) {
-            View = new UIRootWidgetView();
-            View.OnSubmitEvent += OnSubmit;
-            View.OnCancelEvent += OnCancel;
-        }
-        public override void Dispose() {
-            base.Dispose();
-        }
-
-    }
 }
