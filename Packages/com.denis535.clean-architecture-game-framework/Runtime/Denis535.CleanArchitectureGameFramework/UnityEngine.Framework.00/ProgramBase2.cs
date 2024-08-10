@@ -84,12 +84,7 @@ namespace UnityEngine.Framework {
         }
         protected static string? GetDisplayString(UIViewBase view) {
             var builder = new StringBuilder();
-            builder.AppendHierarchy( view, i => i.ToString(), i => i.GetChildren() );
-            return builder.ToString();
-        }
-        protected static string? GetDisplayString(VisualElement visualElement) {
-            var builder = new StringBuilder();
-            builder.AppendHierarchy( visualElement, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
+            builder.AppendHierarchy( (VisualElement) view, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
             return builder.ToString();
         }
 #endif
