@@ -22,10 +22,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Constructor
-        public UIRootWidgetViewBase() {
-            name = "root-widget";
-            AddToClassList( "widget" );
-            AddToClassList( "root-widget" );
+        public UIRootWidgetViewBase() : base( "root-widget", "widget", "root-widget" ) {
             pickingMode = PickingMode.Ignore;
         }
         public override void Dispose() {
@@ -33,8 +30,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public abstract void AddView(UIViewBase view);
-        public abstract void RemoveView(UIViewBase view);
+        public virtual void AddView(UIViewBase view) {
+            Add( view );
+        }
+        public virtual void RemoveView(UIViewBase view) {
+            Remove( view );
+        }
 
     }
     public class UIRootWidgetView : UIRootWidgetViewBase {
@@ -48,12 +49,12 @@ namespace UnityEngine.Framework.UI {
 
         // AddView
         public override void AddView(UIViewBase view) {
-            Add( view );
+            base.AddView( view );
             Sort();
             Recalculate();
         }
         public override void RemoveView(UIViewBase view) {
-            Remove( view );
+            base.RemoveView( view );
             Recalculate();
         }
 
