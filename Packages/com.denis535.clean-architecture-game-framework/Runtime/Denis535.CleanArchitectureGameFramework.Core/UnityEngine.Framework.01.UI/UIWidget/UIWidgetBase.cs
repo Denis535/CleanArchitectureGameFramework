@@ -6,6 +6,7 @@ namespace UnityEngine.Framework.UI {
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase : Disposable, IDisposable {
 
@@ -17,7 +18,7 @@ namespace UnityEngine.Framework.UI {
         private UIScreenBase? Screen { get; set; }
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
-        protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
+        protected internal IUIView? View => (this as IUIViewableWidget)?.View;
         // Parent
         public UIWidgetBase? Parent { get; private set; }
         // Root
@@ -213,13 +214,13 @@ namespace UnityEngine.Framework.UI {
         }
 
         // ShowView
-        protected internal virtual void ShowView(UIViewBase view) {
+        protected internal virtual void ShowView(IUIView view) {
             // override here
             Assert.Operation.Message( $"View {view} must be hidden" ).Valid( !view.IsShown );
             Parent!.ShowView( view );
             Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
         }
-        protected internal virtual void HideView(UIViewBase view) {
+        protected internal virtual void HideView(IUIView view) {
             // override here
             Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
             Parent!.HideView( view );
@@ -227,11 +228,11 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
+    public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, VisualElement, IUIView {
 
         // View
         protected internal new TView View { get; init; } = default!;
-        UIViewBase IUIViewableWidget.View => View;
+        IUIView IUIViewableWidget.View => View;
 
         // Constructor
         public UIWidgetBase() {

@@ -7,10 +7,19 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIViewBase : VisualElement, IDisposable {
+    public interface IUIView : IDisposable {
+
+        // System
+        public bool IsDisposed { get; }
+        // IsAttached
+        public bool IsAttached => ((VisualElement) this).panel != null;
+        // IsShown
+        public bool IsShown => ((VisualElement) this).parent != null;
+
+    }
+    public abstract class UIViewBase : VisualElement, IUIView {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
-        private VisualElement? focusedElement;
 
         // System
         public bool IsDisposed { get; private set; }
@@ -40,46 +49,11 @@ namespace UnityEngine.Framework.UI {
         public virtual void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !IsAttached );
-            foreach (var child in GetChildren()) {
+            foreach (var child in this.GetChildren()) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
-        }
-
-        // GetParent
-        public UIViewBase? GetParent() {
-            return GetParent( this );
-            static UIViewBase? GetParent(VisualElement element) {
-                if (element.parent is VisualElement parent) {
-                    if (parent is UIViewBase parent_) {
-                        return parent_;
-                    } else {
-                        return GetParent( parent );
-                    }
-                }
-                return null;
-            }
-        }
-        public IEnumerable<UIViewBase> GetChildren() {
-            return GetChildren( this );
-            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
-                foreach (var child in element.Children()) {
-                    if (child is UIViewBase child_) {
-                        yield return child_;
-                    } else {
-                        foreach (var i in GetChildren( child )) yield return i;
-                    }
-                }
-            }
-        }
-
-        // LoadFocusedElement
-        public VisualElement? LoadFocusedElement() {
-            return focusedElement;
-        }
-        public void SaveFocusedElement(VisualElement? focusedElement) {
-            this.focusedElement = focusedElement;
         }
 
     }
