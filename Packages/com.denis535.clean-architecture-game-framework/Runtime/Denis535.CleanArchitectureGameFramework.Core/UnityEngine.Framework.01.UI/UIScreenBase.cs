@@ -22,8 +22,10 @@ namespace UnityEngine.Framework.UI {
         // AddWidget
         protected internal virtual void AddWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
-            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
-            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Inactive );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be inactive" ).Valid( widget.State is UIWidgetState.Inactive );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
             Widget = widget;
@@ -31,8 +33,10 @@ namespace UnityEngine.Framework.UI {
         }
         protected internal virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
-            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( !widget.IsDisposed );
-            Assert.Argument.Message( $"Argument 'widget' must be valid" ).Valid( widget.State is UIWidgetState.Active );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be active" ).Valid( widget.State is UIWidgetState.Active );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
+            Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
             widget.Deactivate( this, argument );

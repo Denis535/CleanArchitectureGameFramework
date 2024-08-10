@@ -14,7 +14,7 @@ namespace UnityEngine.Framework.UI {
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
-        private UIScreenBase? Screen { get; set; }
+        protected UIScreenBase? Screen { get; set; }
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
@@ -148,8 +148,8 @@ namespace UnityEngine.Framework.UI {
         // AddChild
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
-            Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Inactive );
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).NotNull( !child.IsDisposed );
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be inactive" ).Valid( child.State is UIWidgetState.Inactive );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             if (State is UIWidgetState.Active) {
@@ -157,15 +157,15 @@ namespace UnityEngine.Framework.UI {
                 child.Parent = this;
                 child.Activate( Screen!, argument );
             } else {
-                Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
                 Children_.Add( child );
                 child.Parent = this;
             }
         }
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
-            Assert.Argument.Message( $"Argument 'child' must be valid" ).NotNull( !child.IsDisposed );
-            Assert.Argument.Message( $"Argument 'child' must be valid" ).Valid( child.State is UIWidgetState.Active );
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).NotNull( !child.IsDisposed );
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be active" ).Valid( child.State is UIWidgetState.Active );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
             if (State is UIWidgetState.Active) {
@@ -173,7 +173,7 @@ namespace UnityEngine.Framework.UI {
                 child.Parent = null;
                 Children_.Remove( child );
             } else {
-                Assert.Operation.Message( $"Argument {argument} must be null" ).Valid( argument == null );
+                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
                 child.Parent = null;
                 Children_.Remove( child );
             }
