@@ -10,7 +10,7 @@ namespace UnityEngine.Framework.UI {
     public abstract class UIRootWidgetViewBase : UIViewBase {
 
         // Views
-        public IEnumerable<IUIView> Views => Children().Cast<IUIView>();
+        public IEnumerable<UIViewBase> Views => Children().Cast<UIViewBase>();
         // OnSubmit
         public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
             add => RegisterCallback( value, TrickleDown.TrickleDown );
@@ -22,10 +22,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Constructor
-        public UIRootWidgetViewBase() : base(
-            "root-widget-view",
-            "widget", "widget-view",
-            "root-widget", "root-widget-view" ) {
+        public UIRootWidgetViewBase() : base( "root-widget-view", "root-widget-view" ) {
             pickingMode = PickingMode.Ignore;
         }
         public override void Dispose() {
@@ -33,11 +30,11 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public virtual void AddView(IUIView view) {
-            Add( (VisualElement) view );
+        public virtual void AddView(UIViewBase view) {
+            Add( view );
         }
-        public virtual void RemoveView(IUIView view) {
-            Remove( (VisualElement) view );
+        public virtual void RemoveView(UIViewBase view) {
+            Remove( view );
         }
 
     }
@@ -51,26 +48,26 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public override void AddView(IUIView view) {
+        public override void AddView(UIViewBase view) {
             base.AddView( view );
             Sort();
             Recalculate();
         }
-        public override void RemoveView(IUIView view) {
+        public override void RemoveView(UIViewBase view) {
             base.RemoveView( view );
             Recalculate();
         }
 
         // Sort
         protected virtual void Sort() {
-            Sort( (a, b) => Comparer<int>.Default.Compare( GetPriority( a ), GetPriority( b ) ) );
+            Sort( (a, b) => Comparer<int>.Default.Compare( GetPriority( (UIViewBase) a ), GetPriority( (UIViewBase) b ) ) );
         }
 
         // Recalculate
         protected virtual void Recalculate() {
-            Recalculate( Children().ToArray() );
+            Recalculate( Children().Cast<UIViewBase>().ToArray() );
         }
-        protected virtual void Recalculate(VisualElement[] views) {
+        protected virtual void Recalculate(UIViewBase[] views) {
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
@@ -90,7 +87,7 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void Recalculate(VisualElement view, VisualElement? next) {
+        protected virtual void Recalculate(UIViewBase view, UIViewBase? next) {
             if (next != null) {
                 if (GetLayer( view ) == GetLayer( next )) {
                     view.SetEnabled( false );
@@ -106,12 +103,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // GetPriority
-        protected virtual int GetPriority(VisualElement view) {
+        protected virtual int GetPriority(UIViewBase view) {
             return 0;
         }
 
         // GetLayer
-        protected virtual int GetLayer(VisualElement view) {
+        protected virtual int GetLayer(UIViewBase view) {
             return 0;
         }
 

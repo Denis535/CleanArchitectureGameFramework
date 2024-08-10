@@ -4,7 +4,6 @@ namespace UnityEngine.Framework.UI {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public abstract class UIWidgetBase2 : UIWidgetBase {
 
@@ -20,7 +19,7 @@ namespace UnityEngine.Framework.UI {
         }
 
     }
-    public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : notnull, VisualElement, IUIView {
+    public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : notnull, UIViewBase {
 
         // System
         protected IDependencyContainer Container { get; }

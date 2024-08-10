@@ -7,17 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public interface IUIView : IDisposable {
-
-        // System
-        public bool IsDisposed { get; }
-        // IsAttached
-        public bool IsAttached => ((VisualElement) this).panel != null;
-        // IsShown
-        public bool IsShown => ((VisualElement) this).parent != null;
-
-    }
-    public abstract class UIViewBase : VisualElement, IUIView {
+    public abstract class UIViewBase : VisualElement {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 

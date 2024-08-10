@@ -33,10 +33,10 @@ namespace UnityEngine.Framework.UI {
         }
 
         // ShowView
-        protected internal override void ShowView(IUIView view) {
+        protected internal override void ShowView(UIViewBase view) {
             View.AddView( view );
         }
-        protected internal override void HideView(IUIView view) {
+        protected internal override void HideView(UIViewBase view) {
             View.RemoveView( view );
         }
 

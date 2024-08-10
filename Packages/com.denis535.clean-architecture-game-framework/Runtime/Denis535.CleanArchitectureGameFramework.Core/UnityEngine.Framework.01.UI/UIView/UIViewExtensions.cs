@@ -6,13 +6,13 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static class IUIViewExtensions {
+    public static class UIViewExtensions {
 
         // GetParent
-        public static IUIView? GetParent(this IUIView view) {
-            return GetParent( (VisualElement) view );
-            static IUIView? GetParent(VisualElement element) {
-                if (element.parent is IUIView parent_) {
+        public static UIViewBase? GetParent(this UIViewBase view) {
+            return GetParent( view );
+            static UIViewBase? GetParent(VisualElement element) {
+                if (element.parent is UIViewBase parent_) {
                     return parent_;
                 }
                 if (element.parent != null) {
@@ -23,11 +23,11 @@ namespace UnityEngine.Framework.UI {
         }
 
         // GetChildren
-        public static IEnumerable<IUIView> GetChildren(this IUIView view) {
-            return GetChildren( (VisualElement) view );
-            static IEnumerable<IUIView> GetChildren(VisualElement element) {
+        public static IEnumerable<UIViewBase> GetChildren(this UIViewBase view) {
+            return GetChildren( view );
+            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
                 foreach (var child in element.Children()) {
-                    if (child is IUIView child_) {
+                    if (child is UIViewBase child_) {
                         yield return child_;
                     } else {
                         foreach (var i in GetChildren( child )) yield return i;
@@ -37,7 +37,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Focus
-        public static void InitFocus(this VisualElement view) {
+        public static void InitFocus(this UIViewBase view) {
             try {
                 if (view.focusable) {
                     view.Focus();
@@ -51,7 +51,7 @@ namespace UnityEngine.Framework.UI {
             } catch {
             }
         }
-        public static bool LoadFocus(this VisualElement view) {
+        public static bool LoadFocus(this UIViewBase view) {
             var focusedElement = view.LoadFocusedElement();
             if (focusedElement != null) {
                 focusedElement.Focus();
@@ -59,28 +59,28 @@ namespace UnityEngine.Framework.UI {
             }
             return false;
         }
-        public static void SaveFocus(this VisualElement view) {
+        public static void SaveFocus(this UIViewBase view) {
             var focusedElement = GetFocusedElement( view );
             view.SaveFocusedElement( focusedElement );
         }
 
         // GetFocusedElement
-        public static VisualElement? GetFocusedElement(this VisualElement view) {
+        public static VisualElement? GetFocusedElement(this UIViewBase view) {
             var focusedElement = (VisualElement?) view.focusController?.focusedElement;
             if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        public static bool HasFocusedElement(this VisualElement view) {
+        public static bool HasFocusedElement(this UIViewBase view) {
             var focusedElement = (VisualElement?) view.focusController?.focusedElement;
             if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return true;
             return false;
         }
 
         // LoadFocusedElement
-        public static VisualElement? LoadFocusedElement(this VisualElement view) {
+        public static VisualElement? LoadFocusedElement(this UIViewBase view) {
             return (VisualElement) view.userData;
         }
-        public static void SaveFocusedElement(this VisualElement view, VisualElement? focusedElement) {
+        public static void SaveFocusedElement(this UIViewBase view, VisualElement? focusedElement) {
             view.userData = focusedElement;
         }
 

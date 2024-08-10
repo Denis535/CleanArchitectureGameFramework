@@ -6,6 +6,6 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
 
     internal interface IUIViewableWidget {
-        IUIView View { get; }
+        UIViewBase View { get; }
     }
 }

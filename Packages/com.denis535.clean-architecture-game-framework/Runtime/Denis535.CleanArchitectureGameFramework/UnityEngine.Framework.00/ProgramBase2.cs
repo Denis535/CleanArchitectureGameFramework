@@ -54,7 +54,7 @@ namespace UnityEngine.Framework {
         protected virtual void OnInspectorGUI(UIThemeBase theme) {
             LabelField( "Theme", theme.ToString() );
         }
-        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, IUIView? view) {
+        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view) {
             LabelField( "Screen", screen.ToString() );
             LabelField( "Widget", widget?.Chain( GetDisplayString ) ?? "Null" );
             LabelField( "View", view?.Chain( GetDisplayString ) ?? "Null" );
@@ -82,7 +82,7 @@ namespace UnityEngine.Framework {
             builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );
             return builder.ToString();
         }
-        protected static string? GetDisplayString(IUIView view) {
+        protected static string? GetDisplayString(UIViewBase view) {
             var builder = new StringBuilder();
             builder.AppendHierarchy( (VisualElement) view, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
             return builder.ToString();
