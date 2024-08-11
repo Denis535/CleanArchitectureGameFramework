@@ -8,34 +8,6 @@ namespace UnityEngine.Framework.UI {
 
     public static class UIViewExtensions {
 
-        // GetParent
-        public static UIViewBase? GetParent(this UIViewBase view) {
-            return GetParent( view );
-            static UIViewBase? GetParent(VisualElement element) {
-                if (element.parent is UIViewBase parent_) {
-                    return parent_;
-                }
-                if (element.parent != null) {
-                    return GetParent( element.parent );
-                }
-                return null;
-            }
-        }
-
-        // GetChildren
-        public static IEnumerable<UIViewBase> GetChildren(this UIViewBase view) {
-            return GetChildren( view );
-            static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
-                foreach (var child in element.Children()) {
-                    if (child is UIViewBase child_) {
-                        yield return child_;
-                    } else {
-                        foreach (var i in GetChildren( child )) yield return i;
-                    }
-                }
-            }
-        }
-
         // Focus
         public static void InitFocus(this UIViewBase view) {
             try {

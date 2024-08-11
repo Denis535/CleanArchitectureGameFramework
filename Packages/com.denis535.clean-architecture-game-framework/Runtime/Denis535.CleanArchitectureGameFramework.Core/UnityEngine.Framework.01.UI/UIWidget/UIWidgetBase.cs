@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    public abstract class UIWidgetBase : Disposable, IDisposable {
+    public abstract class UIWidgetBase : Disposable {
 
         // System
         protected virtual bool DisposeWhenDeactivate => true;
@@ -18,11 +18,11 @@ namespace UnityEngine.Framework.UI {
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
-        // Parent
-        public UIWidgetBase? Parent { get; private set; }
         // Root
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase Root => IsRoot ? this : Parent.Root;
+        // Parent
+        public UIWidgetBase? Parent { get; private set; }
         // Ancestors
         public IEnumerable<UIWidgetBase> Ancestors {
             get {
@@ -212,20 +212,6 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // ShowView
-        protected internal virtual void ShowView(UIViewBase view) {
-            // override here
-            Assert.Operation.Message( $"View {view} must be hidden" ).Valid( !view.IsShown );
-            Parent!.ShowView( view );
-            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
-        }
-        protected internal virtual void HideView(UIViewBase view) {
-            // override here
-            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
-            Parent!.HideView( view );
-            Assert.Operation.Message( $"View {view} must be hidden" ).Valid( !view.IsShown );
-        }
-
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
 
@@ -242,16 +228,20 @@ namespace UnityEngine.Framework.UI {
 
         // ShowSelf
         protected void ShowSelf() {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
-            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
-            Parent!.ShowView( View );
-            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
+            Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
+            Assert.Operation.Message( $"View {View} must be non-shown" ).Valid( !View.IsShown );
+            Parent!.View!.AddView( View );
+            Assert.Operation.Message( $"View {View} must be shown" ).Valid( View.IsShown );
         }
         protected void HideSelf() {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
-            Assert.Operation.Message( $"Widget {this} must be shown" ).Valid( View.IsShown );
-            Parent!.HideView( View );
-            Assert.Operation.Message( $"Widget {this} must be hidden" ).Valid( !View.IsShown );
+            Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
+            Assert.Operation.Message( $"View {View} must be shown" ).Valid( View.IsShown );
+            Parent!.View!.RemoveView( View );
+            Assert.Operation.Message( $"View {View} must be non-shown" ).Valid( !View.IsShown );
         }
 
     }

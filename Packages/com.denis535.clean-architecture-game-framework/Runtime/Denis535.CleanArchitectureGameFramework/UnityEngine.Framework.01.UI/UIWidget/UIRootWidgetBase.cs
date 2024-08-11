@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetBase : UIWidgetBase2<UIRootWidgetViewBase> {
+    public abstract class UIRootWidgetBase<TView> : UIWidgetBase2<TView> where TView : UIRootWidgetViewBase {
 
         // Constructor
         public UIRootWidgetBase(IDependencyContainer container) : base( container ) {
@@ -30,14 +30,6 @@ namespace UnityEngine.Framework.UI {
         protected override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
         }
         protected override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
-        }
-
-        // ShowView
-        protected internal override void ShowView(UIViewBase view) {
-            View.AddView( view );
-        }
-        protected internal override void HideView(UIViewBase view) {
-            View.RemoveView( view );
         }
 
         // Helpers

@@ -30,12 +30,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddView
-        public virtual void AddView(UIViewBase view) {
+        protected internal override void AddView(UIViewBase view) {
             Add( view );
             Sort();
             Recalculate();
         }
-        public virtual void RemoveView(UIViewBase view) {
+        protected internal override void RemoveView(UIViewBase view) {
             Remove( view );
             Recalculate();
         }
@@ -47,15 +47,13 @@ namespace UnityEngine.Framework.UI {
 
         // Recalculate
         protected virtual void Recalculate() {
-            Recalculate( Children().Cast<UIViewBase>().ToArray() );
-        }
-        protected virtual void Recalculate(UIViewBase[] views) {
+            var views = Children().Cast<UIViewBase>().ToList();
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
-            for (var i = 0; i < views.Length; i++) {
+            for (var i = 0; i < views.Count; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
                 Recalculate( view, next );
