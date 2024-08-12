@@ -77,17 +77,39 @@ namespace UnityEngine.Framework.UI {
         }
 
         // ShowView
-        public virtual void ShowView(UIViewBase view) {
+        public void ShowView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-shown" ).Valid( !view.IsShown );
-            Parent2!.ShowView( view );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (AddViewRecursive( view )) {
+                return;
+            }
             Assert.Operation.Message( $"Can not show view {view}" ).Valid( view.IsShown );
         }
-        public virtual void HideView(UIViewBase view) {
+        public void HideView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be shown" ).Valid( view.IsShown );
-            Parent2!.HideView( view );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (RemoveViewRecursive( view )) {
+                return;
+            }
             Assert.Operation.Message( $"Can not hide view {view}" ).Valid( !view.IsShown );
+        }
+
+        // AddViewRecursive
+        private bool AddViewRecursive(UIViewBase view) {
+            return AddView( view ) || (Parent2?.AddViewRecursive( view ) ?? false);
+        }
+        private bool RemoveViewRecursive(UIViewBase view) {
+            return RemoveView( view ) || (Parent2?.RemoveViewRecursive( view ) ?? false);
+        }
+
+        // AddView
+        protected virtual bool AddView(UIViewBase view) {
+            return false;
+        }
+        protected virtual bool RemoveView(UIViewBase view) {
+            return false;
         }
 
     }

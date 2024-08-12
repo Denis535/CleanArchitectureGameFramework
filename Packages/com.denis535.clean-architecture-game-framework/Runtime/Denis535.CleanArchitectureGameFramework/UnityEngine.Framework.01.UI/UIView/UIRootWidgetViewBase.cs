@@ -29,15 +29,17 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // ShowView
-        public override void ShowView(UIViewBase view) {
+        // AddView
+        protected override bool AddView(UIViewBase view) {
             Add( view );
             Sort();
             Recalculate();
+            return true;
         }
-        public override void HideView(UIViewBase view) {
+        protected override bool RemoveView(UIViewBase view) {
             Remove( view );
             Recalculate();
+            return true;
         }
 
         // Sort

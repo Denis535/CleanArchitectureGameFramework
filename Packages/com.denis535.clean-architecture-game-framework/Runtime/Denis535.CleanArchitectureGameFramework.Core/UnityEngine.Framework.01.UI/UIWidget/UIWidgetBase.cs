@@ -230,18 +230,12 @@ namespace UnityEngine.Framework.UI {
         protected void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
-            Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
-            Assert.Operation.Message( $"View {View} must be non-shown" ).Valid( !View.IsShown );
             Parent!.View!.ShowView( View );
-            Assert.Operation.Message( $"Can not show view {View}" ).Valid( View.IsShown );
         }
         protected void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
-            Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
-            Assert.Operation.Message( $"View {View} must be shown" ).Valid( View.IsShown );
             Parent!.View!.HideView( View );
-            Assert.Operation.Message( $"Can not hide view {View}" ).Valid( !View.IsShown );
         }
 
     }
