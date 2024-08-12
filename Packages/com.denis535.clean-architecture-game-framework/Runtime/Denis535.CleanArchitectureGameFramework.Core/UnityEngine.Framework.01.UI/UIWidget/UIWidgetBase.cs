@@ -232,32 +232,16 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
             Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
             Assert.Operation.Message( $"View {View} must be non-shown" ).Valid( !View.IsShown );
-            Parent!.View!.AddView( View );
-            Assert.Operation.Message( $"View {View} must be shown" ).Valid( View.IsShown );
+            Parent!.View!.ShowView( View );
+            Assert.Operation.Message( $"Can not show view {View}" ).Valid( View.IsShown );
         }
         protected void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
             Assert.Operation.Message( $"View {View} must be non-disposed" ).NotDisposed( !View.IsDisposed );
             Assert.Operation.Message( $"View {View} must be shown" ).Valid( View.IsShown );
-            Parent!.View!.RemoveView( View );
-            Assert.Operation.Message( $"View {View} must be non-shown" ).Valid( !View.IsShown );
-        }
-
-        // ShowView
-        protected void ShowView(UIViewBase view) {
-            Assert.Argument.Message( $"Argument 'view' {view} must be non-disposed" ).Valid( !view.IsDisposed );
-            Assert.Argument.Message( $"Argument 'view' {view} must be non-shown" ).Valid( !view.IsShown );
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            View.AddView( view );
-            Assert.Argument.Message( $"Argument 'view' {view} must be shown" ).Valid( view.IsShown );
-        }
-        protected void HideView(UIViewBase view) {
-            Assert.Argument.Message( $"Argument 'view' {view} must be non-disposed" ).Valid( !view.IsDisposed );
-            Assert.Argument.Message( $"Argument 'view' {view} must be shown" ).Valid( view.IsShown );
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            View.RemoveView( view );
-            Assert.Argument.Message( $"Argument 'view' {view} must be non-shown" ).Valid( !view.IsShown );
+            Parent!.View!.HideView( View );
+            Assert.Operation.Message( $"Can not hide view {View}" ).Valid( !View.IsShown );
         }
 
     }

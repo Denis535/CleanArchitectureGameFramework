@@ -76,18 +76,18 @@ namespace UnityEngine.Framework.UI {
             disposeCancellationTokenSource?.Cancel();
         }
 
-        // AddView
-        protected internal virtual void AddView(UIViewBase view) {
-            Assert.Operation.Message( $"View {view} must be non-disposed" ).NotDisposed( !view.IsDisposed );
-            Assert.Operation.Message( $"View {view} must be non-shown" ).Valid( !view.IsShown );
-            Parent2!.AddView( view );
-            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
+        // ShowView
+        public virtual void ShowView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-shown" ).Valid( !view.IsShown );
+            Parent2!.ShowView( view );
+            Assert.Operation.Message( $"Can not show view {view}" ).Valid( view.IsShown );
         }
-        protected internal virtual void RemoveView(UIViewBase view) {
-            Assert.Operation.Message( $"View {view} must be non-disposed" ).NotDisposed( !view.IsDisposed );
-            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
-            Parent2!.RemoveView( view );
-            Assert.Operation.Message( $"View {view} must be non-shown" ).Valid( !view.IsShown );
+        public virtual void HideView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be shown" ).Valid( view.IsShown );
+            Parent2!.HideView( view );
+            Assert.Operation.Message( $"Can not hide view {view}" ).Valid( !view.IsShown );
         }
 
     }
