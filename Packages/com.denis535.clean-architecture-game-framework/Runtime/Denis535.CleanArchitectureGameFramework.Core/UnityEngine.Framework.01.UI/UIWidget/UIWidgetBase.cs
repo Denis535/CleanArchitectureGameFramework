@@ -226,6 +226,24 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
+        // ShowView
+        protected void ShowView(UIViewBase view) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be activating or active" ).Valid( State is UIWidgetState.Activating or UIWidgetState.Active );
+            Assert.Operation.Message( $"View {view} must be non-disposed" ).NotDisposed( !view.IsDisposed );
+            Assert.Operation.Message( $"View {view} must be non-shown" ).Valid( !view.IsShown );
+            View.AddView( view );
+            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
+        }
+        protected void HideView(UIViewBase view) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be deactivating or inactive" ).Valid( State is UIWidgetState.Deactivating or UIWidgetState.Inactive );
+            Assert.Operation.Message( $"View {view} must be non-disposed" ).NotDisposed( !view.IsDisposed );
+            Assert.Operation.Message( $"View {view} must be shown" ).Valid( view.IsShown );
+            View.RemoveView( view );
+            Assert.Operation.Message( $"View {view} must be non-shown" ).Valid( !view.IsShown );
+        }
+
         // ShowSelf
         protected void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );

@@ -16,8 +16,8 @@ This package contains classes that define the entire architecture of your game p
     - UITheme              - the audio theme.
     - UIScreen             - the graphics user interface. The user interface consists of the hierarchy of business units and the hierarchy of visual units.
     - UIWidget             - the business unit of ui. This may contain (or not contain) the view.
-    - UIView               - the visual unit of ui. This just contains the VisualElement, so it's essentially a wrapper for VisualElement.
-    - UIRouter             - the state router.
+    - UIView               - the visual unit of ui. This is just the VisualElement.
+    - UIRouter             - the state managere.
 - Framework.App - the application module.
     - Application          - the application.
     - Storage              - the bag of values.
@@ -31,6 +31,9 @@ This package contains classes that define the entire architecture of your game p
 
 # Example
 - https://denis535.github.io/#clean-game-example
+
+# Article
+- https://habr.com/ru/articles/833532/
 
 # Links
 - https://denis535.github.io
