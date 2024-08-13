@@ -22,7 +22,9 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Constructor
-        public UIRootWidgetViewBase() : base( "root-widget-view", "root-widget-view" ) {
+        public UIRootWidgetViewBase() {
+            name = "root-widget-view";
+            AddToClassList( "root-widget-view" );
             pickingMode = PickingMode.Ignore;
         }
         public override void Dispose() {

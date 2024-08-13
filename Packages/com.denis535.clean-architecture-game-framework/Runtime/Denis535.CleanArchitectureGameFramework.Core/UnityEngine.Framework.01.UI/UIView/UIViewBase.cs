@@ -3,6 +3,7 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -60,12 +61,6 @@ namespace UnityEngine.Framework.UI {
         // Constructor
         public UIViewBase() {
         }
-        public UIViewBase(string name, params string[] classes) {
-            this.name = name;
-            foreach (var @class in classes) {
-                AddToClassList( @class );
-            }
-        }
         public virtual void Dispose() {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !IsAttached );
@@ -97,9 +92,11 @@ namespace UnityEngine.Framework.UI {
         }
 
         // AddViewRecursive
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         private bool AddViewRecursive(UIViewBase view) {
             return AddView( view ) || (Parent2?.AddViewRecursive( view ) ?? false);
         }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         private bool RemoveViewRecursive(UIViewBase view) {
             return RemoveView( view ) || (Parent2?.RemoveViewRecursive( view ) ?? false);
         }
