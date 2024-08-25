@@ -14,7 +14,7 @@ namespace UnityEngine.Framework.UI {
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
         // Screen
-        protected UIScreenBase? Screen { get; set; }
+        protected UIScreenBase? Screen { get; private set; }
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
@@ -74,6 +74,8 @@ namespace UnityEngine.Framework.UI {
 
         // Activate
         internal void Activate(UIScreenBase screen, object? argument) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
             foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantActivateEvent?.Invoke( this, argument );
                 ancestor.OnBeforeDescendantActivate( this, argument );
@@ -99,6 +101,8 @@ namespace UnityEngine.Framework.UI {
             }
         }
         internal void Deactivate(UIScreenBase screen, object? argument) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be active" ).Valid( State is UIWidgetState.Active );
             foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantDeactivateEvent?.Invoke( this, argument );
                 ancestor.OnBeforeDescendantDeactivate( this, argument );
@@ -178,12 +182,6 @@ namespace UnityEngine.Framework.UI {
                 Children_.Remove( child );
             }
         }
-        public void RemoveChildren(IEnumerable<UIWidgetBase> children, object? argument = null) {
-            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            foreach (var child in children) {
-                RemoveChild( child, argument );
-            }
-        }
         public bool RemoveChild(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             var child = Children.LastOrDefault( predicate );
@@ -192,6 +190,12 @@ namespace UnityEngine.Framework.UI {
                 return true;
             }
             return false;
+        }
+        public void RemoveChildren(IEnumerable<UIWidgetBase> children, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            foreach (var child in children) {
+                RemoveChild( child, argument );
+            }
         }
         public int RemoveChildren(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
