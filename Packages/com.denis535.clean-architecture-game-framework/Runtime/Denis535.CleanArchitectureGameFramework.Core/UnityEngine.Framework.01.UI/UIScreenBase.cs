@@ -35,9 +35,12 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-            Widget = widget;
-            widget.Activate( this, argument );
-            Document.rootVisualElement.Add( widget.View );
+            {
+                Widget = widget;
+                Widget.Owner = this;
+            }
+            Widget.Activate( argument );
+            Document.rootVisualElement.Add( Widget.View );
         }
         protected internal virtual void RemoveWidget(UIWidgetBase widget, object? argument = null) {
             Assert.Argument.Message( $"Argument 'widget' must be non-null" ).NotNull( widget != null );
@@ -47,9 +50,17 @@ namespace UnityEngine.Framework.UI {
             Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have {widget} widget" ).Valid( Widget == widget );
-            if (Document && Document.rootVisualElement != null) Document.rootVisualElement.Remove( widget.View );
-            widget.Deactivate( this, argument );
-            Widget = null;
+            RemoveWidget( argument );
+        }
+        protected internal virtual void RemoveWidget(object? argument = null) {
+            Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
+            if (Document && Document.rootVisualElement != null) Document.rootVisualElement.Remove( Widget.View );
+            Widget.Deactivate( argument );
+            {
+                Widget.Owner = null;
+                Widget = null;
+            }
         }
 
     }
