@@ -14,17 +14,17 @@ namespace UnityEngine.Framework.UI {
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
-        // Owner
-        internal object? Owner { get; set; }
         // State
         public UIWidgetState State { get; private set; } = UIWidgetState.Inactive;
+        // Owner
+        private object? Owner { get; set; }
         // Screen
-        protected UIScreenBase? Screen => Owner as UIScreenBase;
+        public UIScreenBase? Screen => Owner as UIScreenBase;
+        // Parent
+        public UIWidgetBase? Parent => Owner as UIWidgetBase;
         // Root
         [MemberNotNullWhen( false, "Parent" )] public bool IsRoot => Parent == null;
         public UIWidgetBase Root => IsRoot ? this : Parent.Root;
-        // Parent
-        public UIWidgetBase? Parent => Owner as UIWidgetBase;
         // Ancestors
         public IEnumerable<UIWidgetBase> Ancestors {
             get {
@@ -36,8 +36,8 @@ namespace UnityEngine.Framework.UI {
         }
         public IEnumerable<UIWidgetBase> AncestorsAndSelf => Ancestors.Prepend( this );
         // Children
-        public IReadOnlyList<UIWidgetBase> Children => Children_;
         private List<UIWidgetBase> Children_ { get; } = new List<UIWidgetBase>();
+        public IReadOnlyList<UIWidgetBase> Children => Children_;
         // Descendants
         public IEnumerable<UIWidgetBase> Descendants {
             get {
@@ -75,7 +75,43 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Activate
-        internal void Activate(object? argument) {
+        internal void Activate(UIScreenBase owner, object? argument) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Owner = owner;
+            Activate( argument );
+        }
+        internal void Deactivate(UIScreenBase owner, object? argument) {
+            Assert.Argument.Message( $"Argument 'owner' ({owner}) must be valid" ).Valid( owner == Owner );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Deactivate( argument );
+            Owner = null;
+        }
+
+        // Activate
+        internal void Activate(UIWidgetBase owner, object? argument) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (owner.State is UIWidgetState.Active) {
+                Owner = owner;
+                Activate( argument );
+            } else {
+                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
+                Owner = owner;
+            }
+        }
+        internal void Deactivate(UIWidgetBase owner, object? argument) {
+            Assert.Argument.Message( $"Argument 'owner' ({owner}) must be valid" ).Valid( owner == Owner );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (owner.State is UIWidgetState.Active) {
+                Deactivate( argument );
+                Owner = null;
+            } else {
+                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
+                Owner = null;
+            }
+        }
+
+        // Activate
+        private void Activate(object? argument) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is UIWidgetState.Inactive );
             foreach (var ancestor in Ancestors.Reverse()) {
@@ -101,7 +137,7 @@ namespace UnityEngine.Framework.UI {
                 ancestor.OnAfterDescendantActivateEvent?.Invoke( this, argument );
             }
         }
-        internal void Deactivate(object? argument) {
+        private void Deactivate(object? argument) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be active" ).Valid( State is UIWidgetState.Active );
             foreach (var ancestor in Ancestors.Reverse()) {
@@ -153,34 +189,18 @@ namespace UnityEngine.Framework.UI {
         public virtual void AddChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
-            Assert.Argument.Message( $"Argument 'child' ({child}) must be inactive" ).Valid( child.State is UIWidgetState.Inactive );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
-            {
-                Children_.Add( child );
-                child.Owner = this;
-            }
-            if (State is UIWidgetState.Active) {
-                child.Activate( argument );
-            } else {
-                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
-            }
+            Children_.Add( child );
+            child.Activate( this, argument );
         }
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
-            Assert.Argument.Message( $"Argument 'child' ({child}) must be active" ).Valid( child.State is UIWidgetState.Active );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have child {child} widget" ).Valid( Children.Contains( child ) );
-            if (State is UIWidgetState.Active) {
-                child.Deactivate( argument );
-            } else {
-                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
-            }
-            {
-                child.Owner = null;
-                Children_.Remove( child );
-            }
+            child.Deactivate( this, argument );
+            Children_.Remove( child );
         }
         public bool RemoveChild(Func<UIWidgetBase, bool> predicate, object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -208,11 +228,11 @@ namespace UnityEngine.Framework.UI {
         }
         public void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must have parent or screen" ).Valid( Parent != null || Screen != null );
-            if (Parent != null) {
-                Parent.RemoveChild( this, argument );
+            Assert.Operation.Message( $"Widget {this} must have owner" ).Valid( Owner != null );
+            if (Owner is UIWidgetBase parent) {
+                parent.RemoveChild( this, argument );
             } else {
-                Screen!.RemoveWidget( this, argument );
+                ((UIScreenBase) Owner).RemoveWidget( this, argument );
             }
         }
 
