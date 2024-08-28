@@ -1,49 +1,36 @@
 # Overview
-This package makes the project window much more convenient. This highlights the special folders (modules, assets, resources and sources) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
+This package makes the project window much more convenient. This highlights the special folders (packages, assemblies, content) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
 
 # How it works
-This identifies special folders according to the following rules:
-- Module folder must contain '*.asmdef' or '*.asmref' files.
-- Assets folder must start with 'Assets' or 'Assets.*' prefix.
-- Resources folder must start with 'Resources' or 'Resources.*' prefix.
-- Source folder is just any other folder.
+It identifies special folders according to the following rules:
+- Package folder is folder containing 'package.json' file.
+- Assembly folder is folder containing '*.asmdef' or '*.asmref' file.
+- Content folder is any folder within assembly folder.
+- Assets folder is content folder starting with 'Assets.*' prefix.
+- Resources folder is content folder starting with 'Resources.*' prefix.
+- Source folder is just any other content folder.
 
 # How to use it
 ```
-#if UNITY_EDITOR
-#nullable enable
-namespace UnityEditor.ColorfulProjectWindow {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Text;
-    using UnityEditor;
-    using UnityEngine;
+[InitializeOnLoad]
+public class ProjectWindow2 : ProjectWindow {
 
-    [InitializeOnLoad]
-    public class ColorfulProjectWindow2 : ColorfulProjectWindow {
-
-        // Constructor
-        static ColorfulProjectWindow2() {
-            new ColorfulProjectWindow2();
-        }
-
-        // Constructor
-        public ColorfulProjectWindow2() {
-        }
-
-        // OnGUI
-        protected override void OnGUI(string guid, Rect rect) {
-            base.OnGUI( guid, rect );
-        }
-
+    static ProjectWindow2() {
+        new ProjectWindow2();
     }
+
+    public ProjectWindow2() {
+    }
+
+    protected override void OnGUI(Rect rect, string path) {
+        base.OnGUI( rect, path );
+    }
+
 }
-#endif
 ```
 
 # Setup
-You can setup the colors in the 'Preferences/Colorful Project Window'.
+You can setup the colors in the 'Preferences/Colorful Project Window' window.
 
 # Media
 - ![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/e825a503-0649-474d-8f4e-2f770dc1fb5a)
@@ -51,16 +38,13 @@ You can setup the colors in the 'Preferences/Colorful Project Window'.
 - ![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/e3a77f0e-1c00-4382-b9df-bd3313dfc305)
 
 # Links
-- https://github.com/Denis535/CleanArchitectureGameFramework/
-
+- https://github.com/denis535/CleanGameExample
 - https://denis535.github.io
-- https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
-
-- https://assetstore.unity.com/publishers/90787
-- https://denis535.itch.io/
-
 - https://www.nuget.org/profiles/Denis535
 - https://openupm.com/packages/?sort=downloads&q=denis535
+- https://assetstore.unity.com/publishers/90787
+- https://denis535.itch.io/
+- https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
 
 # If you want to support me
 If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos.

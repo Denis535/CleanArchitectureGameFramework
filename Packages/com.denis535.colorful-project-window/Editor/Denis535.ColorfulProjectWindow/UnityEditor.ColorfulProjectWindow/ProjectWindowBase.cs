@@ -47,7 +47,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                 rect.height = 16;
                 color = depth switch {
                     0 => color,
-                    _ => Darken( color, 2.5f ),
+                    _ => Darken( color, 1.5f ),
                 };
                 DrawRect( rect, color );
             } else {
@@ -55,7 +55,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                 rect.height = 64;
                 color = depth switch {
                     0 => color,
-                    _ => Darken( color, 2.5f ),
+                    _ => Darken( color, 1.5f ),
                 };
                 DrawRect( rect, color );
             }

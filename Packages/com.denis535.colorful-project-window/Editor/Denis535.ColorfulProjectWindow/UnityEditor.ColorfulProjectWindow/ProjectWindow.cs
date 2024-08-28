@@ -84,12 +84,13 @@ namespace UnityEditor.ColorfulProjectWindow {
                 DrawItem( rect, Settings.AssemblyColor, 0 );
             } else {
                 if (IsContent( path, assembly, content )) {
+                    var depth = content.Count( i => i == '/' );
                     if (IsAssets( path, assembly, content )) {
-                        DrawItem( rect, Settings.AssetsColor, 0 );
+                        DrawItem( rect, Settings.AssetsColor, depth );
                     } else if (IsResources( path, assembly, content )) {
-                        DrawItem( rect, Settings.ResourcesColor, 0 );
+                        DrawItem( rect, Settings.ResourcesColor, depth );
                     } else if (IsSources( path, assembly, content )) {
-                        DrawItem( rect, Settings.SourcesColor, 0 );
+                        DrawItem( rect, Settings.SourcesColor, depth );
                     }
                 }
             }
