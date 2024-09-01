@@ -24,7 +24,6 @@ namespace UnityEngine.AddressableAssets {
             LabelField( "Resources Class Name", Target.ResourcesClassName );
             LabelField( "Labels Class Name", Target.LabelsClassName );
             EditorGUILayout.Separator();
-
             if (GUILayout.Button( "Generate" )) {
                 Target.Generate();
             }

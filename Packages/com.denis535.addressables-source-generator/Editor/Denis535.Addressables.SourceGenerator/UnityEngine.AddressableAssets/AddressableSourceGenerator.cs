@@ -11,8 +11,11 @@ namespace UnityEngine.AddressableAssets {
     [CreateAssetMenu( fileName = "AddressableSourceGenerator", menuName = "Addressables/AddressableSourceGenerator" )]
     public class AddressableSourceGenerator : ScriptableObject {
 
+        // Directory
         public string Directory => Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) );
+        // Namespace
         public string Namespace => new DirectoryInfo( Directory ).Name;
+        // ClassName
         public string ResourcesClassName => "R";
         public string LabelsClassName => "L";
 

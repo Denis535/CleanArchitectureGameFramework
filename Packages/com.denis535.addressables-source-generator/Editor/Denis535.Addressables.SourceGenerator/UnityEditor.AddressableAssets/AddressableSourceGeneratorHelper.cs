@@ -101,7 +101,7 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "GameScreen" ) )
                 .ThenByDescending( i => i.Key.Equals( "DebugScreen" ) )
 
-                .ThenByDescending( i => i.Key.Equals( "Characters" ) )
+                .ThenByDescending( i => i.Key.Equals( "Actors" ) )
                 .ThenByDescending( i => i.Key.Equals( "Things" ) )
                 .ThenByDescending( i => i.Key.Equals( "Worlds" ) )
                 .ThenByDescending( i => i.Key.Equals( "Levels" ) )
