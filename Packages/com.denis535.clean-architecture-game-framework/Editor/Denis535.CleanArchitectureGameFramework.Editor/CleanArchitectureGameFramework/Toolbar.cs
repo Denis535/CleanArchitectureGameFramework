@@ -1,5 +1,5 @@
 #nullable enable
-namespace CleanArchitectureGameFramework {
+namespace UnityEditor {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -73,12 +73,14 @@ namespace CleanArchitectureGameFramework {
                 .OrderBy( i => i );
             var directories = Directory.EnumerateDirectories( path )
                 .OrderBy( i => !i.EndsWith( ".UI" ) )
-                .ThenBy( i => !i.EndsWith( ".MainScreen" ) )
-                .ThenBy( i => !i.EndsWith( ".GameScreen" ) )
                 .ThenBy( i => !i.EndsWith( ".App" ) )
                 .ThenBy( i => !i.EndsWith( ".Entities" ) )
-                .ThenBy( i => !i.EndsWith( ".Characters" ) )
+                .ThenBy( i => !i.EndsWith( ".MainScreen" ) )
+                .ThenBy( i => !i.EndsWith( ".GameScreen" ) )
+                .ThenBy( i => !i.EndsWith( ".Actors" ) )
                 .ThenBy( i => !i.EndsWith( ".Things" ) )
+                .ThenBy( i => !i.EndsWith( ".Vehicles" ) )
+                .ThenBy( i => !i.EndsWith( ".Transports" ) )
                 .ThenBy( i => !i.EndsWith( ".Worlds" ) )
                 .ThenBy( i => !i.EndsWith( ".Common" ) )
                 .ThenBy( i => i );
