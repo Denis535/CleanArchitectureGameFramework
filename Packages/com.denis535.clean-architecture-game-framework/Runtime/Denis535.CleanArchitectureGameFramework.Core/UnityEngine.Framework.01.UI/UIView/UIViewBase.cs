@@ -71,34 +71,24 @@ namespace UnityEngine.Framework.UI {
             disposeCancellationTokenSource?.Cancel();
         }
 
-        // ShowView
-        public void ShowView(UIViewBase view) {
+        // AddViewRecursive
+        public void AddViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-shown" ).Valid( !view.IsShown );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            if (AddViewRecursive( view )) {
+            if (AddViewRecursive( this, view )) {
                 return;
             }
-            Assert.Operation.Message( $"Can not show view {view}" ).Valid( view.IsShown );
+            Assert.Operation.Message( $"Can not add {view} view" ).Valid( view.IsShown );
         }
-        public void HideView(UIViewBase view) {
+        public void RemoveViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be shown" ).Valid( view.IsShown );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            if (RemoveViewRecursive( view )) {
+            if (RemoveViewRecursive( this, view )) {
                 return;
             }
-            Assert.Operation.Message( $"Can not hide view {view}" ).Valid( !view.IsShown );
-        }
-
-        // AddViewRecursive
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        private bool AddViewRecursive(UIViewBase view) {
-            return AddView( view ) || (Parent2?.AddViewRecursive( view ) ?? false);
-        }
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        private bool RemoveViewRecursive(UIViewBase view) {
-            return RemoveView( view ) || (Parent2?.RemoveViewRecursive( view ) ?? false);
+            Assert.Operation.Message( $"Can not remove {view} view" ).Valid( !view.IsShown );
         }
 
         // AddView
@@ -106,6 +96,26 @@ namespace UnityEngine.Framework.UI {
             return false;
         }
         protected virtual bool RemoveView(UIViewBase view) {
+            return false;
+        }
+
+        // Helpers
+        private static bool AddViewRecursive(VisualElement element, UIViewBase view) {
+            if (element is UIViewBase element_ && element_.AddView( view )) {
+                return true;
+            }
+            if (element.parent != null) {
+                return AddViewRecursive( element.parent, view );
+            }
+            return false;
+        }
+        private static bool RemoveViewRecursive(VisualElement element, UIViewBase view) {
+            if (element is UIViewBase element_ && element_.RemoveView( view )) {
+                return true;
+            }
+            if (element.parent != null) {
+                return RemoveViewRecursive( element.parent, view );
+            }
             return false;
         }
 

@@ -19,7 +19,7 @@ namespace UnityEngine.UIElements {
             return element.resolvedStyle.display == DisplayStyle.Flex;
         }
         public static bool IsDisplayedInHierarchy(this VisualElement element) {
-            return element.GetAncestorsAndSelf().All( IsDisplayedSelf );
+            return element.AncestorsAndSelf().All( IsDisplayedSelf );
         }
         public static void SetDisplayed(this VisualElement element, bool value) {
             if (value) {
@@ -34,7 +34,7 @@ namespace UnityEngine.UIElements {
             return !element.ClassListContains( "invalid" );
         }
         public static bool IsValidInHierarchy(this VisualElement element) {
-            return element.GetAncestorsAndSelf().All( IsValidSelf );
+            return element.AncestorsAndSelf().All( IsValidSelf );
         }
         public static void SetValid(this VisualElement element, bool value) {
             if (value) {

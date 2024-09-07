@@ -11,6 +11,7 @@ namespace UnityEngine.Framework.App {
         public ApplicationBase() {
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Application {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
         }
 

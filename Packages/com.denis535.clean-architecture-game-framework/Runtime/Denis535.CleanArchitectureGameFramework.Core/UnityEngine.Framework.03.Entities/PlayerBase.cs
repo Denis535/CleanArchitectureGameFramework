@@ -11,6 +11,7 @@ namespace UnityEngine.Framework.Entities {
         public PlayerBase() {
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Player {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
         }
 

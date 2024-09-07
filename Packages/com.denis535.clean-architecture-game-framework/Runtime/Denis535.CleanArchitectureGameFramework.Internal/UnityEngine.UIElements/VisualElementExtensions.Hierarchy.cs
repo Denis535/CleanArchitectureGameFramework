@@ -17,28 +17,38 @@ namespace UnityEngine.UIElements {
             return ancestor.Contains( element );
         }
 
-        // GetAncestors
-        public static IEnumerable<VisualElement> GetAncestors(this VisualElement element) {
+        // Parent
+        //public static VisualElement Parent(this VisualElement element) {
+        //    return element.parent;
+        //}
+
+        // Ancestors
+        public static IEnumerable<VisualElement> Ancestors(this VisualElement element) {
             while (element.parent != null) {
                 yield return element.parent;
                 element = element.parent;
             }
         }
-        public static IEnumerable<VisualElement> GetAncestorsAndSelf(this VisualElement element) {
+        public static IEnumerable<VisualElement> AncestorsAndSelf(this VisualElement element) {
             yield return element;
-            foreach (var i in element.GetAncestors()) yield return i;
+            foreach (var i in element.Ancestors()) yield return i;
         }
 
-        // GetDescendants
-        public static IEnumerable<VisualElement> GetDescendants(this VisualElement element) {
+        // Children
+        //public static VisualElement[] Children(this VisualElement element) {
+        //    return element.Children().ToArray();
+        //}
+
+        // Descendants
+        public static IEnumerable<VisualElement> Descendants(this VisualElement element) {
             foreach (var child in element.Children()) {
                 yield return child;
-                foreach (var i in child.GetDescendants()) yield return i;
+                foreach (var i in child.Descendants()) yield return i;
             }
         }
-        public static IEnumerable<VisualElement> GetDescendantsAndSelf(this VisualElement element) {
+        public static IEnumerable<VisualElement> DescendantsAndSelf(this VisualElement element) {
             yield return element;
-            foreach (var i in element.GetDescendants()) yield return i;
+            foreach (var i in element.Descendants()) yield return i;
         }
 
         // Add

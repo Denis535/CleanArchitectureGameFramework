@@ -46,7 +46,8 @@ namespace UnityEngine.Framework.UI {
 
         // Sort
         protected virtual void Sort() {
-            Sort( (a, b) => Comparer<int>.Default.Compare( GetPriority( (UIViewBase) a ), GetPriority( (UIViewBase) b ) ) );
+            // todo: how to sort widgets?
+            Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( (UIViewBase) a ), GetOrderOf( (UIViewBase) b ) ) );
         }
 
         // Recalculate
@@ -73,7 +74,7 @@ namespace UnityEngine.Framework.UI {
         }
         protected virtual void Recalculate(UIViewBase view, UIViewBase? next) {
             if (next != null) {
-                if (GetLayer( view ) == GetLayer( next )) {
+                if (GetLayerOf( view ) == GetLayerOf( next )) {
                     view.SetEnabled( false );
                     view.SetDisplayed( false );
                 } else {
@@ -86,13 +87,13 @@ namespace UnityEngine.Framework.UI {
             }
         }
 
-        // GetPriority
-        protected virtual int GetPriority(UIViewBase view) {
+        // GetOrderOf
+        protected virtual int GetOrderOf(UIViewBase view) {
             return 0;
         }
 
-        // GetLayer
-        protected virtual int GetLayer(UIViewBase view) {
+        // GetLayerOf
+        protected virtual int GetLayerOf(UIViewBase view) {
             return 0;
         }
 

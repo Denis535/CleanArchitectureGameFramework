@@ -17,6 +17,7 @@ namespace UnityEngine.Framework.UI {
             AudioSource = audioSource;
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
         }
 

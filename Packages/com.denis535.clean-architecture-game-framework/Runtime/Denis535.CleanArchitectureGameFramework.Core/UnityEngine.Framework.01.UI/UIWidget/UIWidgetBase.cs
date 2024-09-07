@@ -254,12 +254,12 @@ namespace UnityEngine.Framework.UI {
         protected void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is UIWidgetState.Activating );
-            Parent!.View!.ShowView( View );
+            Parent!.View!.AddViewRecursive( View );
         }
         protected void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is UIWidgetState.Deactivating );
-            Parent!.View!.HideView( View );
+            Parent!.View!.RemoveViewRecursive( View );
         }
 
     }

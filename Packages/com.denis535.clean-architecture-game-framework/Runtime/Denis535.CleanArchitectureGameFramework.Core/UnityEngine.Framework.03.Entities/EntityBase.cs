@@ -16,6 +16,7 @@ namespace UnityEngine.Framework.Entities {
             Registry.RegisterEntity( this );
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Entity {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
             Registry.UnregisterEntity( this );
         }

@@ -11,6 +11,7 @@ namespace UnityEngine.Framework.UI {
         public UIRouterBase() {
         }
         public override void Dispose() {
+            Assert.Operation.Message( $"Router {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
         }
 
