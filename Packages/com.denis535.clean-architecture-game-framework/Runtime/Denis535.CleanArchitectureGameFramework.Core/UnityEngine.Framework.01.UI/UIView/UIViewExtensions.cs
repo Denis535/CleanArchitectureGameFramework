@@ -10,13 +10,14 @@ namespace UnityEngine.Framework.UI {
 
         // Focus
         public static void InitFocus(this UIViewBase view) {
+            // sometimes it throws an error
             try {
                 if (view.focusable) {
                     view.Focus();
                 } else {
                     view.focusable = true;
                     view.delegatesFocus = true;
-                    view.Focus(); // sometimes it throws an error
+                    view.Focus();
                     view.delegatesFocus = false;
                     view.focusable = false;
                 }
@@ -24,10 +25,14 @@ namespace UnityEngine.Framework.UI {
             }
         }
         public static bool LoadFocus(this UIViewBase view) {
-            var focusedElement = view.LoadFocusedElement();
-            if (focusedElement != null) {
-                focusedElement.Focus();
-                return true;
+            // sometimes it throws an error
+            try {
+                var focusedElement = view.LoadFocusedElement();
+                if (focusedElement != null) {
+                    focusedElement.Focus();
+                    return true;
+                }
+            } catch {
             }
             return false;
         }
