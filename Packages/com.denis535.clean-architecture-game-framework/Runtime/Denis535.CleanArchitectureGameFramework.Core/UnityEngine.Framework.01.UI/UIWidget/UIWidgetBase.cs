@@ -238,7 +238,7 @@ namespace UnityEngine.Framework.UI {
         }
 
         // Sort
-        protected virtual void Sort(IList<UIWidgetBase> children) {
+        protected virtual void Sort(List<UIWidgetBase> children) {
         }
 
     }
