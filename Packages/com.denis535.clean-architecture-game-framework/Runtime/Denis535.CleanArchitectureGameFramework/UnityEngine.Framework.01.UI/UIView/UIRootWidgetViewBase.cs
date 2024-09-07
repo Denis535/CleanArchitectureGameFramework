@@ -35,33 +35,31 @@ namespace UnityEngine.Framework.UI {
         protected override bool AddView(UIViewBase view) {
             Add( view );
             Sort();
-            Recalculate();
+            SetVisibility( Children().Cast<UIViewBase>().ToArray() );
             return true;
         }
         protected override bool RemoveView(UIViewBase view) {
             Remove( view );
-            Recalculate();
+            SetVisibility( Children().Cast<UIViewBase>().ToArray() );
             return true;
         }
 
         // Sort
         protected virtual void Sort() {
-            // todo: how to sort widgets?
             Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( (UIViewBase) a ), GetOrderOf( (UIViewBase) b ) ) );
         }
 
-        // Recalculate
-        protected virtual void Recalculate() {
-            var views = Children().Cast<UIViewBase>().ToList();
+        // SetVisibility
+        protected virtual void SetVisibility(UIViewBase[] views) {
             foreach (var view in views.SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
-            for (var i = 0; i < views.Count; i++) {
+            for (var i = 0; i < views.Length; i++) {
                 var view = views[ i ];
                 var next = views.ElementAtOrDefault( i + 1 );
-                Recalculate( view, next );
+                SetVisibility( view, next );
             }
             if (views.Any()) {
                 var view = views.Last();
@@ -72,15 +70,10 @@ namespace UnityEngine.Framework.UI {
                 }
             }
         }
-        protected virtual void Recalculate(UIViewBase view, UIViewBase? next) {
+        protected virtual void SetVisibility(UIViewBase view, UIViewBase? next) {
             if (next != null) {
-                if (GetLayerOf( view ) == GetLayerOf( next )) {
-                    view.SetEnabled( false );
-                    view.SetDisplayed( false );
-                } else {
-                    view.SetEnabled( false );
-                    view.SetDisplayed( true );
-                }
+                view.SetEnabled( false );
+                view.SetDisplayed( GetLayerOf( view ) != GetLayerOf( next ) );
             } else {
                 view.SetEnabled( true );
                 view.SetDisplayed( true );

@@ -41,8 +41,8 @@ namespace UnityEngine.Framework.UI {
             }
         }
         protected static void OnCancel(NavigationCancelEvent evt) {
-            var widget = ((VisualElement) evt.target).AncestorsAndSelf().Where( i => i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).LastOrDefault( IsWidget );
-            var button = widget?.Query<Button>().Where( i => i.enabledInHierarchy && i.IsDisplayedInHierarchy() ).Where( IsCancel ).First();
+            var widget = ((VisualElement) evt.target).AncestorsAndSelf().Where( i => i.enabledInHierarchy && i.resolvedStyle.display == DisplayStyle.Flex ).LastOrDefault( IsWidget );
+            var button = widget?.Query<Button>().Where( i => i.enabledInHierarchy && i.resolvedStyle.display == DisplayStyle.Flex ).Where( IsCancel ).First();
             if (button != null) {
                 Click( button );
                 evt.StopPropagation();

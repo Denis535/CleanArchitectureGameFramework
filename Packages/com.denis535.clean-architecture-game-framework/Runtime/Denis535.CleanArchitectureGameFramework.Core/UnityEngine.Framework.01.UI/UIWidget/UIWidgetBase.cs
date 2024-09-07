@@ -192,6 +192,7 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must have no child {child} widget" ).Valid( !Children.Contains( child ) );
             Children_.Add( child );
+            Sort( Children_ );
             child.Activate( this, argument );
         }
         public virtual void RemoveChild(UIWidgetBase child, object? argument = null) {
@@ -234,6 +235,10 @@ namespace UnityEngine.Framework.UI {
             } else {
                 ((UIScreenBase) Owner).RemoveWidget( this, argument );
             }
+        }
+
+        // Sort
+        protected virtual void Sort(IList<UIWidgetBase> children) {
         }
 
     }

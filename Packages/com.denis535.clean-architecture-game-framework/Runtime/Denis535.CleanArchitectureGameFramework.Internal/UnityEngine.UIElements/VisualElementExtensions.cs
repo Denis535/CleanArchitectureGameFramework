@@ -16,16 +16,16 @@ namespace UnityEngine.UIElements {
 
         // IsDisplayed
         public static bool IsDisplayedSelf(this VisualElement element) {
-            return element.resolvedStyle.display == DisplayStyle.Flex;
+            return !element.ClassListContains( "unity-hidden" );
         }
         public static bool IsDisplayedInHierarchy(this VisualElement element) {
             return element.AncestorsAndSelf().All( IsDisplayedSelf );
         }
         public static void SetDisplayed(this VisualElement element, bool value) {
             if (value) {
-                element.style.display = DisplayStyle.Flex;
+                element.RemoveFromClassList( "unity-hidden" );
             } else {
-                element.style.display = DisplayStyle.None;
+                element.AddToClassList( "unity-hidden" );
             }
         }
 
