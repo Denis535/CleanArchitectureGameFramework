@@ -62,16 +62,20 @@ namespace System {
         // Value
         public bool HasValue => hasValue; // Note: Option can have null/default value
         public T Value => hasValue ? value : throw new InvalidOperationException( "Option has no value" ); // Note: therefore, null/default is also valid Option's value
-        public T? ValueOrDefault => hasValue ? value : default; // always null/default if if Option has no value
+        public T? ValueOrDefault => hasValue ? value : default; // always null/default if Option has no value
 
         // Constructor
-        //public Option() { // only CSharp 10
+        //public Option() { // C# 9.0 doesn't support it
         //    this.hasValue = false;
         //    this.value = default!;
         //}
         public Option(T value) {
             this.hasValue = true;
             this.value = value;
+        }
+        private Option(bool hasValue, T? value) {
+            this.hasValue = hasValue;
+            this.value = value!;
         }
 
         // TryGetValue
@@ -112,6 +116,18 @@ namespace System {
         }
         public int CompareTo(T other) {
             return Option.Compare( this, other );
+        }
+
+        // Utils
+        public static explicit operator Option<object?>(Option<T> value) {
+            // todo: how to cast any generic option to any other generic option?
+            // https://github.com/dotnet/csharplang/issues/813
+            return new Option<object?>( value.hasValue, value.value );
+        }
+        public static explicit operator Option<T>(Option<object?> value) {
+            // todo: how to cast any generic option to any other generic option?
+            // https://github.com/dotnet/csharplang/issues/813
+            return new Option<T>( value.hasValue, (T?) value.value );
         }
 
         // Utils
