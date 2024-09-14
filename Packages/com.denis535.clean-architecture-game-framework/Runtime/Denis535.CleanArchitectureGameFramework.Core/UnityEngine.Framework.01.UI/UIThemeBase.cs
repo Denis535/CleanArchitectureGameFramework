@@ -12,7 +12,12 @@ namespace UnityEngine.Framework.UI {
         // Stateful
         private Stateful<UIPlayListBase> Stateful { get; } = new Stateful<UIPlayListBase>();
         // PlayList
-        protected UIPlayListBase? PlayList => Stateful.State;
+        protected UIPlayListBase? PlayList {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return Stateful.State;
+            }
+        }
         // IsPlaying
         protected internal bool IsPlaying {
             get {
