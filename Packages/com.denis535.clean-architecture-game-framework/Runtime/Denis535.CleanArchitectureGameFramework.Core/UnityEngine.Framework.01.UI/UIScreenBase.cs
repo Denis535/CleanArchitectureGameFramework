@@ -6,7 +6,7 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIScreenBase : Disposable {
+    public abstract class UIScreenBase : DisposableBase {
 
         // Document
         protected UIDocument Document { get; }

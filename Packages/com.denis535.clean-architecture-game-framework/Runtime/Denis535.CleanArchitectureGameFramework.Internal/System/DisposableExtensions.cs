@@ -7,14 +7,14 @@ namespace System {
     public static class DisposableExtensions {
 
         // DisposeAll
-        public static void DisposeAll(this IEnumerable<Disposable> disposables) {
+        public static void DisposeAll(this IEnumerable<DisposableBase> disposables) {
             foreach (var disposable in disposables) {
                 disposable.Dispose();
             }
         }
 
         // ThrowIfDisposed
-        public static void ThrowIfDisposed(this Disposable disposable) {
+        public static void ThrowIfDisposed(this DisposableBase disposable) {
             Assert.Operation.Message( $"Disposable {disposable} must be non-disposed" ).NotDisposed( !disposable.IsDisposed );
         }
 

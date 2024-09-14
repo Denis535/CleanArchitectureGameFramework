@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class EntityBase : Disposable {
+    public abstract class EntityBase : DisposableBase {
 
         // System
         protected IEntityRegistry Registry { get; }

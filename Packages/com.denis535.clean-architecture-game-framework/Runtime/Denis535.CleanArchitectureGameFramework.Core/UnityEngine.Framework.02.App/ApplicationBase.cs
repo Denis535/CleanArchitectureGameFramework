@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.App {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class ApplicationBase : Disposable {
+    public abstract class ApplicationBase : DisposableBase {
 
         // Constructor
         public ApplicationBase() {

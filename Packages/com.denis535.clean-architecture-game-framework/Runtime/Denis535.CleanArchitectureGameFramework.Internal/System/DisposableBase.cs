@@ -5,7 +5,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Threading;
 
-    public abstract class Disposable : IDisposable {
+    public abstract class DisposableBase : IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
@@ -22,7 +22,7 @@ namespace System {
         }
 
         // Constructor
-        public Disposable() {
+        public DisposableBase() {
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"Disposable {this} must be non-disposed" ).NotDisposed( !IsDisposed );

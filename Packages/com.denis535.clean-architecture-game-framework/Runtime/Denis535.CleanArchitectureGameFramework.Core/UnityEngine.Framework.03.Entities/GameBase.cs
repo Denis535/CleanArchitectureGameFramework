@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.Entities {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class GameBase : Disposable {
+    public abstract class GameBase : DisposableBase {
 
         // Constructor
         public GameBase() {

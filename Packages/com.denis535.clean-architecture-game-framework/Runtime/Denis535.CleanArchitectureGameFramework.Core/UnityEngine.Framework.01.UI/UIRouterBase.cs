@@ -5,7 +5,7 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase : Disposable {
+    public abstract class UIRouterBase : DisposableBase {
 
         // Constructor
         public UIRouterBase() {

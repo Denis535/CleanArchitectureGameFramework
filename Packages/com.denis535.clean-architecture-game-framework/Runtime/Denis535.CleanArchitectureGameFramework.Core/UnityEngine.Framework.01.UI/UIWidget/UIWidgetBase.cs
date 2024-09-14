@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.UI {
     using System.Linq;
     using UnityEngine;
 
-    public abstract class UIWidgetBase : Disposable {
+    public abstract class UIWidgetBase : DisposableBase {
 
         // System
         protected virtual bool DisposeWhenDeactivate => true;
