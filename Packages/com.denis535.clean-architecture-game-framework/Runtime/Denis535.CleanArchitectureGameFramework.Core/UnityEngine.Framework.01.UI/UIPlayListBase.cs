@@ -27,14 +27,12 @@ namespace UnityEngine.Framework.UI {
         protected bool IsPlaying {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 return Context.IsPlaying;
             }
         }
         protected bool IsCompleted {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 return Context.IsCompleted;
             }
@@ -42,7 +40,6 @@ namespace UnityEngine.Framework.UI {
         protected bool IsPaused {
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 Context.IsPaused = value;
             }
@@ -50,13 +47,11 @@ namespace UnityEngine.Framework.UI {
         protected bool Mute {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 return Context.Mute;
             }
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 Context.Mute = value;
             }
@@ -64,13 +59,11 @@ namespace UnityEngine.Framework.UI {
         protected float Volume {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 return Context.Volume;
             }
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 Context.Volume = value;
             }
@@ -78,13 +71,11 @@ namespace UnityEngine.Framework.UI {
         protected float Pitch {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 return Context.Pitch;
             }
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
                 Context.Pitch = value;
             }

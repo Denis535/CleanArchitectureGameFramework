@@ -81,6 +81,7 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
             Assert.Operation.Message( $"Theme {this} must have no play list" ).Valid( PlayList == null );
             base.Dispose();
         }
