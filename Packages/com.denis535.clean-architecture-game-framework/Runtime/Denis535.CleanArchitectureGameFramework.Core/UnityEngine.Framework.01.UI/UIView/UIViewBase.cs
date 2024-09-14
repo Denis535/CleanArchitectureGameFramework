@@ -3,7 +3,6 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
     using System.Threading;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -67,8 +66,8 @@ namespace UnityEngine.Framework.UI {
             foreach (var child in Children2) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }
-            IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
+            IsDisposed = true;
         }
 
         // AddViewRecursive
