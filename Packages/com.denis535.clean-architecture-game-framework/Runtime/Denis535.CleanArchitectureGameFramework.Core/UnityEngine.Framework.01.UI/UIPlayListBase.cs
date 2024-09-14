@@ -7,6 +7,8 @@ namespace UnityEngine.Framework.UI {
 
     public abstract class UIPlayListBase : StateBase<UIPlayListBase>, IDisposable {
 
+        // System
+        public bool IsDisposed { get; private set; }
         // Context
         protected UIThemeBase Context { get; }
         // IsPlaying
@@ -65,6 +67,9 @@ namespace UnityEngine.Framework.UI {
             Context = context;
         }
         public virtual void Dispose() {
+            Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"PlayList {this} must be inactive" ).Valid( State is StateBase.State_.Inactive );
+            IsDisposed = true;
         }
 
         // Play
