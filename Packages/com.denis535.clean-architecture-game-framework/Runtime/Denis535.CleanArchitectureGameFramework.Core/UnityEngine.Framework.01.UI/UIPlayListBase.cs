@@ -3,27 +3,47 @@ namespace UnityEngine.Framework.UI {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
     using UnityEngine;
 
     public abstract class UIPlayListBase : StateBase<UIPlayListBase>, IDisposable {
 
+        private CancellationTokenSource? disposeCancellationTokenSource;
+
         // System
         public bool IsDisposed { get; private set; }
+        public CancellationToken DisposeCancellationToken {
+            get {
+                if (disposeCancellationTokenSource == null) {
+                    disposeCancellationTokenSource = new CancellationTokenSource();
+                    if (IsDisposed) disposeCancellationTokenSource.Cancel();
+                }
+                return disposeCancellationTokenSource.Token;
+            }
+        }
         // Context
         protected UIThemeBase Context { get; }
         // IsPlaying
         protected bool IsPlaying {
-            get => Context.AudioSource.clip != null;
+            get {
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                return Context.AudioSource.clip != null;
+            }
         }
         protected bool IsCompleted {
             get {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 return !Context.AudioSource.isPlaying && Context.AudioSource.time == Context.AudioSource.clip.length;
             }
         }
         protected bool IsPaused {
             set {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 if (value) {
                     Context.AudioSource.Pause();
                 } else {
@@ -33,31 +53,43 @@ namespace UnityEngine.Framework.UI {
         }
         protected bool Mute {
             get {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 return Context.AudioSource.mute;
             }
             set {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 Context.AudioSource.mute = value;
             }
         }
         protected float Volume {
             get {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 return Context.AudioSource.volume;
             }
             set {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 Context.AudioSource.volume = value;
             }
         }
         protected float Pitch {
             get {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 return Context.AudioSource.pitch;
             }
             set {
-                Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
                 Context.AudioSource.pitch = value;
             }
         }
@@ -68,18 +100,23 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"PlayList {this} must be inactive" ).Valid( State is StateBase.State_.Inactive );
+            Assert.Operation.Message( $"PlayList {this} must be inactive" ).Valid( State is State_.Inactive );
             IsDisposed = true;
+            disposeCancellationTokenSource?.Cancel();
         }
 
         // Play
         protected void Play(AudioClip clip) {
-            Assert.Operation.Message( $"Theme {Context} must be non-playing" ).Valid( Context.AudioSource.clip == null );
+            Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
+            Assert.Operation.Message( $"PlayList {this} must be non-playing" ).Valid( Context.AudioSource.clip == null );
             Context.AudioSource.clip = clip;
             Context.AudioSource.Play();
         }
         protected void Stop() {
-            Assert.Operation.Message( $"Theme {Context} must be playing" ).Valid( Context.AudioSource.clip != null );
+            Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"PlayList {this} must be active or deactivating" ).Valid( State is State_.Active or State_.Deactivating );
+            Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( Context.AudioSource.clip != null );
             Context.AudioSource.Stop();
             Context.AudioSource.clip = null;
         }
