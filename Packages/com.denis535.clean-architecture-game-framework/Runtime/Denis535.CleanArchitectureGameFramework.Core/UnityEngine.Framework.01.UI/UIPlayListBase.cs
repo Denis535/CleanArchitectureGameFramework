@@ -88,9 +88,9 @@ namespace UnityEngine.Framework.UI {
         public virtual void Dispose() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"PlayList {this} must be deactivating or inactive" ).Valid( State is State_.Deactivating or State_.Inactive );
-            Assert.Operation.Message( $"PlayList {this} must be non-playing" ).Valid( !IsPlaying );
             IsDisposed = true;
             disposeCancellationTokenSource?.Cancel();
+            Assert.Operation.Message( $"PlayList {this} must be non-playing" ).Valid( !IsPlaying );
         }
 
         // Play
