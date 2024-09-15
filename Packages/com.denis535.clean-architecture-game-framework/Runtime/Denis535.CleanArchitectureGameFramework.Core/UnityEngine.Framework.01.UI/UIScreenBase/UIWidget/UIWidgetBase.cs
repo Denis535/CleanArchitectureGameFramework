@@ -31,7 +31,7 @@ namespace UnityEngine.Framework.UI {
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be deactivating or inactive" ).Valid( State is State_.Deactivating or State_.Inactive );
+            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is State_.Inactive );
             foreach (var child in Children) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }
