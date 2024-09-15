@@ -38,14 +38,12 @@ namespace UnityEngine.Framework.UI {
         protected override void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is State_.Activating );
-            var document = ((UIScreenBase?) Tree)!.Document;
-            document.rootVisualElement.Add( View );
+            Screen!.Document.rootVisualElement.Add( View );
         }
         protected override void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is State_.Deactivating );
-            var document = ((UIScreenBase?) Tree)!.Document;
-            if (document && document.rootVisualElement != null) document.rootVisualElement.Remove( View );
+            if (Screen!.Document && Screen!.Document.rootVisualElement != null) Screen!.Document.rootVisualElement.Remove( View );
         }
 
         // Helpers

@@ -22,6 +22,8 @@ namespace UnityEngine.Framework.UI {
                 return disposeCancellationTokenSource.Token;
             }
         }
+        // Screen
+        public UIScreenBase? Screen => (UIScreenBase?) Tree;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;

@@ -12,24 +12,22 @@ namespace UnityEngine.Framework.UI {
         // PlayList
         UIPlayListBase? IStateful<UIPlayListBase>.State { get => PlayList; set => PlayList = value; }
         protected UIPlayListBase? PlayList { get; private set; }
-        // IsPlaying
-        protected internal bool IsPlaying {
+        // IsRunning
+        protected internal bool IsRunning {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 return AudioSource.clip != null;
             }
         }
-        protected internal bool IsCompleted {
+        protected internal bool IsPlaying {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
-                return !AudioSource.isPlaying && AudioSource.time == AudioSource.clip.length;
+                return AudioSource.clip != null && AudioSource.time < AudioSource.clip.length;
             }
         }
         protected internal bool IsPaused {
             set {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 if (value) {
                     AudioSource.Pause();
                 } else {
@@ -40,36 +38,30 @@ namespace UnityEngine.Framework.UI {
         protected internal bool Mute {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 return AudioSource.mute;
             }
             set {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 AudioSource.mute = value;
             }
         }
         protected internal float Volume {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 return AudioSource.volume;
             }
             set {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 AudioSource.volume = value;
             }
         }
         protected internal float Pitch {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 return AudioSource.pitch;
             }
             set {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Theme {this} must be playing" ).Valid( IsPlaying );
                 AudioSource.pitch = value;
             }
         }
@@ -80,7 +72,7 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
+            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
             Assert.Operation.Message( $"Theme {this} must have no play list" ).Valid( PlayList == null );
             base.Dispose();
         }
@@ -98,14 +90,14 @@ namespace UnityEngine.Framework.UI {
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 IStateful<UIPlayListBase>.SetState( this, null, argument );
-                Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
+                Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
             }
         }
 
         // Play
         internal void Play(AudioClip clip) {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
+            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
             AudioSource.clip = clip;
             AudioSource.Play();
         }
