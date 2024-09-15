@@ -16,22 +16,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // OnActivate
-        protected override void OnActivate(object? argument) {
-        }
-        protected override void OnDeactivate(object? argument) {
-        }
-
-        // OnDescendantActivate
-        protected override void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
-        }
-
         // Helpers
         protected static void OnSubmit(NavigationSubmitEvent evt) {
             var button = evt.target as Button;
