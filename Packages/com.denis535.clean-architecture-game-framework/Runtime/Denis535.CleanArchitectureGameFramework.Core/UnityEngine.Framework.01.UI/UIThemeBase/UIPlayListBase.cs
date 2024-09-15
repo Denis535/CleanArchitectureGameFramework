@@ -90,7 +90,6 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"PlayList {this} must be deactivating or inactive" ).Valid( State is State_.Deactivating or State_.Inactive );
             disposeCancellationTokenSource?.Cancel();
             IsDisposed = true;
-            Assert.Operation.Message( $"PlayList {this} must be non-playing" ).Valid( !Context.IsPlaying );
         }
 
         // Play

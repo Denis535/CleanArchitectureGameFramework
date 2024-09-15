@@ -93,18 +93,26 @@ namespace UnityEngine.Framework.UI {
 
         // SetPlayList
         protected virtual void SetPlayList(UIPlayListBase? playList, object? argument = null) {
-            Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Stateful.SetState( playList, argument );
+            if (playList != null) {
+                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
+                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.State is StateBase.State_.Inactive );
+                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Stateful.SetState( playList, argument );
+            } else {
+                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Stateful.SetState( null, argument );
+                Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
+            }
         }
 
         // Play
-        protected internal virtual void Play(AudioClip clip) {
+        internal void Play(AudioClip clip) {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
             AudioSource.clip = clip;
             AudioSource.Play();
         }
-        protected internal virtual void Stop() {
+        internal void Stop() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             AudioSource.Stop();
             AudioSource.clip = null;
