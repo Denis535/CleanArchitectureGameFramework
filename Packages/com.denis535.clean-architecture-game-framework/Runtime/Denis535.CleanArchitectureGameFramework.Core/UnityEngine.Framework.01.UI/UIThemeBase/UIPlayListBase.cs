@@ -109,7 +109,7 @@ namespace UnityEngine.Framework.UI {
         }
         protected void Stop() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"PlayList {this} must be active or deactivating or inactive" ).Valid( State is State_.Active or State_.Deactivating or State_.Inactive );
+            Assert.Operation.Message( $"PlayList {this} must be active or deactivating" ).Valid( State is State_.Active or State_.Deactivating );
             Owner!.Stop();
         }
 

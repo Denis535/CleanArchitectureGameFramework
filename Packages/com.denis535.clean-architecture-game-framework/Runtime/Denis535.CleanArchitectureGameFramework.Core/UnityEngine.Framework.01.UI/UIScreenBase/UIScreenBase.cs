@@ -6,21 +6,15 @@ namespace UnityEngine.Framework.UI {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIScreenBase : DisposableBase {
+    public abstract class UIScreenBase : DisposableBase, ITree<UIWidgetBase> {
 
         // Document
-        protected UIDocument Document { get; }
+        protected internal UIDocument Document { get; }
         // AudioSource
-        protected AudioSource AudioSource { get; }
-        // Tree
-        private Tree<UIWidgetBase> Tree { get; } = new Tree<UIWidgetBase>();
+        protected internal AudioSource AudioSource { get; }
         // Widget
-        protected internal UIWidgetBase? Widget {
-            get {
-                Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                return Tree.Root;
-            }
-        }
+        UIWidgetBase? ITree<UIWidgetBase>.Root { get => Widget; set => Widget = value; }
+        protected internal UIWidgetBase? Widget { get; private set; }
 
         // Constructor
         public UIScreenBase(UIDocument document, AudioSource audioSource) {
@@ -34,6 +28,9 @@ namespace UnityEngine.Framework.UI {
         }
 
         // SetWidget
+        void ITree<UIWidgetBase>.SetRoot(UIWidgetBase? root, object? argument) {
+            SetWidget( root, argument );
+        }
         protected internal virtual void SetWidget(UIWidgetBase? widget, object? argument = null) {
             if (widget != null) {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
@@ -42,13 +39,11 @@ namespace UnityEngine.Framework.UI {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-                Tree.SetRoot( widget );
-                Document.rootVisualElement.Add( Widget!.View );
+                ITree<UIWidgetBase>.SetRoot( this, widget, argument );
             } else {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
-                if (Document && Document.rootVisualElement != null) Document.rootVisualElement.Remove( Widget.View );
-                Tree.SetRoot( null );
+                ITree<UIWidgetBase>.SetRoot( this, null, argument );
             }
         }
 

@@ -16,6 +16,38 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
+        // OnActivate
+        protected override void OnActivate(object? argument) {
+            ShowSelf();
+        }
+        protected override void OnDeactivate(object? argument) {
+            HideSelf();
+        }
+
+        // OnDescendantActivate
+        protected override void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
+        }
+
+        // ShowSelf
+        protected override void ShowSelf() {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is State_.Activating );
+            var document = ((UIScreenBase?) Tree)!.Document;
+            document.rootVisualElement.Add( View );
+        }
+        protected override void HideSelf() {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is State_.Deactivating );
+            var document = ((UIScreenBase?) Tree)!.Document;
+            if (document && document.rootVisualElement != null) document.rootVisualElement.Remove( View );
+        }
+
         // Helpers
         protected static void OnSubmit(NavigationSubmitEvent evt) {
             var button = evt.target as Button;

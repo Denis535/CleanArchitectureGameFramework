@@ -57,12 +57,12 @@ namespace UnityEngine.Framework.UI {
         }
 
         // ShowSelf
-        protected void ShowSelf() {
+        protected virtual void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is State_.Activating );
             Parent!.View!.AddViewRecursive( View );
         }
-        protected void HideSelf() {
+        protected virtual void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is State_.Deactivating );
             Parent!.View!.RemoveViewRecursive( View );
