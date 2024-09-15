@@ -11,7 +11,7 @@ namespace UnityEngine.Framework.UI {
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIPlayListBase2(IDependencyContainer container, UIThemeBase context) : base( context ) {
+        public UIPlayListBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {

@@ -22,68 +22,76 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // Context
-        protected UIThemeBase Context { get; }
+        public new UIThemeBase? Owner => (UIThemeBase?) base.Owner;
         // IsPlaying
-        protected bool IsPlaying {
+        public bool IsPlaying {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                return Context.IsPlaying;
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
+                return Owner!.IsPlaying;
             }
         }
-        protected bool IsCompleted {
+        public bool IsCompleted {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                return Context.IsCompleted;
+                return Owner!.IsCompleted;
             }
         }
-        protected bool IsPaused {
+        public bool IsPaused {
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                Context.IsPaused = value;
+                Owner!.IsPaused = value;
             }
         }
-        protected bool Mute {
+        public bool Mute {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                return Context.Mute;
-            }
-            set {
-                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                Context.Mute = value;
-            }
-        }
-        protected float Volume {
-            get {
-                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                return Context.Volume;
+                return Owner!.Mute;
             }
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                Context.Volume = value;
+                Owner!.Mute = value;
             }
         }
-        protected float Pitch {
+        public float Volume {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                return Context.Pitch;
+                return Owner!.Volume;
             }
             set {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
                 Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
-                Context.Pitch = value;
+                Owner!.Volume = value;
+            }
+        }
+        public float Pitch {
+            get {
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
+                return Owner!.Pitch;
+            }
+            set {
+                Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"PlayList {this} must be activating or active or deactivating" ).Valid( State is State_.Activating or State_.Active or State_.Deactivating );
+                Assert.Operation.Message( $"PlayList {this} must be playing" ).Valid( IsPlaying );
+                Owner!.Pitch = value;
             }
         }
 
         // Constructor
-        public UIPlayListBase(UIThemeBase context) {
-            Context = context;
+        public UIPlayListBase() {
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -97,11 +105,12 @@ namespace UnityEngine.Framework.UI {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"PlayList {this} must be activating or active" ).Valid( State is State_.Activating or State_.Active );
             Assert.Operation.Message( $"PlayList {this} must be non-playing" ).Valid( !IsPlaying );
-            Context.Play( clip );
+            Owner!.Play( clip );
         }
         protected void Stop() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Context.Stop();
+            Assert.Operation.Message( $"PlayList {this} must be active or deactivating" ).Valid( State is State_.Active or State_.Deactivating );
+            Owner!.Stop();
         }
 
         // Helpers

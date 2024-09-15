@@ -5,19 +5,13 @@ namespace UnityEngine.Framework.UI {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIThemeBase : DisposableBase {
+    public abstract class UIThemeBase : DisposableBase, IStateful<UIPlayListBase> {
 
         // AudioSource
         protected AudioSource AudioSource { get; }
-        // Stateful
-        private Stateful<UIPlayListBase> Stateful { get; } = new Stateful<UIPlayListBase>();
         // PlayList
-        protected UIPlayListBase? PlayList {
-            get {
-                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                return Stateful.State;
-            }
-        }
+        UIPlayListBase? IStateful<UIPlayListBase>.State { get => PlayList; set => PlayList = value; }
+        protected UIPlayListBase? PlayList { get; private set; }
         // IsPlaying
         protected internal bool IsPlaying {
             get {
@@ -92,15 +86,18 @@ namespace UnityEngine.Framework.UI {
         }
 
         // SetPlayList
+        void IStateful<UIPlayListBase>.SetState(UIPlayListBase? state, object? argument) {
+            SetPlayList( state, argument );
+        }
         protected virtual void SetPlayList(UIPlayListBase? playList, object? argument = null) {
             if (playList != null) {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.State is StateBase.State_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Stateful.SetState( playList, argument );
+                IStateful<UIPlayListBase>.SetState( this, playList, argument );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Stateful.SetState( null, argument );
+                IStateful<UIPlayListBase>.SetState( this, null, argument );
                 Assert.Operation.Message( $"Theme {this} must be non-playing" ).Valid( !IsPlaying );
             }
         }
