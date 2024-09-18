@@ -44,6 +44,16 @@ namespace UnityEngine.Framework.UI {
             IsDisposed = true;
         }
 
+        // AddChild
+        protected override void AddChild(UIWidgetBase child, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            base.AddChild( child, argument );
+        }
+        protected override void RemoveChild(UIWidgetBase child, object? argument = null) {
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            base.RemoveChild( child, argument );
+        }
+
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase, IUIViewableWidget where TView : notnull, UIViewBase {
 
