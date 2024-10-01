@@ -38,17 +38,17 @@ namespace UnityEngine.Framework {
                 EditorGUILayout.Separator();
                 {
                     EditorGUILayout.LabelField( "Links", EditorStyles.boldLabel );
-                    if (EditorGUILayout.LinkButton( "github.com (Clean Architecture Game Framework)" )) Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework" );
-                    if (EditorGUILayout.LinkButton( "github.com (Clean Game Example)" )) Application.OpenURL( "https://github.com/Denis535/CleanGameExample" );
-                    EditorGUILayout.Space( 2f );
                     if (EditorGUILayout.LinkButton( "denis535.github.io" )) Application.OpenURL( "https://denis535.github.io" );
-                    if (EditorGUILayout.LinkButton( "youtube.com" )) Application.OpenURL( "https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg" );
+                    if (EditorGUILayout.LinkButton( "Unity Shooter Example" )) Application.OpenURL( "https://github.com/Denis535/UnityShooterExample" );
+                    if (EditorGUILayout.LinkButton( "Clean Architecture Game Framework" )) Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework" );
                     EditorGUILayout.Space( 2f );
-                    if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
-                    if (EditorGUILayout.LinkButton( "itch.io" )) Application.OpenURL( "https://denis535.itch.io/" );
+                    if (EditorGUILayout.LinkButton( "youtube.com" )) Application.OpenURL( "https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg" );
                     EditorGUILayout.Space( 2f );
                     if (EditorGUILayout.LinkButton( "nuget.org" )) Application.OpenURL( "https://www.nuget.org/profiles/Denis535" );
                     if (EditorGUILayout.LinkButton( "openupm.com" )) Application.OpenURL( "https://openupm.com/packages/?sort=downloads&q=denis535" );
+                    EditorGUILayout.Space( 2f );
+                    if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
+                    if (EditorGUILayout.LinkButton( "itch.io" )) Application.OpenURL( "https://denis535.itch.io/" );
                 }
                 EditorGUILayout.Separator();
                 {

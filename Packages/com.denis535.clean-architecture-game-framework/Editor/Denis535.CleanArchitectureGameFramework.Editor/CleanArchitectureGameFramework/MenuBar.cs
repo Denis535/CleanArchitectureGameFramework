@@ -12,7 +12,7 @@ namespace UnityEditor {
     using UnityEditorInternal;
     using UnityEngine;
 
-    public static class Toolbar {
+    public static class MenuBar {
 
         // TakeScreenshot
         [MenuItem( "Tools/Clean Architecture Game Framework/Take Screenshot (Game) _F12", priority = 0 )]
