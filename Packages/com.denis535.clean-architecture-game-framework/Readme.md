@@ -1,43 +1,41 @@
 # Overview
-This package provides you with the architecture game framework that helping you to develop your project following the best practices (like Domain Driven Design, Clean Architecture and Uber Ribs).
+This package provides you with a framework that helps you develop your projects following best practices.
 
 # Reference
-This package contains classes that define the entire architecture of your game project and some other utilities.
+This package contains a framework that define the architecture of your game project and some other useful utilities.
 
 ## Assemblies
-- CleanArchitectureGameFramework - the secondary module.
-- CleanArchitectureGameFramework.Core - the primary module.
-- CleanArchitectureGameFramework.Internal - the module with utilities and helpers.
+- CleanArchitectureGameFramework - the additional module.
+- CleanArchitectureGameFramework.Core - the main module.
+- CleanArchitectureGameFramework.Internal - the low-level module with different utilities and helpers.
 
 ## Namespaces
-- Framework - the root module.
+- Framework - the root.
     - Program              - the entry point.
-- Framework.UI - the user interface module.
+- Framework.UI - the user interface.
     - UITheme              - the audio theme.
+    - UIPlayList           - the audio playlist
     - UIScreen             - the graphics user interface. The user interface consists of the widget tree and the visual element tree.
-    - UIWidget             - the state unit of ui. This may contain (or not contain) the view.
+    - UIWidget             - the business unit of ui. This may contain (or not contain) the view.
     - UIView               - the visual unit of ui. This is just the VisualElement.
-    - UIRouter             - the state manager.
-- Framework.App - the application module.
+    - UIRouter             - the application manager.
+- Framework.App - the application.
     - Application          - the application.
-    - Storage              - the values provider.
-- Framework.Entities - the domain module.
+    - Storage              - the container of different values.
+- Framework.Entities - the domain.
     - Game                 - the game's states and rules.
     - Player               - the player's states.
-    - Entity               - the entity (any scene's actor).
+    - Entity               - the entity (any scene's object).
 
 # Media
 - [![YouTube](https://img.youtube.com/vi/WmLJHRg0EI4/0.jpg)](https://youtu.be/WmLJHRg0EI4?feature=shared)
 
 # Example
-- https://denis535.github.io/#clean-game-example
-
-# Article
-- https://habr.com/ru/articles/833532/
+- https://github.com/Denis535/UnityShooterExample
 
 # Links
 - https://denis535.github.io
-- https://github.com/Denis535/CleanGameExample/
+- https://github.com/Denis535/UnityShooterExample
 - https://github.com/Denis535/CleanArchitectureGameFramework/
 - https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
 - https://www.nuget.org/profiles/Denis535

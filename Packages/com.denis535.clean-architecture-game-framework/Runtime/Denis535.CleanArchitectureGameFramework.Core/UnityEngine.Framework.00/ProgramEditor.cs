@@ -33,7 +33,7 @@ namespace UnityEngine.Framework {
             using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
                 {
                     EditorGUILayout.LabelField( "Overview", EditorStyles.boldLabel );
-                    EditorGUILayout.LabelField( "This framework helping you to develop your project following the best practices." );
+                    EditorGUILayout.LabelField( "The \"Clean Architecture Game Framework\" package provides you with a framework that helps you develop your projects following best practices." );
                 }
                 EditorGUILayout.Separator();
                 {
