@@ -44,7 +44,7 @@ namespace UnityEditor {
         }
         [MenuItem( "Tools/Clean Architecture Game Framework/Open All (UI)", priority = 101 )]
         public static void OpenAll_UI() {
-            OpenAssetsReverse( "Assets/*(/UI/|/UI.*/)(*.cs)" );
+            OpenAssetsReverse( "Assets/(*/UI/|*/UI.*/)(*.cs)" );
         }
 
         // Helpers

@@ -39,8 +39,8 @@ namespace UnityEngine.Framework {
                 {
                     EditorGUILayout.LabelField( "Links", EditorStyles.boldLabel );
                     if (EditorGUILayout.LinkButton( "denis535.github.io" )) Application.OpenURL( "https://denis535.github.io" );
-                    if (EditorGUILayout.LinkButton( "Unity Shooter Example" )) Application.OpenURL( "https://github.com/Denis535/UnityShooterExample" );
-                    if (EditorGUILayout.LinkButton( "Clean Architecture Game Framework" )) Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework" );
+                    if (EditorGUILayout.LinkButton( "github.com (Unity Shooter Example)" )) Application.OpenURL( "https://github.com/Denis535/UnityShooterExample" );
+                    if (EditorGUILayout.LinkButton( "github.com (Clean Architecture Game Framework)" )) Application.OpenURL( "https://github.com/Denis535/CleanArchitectureGameFramework" );
                     EditorGUILayout.Space( 2f );
                     if (EditorGUILayout.LinkButton( "youtube.com" )) Application.OpenURL( "https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg" );
                     EditorGUILayout.Space( 2f );
