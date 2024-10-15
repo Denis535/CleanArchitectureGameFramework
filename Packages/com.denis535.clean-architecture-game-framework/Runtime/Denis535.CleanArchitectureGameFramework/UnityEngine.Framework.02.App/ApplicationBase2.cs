@@ -7,7 +7,7 @@ namespace UnityEngine.Framework.App {
 
     public abstract class ApplicationBase2 : ApplicationBase {
 
-        // Container
+        // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
