@@ -1,5 +1,5 @@
 # Overview
-This package is addition to Addressables giving you the ability to manage your assets in more convenient way.
+This package is an addition to Addressables and gives you the ability to manage your assets in a more convenient way.
 
 # Links
 - https://github.com/Denis535/CleanArchitectureGameFramework/

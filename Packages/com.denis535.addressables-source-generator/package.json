@@ -2,7 +2,7 @@
     "name": "com.denis535.addressables-source-generator",
     "displayName": "Addressables Source Generator",
     "version": "1.0.41",
-    "description": "This package is an add-on to Addressables and gives you the ability to reference assets in a very convenient way",
+    "description": "This package is an add-on to Addressables and gives you the ability to reference your assets and labels in a very convenient way with compile-time checking",
     "author": {
         "name": "Denis535",
         "url": "https://denis535.github.io"
