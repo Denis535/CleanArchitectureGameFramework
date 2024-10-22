@@ -12,25 +12,22 @@ namespace UnityEngine.AddressableAssets {
     public class AddressableSourceGenerator : ScriptableObject {
 
         // Directory
-        public string Directory => Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) );
+        private string Directory => Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) );
+        // Path
+        public string ResourcesPath => Path.Combine( Directory, ResourcesClassName + ".cs" );
+        public string LabelsPath => Path.Combine( Directory, LabelsClassName + ".cs" );
         // Namespace
-        public string Namespace => new DirectoryInfo( Directory ).Name;
-        // ClassName
+        public string ResourcesClassNamespace => new DirectoryInfo( Directory ).Name;
+        public string LabelsClassNamespace => new DirectoryInfo( Directory ).Name;
+        // Name
         public string ResourcesClassName => "R";
         public string LabelsClassName => "L";
 
         // Generate
         public void Generate() {
-            GenerateResourcesSource( Path.Combine( Directory, ResourcesClassName + ".cs" ), Namespace, ResourcesClassName );
-            GenerateLabelsSource( Path.Combine( Directory, LabelsClassName + ".cs" ), Namespace, LabelsClassName );
-        }
-        private static void GenerateResourcesSource(string path, string @namespace, string name) {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            new AddressableResourcesSourceGenerator().Generate( settings, path, @namespace, name );
-        }
-        private static void GenerateLabelsSource(string path, string @namespace, string name) {
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
-            new AddressableLabelsSourceGenerator().Generate( settings, path, @namespace, name );
+            new AddressableResourcesSourceGenerator().Generate( settings, ResourcesPath, ResourcesClassNamespace, ResourcesClassName );
+            new AddressableLabelsSourceGenerator().Generate( settings, LabelsPath, LabelsClassNamespace, LabelsClassName );
         }
 
     }

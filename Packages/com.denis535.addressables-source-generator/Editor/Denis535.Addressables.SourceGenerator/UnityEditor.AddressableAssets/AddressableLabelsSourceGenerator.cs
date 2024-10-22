@@ -13,13 +13,13 @@ namespace UnityEditor.AddressableAssets {
     public class AddressableLabelsSourceGenerator {
 
         // Generate
-        public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string name) {
+        public virtual void Generate(AddressableAssetSettings settings, string path, string @namespace, string @class) {
             var treeList = GetTreeList( settings.GetLabels().Where( IsSupported ) );
-            Generate( path, @namespace, name, treeList );
+            Generate( path, @namespace, @class, treeList );
         }
-        public virtual void Generate(string path, string @namespace, string name, KeyValueTreeList<string> treeList) {
+        public virtual void Generate(string path, string @namespace, string @class, KeyValueTreeList<string> treeList) {
             var builder = new StringBuilder();
-            builder.AppendCompilationUnit( @namespace, name, treeList );
+            builder.AppendCompilationUnit( @namespace, @class, treeList );
             WriteText( path, builder.ToString() );
         }
 

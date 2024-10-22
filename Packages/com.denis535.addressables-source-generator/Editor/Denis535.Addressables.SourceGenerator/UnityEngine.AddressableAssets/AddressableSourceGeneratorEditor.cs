@@ -20,8 +20,10 @@ namespace UnityEngine.AddressableAssets {
 
         // OnInspectorGUI
         public override void OnInspectorGUI() {
-            LabelField( "Namespace", Target.Namespace );
+            LabelField( "Resources Class Namespace", Target.ResourcesClassNamespace );
             LabelField( "Resources Class Name", Target.ResourcesClassName );
+            EditorGUILayout.Separator();
+            LabelField( "Labels Class Namespace", Target.LabelsClassNamespace );
             LabelField( "Labels Class Name", Target.LabelsClassName );
             EditorGUILayout.Separator();
             if (GUILayout.Button( "Generate" )) {
@@ -33,7 +35,7 @@ namespace UnityEngine.AddressableAssets {
         private static void LabelField(string label, string? text) {
             using (new EditorGUILayout.HorizontalScope()) {
                 EditorGUILayout.PrefixLabel( label );
-                EditorGUI.SelectableLabel( GUILayoutUtility.GetRect( new GUIContent( text ), UnityEngine.GUI.skin.textField ), text, UnityEngine.GUI.skin.textField );
+                EditorGUI.SelectableLabel( GUILayoutUtility.GetRect( new GUIContent( text ), GUI.skin.textField ), text, GUI.skin.textField );
             }
         }
 

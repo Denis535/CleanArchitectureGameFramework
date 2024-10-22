@@ -11,15 +11,15 @@ namespace UnityEditor.AddressableAssets {
     internal static class AddressableSourceGeneratorHelper {
 
         // AppendCompilationUnit
-        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string name, KeyValueTreeList<AddressableAssetEntry> treeList) {
+        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<AddressableAssetEntry> treeList) {
             builder.AppendLine( $"namespace {@namespace} {{" );
             {
-                builder.AppendClass( 1, name, treeList.Items.ToArray() );
+                builder.AppendClass( 1, @class, treeList.Items.ToArray() );
             }
             builder.AppendLine( "}" );
         }
         private static void AppendClass(this StringBuilder builder, int indent, string name, KeyValueTreeList<AddressableAssetEntry>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassName( name )} {{" );
+            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassIdentifier( name )} {{" );
             foreach (var item in Sort( items )) {
                 if (item is KeyValueTreeList<AddressableAssetEntry>.ValueItem value) {
                     builder.AppendConst( indent + 1, value.Key, value.Value );
@@ -34,19 +34,19 @@ namespace UnityEditor.AddressableAssets {
             if (value.IsFolder) {
                 throw new NotSupportedException( $"Entry {value} is not supported" );
             }
-            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstName( name )} = \"{value.address}\";" );
+            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstIdentifier( name )} = \"{value.address}\";" );
         }
 
         // AppendCompilationUnit
-        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string name, KeyValueTreeList<string> treeList) {
+        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<string> treeList) {
             builder.AppendLine( $"namespace {@namespace} {{" );
             {
-                builder.AppendClass( 1, name, treeList.Items.ToArray() );
+                builder.AppendClass( 1, @class, treeList.Items.ToArray() );
             }
             builder.AppendLine( "}" );
         }
         private static void AppendClass(this StringBuilder builder, int indent, string name, KeyValueTreeList<string>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassName( name )} {{" );
+            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassIdentifier( name )} {{" );
             foreach (var item in items) {
                 if (item is KeyValueTreeList<string>.ValueItem value) {
                     builder.AppendConst( indent + 1, value.Key, value.Value );
@@ -58,7 +58,7 @@ namespace UnityEditor.AddressableAssets {
             builder.AppendIndent( indent ).AppendLine( "}" );
         }
         private static void AppendConst(this StringBuilder builder, int indent, string name, string value) {
-            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstName( name )} = \"{value}\";" );
+            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstIdentifier( name )} = \"{value}\";" );
         }
 
         // Helpers
@@ -69,13 +69,13 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "UnityEngine" ) )
                 .ThenByDescending( i => i.Key.Equals( "UnityEditor" ) )
 
-                .ThenByDescending( i => i.Key.Equals( "EditorSceneList" ) )
                 .ThenByDescending( i => i.Key.Equals( "Resources" ) )
+                .ThenByDescending( i => i.Key.Equals( "EditorSceneList" ) )
 
                 .ThenByDescending( i => i.Key.Equals( "Project" ) )
                 .ThenByDescending( i => i.Key.Equals( "Presentation" ) )
+                .ThenByDescending( i => i.Key.Equals( "UserInterface" ) )
                 .ThenByDescending( i => i.Key.Equals( "UI" ) )
-                .ThenByDescending( i => i.Key.Equals( "GUI" ) )
                 .ThenByDescending( i => i.Key.Equals( "Application" ) )
                 .ThenByDescending( i => i.Key.Equals( "App" ) )
                 .ThenByDescending( i => i.Key.Equals( "Domain" ) )
@@ -109,13 +109,15 @@ namespace UnityEditor.AddressableAssets {
                 .ThenByDescending( i => i.Key.Equals( "Common" ) )
                 .ThenBy( i => i.Key );
         }
-        private static string GetClassName(string key) {
+
+        // Helpers
+        private static string GetClassIdentifier(string key) {
             key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             key = key.TrimEnd( ' ', '-', '_' );
             return key;
         }
-        private static string GetConstName(string key) {
+        private static string GetConstIdentifier(string key) {
             key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             key = key.TrimEnd( ' ', '-', '_' );
