@@ -22,7 +22,9 @@ namespace System {
         // State
         public State_ State { get; private set; } = State_.Inactive;
         // Owner
-        public IStateful<T>? Owner { get; private set; }
+        private IStateful<T>? Owner { get; set; }
+        // Stateful
+        public IStateful<T>? Stateful => Owner;
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
         public event Action<object?>? OnAfterActivateEvent;

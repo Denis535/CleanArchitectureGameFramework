@@ -23,7 +23,7 @@ namespace UnityEngine.Framework.UI {
             }
         }
         // Screen
-        public UIScreenBase? Screen => (UIScreenBase?) Tree;
+        protected UIScreenBase? Screen => (UIScreenBase?) Tree;
         // View
         [MemberNotNullWhen( true, "View" )] public bool IsViewable => this is IUIViewableWidget;
         protected internal UIViewBase? View => (this as IUIViewableWidget)?.View;
