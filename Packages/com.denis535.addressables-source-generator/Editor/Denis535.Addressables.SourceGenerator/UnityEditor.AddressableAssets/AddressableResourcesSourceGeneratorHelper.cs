@@ -8,7 +8,7 @@ namespace UnityEditor.AddressableAssets {
     using UnityEditor.AddressableAssets.Settings;
     using UnityEngine;
 
-    internal static class AddressableSourceGeneratorHelper {
+    internal static class AddressableResourcesSourceGeneratorHelper {
 
         // AppendCompilationUnit
         public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<AddressableAssetEntry> treeList) {
@@ -35,30 +35,6 @@ namespace UnityEditor.AddressableAssets {
                 throw new NotSupportedException( $"Entry {value} is not supported" );
             }
             builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstIdentifier( name )} = \"{value.address}\";" );
-        }
-
-        // AppendCompilationUnit
-        public static void AppendCompilationUnit(this StringBuilder builder, string @namespace, string @class, KeyValueTreeList<string> treeList) {
-            builder.AppendLine( $"namespace {@namespace} {{" );
-            {
-                builder.AppendClass( 1, @class, treeList.Items.ToArray() );
-            }
-            builder.AppendLine( "}" );
-        }
-        private static void AppendClass(this StringBuilder builder, int indent, string name, KeyValueTreeList<string>.Item[] items) {
-            builder.AppendIndent( indent ).AppendLine( $"public static class @{GetClassIdentifier( name )} {{" );
-            foreach (var item in items) {
-                if (item is KeyValueTreeList<string>.ValueItem value) {
-                    builder.AppendConst( indent + 1, value.Key, value.Value );
-                } else
-                if (item is KeyValueTreeList<string>.ListItem list) {
-                    builder.AppendClass( indent + 1, list.Key, list.Items.ToArray() );
-                }
-            }
-            builder.AppendIndent( indent ).AppendLine( "}" );
-        }
-        private static void AppendConst(this StringBuilder builder, int indent, string name, string value) {
-            builder.AppendIndent( indent ).AppendLine( $"public const string @{GetConstIdentifier( name )} = \"{value}\";" );
         }
 
         // Helpers
@@ -111,13 +87,13 @@ namespace UnityEditor.AddressableAssets {
         }
 
         // Helpers
-        private static string GetClassIdentifier(string key) {
+        internal static string GetClassIdentifier(string key) {
             key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             key = key.TrimEnd( ' ', '-', '_' );
             return key;
         }
-        private static string GetConstIdentifier(string key) {
+        internal static string GetConstIdentifier(string key) {
             key = key.Replace( ' ', '_' ).Replace( '-', '_' ).Replace( '@', '_' );
             key = key.TrimStart( ' ', '-', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
             key = key.TrimEnd( ' ', '-', '_' );
