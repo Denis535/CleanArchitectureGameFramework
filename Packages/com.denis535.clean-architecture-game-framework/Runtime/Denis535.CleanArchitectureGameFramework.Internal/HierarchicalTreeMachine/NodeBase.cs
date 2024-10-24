@@ -69,6 +69,9 @@ namespace System {
         // Constructor
         public NodeBase() {
         }
+        protected virtual void DisposeWhenDeactivate() {
+            (this as IDisposable)?.Dispose();
+        }
 
         // Activate
         internal void Activate(ITree<T> owner, object? argument) {
@@ -148,6 +151,7 @@ namespace System {
                 ancestor.OnAfterDescendantDeactivate( (T) this, argument );
                 ancestor.OnAfterDescendantDeactivateEvent?.Invoke( (T) this, argument );
             }
+            DisposeWhenDeactivate();
         }
 
         // OnActivate

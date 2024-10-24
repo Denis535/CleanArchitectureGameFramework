@@ -34,6 +34,9 @@ namespace System {
         // Constructor
         public StateBase() {
         }
+        protected virtual void DisposeWhenDeactivate() {
+            (this as IDisposable)?.Dispose();
+        }
 
         // Activate
         internal void Activate(IStateful<T> owner, object? argument) {
@@ -70,6 +73,7 @@ namespace System {
             }
             OnAfterDeactivate( argument );
             OnAfterDeactivateEvent?.Invoke( argument );
+            DisposeWhenDeactivate();
         }
 
         // OnActivate

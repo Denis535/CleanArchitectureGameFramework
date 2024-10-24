@@ -18,17 +18,6 @@ namespace UnityEngine.Framework.UI {
             base.Dispose();
         }
 
-        // OnActivate
-        protected override void OnBeforeActivate(object? argument) {
-        }
-        protected override void OnAfterActivate(object? argument) {
-        }
-        protected override void OnBeforeDeactivate(object? argument) {
-        }
-        protected override void OnAfterDeactivate(object? argument) {
-            Dispose();
-        }
-
     }
     public abstract class UIWidgetBase2<TView> : UIWidgetBase<TView> where TView : notnull, UIViewBase {
 
@@ -41,17 +30,6 @@ namespace UnityEngine.Framework.UI {
         }
         public override void Dispose() {
             base.Dispose();
-        }
-
-        // OnActivate
-        protected override void OnBeforeActivate(object? argument) {
-        }
-        protected override void OnAfterActivate(object? argument) {
-        }
-        protected override void OnBeforeDeactivate(object? argument) {
-        }
-        protected override void OnAfterDeactivate(object? argument) {
-            Dispose();
         }
 
     }
