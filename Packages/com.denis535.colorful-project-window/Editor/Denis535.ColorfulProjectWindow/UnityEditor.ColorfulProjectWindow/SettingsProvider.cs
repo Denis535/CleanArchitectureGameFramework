@@ -12,14 +12,14 @@ namespace UnityEditor.ColorfulProjectWindow {
         // Settings
         private Settings Settings => Settings.Instance;
 
-        // Constructor
-        public SettingsProvider() : base( "Preferences/Colorful Project Window", SettingsScope.User, new[] { "Colorful Project Window" } ) {
-        }
-
         // GetSettingsProvider
         [SettingsProvider]
         public static UnityEditor.SettingsProvider? GetSettingsProvider() {
             return new SettingsProvider();
+        }
+
+        // Constructor
+        public SettingsProvider() : base( "Preferences/Colorful Project Window", SettingsScope.User, new[] { "Colorful Project Window" } ) {
         }
 
         // OnActivate

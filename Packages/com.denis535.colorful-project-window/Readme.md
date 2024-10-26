@@ -1,14 +1,7 @@
 # Overview
-This package makes the project window much more convenient. This highlights the special folders (packages, assemblies, content) in different colors, thus making the project window easier to use and greatly reducing cognitive load.
-
-# How it works
-It identifies special folders according to the following rules:
-- Package folder is folder containing 'package.json' file.
-- Assembly folder is folder containing '*.asmdef' or '*.asmref' file.
-- Content folder is any folder within assembly folder.
-- Assets folder is content folder starting with 'Assets.*' prefix.
-- Resources folder is content folder starting with 'Resources.*' prefix.
-- Source folder is just any other content folder.
+The package provides you with a more convenient project window, which highlights the most important files and folders in special colors.
+This highlights packages, assemblies, assets, resources and sources in their appropriate colors.
+Thus, this makes working with the project window much more convenient and faster.
 
 # How to use it
 ```
@@ -30,7 +23,7 @@ public class ProjectWindow2 : ProjectWindow {
 ```
 
 # Setup
-You can setup the colors in the 'Preferences/Colorful Project Window' window.
+You can set up the colors in the 'Preferences/Colorful Project Window' window.
 
 # Media
 - ![1](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/e825a503-0649-474d-8f4e-2f770dc1fb5a)
@@ -38,12 +31,11 @@ You can setup the colors in the 'Preferences/Colorful Project Window' window.
 - ![3](https://github.com/Denis535/CleanArchitectureGameFramework/assets/7755015/e3a77f0e-1c00-4382-b9df-bd3313dfc305)
 
 # Links
-- https://github.com/denis535/CleanGameExample
 - https://denis535.github.io
 - https://www.nuget.org/profiles/Denis535
 - https://openupm.com/packages/?sort=downloads&q=denis535
 - https://assetstore.unity.com/publishers/90787
-- https://denis535.itch.io/
+- https://www.fab.com/sellers/Denis535
 - https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
 
 # If you want to support me

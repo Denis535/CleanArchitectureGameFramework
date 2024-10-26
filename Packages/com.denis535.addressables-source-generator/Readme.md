@@ -58,14 +58,10 @@ namespace UnityEngine.AddressableAssets {
 
 # Links
 - https://denis535.github.io
-- https://github.com/Denis535/UnityFramework/
-
 - https://www.nuget.org/profiles/Denis535
 - https://openupm.com/packages/?sort=downloads&q=denis535
-
 - https://assetstore.unity.com/publishers/90787
-- https://denis535.itch.io/
-
+- https://www.fab.com/sellers/Denis535
 - https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg
 
 # If you want to support me

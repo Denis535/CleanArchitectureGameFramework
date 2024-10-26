@@ -12,12 +12,12 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public class ProjectWindow : ProjectWindowBase {
 
+        // Settings
+        private Settings Settings => Settings.Instance;
         // PackagePaths
         protected string[] PackagePaths { get; }
         // AssemblyPaths
         protected string[] AssemblyPaths { get; }
-        // Settings
-        private Settings Settings => Settings.Instance;
 
         // Constructor
         public ProjectWindow() {
@@ -44,36 +44,10 @@ namespace UnityEditor.ColorfulProjectWindow {
             base.Dispose();
         }
 
-        // OnGUI
-        protected override void OnGUI(Rect rect, string path) {
-            base.OnGUI( rect, path );
+        // DrawElement
+        protected override void DrawElement(Rect rect, string path) {
+            base.DrawElement( rect, path );
         }
-
-        // IsPackage
-        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
-            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (packagePath != null) {
-                package = Path.GetFileName( packagePath );
-                content = path.Substring( packagePath.Length ).TrimStart( '/' );
-                return true;
-            }
-            package = null;
-            content = null;
-            return false;
-        }
-        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
-            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (assemblyPath != null) {
-                assembly = Path.GetFileName( assemblyPath );
-                content = path.Substring( assemblyPath.Length ).TrimStart( '/' );
-                return true;
-            }
-            assembly = null;
-            content = null;
-            return false;
-        }
-
-        // DrawPackage
         protected override void DrawPackage(Rect rect, string path, string package, string content) {
             if (content == string.Empty) {
                 DrawItem( rect, Settings.PackageColor, 0 );
@@ -83,7 +57,7 @@ namespace UnityEditor.ColorfulProjectWindow {
             if (content == string.Empty) {
                 DrawItem( rect, Settings.AssemblyColor, 0 );
             } else {
-                if (IsContent( path, assembly, content )) {
+                if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
                     var depth = content.Count( i => i == '/' );
                     if (IsAssets( path, assembly, content )) {
                         DrawItem( rect, Settings.AssetsColor, depth );
@@ -96,17 +70,40 @@ namespace UnityEditor.ColorfulProjectWindow {
             }
         }
 
-        // Heleprs
-        protected static bool IsContent(string path, string assembly, string content) {
-            return AssetDatabase.IsValidFolder( path ) || content.Contains( '/' );
+        // IsPackage
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
+            // Assets/Packages/[Package]
+            // Assets/Packages/[Package]/[Content]
+            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (packagePath != null) {
+                package = Path.GetFileName( packagePath );
+                content = path.Substring( packagePath.Length ).TrimStart( '/' );
+                return true;
+            }
+            package = null;
+            content = null;
+            return false;
         }
-        protected static bool IsAssets(string path, string assembly, string content) {
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
+            // Assets/Assemblies/[Assembly]
+            // Assets/Assemblies/[Assembly]/[Content]
+            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (assemblyPath != null) {
+                assembly = Path.GetFileName( assemblyPath );
+                content = path.Substring( assemblyPath.Length ).TrimStart( '/' );
+                return true;
+            }
+            assembly = null;
+            content = null;
+            return false;
+        }
+        protected virtual bool IsAssets(string path, string assembly, string content) {
             return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
         }
-        protected static bool IsResources(string path, string assembly, string content) {
+        protected virtual bool IsResources(string path, string assembly, string content) {
             return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
-        protected static bool IsSources(string path, string assembly, string content) {
+        protected virtual bool IsSources(string path, string assembly, string content) {
             return true;
         }
 
