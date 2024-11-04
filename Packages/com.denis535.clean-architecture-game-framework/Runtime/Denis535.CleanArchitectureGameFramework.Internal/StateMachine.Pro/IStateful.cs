@@ -16,9 +16,6 @@ namespace System {
 
         // Helpers
         protected static void SetState(IStateful<T> stateful, T? state, object? argument) {
-            if (state != null) {
-                Assert.Argument.Message( $"Argument 'state' ({state}) must be valid" ).Valid( state != stateful.State );
-            }
             if (stateful.State != null) {
                 stateful.State.Deactivate( stateful, argument );
                 stateful.State = null;
