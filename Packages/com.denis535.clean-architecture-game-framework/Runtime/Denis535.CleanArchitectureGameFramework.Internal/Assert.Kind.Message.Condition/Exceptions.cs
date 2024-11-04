@@ -6,66 +6,67 @@ namespace System {
     using System.Linq;
 
     public static partial class Exceptions {
-
-        public static Func<FormattableString?, string?> GetMessageStringDelegate = GetMessageString;
-        public static Func<object?, string> GetArgumentStringDelegate = GetArgumentString;
-        public static Func<Type, string?, Exception> GetExceptionDelegate = GetException;
-
-        // GetException
-        public static T GetException<T>(FormattableString? message) where T : notnull, Exception {
-            var message2 = GetMessageStringDelegate( message );
-            return (T) GetExceptionDelegate( typeof( T ), message2 );
-        }
-
-        // Helpers
-        private static string? GetMessageString(this FormattableString? message) {
-            if (message != null) {
-                var format = message.Format.Replace( "{", "'{" ).Replace( "}", "}'" );
-                var arguments = message.GetArguments();
-                for (var i = 0; i < arguments.Length; i++) {
-                    arguments[ i ] = GetArgumentStringDelegate( arguments[ i ] );
-                }
-                return string.Format( format, arguments );
-            }
-            return null;
-        }
-        private static string GetArgumentString(object? argument) {
-            if (argument is ICollection collection) {
-                return string.Join( ", ", collection.Cast<object?>().Select( GetArgumentString ) );
-            }
-            if (argument is IList list) {
-                return string.Join( ", ", list.Cast<object?>().Select( GetArgumentString ) );
-            }
-            if (argument is not null) {
-                return argument.ToString();
-            }
-            return "Null";
-        }
-        private static Exception GetException(Type type, string? message) {
-            var constructor = type.GetConstructor( new Type[] { typeof( string ), typeof( Exception ) } );
-            return (Exception) constructor.Invoke( new object?[] { message, null } );
-        }
-
-    }
-    public static partial class Exceptions {
-        // Argument
-        public static class Argument {
-            public static ArgumentException ArgumentException(FormattableString? message) => GetException<ArgumentException>( message );
-            public static ArgumentNullException ArgumentNullException(FormattableString? message) => GetException<ArgumentNullException>( message );
-            public static ArgumentOutOfRangeException ArgumentOutOfRangeException(FormattableString? message) => GetException<ArgumentOutOfRangeException>( message );
-        }
         // Operation
         public static class Operation {
-            public static InvalidOperationException InvalidOperationException(FormattableString? message) => GetException<InvalidOperationException>( message );
-            public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => GetException<ObjectNotReadyException>( message );
-            public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => GetException<ObjectDisposedException>( message );
+            public static InvalidOperationException InvalidOperationException(FormattableString? message) => Factory.GetException<InvalidOperationException>( message );
+            public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => Factory.GetException<ObjectNotReadyException>( message );
+            public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => Factory.GetException<ObjectDisposedException>( message );
+        }
+        // Argument
+        public static class Argument {
+            public static ArgumentException ArgumentException(FormattableString? message) => Factory.GetException<ArgumentException>( message );
+            public static ArgumentNullException ArgumentNullException(FormattableString? message) => Factory.GetException<ArgumentNullException>( message );
+            public static ArgumentOutOfRangeException ArgumentOutOfRangeException(FormattableString? message) => Factory.GetException<ArgumentOutOfRangeException>( message );
         }
         // Internal
         public static class Internal {
-            public static Exception Exception(FormattableString? message) => GetException<Exception>( message );
-            public static NullReferenceException NullReference(FormattableString? message) => GetException<NullReferenceException>( message );
-            public static NotSupportedException NotSupported(FormattableString? message) => GetException<NotSupportedException>( message );
-            public static NotImplementedException NotImplemented(FormattableString? message) => GetException<NotImplementedException>( message );
+            public static Exception Exception(FormattableString? message) => Factory.GetException<Exception>( message );
+            public static NullReferenceException NullReference(FormattableString? message) => Factory.GetException<NullReferenceException>( message );
+            public static NotSupportedException NotSupported(FormattableString? message) => Factory.GetException<NotSupportedException>( message );
+            public static NotImplementedException NotImplemented(FormattableString? message) => Factory.GetException<NotImplementedException>( message );
+        }
+        // Factory
+        public static class Factory {
+
+            public static Func<FormattableString?, string?> GetMessageStringDelegate = GetMessageString;
+            public static Func<object?, string> GetArgumentStringDelegate = GetArgumentString;
+            public static Func<Type, string?, Exception> GetExceptionDelegate = GetException;
+
+            // GetException
+            public static T GetException<T>(FormattableString? message) where T : Exception {
+                var message2 = GetMessageStringDelegate( message );
+                return (T) GetExceptionDelegate( typeof( T ), message2 );
+            }
+
+            // Helpers
+            private static string? GetMessageString(FormattableString? message) {
+                if (message != null) {
+                    var format = message.Format.Replace( "{", "'{" ).Replace( "}", "}'" );
+                    var arguments = message.GetArguments();
+                    for (var i = 0; i < arguments.Length; i++) {
+                        arguments[ i ] = GetArgumentStringDelegate( arguments[ i ] );
+                    }
+                    return string.Format( format, arguments );
+                }
+                return null;
+            }
+            private static string GetArgumentString(object? argument) {
+                if (argument is ICollection collection) {
+                    return string.Join( ", ", collection.Cast<object?>().Select( GetArgumentString ) );
+                }
+                if (argument is IList list) {
+                    return string.Join( ", ", list.Cast<object?>().Select( GetArgumentString ) );
+                }
+                if (argument is not null) {
+                    return argument.ToString();
+                }
+                return "Null";
+            }
+            private static Exception GetException(Type type, string? message) {
+                var constructor = type.GetConstructor( new Type?[] { typeof( string ), typeof( Exception ) } );
+                return (Exception) constructor.Invoke( new object?[] { message, null } );
+            }
+
         }
     }
     // ObjectNotReadyException

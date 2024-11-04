@@ -15,8 +15,14 @@ public class ProjectWindow2 : ProjectWindow {
     public ProjectWindow2() {
     }
 
-    protected override void OnGUI(Rect rect, string path) {
-        base.OnGUI( rect, path );
+    protected override void DrawElement(Rect rect, string path) {
+        base.DrawElement( rect, path );
+    }
+    protected override void DrawPackage(Rect rect, string path) {
+        base.DrawPackage( rect, path );
+    }
+    protected override void DrawAssembly(Rect rect, string path) {
+        base.DrawAssembly( rect, path );
     }
 
 }
