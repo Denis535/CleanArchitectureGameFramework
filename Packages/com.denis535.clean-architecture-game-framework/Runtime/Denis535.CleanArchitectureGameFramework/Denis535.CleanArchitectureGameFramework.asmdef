@@ -1,5 +1,5 @@
 {
-    "name": "Denis535.CleanArchitectureGameFramework.Core",
+    "name": "Denis535.CleanArchitectureGameFramework",
     "rootNamespace": "UnityEngine",
     "references": [
         "GUID:b3fe3ef184551854c9825e624a617826"
