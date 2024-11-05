@@ -2,28 +2,20 @@
 This package is an add-on to Addressables and gives you the ability to reference your assets and labels in a very convenient way with compile-time checking.
 
 # How to generate source codes
-You should create an "AddressablesSourceGenerator" asset.
-And then call the "Generate" method of this asset.
+You can use an `AddressablesSourceGenerator` asset.
 ```
 var generator = AssetDatabase.LoadAssetAtPath<AddressableSourceGenerator>( AssetDatabase.GUIDToAssetPath( AssetDatabase.FindAssets( "t:AddressableSourceGenerator" ).Single() ) );
 generator.Generate();
 ```
-Or you can create an "ResourcesSourceGenerator" and "LabelsSourceGenerator" objects.
-And then call the "Generate" method of this objects.
+Or you can use an `ResourcesSourceGenerator` and `LabelsSourceGenerator` classes.
 ```
 var settings = AddressableAssetSettingsDefaultObject.Settings;
-new ResourcesSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R" );
-new LabelsSourceGenerator().Generate( settings, "Assets/UnityEngine.AddressableAssets/L.cs", "UnityEngine.AddressableAssets", "L" );
-```
-
-# How to use generated source codes
-You can reference your assets and labels very easily:
-```
-var address = R.MyProject.Scenes.MainScene;
-var label = L.Scene;
+new ResourcesSourceGenerator().Generate( "Assets/UnityEngine.AddressableAssets/R.cs", "UnityEngine.AddressableAssets", "R", settings );
+new LabelsSourceGenerator().Generate( "Assets/UnityEngine.AddressableAssets/L.cs", "UnityEngine.AddressableAssets", "L", settings );
 ```
 
 # Example of generated source codes
+It generates source codes that looks something like this:
 ```
 namespace UnityEngine.AddressableAssets {
     public static class @R {
@@ -41,15 +33,22 @@ namespace UnityEngine.AddressableAssets {
 }
 ```
 
+# How to use generated source codes
+You can use your assets very easily:
+```
+var address = R.MyProject.Scenes.MainScene;
+var label = L.Scene;
+```
+
 # Reference
 ###### AddressablesSourceGenerator
 - ``void Generate()``
 
-###### AddressablesResourcesSourceGenerator
-- ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string class)``
+###### ResourcesSourceGenerator
+- ``void Generate(string path, string @namespace, string class, AddressableAssetSettings settings)``
 
-###### AddressablesLabelsSourceGenerator
-- ``void Generate(AddressableAssetSettings settings, string path, string @namespace, string class)``
+###### LabelsSourceGenerator
+- ``void Generate(string path, string @namespace, string class, AddressableAssetSettings settings)``
 
 # Media
 - ![1](https://github.com/Denis535/UnityFramework/assets/7755015/a0cf834c-30cb-450b-bbc8-e3f5659b1950)

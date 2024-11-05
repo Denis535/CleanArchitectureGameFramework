@@ -26,8 +26,8 @@ namespace UnityEngine.AddressableAssets {
         // Generate
         public void Generate() {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            new AddressableResourcesSourceGenerator().Generate( settings, ResourcesPath, ResourcesClassNamespace, ResourcesClassName );
-            new AddressableLabelsSourceGenerator().Generate( settings, LabelsPath, LabelsClassNamespace, LabelsClassName );
+            new ResourcesSourceGenerator().Generate( ResourcesPath, ResourcesClassNamespace, ResourcesClassName, settings );
+            new LabelsSourceGenerator().Generate( LabelsPath, LabelsClassNamespace, LabelsClassName, settings );
         }
 
     }
