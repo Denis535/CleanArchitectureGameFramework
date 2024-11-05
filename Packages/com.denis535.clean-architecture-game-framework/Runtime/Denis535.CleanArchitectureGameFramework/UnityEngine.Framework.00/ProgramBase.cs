@@ -8,7 +8,7 @@ namespace UnityEngine.Framework {
     using UnityEditor;
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Game.Entities;
+    using UnityEngine.Framework.Game_.Entities;
     using UnityEngine.UIElements;
 
     public abstract partial class ProgramBase : MonoBehaviour {
