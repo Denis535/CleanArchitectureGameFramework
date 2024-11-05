@@ -6,17 +6,17 @@ namespace System {
     using System.Linq;
 
     public static partial class Exceptions {
-        // Operation
-        public static class Operation {
-            public static InvalidOperationException InvalidOperationException(FormattableString? message) => Factory.GetException<InvalidOperationException>( message );
-            public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => Factory.GetException<ObjectNotReadyException>( message );
-            public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => Factory.GetException<ObjectDisposedException>( message );
-        }
         // Argument
         public static class Argument {
             public static ArgumentException ArgumentException(FormattableString? message) => Factory.GetException<ArgumentException>( message );
             public static ArgumentNullException ArgumentNullException(FormattableString? message) => Factory.GetException<ArgumentNullException>( message );
             public static ArgumentOutOfRangeException ArgumentOutOfRangeException(FormattableString? message) => Factory.GetException<ArgumentOutOfRangeException>( message );
+        }
+        // Operation
+        public static class Operation {
+            public static InvalidOperationException InvalidOperationException(FormattableString? message) => Factory.GetException<InvalidOperationException>( message );
+            public static ObjectNotReadyException ObjectNotReadyException(FormattableString? message) => Factory.GetException<ObjectNotReadyException>( message );
+            public static ObjectDisposedException ObjectDisposedException(FormattableString? message) => Factory.GetException<ObjectDisposedException>( message );
         }
         // Internal
         public static class Internal {

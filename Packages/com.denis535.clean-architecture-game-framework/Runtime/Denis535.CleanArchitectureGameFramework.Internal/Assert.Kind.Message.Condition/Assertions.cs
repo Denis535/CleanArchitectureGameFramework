@@ -11,35 +11,6 @@ namespace System {
         private interface IAssertion {
             FormattableString? Message { get; }
         }
-        // Operation
-        public readonly struct Operation : IAssertion {
-
-            public FormattableString? Message { get; }
-
-            public Operation(FormattableString? message) {
-                Message = message;
-            }
-
-            [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void Valid([DoesNotReturnIf( false )] bool isValid) {
-                if (!isValid) throw Exceptions.Factory.GetException<InvalidOperationException>( Message );
-            }
-
-            [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void Ready([DoesNotReturnIf( false )] bool isValid) {
-                if (!isValid) throw Exceptions.Factory.GetException<ObjectNotReadyException>( Message );
-            }
-
-            [MethodImpl( MethodImplOptions.AggressiveInlining )]
-            public void NotDisposed([DoesNotReturnIf( false )] bool isValid) {
-                if (!isValid) throw Exceptions.Factory.GetException<ObjectDisposedException>( Message );
-            }
-
-            public override string? ToString() {
-                return Exceptions.Factory.GetMessageStringDelegate( Message );
-            }
-
-        }
         // Argument
         public readonly struct Argument : IAssertion {
 
@@ -62,6 +33,35 @@ namespace System {
             [MethodImpl( MethodImplOptions.AggressiveInlining )]
             public void InRange([DoesNotReturnIf( false )] bool isValid) {
                 if (!isValid) throw Exceptions.Factory.GetException<ArgumentOutOfRangeException>( Message );
+            }
+
+            public override string? ToString() {
+                return Exceptions.Factory.GetMessageStringDelegate( Message );
+            }
+
+        }
+        // Operation
+        public readonly struct Operation : IAssertion {
+
+            public FormattableString? Message { get; }
+
+            public Operation(FormattableString? message) {
+                Message = message;
+            }
+
+            [MethodImpl( MethodImplOptions.AggressiveInlining )]
+            public void Valid([DoesNotReturnIf( false )] bool isValid) {
+                if (!isValid) throw Exceptions.Factory.GetException<InvalidOperationException>( Message );
+            }
+
+            [MethodImpl( MethodImplOptions.AggressiveInlining )]
+            public void Ready([DoesNotReturnIf( false )] bool isValid) {
+                if (!isValid) throw Exceptions.Factory.GetException<ObjectNotReadyException>( Message );
+            }
+
+            [MethodImpl( MethodImplOptions.AggressiveInlining )]
+            public void NotDisposed([DoesNotReturnIf( false )] bool isValid) {
+                if (!isValid) throw Exceptions.Factory.GetException<ObjectDisposedException>( Message );
             }
 
             public override string? ToString() {
