@@ -43,6 +43,9 @@ namespace UnityEngine.Framework {
         protected internal override void OnInspectorGUI() {
             OnInspectorGUI( Theme, Screen, Router, Application, Game );
         }
+        protected override void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
+            base.OnInspectorGUI( theme, screen, router, application, game );
+        }
 #endif
 
     }
