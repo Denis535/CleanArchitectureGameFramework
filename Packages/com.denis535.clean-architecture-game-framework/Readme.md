@@ -2,31 +2,37 @@
 This package provides you with a framework that helps you develop your projects following best practices.
 
 # Reference
-This package contains a framework that define the architecture of your game project and some other useful utilities.
-
 ## Assemblies
-- CleanArchitectureGameFramework - the additional module.
-- CleanArchitectureGameFramework.Core - the main module.
+The package contains the following modules:
+- CleanArchitectureGameFramework - the main module.
+- CleanArchitectureGameFramework.Additions - the additional module with different additions.
 - CleanArchitectureGameFramework.Internal - the low-level module with different utilities and helpers.
 
 ## Namespaces
-- Framework - the root.
-    - Program              - the entry point.
-- Framework.UI - the presentation.
-    - UITheme              - the audio theme.
-    - UIPlayList           - the audio playlist
-    - UIScreen             - the graphics user interface. The user interface consists of the widget tree and the visual element tree.
-    - UIWidget             - the business unit of ui. This may contain (or not contain) the view.
-    - UIView               - the visual unit of ui. This is just the VisualElement.
-    - UIRouter             - the application manager.
-- Framework.App - the application.
-    - Application          - the application.
-    - Storage              - the container of different values.
-- Framework.Game.Entities - the domain.
-    - Game                 - the game's states and rules.
-    - Player               - the player's states.
-    - Entity               - the entity (any scene's object).
-
+The package contains the following namespaces and types:
+- Framework - the root namespace.
+    - Program              - The program entity.
+- Framework.UI - the presentation namespace.
+    - UITheme              - The audio theme entity.
+    - UIPlayList           - The audio playlist.
+    - UIScreen             - The graphics screen entity.
+                             It contains the widget tree and the visual element tree.
+    - UIWidget             - The graphics widget.
+                             It may contain the view.
+    - UIView               - The visual element.
+                             It is just the VisualElement.
+    - UIRouter             - The application manager service.
+                             It can load, reload, unload the scenes and quit the application.
+- Framework.App - the application namespace.
+    - Application          - The application entity.
+    - Storage              - The object that provides you with values.
+- Framework.Game.Entities - the domain namespace.
+    - Game                 - The game entity.
+                             It contains informations, rules and states.
+    - Player               - The player entity.
+                             It contains informations and states.
+    - Entity               - The entity (any object of scene).
+                             It contains informations and states.
 # Media
 - [![YouTube](https://img.youtube.com/vi/WmLJHRg0EI4/0.jpg)](https://youtu.be/WmLJHRg0EI4?feature=shared)
 
