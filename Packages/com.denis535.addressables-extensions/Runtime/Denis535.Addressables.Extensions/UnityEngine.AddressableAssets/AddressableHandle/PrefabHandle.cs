@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class PrefabHandle<T> : AddressableHandle<T>, IPrefabHandle<PrefabHandle<T>, T> where T : notnull, UnityEngine.Object {
+    public class PrefabHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public PrefabHandle(string key) : base( key ) {

@@ -7,7 +7,7 @@ namespace UnityEngine.AddressableAssets {
     using System.Threading.Tasks;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AssetListHandle<T> : AddressableListHandle<T>, IAssetListHandle<AssetListHandle<T>, T> where T : notnull, UnityEngine.Object {
+    public class AssetListHandle<T> : AddressableListHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public AssetListHandle(params string[] keys) : base( keys ) {

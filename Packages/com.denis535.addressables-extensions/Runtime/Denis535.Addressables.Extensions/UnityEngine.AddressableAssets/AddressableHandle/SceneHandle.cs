@@ -9,7 +9,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public class SceneHandle : AddressableHandle<SceneInstance>, ISceneHandle<SceneHandle> {
+    public class SceneHandle : AddressableHandle<SceneInstance> {
 
         // Constructor
         public SceneHandle(string key) : base( key ) {
@@ -22,20 +22,20 @@ namespace UnityEngine.AddressableAssets {
             return this;
         }
 
-        // WaitAsync
+        // Wait
         public ValueTask WaitAsync() {
             Assert_IsValid();
             return Handle.WaitAsync( default );
         }
 
-        // GetValueAsync
+        // GetValue
         public async ValueTask<Scene> GetValueAsync() {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( default );
             return value.Scene;
         }
 
-        // ActivateAsync
+        // Activate
         public async ValueTask<Scene> ActivateAsync() {
             Assert_IsValid();
             var value = await Handle.GetResultAsync( default );
@@ -55,7 +55,7 @@ namespace UnityEngine.AddressableAssets {
             Handle = default;
         }
 
-        // UnloadSafe
+        // Unload
         public void UnloadSafe() {
             if (Handle.IsValid()) {
                 Unload();

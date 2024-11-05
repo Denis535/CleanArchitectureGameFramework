@@ -8,7 +8,7 @@ namespace UnityEngine.AddressableAssets {
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
 
-    public class AssetHandle<T> : AddressableHandle<T>, IAssetHandle<AssetHandle<T>, T> where T : notnull, UnityEngine.Object {
+    public class AssetHandle<T> : AddressableHandle<T> where T : notnull, UnityEngine.Object {
 
         // Constructor
         public AssetHandle(string key) : base( key ) {
