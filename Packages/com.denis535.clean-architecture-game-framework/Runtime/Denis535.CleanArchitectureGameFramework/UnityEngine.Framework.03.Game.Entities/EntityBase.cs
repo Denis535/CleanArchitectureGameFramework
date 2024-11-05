@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace UnityEngine.Framework.Entities {
+namespace UnityEngine.Framework.Game.Entities {
     using System;
     using System.Collections;
     using System.Collections.Generic;

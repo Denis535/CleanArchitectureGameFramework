@@ -8,7 +8,7 @@ namespace UnityEngine.Framework {
     using UnityEditor;
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Entities;
+    using UnityEngine.Framework.Game.Entities;
     using UnityEngine.UIElements;
 
     public abstract partial class ProgramBase : MonoBehaviour {
@@ -42,21 +42,16 @@ namespace UnityEngine.Framework {
         // OnInspectorGUI
         protected internal virtual void OnInspectorGUI() {
         }
-        protected virtual void OnInspectorGUI(UIThemeBase theme) {
+        protected virtual void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
             LabelField( "Theme", theme.ToString() );
-        }
-        protected virtual void OnInspectorGUI(UIScreenBase screen, UIWidgetBase? widget, UIViewBase? view) {
+            LabelField( "PlayList", theme.PlayList?.Chain( GetDisplayString ) ?? "Null" );
+            GUILayout.Space( 2 );
             LabelField( "Screen", screen.ToString() );
-            LabelField( "Widget", widget?.Chain( GetDisplayString ) ?? "Null" );
-            LabelField( "View", view?.Chain( GetDisplayString ) ?? "Null" );
-        }
-        protected virtual void OnInspectorGUI(UIRouterBase router) {
+            LabelField( "Widget", screen.Widget?.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "View", screen.Widget?.View?.Chain( GetDisplayString ) ?? "Null" );
+            GUILayout.Space( 2 );
             LabelField( "Router", router.ToString() );
-        }
-        protected virtual void OnInspectorGUI(ApplicationBase application) {
             LabelField( "Application", application.ToString() );
-        }
-        protected virtual void OnInspectorGUI(GameBase? game) {
             LabelField( "Game", game?.ToString() ?? "Null" );
         }
 
@@ -68,6 +63,9 @@ namespace UnityEngine.Framework {
             }
         }
         // Helpers
+        protected static string? GetDisplayString(UIPlayListBase playList) {
+            return playList.ToString();
+        }
         protected static string? GetDisplayString(UIWidgetBase widget) {
             var builder = new StringBuilder();
             builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );

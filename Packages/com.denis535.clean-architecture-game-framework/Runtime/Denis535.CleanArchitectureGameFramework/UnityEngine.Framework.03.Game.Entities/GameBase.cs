@@ -1,17 +1,17 @@
 #nullable enable
-namespace UnityEngine.Framework.Entities {
+namespace UnityEngine.Framework.Game.Entities {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class PlayerBase : DisposableBase {
+    public abstract class GameBase : DisposableBase {
 
         // Constructor
-        public PlayerBase() {
+        public GameBase() {
         }
         public override void Dispose() {
-            Assert.Operation.Message( $"Player {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Game {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.Dispose();
         }
 

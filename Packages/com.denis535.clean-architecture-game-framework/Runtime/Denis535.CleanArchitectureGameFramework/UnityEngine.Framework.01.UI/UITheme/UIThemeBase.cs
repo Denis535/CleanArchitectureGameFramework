@@ -11,7 +11,7 @@ namespace UnityEngine.Framework.UI {
         protected AudioSource AudioSource { get; }
         // PlayList
         UIPlayListBase? IStateful<UIPlayListBase>.State { get => PlayList; set => PlayList = value; }
-        protected UIPlayListBase? PlayList { get; private set; }
+        protected internal UIPlayListBase? PlayList { get; private set; }
         // IsRunning
         protected internal bool IsRunning {
             get {

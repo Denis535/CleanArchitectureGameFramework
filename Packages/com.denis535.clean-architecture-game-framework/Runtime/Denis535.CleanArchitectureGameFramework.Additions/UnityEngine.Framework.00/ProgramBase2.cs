@@ -6,14 +6,13 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Entities;
+    using UnityEngine.Framework.Game.Entities;
 
     public abstract class ProgramBase2 : ProgramBase, IDependencyContainer {
 
-        // IDependencyContainer
-        Option<object?> IDependencyContainer.GetValue(Type type, object? argument) {
-            return GetValue( type, argument );
-        }
+        // GetValue
+        Option<object?> IDependencyContainer.GetValue(Type type, object? argument) => GetValue( type, argument );
+        // GetValue
         protected abstract Option<object?> GetValue(Type type, object? argument);
 
     }
@@ -39,19 +38,12 @@ namespace UnityEngine.Framework {
             base.OnDestroy();
         }
 
-    }
 #if UNITY_EDITOR
-    public abstract partial class ProgramBase2<TTheme, TScreen, TRouter, TApplication, TGame> {
-
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
-            OnInspectorGUI( Theme );
-            OnInspectorGUI( Screen, Screen.Widget, Screen.Widget?.View );
-            OnInspectorGUI( Router );
-            OnInspectorGUI( Application );
-            OnInspectorGUI( Game );
+            OnInspectorGUI( Theme, Screen, Router, Application, Game );
         }
+#endif
 
     }
-#endif
 }

@@ -12,7 +12,7 @@ This package contains a framework that define the architecture of your game proj
 ## Namespaces
 - Framework - the root.
     - Program              - the entry point.
-- Framework.UI - the user interface.
+- Framework.UI - the presentation.
     - UITheme              - the audio theme.
     - UIPlayList           - the audio playlist
     - UIScreen             - the graphics user interface. The user interface consists of the widget tree and the visual element tree.
@@ -22,7 +22,7 @@ This package contains a framework that define the architecture of your game proj
 - Framework.App - the application.
     - Application          - the application.
     - Storage              - the container of different values.
-- Framework.Entities - the domain.
+- Framework.Game.Entities - the domain.
     - Game                 - the game's states and rules.
     - Player               - the player's states.
     - Entity               - the entity (any scene's object).
