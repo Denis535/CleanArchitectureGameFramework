@@ -5,7 +5,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Linq;
 
-    public static partial class Exceptions {
+    public static class Exceptions {
         // Argument
         public static class Argument {
             public static ArgumentException ArgumentException(FormattableString? message) => Factory.GetException<ArgumentException>( message );
