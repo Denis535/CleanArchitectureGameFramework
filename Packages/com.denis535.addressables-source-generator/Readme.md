@@ -1,5 +1,5 @@
 # Overview
-This package is an add-on to Addressables and gives you the ability to reference your assets and labels in a very convenient way with compile-time checking.
+This package is an add-on to Addressables that gives you the ability to use your assets in a very convenient way with compile-time checking.
 
 # How to generate source codes
 You can use an `AddressablesSourceGenerator` asset.
