@@ -8,9 +8,10 @@ namespace UnityEngine.Framework {
     using UnityEditor;
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Game_.Entities;
+    using UnityEngine.Framework.Domain;
     using UnityEngine.UIElements;
 
+    [DefaultExecutionOrder( 10 )]
     public abstract partial class ProgramBase : MonoBehaviour {
 
         // Awake

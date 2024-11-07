@@ -10,9 +10,9 @@ The package contains the following modules:
 
 ## Namespaces
 The package contains the following namespaces and types:
-- Framework - the root namespace.
+- Framework - the root subject area namespace.
     - Program              - The program entity.
-- Framework.UI - the presentation namespace.
+- Framework.UI - the presentation subject area namespace.
     - UITheme              - The audio theme entity.
     - UIPlayList           - The audio playlist.
     - UIScreen             - The graphics screen entity.
@@ -23,10 +23,10 @@ The package contains the following namespaces and types:
                              It is just the VisualElement.
     - UIRouter             - The application manager service.
                              It can load, reload, unload the scenes and quit the application.
-- Framework.App - the application namespace.
+- Framework.App - the application subject area namespace.
     - Application          - The application entity.
     - Storage              - The object that provides you with values.
-- Framework.Game.Entities - the domain namespace.
+- Framework.Domain - the business subject area namespace.
     - Game                 - The game entity.
                              It contains informations, rules and states.
     - Player               - The player entity.

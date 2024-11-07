@@ -6,7 +6,7 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.Framework.UI;
     using UnityEngine.Framework.App;
-    using UnityEngine.Framework.Game_.Entities;
+    using UnityEngine.Framework.Domain;
 
     public abstract class ProgramBase2 : ProgramBase, IDependencyContainer {
 

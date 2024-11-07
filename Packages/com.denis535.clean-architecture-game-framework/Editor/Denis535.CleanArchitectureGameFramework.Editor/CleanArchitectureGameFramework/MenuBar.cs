@@ -71,6 +71,7 @@ namespace UnityEditor {
         //    var directories = Directory.EnumerateDirectories( path )
         //        .OrderBy( i => !i.EndsWith( ".UI" ) )
         //        .ThenBy( i => !i.EndsWith( ".App" ) )
+        //        .ThenBy( i => !i.EndsWith( ".Domain" ) )
         //        .ThenBy( i => !i.EndsWith( ".Entities" ) )
         //        .ThenBy( i => !i.EndsWith( ".MainScreen" ) )
         //        .ThenBy( i => !i.EndsWith( ".GameScreen" ) )
