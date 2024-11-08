@@ -45,11 +45,11 @@ namespace UnityEngine.Framework {
         }
         protected virtual void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
             LabelField( "Theme", theme.ToString() );
-            LabelField( "PlayList", theme.PlayList?.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "PlayList", theme.PlayList?.Pipe( GetDisplayString ) ?? "Null" );
             GUILayout.Space( 2 );
             LabelField( "Screen", screen.ToString() );
-            LabelField( "Widget", screen.Widget?.Chain( GetDisplayString ) ?? "Null" );
-            LabelField( "View", screen.Widget?.View?.Chain( GetDisplayString ) ?? "Null" );
+            LabelField( "Widget", screen.Widget?.Pipe( GetDisplayString ) ?? "Null" );
+            LabelField( "View", screen.Widget?.View?.Pipe( GetDisplayString ) ?? "Null" );
             GUILayout.Space( 2 );
             LabelField( "Router", router.ToString() );
             LabelField( "Application", application.ToString() );

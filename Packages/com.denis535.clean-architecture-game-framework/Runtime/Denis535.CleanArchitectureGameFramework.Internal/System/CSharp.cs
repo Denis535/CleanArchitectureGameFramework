@@ -8,72 +8,84 @@ namespace System {
 
     public static class CSharp {
 
-        // Pipe
+        // Chain
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T Pipe<T>(this T value, Action<T> callback) {
+        public static T Chain<T>(this T value, Action<T> callback) {
             callback( value );
             return value;
         }
-        // PipeEach
+        // ChainEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static T[] PipeEach<T>(this T[] values, Action<T> callback) {
+        public static T[] ChainEach<T>(this T[] values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // PipeEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static List<T> PipeEach<T>(this List<T> values, Action<T> callback) {
+        public static List<T> ChainEach<T>(this List<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // PipeEach
+        // ChainEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyList<T> PipeEach<T>(this IReadOnlyList<T> values, Action<T> callback) {
+        public static IEnumerable<T> ChainEach<T>(this IEnumerable<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // PipeEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyCollection<T> PipeEach<T>(this IReadOnlyCollection<T> values, Action<T> callback) {
+        public static IReadOnlyCollection<T> ChainEach<T>(this IReadOnlyCollection<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
-        // PipeEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IEnumerable<T> PipeEach<T>(this IEnumerable<T> values, Action<T> callback) {
+        public static IReadOnlyList<T> ChainEach<T>(this IReadOnlyList<T> values, Action<T> callback) {
+            foreach (var value in values) callback( value );
+            return values;
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static ICollection<T> ChainEach<T>(this ICollection<T> values, Action<T> callback) {
+            foreach (var value in values) callback( value );
+            return values;
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static IList<T> ChainEach<T>(this IList<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
             return values;
         }
 
-        // Chain
+        // Pipe
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static TOutput Chain<TInput, TOutput>(this TInput value, Converter<TInput, TOutput> callback) {
+        public static TOutput Pipe<TInput, TOutput>(this TInput value, Converter<TInput, TOutput> callback) {
             return callback( value );
         }
-        // ChainEach
+        // PipeEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static TOutput[] ChainEach<TInput, TOutput>(this TInput[] values, Converter<TInput, TOutput> callback) {
+        public static TOutput[] PipeEach<TInput, TOutput>(this TInput[] values, Converter<TInput, TOutput> callback) {
             return Array.ConvertAll( values, callback );
         }
-        // ChainEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static List<TOutput> ChainEach<TInput, TOutput>(this List<TInput> values, Converter<TInput, TOutput> callback) {
+        public static List<TOutput> PipeEach<TInput, TOutput>(this List<TInput> values, Converter<TInput, TOutput> callback) {
             return values.Select( i => callback( i ) ).ToList();
         }
-        // ChainEach
+        // PipeEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyList<TOutput> ChainEach<TInput, TOutput>(this IReadOnlyList<TInput> values, Converter<TInput, TOutput> callback) {
-            return values.Select( i => callback( i ) ).ToList();
-        }
-        // ChainEach
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IReadOnlyCollection<TOutput> ChainEach<TInput, TOutput>(this IReadOnlyCollection<TInput> values, Converter<TInput, TOutput> callback) {
-            return values.Select( i => callback( i ) ).ToList();
-        }
-        // ChainEach
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static IEnumerable<TOutput> ChainEach<TInput, TOutput>(this IEnumerable<TInput> values, Converter<TInput, TOutput> callback) {
+        public static IEnumerable<TOutput> PipeEach<TInput, TOutput>(this IEnumerable<TInput> values, Converter<TInput, TOutput> callback) {
             return values.Select( i => callback( i ) );
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static IReadOnlyCollection<TOutput> PipeEach<TInput, TOutput>(this IReadOnlyCollection<TInput> values, Converter<TInput, TOutput> callback) {
+            return values.Select( i => callback( i ) ).ToList();
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static IReadOnlyList<TOutput> PipeEach<TInput, TOutput>(this IReadOnlyList<TInput> values, Converter<TInput, TOutput> callback) {
+            return values.Select( i => callback( i ) ).ToList();
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static ICollection<TOutput> PipeEach<TInput, TOutput>(this ICollection<TInput> values, Converter<TInput, TOutput> callback) {
+            return values.Select( i => callback( i ) ).ToList();
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static IList<TOutput> PipeEach<TInput, TOutput>(this IList<TInput> values, Converter<TInput, TOutput> callback) {
+            return values.Select( i => callback( i ) ).ToList();
         }
 
         // For
@@ -86,24 +98,29 @@ namespace System {
         public static void ForEach<T>(this T[] values, Action<T> callback) {
             foreach (var value in values) callback( value );
         }
-        // ForEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static void ForEach<T>(this List<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
         }
         // ForEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static void ForEach<T>(this IReadOnlyList<T> values, Action<T> callback) {
+        public static void ForEach<T>(this IEnumerable<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
         }
-        // ForEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static void ForEach<T>(this IReadOnlyCollection<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
         }
-        // ForEach
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static void ForEach<T>(this IEnumerable<T> values, Action<T> callback) {
+        public static void ForEach<T>(this IReadOnlyList<T> values, Action<T> callback) {
+            foreach (var value in values) callback( value );
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static void ForEach<T>(this ICollection<T> values, Action<T> callback) {
+            foreach (var value in values) callback( value );
+        }
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public static void ForEach<T>(this IList<T> values, Action<T> callback) {
             foreach (var value in values) callback( value );
         }
 
