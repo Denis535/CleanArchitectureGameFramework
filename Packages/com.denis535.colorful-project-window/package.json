@@ -1,7 +1,7 @@
 {
     "name": "com.denis535.colorful-project-window",
     "displayName": "Colorful Project Window",
-    "version": "1.0.39",
+    "version": "1.0.40",
     "description": "The package provides you with a more convenient project window, which highlights the most important files and folders in special colors.",
     "author": {
         "name": "Denis535",
@@ -12,8 +12,9 @@
     "keywords": [
         "Project",
         "Window",
-        "Utility",
+        "Editor",
+        "Extension",
         "Tool",
-        "Editor"
+        "Utility"
     ]
 }

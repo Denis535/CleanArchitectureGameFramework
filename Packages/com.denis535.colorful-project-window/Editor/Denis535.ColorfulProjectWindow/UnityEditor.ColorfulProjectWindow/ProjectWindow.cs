@@ -13,7 +13,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     public class ProjectWindow : ProjectWindowBase {
 
         // Settings
-        private Settings Settings => Settings.Instance;
+        protected Settings Settings => Settings.Instance;
         // PackagePaths
         protected string[] PackagePaths { get; }
         // AssemblyPaths
