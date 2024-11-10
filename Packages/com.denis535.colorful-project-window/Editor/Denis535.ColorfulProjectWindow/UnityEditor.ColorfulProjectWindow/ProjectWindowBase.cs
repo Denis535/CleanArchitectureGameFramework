@@ -40,33 +40,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
 
         // Helpers
-        protected static void DrawItem(Rect rect, Color color, int depth) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-                color = depth switch {
-                    0 => color,
-                    _ => Darken( color, 1.5f ),
-                };
-                DrawRect( rect, color );
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-                color = depth switch {
-                    0 => color,
-                    _ => Darken( color, 1.5f ),
-                };
-                DrawRect( rect, color );
-            }
-        }
-        protected static void DrawRect(Rect rect, Color color) {
-            var prev = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture( rect, Texture2D.whiteTexture );
-            GUI.color = prev;
-        }
-        // Helpers
         protected static Color HSVA(int h, float s, float v, float a) {
             var color = Color.HSVToRGB( h / 360f, s, v );
             color.a = a;
@@ -83,6 +56,12 @@ namespace UnityEditor.ColorfulProjectWindow {
             var result = Color.HSVToRGB( h, s, v / factor );
             result.a = color.a;
             return result;
+        }
+        protected static void DrawRect(Rect rect, Color color) {
+            var prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture( rect, Texture2D.whiteTexture );
+            GUI.color = prev;
         }
 
     }

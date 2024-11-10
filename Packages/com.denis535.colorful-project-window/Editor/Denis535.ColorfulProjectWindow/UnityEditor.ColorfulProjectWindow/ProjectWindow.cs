@@ -50,27 +50,44 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected override void DrawPackage(Rect rect, string path, string package, string content) {
             if (content == string.Empty) {
-                DrawItem( rect, Settings.PackageColor, 0 );
+                DrawItem( rect, Settings.PackageColor );
             }
         }
         protected override void DrawAssembly(Rect rect, string path, string assembly, string content) {
             if (content == string.Empty) {
-                DrawItem( rect, Settings.AssemblyColor, 0 );
+                DrawItem( rect, Settings.AssemblyColor );
             } else {
-                if (AssetDatabase.IsValidFolder( path ) || content.Contains( '/' )) {
-                    var depth = content.Count( i => i == '/' );
-                    if (IsAssets( path, assembly, content )) {
-                        DrawItem( rect, Settings.AssetsColor, depth );
-                    } else if (IsResources( path, assembly, content )) {
-                        DrawItem( rect, Settings.ResourcesColor, depth );
-                    } else if (IsSources( path, assembly, content )) {
-                        DrawItem( rect, Settings.SourcesColor, depth );
-                    }
-                }
+                DrawAssemblyContent( rect, path, assembly, content );
             }
         }
+        protected virtual void DrawAssemblyContent(Rect rect, string path, string assembly, string content) {
+            if (IsFile( path ) && !content.Contains( '/' )) {
+                return;
+            }
+            if (Path.GetExtension( path ) is ".asmdef" or ".asmref" or ".rsp") {
+                return;
+            }
+            if (IsAssets( path, assembly, content )) {
+                DrawAssemblyAssets( rect, path, assembly, content );
+            } else
+            if (IsResources( path, assembly, content )) {
+                DrawAssemblyResources( rect, path, assembly, content );
+            } else
+            if (IsSources( path, assembly, content )) {
+                DrawAssemblySources( rect, path, assembly, content );
+            }
+        }
+        protected virtual void DrawAssemblyAssets(Rect rect, string path, string assembly, string content) {
+            DrawItem( rect, Settings.AssetsColor, content.Contains( '/' ) );
+        }
+        protected virtual void DrawAssemblyResources(Rect rect, string path, string assembly, string content) {
+            DrawItem( rect, Settings.ResourcesColor, content.Contains( '/' ) );
+        }
+        protected virtual void DrawAssemblySources(Rect rect, string path, string assembly, string content) {
+            DrawItem( rect, Settings.SourcesColor, content.Contains( '/' ) );
+        }
 
-        // IsPackage
+        // Helpers
         protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
             // Assets/Packages/[Package]
             // Assets/Packages/[Package]/[Content]
@@ -105,6 +122,39 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected virtual bool IsSources(string path, string assembly, string content) {
             return true;
+        }
+        // Helpers
+        protected static bool IsFile(string path) {
+            return !AssetDatabase.IsValidFolder( path );
+        }
+        protected static bool IsFolder(string path) {
+            return AssetDatabase.IsValidFolder( path );
+        }
+        // Helpers
+        protected static void DrawItem(Rect rect, Color color) {
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+            }
+            DrawRect( rect, color );
+        }
+        protected static void DrawItem(Rect rect, Color color, bool isDarken) {
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+            }
+            if (isDarken) {
+                color = Darken( color, 1.5f );
+            }
+            DrawRect( rect, color );
         }
 
     }
