@@ -44,94 +44,39 @@ namespace UnityEditor.ColorfulProjectWindow {
             base.Dispose();
         }
 
-        // DrawElement
-        protected override void DrawElement(Rect rect, string path) {
-            base.DrawElement( rect, path );
-        }
-        protected override void DrawPackage(Rect rect, string path, string package, string content) {
-            if (content == string.Empty) {
-                DrawItem( rect, Settings.PackageColor );
-            }
-        }
-        protected override void DrawAssembly(Rect rect, string path, string assembly, string content) {
-            if (content == string.Empty) {
-                DrawItem( rect, Settings.AssemblyColor );
-            } else {
-                DrawAssemblyContent( rect, path, assembly, content );
-            }
-        }
-        protected virtual void DrawAssemblyContent(Rect rect, string path, string assembly, string content) {
-            if (IsFile( path ) && !content.Contains( '/' )) {
-                return;
-            }
-            if (Path.GetExtension( path ) is ".asmdef" or ".asmref" or ".rsp") {
-                return;
-            }
-            if (IsAssets( path, assembly, content )) {
-                DrawAssemblyAssets( rect, path, assembly, content );
-            } else
-            if (IsResources( path, assembly, content )) {
-                DrawAssemblyResources( rect, path, assembly, content );
-            } else
-            if (IsSources( path, assembly, content )) {
-                DrawAssemblySources( rect, path, assembly, content );
-            }
-        }
-        protected virtual void DrawAssemblyAssets(Rect rect, string path, string assembly, string content) {
-            DrawItem( rect, Settings.AssetsColor, content.Contains( '/' ) );
-        }
-        protected virtual void DrawAssemblyResources(Rect rect, string path, string assembly, string content) {
-            DrawItem( rect, Settings.ResourcesColor, content.Contains( '/' ) );
-        }
-        protected virtual void DrawAssemblySources(Rect rect, string path, string assembly, string content) {
-            DrawItem( rect, Settings.SourcesColor, content.Contains( '/' ) );
+        // OnGUI
+        protected override void OnGUI(string guid, Rect rect) {
+            base.OnGUI( guid, rect );
         }
 
-        // Helpers
-        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
-            // Assets/Packages/[Package]
-            // Assets/Packages/[Package]/[Content]
-            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (packagePath != null) {
-                package = Path.GetFileName( packagePath );
-                content = path.Substring( packagePath.Length ).TrimStart( '/' );
-                return true;
-            }
-            package = null;
-            content = null;
-            return false;
+        // DrawElement
+        protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
+            base.DrawPackageElement( rect, path, name, rest );
         }
-        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
-            // Assets/Assemblies/[Assembly]
-            // Assets/Assemblies/[Assembly]/[Content]
-            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (assemblyPath != null) {
-                assembly = Path.GetFileName( assemblyPath );
-                content = path.Substring( assemblyPath.Length ).TrimStart( '/' );
-                return true;
-            }
-            assembly = null;
-            content = null;
-            return false;
+        protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
+            base.DrawAssemblyElement( rect, path, name, rest );
         }
-        protected virtual bool IsAssets(string path, string assembly, string content) {
-            return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
+        protected override void DrawAssemblyContentElement(Rect rect, string path, string name, string rest) {
+            base.DrawAssemblyContentElement( rect, path, name, rest );
         }
-        protected virtual bool IsResources(string path, string assembly, string content) {
-            return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
+
+        // DrawItem
+        protected override void DrawPackageItem(Rect rect, string path, string name, string rest) {
+            DrawItem( rect, Settings.PackageColor, path, name, rest );
         }
-        protected virtual bool IsSources(string path, string assembly, string content) {
-            return true;
+        protected override void DrawAssemblyItem(Rect rect, string path, string name, string rest) {
+            DrawItem( rect, Settings.AssemblyColor, path, name, rest );
         }
-        // Helpers
-        protected static bool IsFile(string path) {
-            return !AssetDatabase.IsValidFolder( path );
+        protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
+            DrawItem( rect, Settings.AssetsColor, path, name, rest );
         }
-        protected static bool IsFolder(string path) {
-            return AssetDatabase.IsValidFolder( path );
+        protected override void DrawResourcesItem(Rect rect, string path, string name, string rest) {
+            DrawItem( rect, Settings.ResourcesColor, path, name, rest );
         }
-        // Helpers
-        protected static void DrawItem(Rect rect, Color color) {
+        protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
+            DrawItem( rect, Settings.SourcesColor, path, name, rest );
+        }
+        protected virtual void DrawItem(Rect rect, Color color, string path, string name, string rest) {
             if (rect.height == 16) {
                 rect.x -= 16;
                 rect.width = 16;
@@ -140,21 +85,63 @@ namespace UnityEditor.ColorfulProjectWindow {
                 rect.width = 64;
                 rect.height = 64;
             }
-            DrawRect( rect, color );
-        }
-        protected static void DrawItem(Rect rect, Color color, bool isDarken) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-            }
-            if (isDarken) {
+            if (rest.Contains( '/' )) {
                 color = Darken( color, 1.5f );
             }
             DrawRect( rect, color );
+        }
+
+        // IsPackage
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            // Assets/Packages/[Name]
+            // Assets/Packages/[Name]/[Rest]
+            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (packagePath != null) {
+                name = Path.GetFileName( packagePath );
+                rest = path.Substring( packagePath.Length ).TrimStart( '/' );
+                return true;
+            }
+            name = null;
+            rest = null;
+            return false;
+        }
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            // Assets/Assemblies/[Name]
+            // Assets/Assemblies/[Name]/[Rest]
+            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (assemblyPath != null) {
+                name = Path.GetFileName( assemblyPath );
+                rest = path.Substring( assemblyPath.Length ).TrimStart( '/' );
+                return true;
+            }
+            name = null;
+            rest = null;
+            return false;
+        }
+
+        // Helpers
+        protected static Color HSVA(int h, float s, float v, float a) {
+            var color = Color.HSVToRGB( h / 360f, s, v );
+            color.a = a;
+            return color;
+        }
+        protected static Color Lighten(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v * factor );
+            result.a = color.a;
+            return result;
+        }
+        protected static Color Darken(Color color, float factor) {
+            Color.RGBToHSV( color, out var h, out var s, out var v );
+            var result = Color.HSVToRGB( h, s, v / factor );
+            result.a = color.a;
+            return result;
+        }
+        protected static void DrawRect(Rect rect, Color color) {
+            var prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture( rect, Texture2D.whiteTexture );
+            GUI.color = prev;
         }
 
     }

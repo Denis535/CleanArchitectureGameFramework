@@ -4,6 +4,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using System.Text;
     using UnityEditor;
     using UnityEngine;
@@ -12,56 +13,80 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // Constructor
         public ProjectWindowBase() {
-            EditorApplication.projectWindowItemOnGUI += OnGUI;
+            EditorApplication.projectWindowItemOnGUI = OnGUI;
         }
         public virtual void Dispose() {
-            EditorApplication.projectWindowItemOnGUI -= OnGUI;
+            EditorApplication.projectWindowItemOnGUI = null;
         }
 
         // OnGUI
-        private void OnGUI(string guid, Rect rect) {
-            DrawElement( rect, AssetDatabase.GUIDToAssetPath( guid ) );
+        protected virtual void OnGUI(string guid, Rect rect) {
+            var path = AssetDatabase.GUIDToAssetPath( guid );
+            if (IsAssembly( path, out var name, out var rest )) {
+                DrawAssemblyElement( rect, path, name, rest );
+            } else
+            if (IsPackage( path, out name, out rest )) {
+                DrawPackageElement( rect, path, name, rest );
+            }
         }
 
         // DrawElement
-        protected virtual void DrawElement(Rect rect, string path) {
-            if (IsAssembly( path, out var assembly, out var content )) {
-                DrawAssembly( rect, path, assembly, content );
-            } else
-            if (IsPackage( path, out var package, out content )) {
-                DrawPackage( rect, path, package, content );
+        protected virtual void DrawPackageElement(Rect rect, string path, string name, string rest) {
+            if (rest == string.Empty) {
+                DrawPackageItem( rect, path, name, rest );
             }
         }
-        protected abstract void DrawPackage(Rect rect, string path, string package, string content);
-        protected abstract void DrawAssembly(Rect rect, string path, string assembly, string content);
+        protected virtual void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
+            if (rest == string.Empty) {
+                DrawAssemblyItem( rect, path, name, rest );
+            } else {
+                DrawAssemblyContentElement( rect, path, name, rest );
+            }
+        }
+        protected virtual void DrawAssemblyContentElement(Rect rect, string path, string name, string rest) {
+            if (IsFile( path ) && !rest.Contains( '/' )) {
+                return;
+            }
+            if (Path.GetExtension( path ) is ".asmdef" or ".asmref" or ".rsp") {
+                return;
+            }
+            if (IsAssets( path, name, rest )) {
+                DrawAssetsItem( rect, path, name, rest );
+            } else
+            if (IsResources( path, name, rest )) {
+                DrawResourcesItem( rect, path, name, rest );
+            } else
+            if (IsSources( path, name, rest )) {
+                DrawSourcesItem( rect, path, name, rest );
+            }
+        }
+
+        // DrawItem
+        protected abstract void DrawPackageItem(Rect rect, string path, string name, string rest);
+        protected abstract void DrawAssemblyItem(Rect rect, string path, string name, string rest);
+        protected abstract void DrawAssetsItem(Rect rect, string path, string name, string rest);
+        protected abstract void DrawResourcesItem(Rect rect, string path, string name, string rest);
+        protected abstract void DrawSourcesItem(Rect rect, string path, string name, string rest);
 
         // IsPackage
-        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content);
-        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
+        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
+        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
+        protected virtual bool IsAssets(string path, string name, string rest) {
+            return rest.Equals( "Assets" ) || rest.StartsWith( "Assets/" ) || rest.StartsWith( "Assets." );
+        }
+        protected virtual bool IsResources(string path, string name, string rest) {
+            return rest.Equals( "Resources" ) || rest.StartsWith( "Resources/" ) || rest.StartsWith( "Resources." );
+        }
+        protected virtual bool IsSources(string path, string name, string rest) {
+            return true;
+        }
 
         // Helpers
-        protected static Color HSVA(int h, float s, float v, float a) {
-            var color = Color.HSVToRGB( h / 360f, s, v );
-            color.a = a;
-            return color;
+        protected static bool IsFile(string path) {
+            return !AssetDatabase.IsValidFolder( path );
         }
-        protected static Color Lighten(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v * factor );
-            result.a = color.a;
-            return result;
-        }
-        protected static Color Darken(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v / factor );
-            result.a = color.a;
-            return result;
-        }
-        protected static void DrawRect(Rect rect, Color color) {
-            var prev = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture( rect, Texture2D.whiteTexture );
-            GUI.color = prev;
+        protected static bool IsFolder(string path) {
+            return AssetDatabase.IsValidFolder( path );
         }
 
     }
