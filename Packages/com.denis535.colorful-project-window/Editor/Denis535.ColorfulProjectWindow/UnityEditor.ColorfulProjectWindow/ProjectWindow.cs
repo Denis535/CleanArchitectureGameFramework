@@ -62,44 +62,19 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // DrawItem
         protected override void DrawPackageItem(Rect rect, string path, string name) {
-            DrawItem( rect, Settings.PackageColor, path, name );
+            Highlight( rect, Settings.PackageColor, path, name );
         }
         protected override void DrawAssemblyItem(Rect rect, string path, string name) {
-            DrawItem( rect, Settings.AssemblyColor, path, name );
+            Highlight( rect, Settings.AssemblyColor, path, name );
         }
         protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
-            DrawItem( rect, Settings.AssetsColor, path, name, rest );
+            Highlight( rect, Settings.AssetsColor, path, name, rest );
         }
         protected override void DrawResourcesItem(Rect rect, string path, string name, string rest) {
-            DrawItem( rect, Settings.ResourcesColor, path, name, rest );
+            Highlight( rect, Settings.ResourcesColor, path, name, rest );
         }
         protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
-            DrawItem( rect, Settings.SourcesColor, path, name, rest );
-        }
-        protected virtual void DrawItem(Rect rect, Color color, string path, string name) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-            }
-            DrawRect( rect, color );
-        }
-        protected virtual void DrawItem(Rect rect, Color color, string path, string name, string rest) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-            }
-            if (rest.Contains( '/' )) {
-                color = Darken( color, 1.5f );
-            }
-            DrawRect( rect, color );
+            Highlight( rect, Settings.SourcesColor, path, name, rest );
         }
 
         // IsPackage
@@ -129,7 +104,42 @@ namespace UnityEditor.ColorfulProjectWindow {
             rest = null;
             return false;
         }
+        protected override bool IsAssets(string path, string name, string rest) {
+            return base.IsAssets( path, name, rest );
+        }
+        protected override bool IsResources(string path, string name, string rest) {
+            return base.IsResources( path, name, rest );
+        }
+        protected override bool IsSources(string path, string name, string rest) {
+            return base.IsSources( path, name, rest );
+        }
 
+        // Helpers
+        protected static void Highlight(Rect rect, Color color, string path, string name) {
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+            }
+            DrawRect( rect, color );
+        }
+        protected static void Highlight(Rect rect, Color color, string path, string name, string rest) {
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+            }
+            if (rest.Contains( '/' )) {
+                color = Darken( color, 1.5f );
+            }
+            DrawRect( rect, color );
+        }
         // Helpers
         protected static Color HSVA(int h, float s, float v, float a) {
             var color = Color.HSVToRGB( h / 360f, s, v );
