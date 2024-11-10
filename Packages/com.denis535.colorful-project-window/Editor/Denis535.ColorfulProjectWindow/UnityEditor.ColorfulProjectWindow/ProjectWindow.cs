@@ -61,11 +61,11 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
 
         // DrawItem
-        protected override void DrawPackageItem(Rect rect, string path, string name, string rest) {
-            DrawItem( rect, Settings.PackageColor, path, name, rest );
+        protected override void DrawPackageItem(Rect rect, string path, string name) {
+            DrawItem( rect, Settings.PackageColor, path, name );
         }
-        protected override void DrawAssemblyItem(Rect rect, string path, string name, string rest) {
-            DrawItem( rect, Settings.AssemblyColor, path, name, rest );
+        protected override void DrawAssemblyItem(Rect rect, string path, string name) {
+            DrawItem( rect, Settings.AssemblyColor, path, name );
         }
         protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
             DrawItem( rect, Settings.AssetsColor, path, name, rest );
@@ -75,6 +75,17 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
             DrawItem( rect, Settings.SourcesColor, path, name, rest );
+        }
+        protected virtual void DrawItem(Rect rect, Color color, string path, string name) {
+            if (rect.height == 16) {
+                rect.x -= 16;
+                rect.width = 16;
+                rect.height = 16;
+            } else {
+                rect.width = 64;
+                rect.height = 64;
+            }
+            DrawRect( rect, color );
         }
         protected virtual void DrawItem(Rect rect, Color color, string path, string name, string rest) {
             if (rect.height == 16) {

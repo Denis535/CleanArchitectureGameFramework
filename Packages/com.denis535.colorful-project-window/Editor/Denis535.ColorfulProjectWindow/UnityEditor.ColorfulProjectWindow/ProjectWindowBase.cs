@@ -33,12 +33,12 @@ namespace UnityEditor.ColorfulProjectWindow {
         // DrawElement
         protected virtual void DrawPackageElement(Rect rect, string path, string name, string rest) {
             if (rest == string.Empty) {
-                DrawPackageItem( rect, path, name, rest );
+                DrawPackageItem( rect, path, name );
             }
         }
         protected virtual void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
             if (rest == string.Empty) {
-                DrawAssemblyItem( rect, path, name, rest );
+                DrawAssemblyItem( rect, path, name );
             } else {
                 DrawAssemblyContentElement( rect, path, name, rest );
             }
@@ -62,8 +62,8 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
 
         // DrawItem
-        protected abstract void DrawPackageItem(Rect rect, string path, string name, string rest);
-        protected abstract void DrawAssemblyItem(Rect rect, string path, string name, string rest);
+        protected abstract void DrawPackageItem(Rect rect, string path, string name);
+        protected abstract void DrawAssemblyItem(Rect rect, string path, string name);
         protected abstract void DrawAssetsItem(Rect rect, string path, string name, string rest);
         protected abstract void DrawResourcesItem(Rect rect, string path, string name, string rest);
         protected abstract void DrawSourcesItem(Rect rect, string path, string name, string rest);
