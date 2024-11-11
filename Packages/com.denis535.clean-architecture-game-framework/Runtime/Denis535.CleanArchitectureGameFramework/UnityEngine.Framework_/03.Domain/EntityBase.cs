@@ -10,20 +10,33 @@ namespace UnityEngine.Framework {
     public abstract class EntityBase : MonoBehaviour {
 
         // Awake
-        protected virtual void Awake() {
-        }
-        protected virtual void OnDestroy() {
-        }
+        protected abstract void Awake();
+        protected abstract void OnDestroy();
+
+        // Start
+        protected abstract void Start();
+        protected abstract void FixedUpdate();
+        protected abstract void Update();
+        protected abstract void LateUpdate();
 
     }
+    // ActorBase
     public abstract class ActorBase : EntityBase {
     }
+    // ThingBase
     public abstract class ThingBase : EntityBase {
+
+        public abstract bool IsRigidbody { get; set; }
+
     }
+    // VehicleBase
     public abstract class VehicleBase : EntityBase {
     }
+    // IDamageable
     public interface IDamageable {
+
         void Damage(DamageInfo info);
+
     }
     public static class IDamageableExtensions {
 
@@ -39,6 +52,7 @@ namespace UnityEngine.Framework {
         }
 
     }
+    // DamageInfo
     public abstract record DamageInfo(float Damage);
     public record HitDamageInfo(float Damage, Vector3 Point, Vector3 Direction, Vector3 Original, ThingBase Thing, ActorBase Actor, PlayerBase? Player) : DamageInfo( Damage );
     public record ExplosionDamageInfo(float Damage, Vector3 Point, Vector3 Direction, Vector3 Original, ThingBase Thing, ActorBase Actor, PlayerBase? Player) : DamageInfo( Damage );

@@ -7,10 +7,35 @@ namespace UnityEngine.Framework {
 
     public abstract class ProgramBase2 : ProgramBase, IDependencyContainer {
 
+        // Awake
+        protected override void Awake() {
+            base.Awake();
+        }
+        protected override void OnDestroy() {
+            base.OnDestroy();
+        }
+
+        // Start
+        protected override void Start() {
+        }
+        protected override void FixedUpdate() {
+        }
+        protected override void Update() {
+        }
+        protected override void LateUpdate() {
+        }
+
+        // OnQuit
+        protected override bool OnQuit() {
+            return true;
+        }
+
         // GetValue
         Option<object?> IDependencyContainer.GetValue(Type type, object? argument) => GetValue( type, argument );
         // GetValue
-        protected abstract Option<object?> GetValue(Type type, object? argument);
+        protected virtual Option<object?> GetValue(Type type, object? argument) {
+            return default;
+        }
 
     }
     public abstract partial class ProgramBase2<TTheme, TScreen, TRouter, TApplication, TGame> : ProgramBase2
@@ -33,6 +58,26 @@ namespace UnityEngine.Framework {
         }
         protected override void OnDestroy() {
             base.OnDestroy();
+        }
+
+        // Start
+        protected override void Start() {
+        }
+        protected override void FixedUpdate() {
+        }
+        protected override void Update() {
+        }
+        protected override void LateUpdate() {
+        }
+
+        // OnQuit
+        protected override bool OnQuit() {
+            return true;
+        }
+
+        // GetValue
+        protected override Option<object?> GetValue(Type type, object? argument) {
+            return base.GetValue( type, argument );
         }
 
 #if UNITY_EDITOR
