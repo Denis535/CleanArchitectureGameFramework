@@ -6,10 +6,11 @@ namespace UnityEngine.Framework {
     using System.Text;
     using UnityEngine;
     using UnityEditor;
-    using UnityEngine.UIElements;
 
-    [DefaultExecutionOrder( 10 )]
+    [DefaultExecutionOrder( ExecutionOrder )]
     public abstract partial class ProgramBase : MonoBehaviour {
+
+        public const int ExecutionOrder = 10;
 
         // Awake
         protected virtual void Awake() {
@@ -33,46 +34,45 @@ namespace UnityEngine.Framework {
             return true;
         }
 
-    }
 #if UNITY_EDITOR
-    public abstract partial class ProgramBase {
-
         // OnInspectorGUI
         protected internal virtual void OnInspectorGUI() {
+            HelpBox.Draw();
         }
-        protected virtual void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
-            LabelField( "Theme", theme.ToString() );
-            LabelField( "PlayList", theme.PlayList?.Pipe( GetDisplayString ) ?? "Null" );
-            GUILayout.Space( 2 );
-            LabelField( "Screen", screen.ToString() );
-            LabelField( "Widget", screen.Widget?.Pipe( GetDisplayString ) ?? "Null" );
-            LabelField( "View", screen.Widget?.View?.Pipe( GetDisplayString ) ?? "Null" );
-            GUILayout.Space( 2 );
-            LabelField( "Router", router.ToString() );
-            LabelField( "Application", application.ToString() );
-            LabelField( "Game", game?.ToString() ?? "Null" );
-        }
+#endif
 
-        // Helpers
-        protected static void LabelField(string label, string? text) {
-            using (new EditorGUILayout.HorizontalScope()) {
-                EditorGUILayout.PrefixLabel( label );
-                EditorGUI.SelectableLabel( GUILayoutUtility.GetRect( new GUIContent( text ), GUI.skin.textField ), text, GUI.skin.textField );
+    }
+#if UNITY_EDITOR
+    public static class HelpBox {
+
+        public static void Draw() {
+            using (new GUILayout.VerticalScope( EditorStyles.helpBox )) {
+                {
+                    EditorGUILayout.LabelField( "Overview", EditorStyles.boldLabel );
+                    EditorGUILayout.LabelField( "The \"Clean Architecture Game Framework\" package provides you with a framework that helps you develop your projects following best practices." );
+                }
+                EditorGUILayout.Separator();
+                {
+                    EditorGUILayout.LabelField( "Links", EditorStyles.boldLabel );
+                    if (EditorGUILayout.LinkButton( "denis535.github.io" )) Application.OpenURL( "https://denis535.github.io" );
+                    if (EditorGUILayout.LinkButton( "github.com (Unity Shooter Example)" )) Application.OpenURL( "https://github.com/Denis535/UnityShooterExample" );
+                    if (EditorGUILayout.LinkButton( "github.com (Unity Framework)" )) Application.OpenURL( "https://github.com/Denis535/UnityFramework" );
+                    EditorGUILayout.Space( 2f );
+                    if (EditorGUILayout.LinkButton( "nuget.org" )) Application.OpenURL( "https://www.nuget.org/profiles/Denis535" );
+                    if (EditorGUILayout.LinkButton( "openupm.com" )) Application.OpenURL( "https://openupm.com/packages/?sort=downloads&q=denis535" );
+                    EditorGUILayout.Space( 2f );
+                    if (EditorGUILayout.LinkButton( "fab.com" )) Application.OpenURL( "https://www.fab.com/sellers/Denis535" );
+                    if (EditorGUILayout.LinkButton( "assetstore.unity.com" )) Application.OpenURL( "https://assetstore.unity.com/publishers/90787" );
+                    EditorGUILayout.Space( 2f );
+                    if (EditorGUILayout.LinkButton( "youtube.com" )) Application.OpenURL( "https://www.youtube.com/channel/UCLFdZl0pFkCkHpDWmodBUFg" );
+                    if (EditorGUILayout.LinkButton( "udemy.com" )) Application.OpenURL( "https://www.udemy.com/user/denis-84102" );
+                }
+                EditorGUILayout.Separator();
+                {
+                    EditorGUILayout.LabelField( "If you want to support me", EditorStyles.boldLabel );
+                    EditorGUILayout.LabelField( "If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos." );
+                }
             }
-        }
-        // Helpers
-        protected static string? GetDisplayString(UIPlayListBase playList) {
-            return playList.ToString();
-        }
-        protected static string? GetDisplayString(UIWidgetBase widget) {
-            var builder = new StringBuilder();
-            builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );
-            return builder.ToString();
-        }
-        protected static string? GetDisplayString(UIViewBase view) {
-            var builder = new StringBuilder();
-            builder.AppendHierarchy( (VisualElement) view, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
-            return builder.ToString();
         }
 
     }

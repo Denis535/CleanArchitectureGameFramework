@@ -6,18 +6,21 @@ namespace UnityEngine.Framework {
     using System.Diagnostics.CodeAnalysis;
     using UnityEngine;
 
-    [DefaultExecutionOrder( 100 )]
+    [DefaultExecutionOrder( ExecutionOrder )]
     public abstract class EntityBase : MonoBehaviour {
+
+        public const int ExecutionOrder = 100;
 
         // Awake
         protected abstract void Awake();
         protected abstract void OnDestroy();
 
+        // For optimization purposes, we should not receive all messages.
         // Start
-        protected abstract void Start();
-        protected abstract void FixedUpdate();
-        protected abstract void Update();
-        protected abstract void LateUpdate();
+        //protected abstract void Start();
+        //protected abstract void FixedUpdate();
+        //protected abstract void Update();
+        //protected abstract void LateUpdate();
 
     }
     // ActorBase

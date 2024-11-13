@@ -3,7 +3,10 @@ namespace UnityEngine.Framework {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Text;
+    using UnityEditor;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public abstract class ProgramBase2 : ProgramBase, IDependencyContainer {
 
@@ -83,10 +86,45 @@ namespace UnityEngine.Framework {
 #if UNITY_EDITOR
         // OnInspectorGUI
         protected internal override void OnInspectorGUI() {
-            OnInspectorGUI( Theme, Screen, Router, Application, Game );
+            if (didAwake && this) {
+                OnInspectorGUI( Theme, Screen, Router, Application, Game );
+            } else {
+                HelpBox.Draw();
+            }
         }
-        protected override void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
-            base.OnInspectorGUI( theme, screen, router, application, game );
+        protected virtual void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
+            LabelField( "Theme", theme.ToString() );
+            LabelField( "PlayList", theme.PlayList?.Pipe( GetDisplayString ) ?? "Null" );
+            GUILayout.Space( 2 );
+            LabelField( "Screen", screen.ToString() );
+            LabelField( "Widget", screen.Widget?.Pipe( GetDisplayString ) ?? "Null" );
+            LabelField( "View", screen.Widget?.View?.Pipe( GetDisplayString ) ?? "Null" );
+            GUILayout.Space( 2 );
+            LabelField( "Router", router.ToString() );
+            LabelField( "Application", application.ToString() );
+            LabelField( "Game", game?.ToString() ?? "Null" );
+        }
+
+        // Helpers
+        protected static void LabelField(string label, string? text) {
+            using (new EditorGUILayout.HorizontalScope()) {
+                EditorGUILayout.PrefixLabel( label );
+                EditorGUI.SelectableLabel( GUILayoutUtility.GetRect( new GUIContent( text ), GUI.skin.textField ), text, GUI.skin.textField );
+            }
+        }
+        // Helpers
+        protected static string? GetDisplayString(UIPlayListBase playList) {
+            return playList.ToString();
+        }
+        protected static string? GetDisplayString(UIWidgetBase widget) {
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );
+            return builder.ToString();
+        }
+        protected static string? GetDisplayString(UIViewBase view) {
+            var builder = new StringBuilder();
+            builder.AppendHierarchy( (VisualElement) view, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
+            return builder.ToString();
         }
 #endif
 
