@@ -37,12 +37,12 @@ namespace UnityEngine.Framework {
         // ShowSelf
         protected override void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is State_.Activating );
+            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( Activity is Activity_.Activating );
             Screen!.Document.rootVisualElement.Add( View );
         }
         protected override void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is State_.Deactivating );
+            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( Activity is Activity_.Deactivating );
             if (Screen!.Document && Screen!.Document.rootVisualElement != null) Screen!.Document.rootVisualElement.Remove( View );
         }
 

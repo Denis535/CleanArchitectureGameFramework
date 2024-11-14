@@ -33,7 +33,7 @@ namespace UnityEngine.Framework {
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( State is State_.Inactive );
+            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             foreach (var child in Children) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }
@@ -71,12 +71,12 @@ namespace UnityEngine.Framework {
         // ShowSelf
         protected virtual void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( State is State_.Activating );
+            Assert.Operation.Message( $"Widget {this} must be activating" ).Valid( Activity is Activity_.Activating );
             Parent!.View!.AddViewRecursive( View );
         }
         protected virtual void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( State is State_.Deactivating );
+            Assert.Operation.Message( $"Widget {this} must be deactivating" ).Valid( Activity is Activity_.Deactivating );
             Parent!.View!.RemoveViewRecursive( View );
         }
 

@@ -7,15 +7,15 @@ namespace System {
     using System.Linq;
 
     public abstract class NodeBase {
-        public enum State_ {
+        public enum Activity_ {
             Inactive,
             Activating,
             Active,
             Deactivating,
         }
 
-        // State
-        public State_ State { get; private protected set; } = State_.Inactive;
+        // Activity
+        public Activity_ Activity { get; private protected set; } = Activity_.Inactive;
         // Owner
         private protected object? Owner { get; set; }
         // Tree
@@ -89,43 +89,43 @@ namespace System {
             (this as IDisposable)?.Dispose();
         }
 
-        // Activate
-        internal void Activate(ITree<TThis> owner, object? argument) {
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( State is State_.Inactive );
+        // SetOwner
+        internal void SetOwner(ITree<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
             Owner = owner;
             Activate( argument );
         }
-        internal void Deactivate(ITree<TThis> owner, object? argument) {
-            Assert.Operation.Message( $"Node {this} must be active" ).Valid( State is State_.Active );
+        internal void RemoveOwner(ITree<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
             Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
             Deactivate( argument );
             Owner = null;
         }
 
-        // Activate
-        internal void Activate(TThis owner, object? argument) {
-            if (owner.State is State_.Active) {
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( State is State_.Inactive );
+        // SetOwner
+        internal void SetOwner(TThis owner, object? argument) {
+            if (owner.Activity is Activity_.Active) {
+                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
                 Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
                 Owner = owner;
                 Activate( argument );
             } else {
                 Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( State is State_.Inactive );
+                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
                 Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
                 Owner = owner;
             }
         }
-        internal void Deactivate(TThis owner, object? argument) {
-            if (owner.State is State_.Active) {
-                Assert.Operation.Message( $"Node {this} must be active" ).Valid( State is State_.Active );
+        internal void RemoveOwner(TThis owner, object? argument) {
+            if (owner.Activity is Activity_.Active) {
+                Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
                 Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
                 Deactivate( argument );
                 Owner = null;
             } else {
                 Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
-                Assert.Operation.Message( $"Node {this} must be active" ).Valid( State is State_.Inactive );
+                Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Inactive );
                 Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
                 Owner = null;
             }
@@ -133,7 +133,7 @@ namespace System {
 
         // Activate
         private void Activate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( State is State_.Inactive );
+            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantActivateEvent?.Invoke( (TThis) this, argument );
                 ancestor.OnBeforeDescendantActivate( (TThis) this, argument );
@@ -142,12 +142,12 @@ namespace System {
                 OnBeforeActivateEvent?.Invoke( argument );
                 OnBeforeActivate( argument );
                 {
-                    State = State_.Activating;
+                    Activity = Activity_.Activating;
                     OnActivate( argument );
                     foreach (var child in Children) {
                         child.Activate( argument );
                     }
-                    State = State_.Active;
+                    Activity = Activity_.Active;
                 }
                 OnAfterActivate( argument );
                 OnAfterActivateEvent?.Invoke( argument );
@@ -158,7 +158,7 @@ namespace System {
             }
         }
         private void Deactivate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must be active" ).Valid( State is State_.Active );
+            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
             foreach (var ancestor in Ancestors.Reverse()) {
                 ancestor.OnBeforeDescendantDeactivateEvent?.Invoke( (TThis) this, argument );
                 ancestor.OnBeforeDescendantDeactivate( (TThis) this, argument );
@@ -167,12 +167,12 @@ namespace System {
                 OnBeforeDeactivateEvent?.Invoke( argument );
                 OnBeforeDeactivate( argument );
                 {
-                    State = State_.Deactivating;
+                    Activity = Activity_.Deactivating;
                     foreach (var child in Children.Reverse()) {
                         child.Deactivate( argument );
                     }
                     OnDeactivate( argument );
-                    State = State_.Inactive;
+                    Activity = Activity_.Inactive;
                 }
                 OnAfterDeactivate( argument );
                 OnAfterDeactivateEvent?.Invoke( argument );
@@ -208,12 +208,12 @@ namespace System {
             Assert.Operation.Message( $"Node {this} must have no child {child} node" ).Valid( !Children.Contains( child ) );
             Children_.Add( child );
             Sort( Children_ );
-            child.Activate( (TThis) this, argument );
+            child.SetOwner( (TThis) this, argument );
         }
         protected virtual void RemoveChild(TThis child, object? argument = null) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Node {this} must have child {child} node" ).Valid( Children.Contains( child ) );
-            child.Deactivate( (TThis) this, argument );
+            child.RemoveOwner( (TThis) this, argument );
             Children_.Remove( child );
         }
         protected bool RemoveChild(Func<TThis, bool> predicate, object? argument = null) {
@@ -239,10 +239,10 @@ namespace System {
         }
         protected void RemoveSelf(object? argument = null) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            if (Owner is TThis parent) {
-                parent.RemoveChild( (TThis) this, argument );
+            if (Parent != null) {
+                Parent.RemoveChild( (TThis) this, argument );
             } else {
-                ((ITree<TThis>) Owner).SetRoot( null, argument );
+                Tree!.SetRoot( null, argument );
             }
         }
 

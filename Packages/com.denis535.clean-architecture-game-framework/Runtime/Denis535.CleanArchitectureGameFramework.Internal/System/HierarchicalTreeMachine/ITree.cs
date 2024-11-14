@@ -17,12 +17,12 @@ namespace System {
         // Helpers
         protected static void SetRoot(ITree<T> tree, T? root, object? argument) {
             if (tree.Root != null) {
-                tree.Root.Deactivate( tree, argument );
+                tree.Root.RemoveOwner( tree, argument );
                 tree.Root = null;
             }
             if (root != null) {
                 tree.Root = root;
-                tree.Root.Activate( tree, argument );
+                tree.Root.SetOwner( tree, argument );
             }
         }
 
