@@ -5,15 +5,15 @@ namespace System {
     using System.Text;
 
     public abstract class StateBase {
-        public enum State_ {
+        public enum Activity_ {
             Inactive,
             Activating,
             Active,
             Deactivating,
         }
 
-        // State
-        public State_ State { get; private protected set; } = State_.Inactive;
+        // Activity
+        public Activity_ Activity { get; private protected set; } = Activity_.Inactive;
         // Owner
         private protected IStateful? Owner { get; set; }
         // Stateful
@@ -41,15 +41,15 @@ namespace System {
             (this as IDisposable)?.Dispose();
         }
 
-        // Activate
-        internal void Activate(IStateful<TThis> owner, object? argument) {
-            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( State is State_.Inactive );
+        // SetOwner
+        internal void SetOwner(IStateful<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             Assert.Operation.Message( $"State {this} must have no owner" ).Valid( Owner == null );
             Owner = owner;
             Activate( argument );
         }
-        internal void Deactivate(IStateful<TThis> owner, object? argument) {
-            Assert.Operation.Message( $"State {this} must be active" ).Valid( State is State_.Active );
+        internal void RemoveOwner(IStateful<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"State {this} must be active" ).Valid( Activity is Activity_.Active );
             Assert.Operation.Message( $"State {this} must have {owner} owner" ).Valid( Owner == owner );
             Deactivate( argument );
             Owner = null;
@@ -57,28 +57,28 @@ namespace System {
 
         // Activate
         private void Activate(object? argument) {
-            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( State is State_.Inactive );
+            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             {
                 OnBeforeActivateEvent?.Invoke( argument );
                 OnBeforeActivate( argument );
                 {
-                    State = State_.Activating;
+                    Activity = Activity_.Activating;
                     OnActivate( argument );
-                    State = State_.Active;
+                    Activity = Activity_.Active;
                 }
                 OnAfterActivate( argument );
                 OnAfterActivateEvent?.Invoke( argument );
             }
         }
         private void Deactivate(object? argument) {
-            Assert.Operation.Message( $"State {this} must be active" ).Valid( State is State_.Active );
+            Assert.Operation.Message( $"State {this} must be active" ).Valid( Activity is Activity_.Active );
             {
                 OnBeforeDeactivateEvent?.Invoke( argument );
                 OnBeforeDeactivate( argument );
                 {
-                    State = State_.Deactivating;
+                    Activity = Activity_.Deactivating;
                     OnDeactivate( argument );
-                    State = State_.Inactive;
+                    Activity = Activity_.Inactive;
                 }
                 OnAfterDeactivate( argument );
                 OnAfterDeactivateEvent?.Invoke( argument );

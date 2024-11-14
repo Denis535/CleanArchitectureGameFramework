@@ -84,7 +84,7 @@ namespace UnityEngine.Framework {
         protected virtual void SetPlayList(UIPlayListBase? playList, object? argument = null) {
             if (playList != null) {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
-                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.State is StateBase.State_.Inactive );
+                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is StateBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 IStateful<UIPlayListBase>.SetState( this, playList, argument );
             } else {

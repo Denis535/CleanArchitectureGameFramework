@@ -17,12 +17,12 @@ namespace System {
         // Helpers
         protected static void SetState(IStateful<T> stateful, T? state, object? argument) {
             if (stateful.State != null) {
-                stateful.State.Deactivate( stateful, argument );
+                stateful.State.RemoveOwner( stateful, argument );
                 stateful.State = null;
             }
             if (state != null) {
                 stateful.State = state;
-                stateful.State.Activate( stateful, argument );
+                stateful.State.SetOwner( stateful, argument );
             }
         }
 
