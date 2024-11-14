@@ -35,12 +35,12 @@ namespace UnityEngine.Framework {
         protected override bool AddView(UIViewBase view) {
             Add( view );
             Sort();
-            SetVisibility( Children().Cast<UIViewBase>().ToArray() );
+            SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
         protected override bool RemoveView(UIViewBase view) {
             Remove( view );
-            SetVisibility( Children().Cast<UIViewBase>().ToArray() );
+            SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
 
@@ -48,21 +48,24 @@ namespace UnityEngine.Framework {
         protected virtual void Sort() {
             Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( (UIViewBase) a ), GetOrderOf( (UIViewBase) b ) ) );
         }
+        protected virtual int GetOrderOf(UIViewBase view) {
+            return 0;
+        }
 
         // SetVisibility
-        protected virtual void SetVisibility(UIViewBase[] views) {
-            foreach (var view in views.SkipLast( 1 )) {
+        protected virtual void SetVisibility(IReadOnlyList<VisualElement> views) {
+            foreach (var view in views.Cast<UIViewBase>().SkipLast( 1 )) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
-            for (var i = 0; i < views.Length; i++) {
-                var view = views[ i ];
-                var next = views.ElementAtOrDefault( i + 1 );
+            for (var i = 0; i < views.Count; i++) {
+                var view = (UIViewBase) views[ i ];
+                var next = (UIViewBase) views.ElementAtOrDefault( i + 1 );
                 SetVisibility( view, next );
             }
             if (views.Any()) {
-                var view = views.Last();
+                var view = (UIViewBase) views.Last();
                 if (!view.HasFocusedElement()) {
                     if (!view.LoadFocus()) {
                         view.InitFocus();
@@ -79,13 +82,6 @@ namespace UnityEngine.Framework {
                 view.SetDisplayed( true );
             }
         }
-
-        // GetOrderOf
-        protected virtual int GetOrderOf(UIViewBase view) {
-            return 0;
-        }
-
-        // GetLayerOf
         protected virtual int GetLayerOf(UIViewBase view) {
             return 0;
         }
