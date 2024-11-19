@@ -28,12 +28,12 @@ namespace UnityEngine.Framework {
     }
     // ThingBase
     public abstract class ThingBase : EntityBase {
-
-        public abstract bool IsRigidbody { get; set; }
-
     }
     // VehicleBase
     public abstract class VehicleBase : EntityBase {
+    }
+    // WorldBase
+    public abstract class WorldBase : EntityBase {
     }
     // IDamageable
     public interface IDamageable {
