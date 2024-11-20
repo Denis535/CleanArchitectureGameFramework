@@ -4,9 +4,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Text;
 
-    public interface IStateful {
-    }
-    public interface IStateful<T> : IStateful where T : StateBase<T> {
+    public interface IStateful<T> where T : StateBase<T> {
 
         // State
         protected T? State { get; set; }
