@@ -4,9 +4,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Text;
 
-    public interface ITree {
-    }
-    public interface ITree<T> : ITree where T : NodeBase<T> {
+    public interface ITree<T> where T : NodeBase<T> {
 
         // Root
         protected T? Root { get; set; }

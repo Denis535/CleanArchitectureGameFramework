@@ -34,7 +34,7 @@ namespace UnityEngine.Framework {
         protected internal virtual void SetWidget(UIWidgetBase? widget, object? argument = null) {
             if (widget != null) {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
-                Assert.Argument.Message( $"Argument 'widget' ({widget}) must be inactive" ).Valid( widget.Activity is NodeBase.Activity_.Inactive );
+                Assert.Argument.Message( $"Argument 'widget' ({widget}) must be inactive" ).Valid( widget.Activity is UIWidgetBase.Activity_.Inactive );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );

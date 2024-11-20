@@ -6,7 +6,7 @@ namespace System {
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
-    public abstract class NodeBase {
+    public abstract class NodeBase<TThis> where TThis : NodeBase<TThis> {
         public enum Activity_ {
             Inactive,
             Activating,
@@ -15,18 +15,18 @@ namespace System {
         }
 
         // Activity
-        public Activity_ Activity { get; private protected set; } = Activity_.Inactive;
+        public Activity_ Activity { get; private set; } = Activity_.Inactive;
         // Owner
-        private protected object? Owner { get; set; }
+        private object? Owner { get; set; }
         // Tree
-        public ITree? Tree => Owner as ITree;
+        public ITree<TThis>? Tree => Owner as ITree<TThis>;
         // Root
         [MemberNotNullWhen( false, nameof( Parent ) )] public bool IsRoot => Parent == null;
-        public NodeBase Root => Parent?.Root ?? this;
+        public TThis Root => Parent?.Root ?? (TThis) this;
         // Parent
-        public NodeBase? Parent => Owner as NodeBase;
+        public TThis? Parent => Owner as TThis;
         // Ancestors
-        public IEnumerable<NodeBase> Ancestors {
+        public IEnumerable<TThis> Ancestors {
             get {
                 if (Parent != null) {
                     yield return Parent;
@@ -34,12 +34,12 @@ namespace System {
                 }
             }
         }
-        public IEnumerable<NodeBase> AncestorsAndSelf => Ancestors.Prepend( this );
+        public IEnumerable<TThis> AncestorsAndSelf => Ancestors.Prepend( (TThis) this );
         // Children
-        private protected List<NodeBase> Children_ { get; } = new List<NodeBase>( 0 );
-        public IReadOnlyList<NodeBase> Children => Children_;
+        private List<TThis> Children_ { get; } = new List<TThis>( 0 );
+        public IReadOnlyList<TThis> Children => Children_;
         // Descendants
-        public IEnumerable<NodeBase> Descendants {
+        public IEnumerable<TThis> Descendants {
             get {
                 foreach (var child in Children) {
                     yield return child;
@@ -47,40 +47,12 @@ namespace System {
                 }
             }
         }
-        public IEnumerable<NodeBase> DescendantsAndSelf => Descendants.Prepend( this );
-
-        // Constructor
-        internal NodeBase() {
-        }
-
-    }
-    public abstract class NodeBase<TThis> : NodeBase where TThis : NodeBase<TThis> {
-
-        // Tree
-        public new ITree<TThis>? Tree => (ITree<TThis>?) base.Tree;
-        // Root
-        [MemberNotNullWhen( false, nameof( Parent ) )] public new bool IsRoot => base.IsRoot;
-        public new TThis Root => (TThis) base.Root;
-        // Parent
-        public new TThis? Parent => (TThis?) base.Parent;
-        // Ancestors
-        public new IEnumerable<TThis> Ancestors => base.Ancestors.Cast<TThis>();
-        public new IEnumerable<TThis> AncestorsAndSelf => base.AncestorsAndSelf.Cast<TThis>();
-        // Children
-        public new IEnumerable<TThis> Children => base.Children.Cast<TThis>();
-        // Descendants
-        public new IEnumerable<TThis> Descendants => base.Descendants.Cast<TThis>();
-        public new IEnumerable<TThis> DescendantsAndSelf => base.DescendantsAndSelf.Cast<TThis>();
+        public IEnumerable<TThis> DescendantsAndSelf => Descendants.Prepend( (TThis) this );
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
         public event Action<object?>? OnAfterActivateEvent;
         public event Action<object?>? OnBeforeDeactivateEvent;
         public event Action<object?>? OnAfterDeactivateEvent;
-        // OnDescendantActivate
-        public event Action<TThis, object?>? OnBeforeDescendantActivateEvent;
-        public event Action<TThis, object?>? OnAfterDescendantActivateEvent;
-        public event Action<TThis, object?>? OnBeforeDescendantDeactivateEvent;
-        public event Action<TThis, object?>? OnAfterDescendantDeactivateEvent;
 
         // Constructor
         public NodeBase() {
@@ -134,54 +106,48 @@ namespace System {
         // Activate
         private void Activate(object? argument) {
             Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-            foreach (var ancestor in Ancestors.Reverse()) {
-                ancestor.OnBeforeDescendantActivateEvent?.Invoke( (TThis) this, argument );
-                ancestor.OnBeforeDescendantActivate( (TThis) this, argument );
-            }
+            BeforeActivate( argument );
+            Activity = Activity_.Activating;
             {
-                OnBeforeActivateEvent?.Invoke( argument );
-                OnBeforeActivate( argument );
-                {
-                    Activity = Activity_.Activating;
-                    OnActivate( argument );
-                    foreach (var child in Children) {
-                        child.Activate( argument );
-                    }
-                    Activity = Activity_.Active;
+                OnActivate( argument );
+                foreach (var child in Children) {
+                    child.Activate( argument );
                 }
-                OnAfterActivate( argument );
-                OnAfterActivateEvent?.Invoke( argument );
             }
-            foreach (var ancestor in Ancestors) {
-                ancestor.OnAfterDescendantActivate( (TThis) this, argument );
-                ancestor.OnAfterDescendantActivateEvent?.Invoke( (TThis) this, argument );
-            }
+            Activity = Activity_.Active;
+            AfterActivate( argument );
         }
         private void Deactivate(object? argument) {
             Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
-            foreach (var ancestor in Ancestors.Reverse()) {
-                ancestor.OnBeforeDescendantDeactivateEvent?.Invoke( (TThis) this, argument );
-                ancestor.OnBeforeDescendantDeactivate( (TThis) this, argument );
-            }
+            BeforeDeactivate( argument );
+            Activity = Activity_.Deactivating;
             {
-                OnBeforeDeactivateEvent?.Invoke( argument );
-                OnBeforeDeactivate( argument );
-                {
-                    Activity = Activity_.Deactivating;
-                    foreach (var child in Children.Reverse()) {
-                        child.Deactivate( argument );
-                    }
-                    OnDeactivate( argument );
-                    Activity = Activity_.Inactive;
+                foreach (var child in Children.Reverse()) {
+                    child.Deactivate( argument );
                 }
-                OnAfterDeactivate( argument );
-                OnAfterDeactivateEvent?.Invoke( argument );
+                OnDeactivate( argument );
             }
-            foreach (var ancestor in Ancestors) {
-                ancestor.OnAfterDescendantDeactivate( (TThis) this, argument );
-                ancestor.OnAfterDescendantDeactivateEvent?.Invoke( (TThis) this, argument );
-            }
+            Activity = Activity_.Inactive;
+            AfterDeactivate( argument );
             DisposeWhenDeactivate();
+        }
+
+        // Activate
+        private protected virtual void BeforeActivate(object? argument) {
+            OnBeforeActivateEvent?.Invoke( argument );
+            OnBeforeActivate( argument );
+        }
+        private protected virtual void AfterActivate(object? argument) {
+            OnAfterActivate( argument );
+            OnAfterActivateEvent?.Invoke( argument );
+        }
+        private protected virtual void BeforeDeactivate(object? argument) {
+            OnBeforeDeactivateEvent?.Invoke( argument );
+            OnBeforeDeactivate( argument );
+        }
+        private protected virtual void AfterDeactivate(object? argument) {
+            OnAfterDeactivate( argument );
+            OnAfterDeactivateEvent?.Invoke( argument );
         }
 
         // OnActivate
@@ -195,12 +161,6 @@ namespace System {
         protected abstract void OnDeactivate(object? argument);
         protected virtual void OnAfterDeactivate(object? argument) {
         }
-
-        // OnDescendantActivate
-        protected abstract void OnBeforeDescendantActivate(TThis descendant, object? argument);
-        protected abstract void OnAfterDescendantActivate(TThis descendant, object? argument);
-        protected abstract void OnBeforeDescendantDeactivate(TThis descendant, object? argument);
-        protected abstract void OnAfterDescendantDeactivate(TThis descendant, object? argument);
 
         // AddChild
         protected virtual void AddChild(TThis child, object? argument = null) {
@@ -247,9 +207,58 @@ namespace System {
         }
 
         // Sort
-        protected virtual void Sort(List<NodeBase> children) {
+        protected virtual void Sort(List<TThis> children) {
             //children.Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( a ), GetOrderOf( b ) ) );
         }
+
+    }
+    public abstract class NodeBase2<TThis> : NodeBase<TThis> where TThis : NodeBase2<TThis> {
+
+        // OnDescendantActivate
+        public event Action<TThis, object?>? OnBeforeDescendantActivateEvent;
+        public event Action<TThis, object?>? OnAfterDescendantActivateEvent;
+        public event Action<TThis, object?>? OnBeforeDescendantDeactivateEvent;
+        public event Action<TThis, object?>? OnAfterDescendantDeactivateEvent;
+
+        // Constructor
+        public NodeBase2() {
+        }
+
+        // Activate
+        private protected sealed override void BeforeActivate(object? argument) {
+            foreach (var ancestor in Ancestors.Reverse()) {
+                ancestor.OnBeforeDescendantActivateEvent?.Invoke( (TThis) this, argument );
+                ancestor.OnBeforeDescendantActivate( (TThis) this, argument );
+            }
+            base.BeforeActivate( argument );
+        }
+        private protected sealed override void AfterActivate(object? argument) {
+            base.AfterActivate( argument );
+            foreach (var ancestor in Ancestors) {
+                ancestor.OnAfterDescendantActivate( (TThis) this, argument );
+                ancestor.OnAfterDescendantActivateEvent?.Invoke( (TThis) this, argument );
+            }
+        }
+        private protected sealed override void BeforeDeactivate(object? argument) {
+            foreach (var ancestor in Ancestors.Reverse()) {
+                ancestor.OnBeforeDescendantDeactivateEvent?.Invoke( (TThis) this, argument );
+                ancestor.OnBeforeDescendantDeactivate( (TThis) this, argument );
+            }
+            base.BeforeDeactivate( argument );
+        }
+        private protected sealed override void AfterDeactivate(object? argument) {
+            base.AfterDeactivate( argument );
+            foreach (var ancestor in Ancestors) {
+                ancestor.OnAfterDescendantDeactivate( (TThis) this, argument );
+                ancestor.OnAfterDescendantDeactivateEvent?.Invoke( (TThis) this, argument );
+            }
+        }
+
+        // OnDescendantActivate
+        protected abstract void OnBeforeDescendantActivate(TThis descendant, object? argument);
+        protected abstract void OnAfterDescendantActivate(TThis descendant, object? argument);
+        protected abstract void OnBeforeDescendantDeactivate(TThis descendant, object? argument);
+        protected abstract void OnAfterDescendantDeactivate(TThis descendant, object? argument);
 
     }
 }

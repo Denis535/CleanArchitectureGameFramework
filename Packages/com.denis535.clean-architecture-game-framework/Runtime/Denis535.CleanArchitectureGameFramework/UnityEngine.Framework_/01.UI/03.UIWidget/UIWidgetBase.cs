@@ -7,7 +7,7 @@ namespace UnityEngine.Framework {
     using System.Threading;
     using UnityEngine;
 
-    public abstract class UIWidgetBase : NodeBase<UIWidgetBase>, IDisposable {
+    public abstract class UIWidgetBase : NodeBase2<UIWidgetBase>, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
