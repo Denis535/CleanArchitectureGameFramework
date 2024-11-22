@@ -3,6 +3,7 @@ namespace UnityEngine.Framework {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.StateMachine;
     using System.Threading;
     using UnityEngine;
 

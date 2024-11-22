@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace System {
+namespace System.TreeMachine {
     using System;
     using System.Collections.Generic;
     using System.Text;

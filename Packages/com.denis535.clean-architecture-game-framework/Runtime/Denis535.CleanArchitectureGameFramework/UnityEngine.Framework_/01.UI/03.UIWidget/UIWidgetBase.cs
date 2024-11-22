@@ -5,6 +5,7 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+    using System.TreeMachine;
     using UnityEngine;
 
     public abstract class UIWidgetBase : NodeBase2<UIWidgetBase>, IDisposable {
