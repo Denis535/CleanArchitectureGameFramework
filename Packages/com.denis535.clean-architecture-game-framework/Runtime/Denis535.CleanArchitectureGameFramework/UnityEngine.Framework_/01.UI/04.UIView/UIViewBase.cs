@@ -68,7 +68,7 @@ namespace UnityEngine.Framework {
         }
 
         // AddViewRecursive
-        internal void AddViewRecursive(UIViewBase view) {
+        public void AddViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -77,7 +77,7 @@ namespace UnityEngine.Framework {
             }
             Assert.Operation.Message( $"View {view} was not added" ).Valid( view.IsAttachedToParent );
         }
-        internal void RemoveViewRecursive(UIViewBase view) {
+        public void RemoveViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
