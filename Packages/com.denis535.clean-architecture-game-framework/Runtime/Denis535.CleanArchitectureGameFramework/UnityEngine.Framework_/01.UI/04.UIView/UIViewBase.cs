@@ -22,20 +22,17 @@ namespace UnityEngine.Framework {
                 return disposeCancellationTokenSource.Token;
             }
         }
-        // IsAttached
-        public bool IsAttached => panel != null;
-        // IsShown
-        public bool IsShown => parent != null;
+        // IsAttachedToPanel
+        public bool IsAttachedToPanel => panel != null;
+        // IsAttachedToParent
+        public bool IsAttachedToParent => parent != null;
         // Parent
         public UIViewBase? Parent2 {
             get {
                 return GetParent( this );
                 static UIViewBase? GetParent(VisualElement element) {
-                    if (element.parent is UIViewBase parent_) {
-                        return parent_;
-                    }
                     if (element.parent != null) {
-                        return GetParent( element.parent );
+                        return (element.parent as UIViewBase) ?? GetParent( element.parent );
                     }
                     return null;
                 }
@@ -61,60 +58,66 @@ namespace UnityEngine.Framework {
         public UIViewBase() {
         }
         public virtual void Dispose() {
-            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"View {this} must be non-attached" ).Valid( !IsAttached );
             foreach (var child in Children2) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
             }
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"View {this} must be non-attached to panel" ).Valid( !IsAttachedToPanel );
             disposeCancellationTokenSource?.Cancel();
             IsDisposed = true;
         }
 
         // AddViewRecursive
-        public void AddViewRecursive(UIViewBase view) {
+        internal void AddViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
-            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-shown" ).Valid( !view.IsShown );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            if (AddViewRecursive( this, view )) {
+            if (TryAddViewRecursive( view )) {
                 return;
             }
-            Assert.Operation.Message( $"Can not add {view} view" ).Valid( view.IsShown );
+            Assert.Operation.Message( $"View {view} was not added" ).Valid( view.IsAttachedToParent );
         }
-        public void RemoveViewRecursive(UIViewBase view) {
+        internal void RemoveViewRecursive(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
-            Assert.Argument.Message( $"Argument 'view' ({view}) must be shown" ).Valid( view.IsShown );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            if (RemoveViewRecursive( this, view )) {
+            if (TryRemoveViewRecursive( view )) {
                 return;
             }
-            Assert.Operation.Message( $"Can not remove {view} view" ).Valid( !view.IsShown );
+            Assert.Operation.Message( $"View {view} was not removed" ).Valid( !view.IsAttachedToParent );
         }
 
-        // AddView
-        protected virtual bool AddView(UIViewBase view) {
-            return false;
+        // TryAddViewRecursive
+        private bool TryAddViewRecursive(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (TryAddView( view )) {
+                return true;
+            }
+            return Parent2?.TryAddViewRecursive( view ) ?? false;
         }
-        protected virtual bool RemoveView(UIViewBase view) {
-            return false;
+        private bool TryRemoveViewRecursive(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (TryRemoveView( view )) {
+                return true;
+            }
+            return Parent2?.TryRemoveViewRecursive( view ) ?? false;
         }
 
-        // Helpers
-        private static bool AddViewRecursive(VisualElement element, UIViewBase view) {
-            if (element is UIViewBase element_ && element_.AddView( view )) {
-                return true;
-            }
-            if (element.parent != null) {
-                return AddViewRecursive( element.parent, view );
-            }
+        // TryAddView
+        protected virtual bool TryAddView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             return false;
         }
-        private static bool RemoveViewRecursive(VisualElement element, UIViewBase view) {
-            if (element is UIViewBase element_ && element_.RemoveView( view )) {
-                return true;
-            }
-            if (element.parent != null) {
-                return RemoveViewRecursive( element.parent, view );
-            }
+        protected virtual bool TryRemoveView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             return false;
         }
 

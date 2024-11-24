@@ -14,14 +14,31 @@ namespace System.TreeMachine {
 
         // Helpers
         protected static void SetRoot(ITree<T> tree, T? root, object? argument) {
-            if (tree.Root != null) {
-                tree.Root.RemoveOwner( tree, argument );
-                tree.Root = null;
-            }
             if (root != null) {
-                tree.Root = root;
-                tree.Root.SetOwner( tree, argument );
+                Assert.Argument.Message( $"Argument 'root' ({root}) must be inactive" ).Valid( root.Activity is NodeBase<T>.Activity_.Inactive );
+                if (tree.Root != null) {
+                    RemoveRootInternal( tree, tree.Root, argument );
+                }
+                SetRootInternal( tree, root, argument );
+            } else {
+                if (tree.Root != null) {
+                    RemoveRootInternal( tree, tree.Root, argument );
+                }
             }
+        }
+        protected static void SetRootInternal(ITree<T> tree, T root, object? argument) {
+            Assert.Argument.Message( $"Argument 'root' must be non-null" ).NotNull( root != null );
+            Assert.Argument.Message( $"Argument 'root' must be active" ).Valid( root.Activity is NodeBase<T>.Activity_.Inactive );
+            Assert.Operation.Message( $"Tree {tree} must have no root node" ).Valid( tree.Root == null );
+            tree.Root = root;
+            tree.Root.Attach( tree, argument );
+        }
+        protected static void RemoveRootInternal(ITree<T> tree, T root, object? argument) {
+            Assert.Argument.Message( $"Argument 'root' must be non-null" ).NotNull( root != null );
+            Assert.Argument.Message( $"Argument 'root' must be active" ).Valid( root.Activity is NodeBase<T>.Activity_.Active );
+            Assert.Operation.Message( $"Tree {tree} must have root {root} node" ).Valid( tree.Root == root );
+            tree.Root.Detach( tree, argument );
+            tree.Root = null;
         }
 
     }

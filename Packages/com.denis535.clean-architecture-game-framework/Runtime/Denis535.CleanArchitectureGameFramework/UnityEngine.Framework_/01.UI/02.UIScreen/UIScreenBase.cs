@@ -39,12 +39,19 @@ namespace UnityEngine.Framework {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-                ITree<UIWidgetBase>.SetRoot( this, widget, argument );
+                if (Widget != null) {
+                    var prevWidget = Widget;
+                    ITree<UIWidgetBase>.RemoveRootInternal( this, prevWidget, argument );
+                    prevWidget.Dispose();
+                }
+                ITree<UIWidgetBase>.SetRootInternal( this, widget, argument );
             } else {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                Assert.Operation.Message( $"Screen {this} must have widget" ).Valid( Widget != null );
-                ITree<UIWidgetBase>.SetRoot( this, null, argument );
+                if (Widget != null) {
+                    var prevWidget = Widget;
+                    ITree<UIWidgetBase>.RemoveRootInternal( this, prevWidget, argument );
+                    prevWidget.Dispose();
+                }
             }
         }
 

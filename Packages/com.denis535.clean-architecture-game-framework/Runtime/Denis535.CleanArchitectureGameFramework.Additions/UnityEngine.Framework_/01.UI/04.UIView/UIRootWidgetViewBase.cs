@@ -32,13 +32,13 @@ namespace UnityEngine.Framework {
         }
 
         // AddView
-        protected override bool AddView(UIViewBase view) {
+        protected override bool TryAddView(UIViewBase view) {
             Add( view );
             Sort();
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
-        protected override bool RemoveView(UIViewBase view) {
+        protected override bool TryRemoveView(UIViewBase view) {
             Remove( view );
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
