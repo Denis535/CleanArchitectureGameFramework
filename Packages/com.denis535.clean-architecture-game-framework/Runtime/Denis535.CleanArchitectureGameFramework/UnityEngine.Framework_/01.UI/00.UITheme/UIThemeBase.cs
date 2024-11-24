@@ -73,7 +73,6 @@ namespace UnityEngine.Framework {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
             Assert.Operation.Message( $"Theme {this} must have no play list" ).Valid( PlayList == null );
             base.Dispose();
         }
@@ -87,12 +86,23 @@ namespace UnityEngine.Framework {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is UIPlayListBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<UIPlayListBase>.SetState( this, playList, argument );
+                if (PlayList != null) {
+                    RemoveStateInternal( PlayList, argument );
+                }
+                SetStateInternal( playList, argument );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<UIPlayListBase>.SetState( this, null, argument );
-                Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
+                if (PlayList != null) {
+                    RemoveStateInternal( PlayList, argument );
+                }
             }
+        }
+        private void SetStateInternal(UIPlayListBase playList, object? argument) {
+            IStateful<UIPlayListBase>.SetStateInternal( this, playList, argument );
+        }
+        private void RemoveStateInternal(UIPlayListBase playList, object? argument) {
+            IStateful<UIPlayListBase>.RemoveStateInternal( this, playList, argument );
+            playList.Dispose();
         }
 
         // Play
