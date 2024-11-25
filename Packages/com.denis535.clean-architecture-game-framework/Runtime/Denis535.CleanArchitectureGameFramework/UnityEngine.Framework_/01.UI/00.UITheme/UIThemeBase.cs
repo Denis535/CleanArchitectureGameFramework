@@ -4,6 +4,8 @@ namespace UnityEngine.Framework {
     using System.Collections;
     using System.Collections.Generic;
     using System.StateMachine;
+    using System.Threading;
+    using System.Threading.Tasks;
     using UnityEngine;
 
     public abstract class UIThemeBase : DisposableBase, IStateful<UIPlayListBase> {
@@ -106,14 +108,27 @@ namespace UnityEngine.Framework {
         }
 
         // Play
-        internal void Play(AudioClip clip) {
+        protected internal async Task PlayAsync(AudioClip clip, CancellationToken cancellationToken) {
+            Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
+            try {
+                Play( clip );
+                while (IsPlaying) {
+                    await Awaitable.NextFrameAsync( cancellationToken );
+                }
+            } finally {
+                Stop();
+            }
+        }
+        protected internal void Play(AudioClip clip) {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
             AudioSource.clip = clip;
             AudioSource.Play();
         }
-        internal void Stop() {
+        protected internal void Stop() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Theme {this} must be running" ).Valid( IsRunning );
             AudioSource.Stop();
             AudioSource.clip = null;
         }
