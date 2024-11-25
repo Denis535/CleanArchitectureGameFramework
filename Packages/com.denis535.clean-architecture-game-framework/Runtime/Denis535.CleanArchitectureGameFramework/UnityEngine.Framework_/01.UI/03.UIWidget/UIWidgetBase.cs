@@ -24,10 +24,27 @@ namespace UnityEngine.Framework {
             }
         }
         // Screen
-        protected UIScreenBase? Screen => (UIScreenBase?) Tree;
+        protected UIScreenBase? Screen {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                Assert.Operation.Message( $"Widget {this} must be active or activating or deactivating" ).Valid( Activity is Activity_.Active or Activity_.Activating or Activity_.Deactivating );
+                return (UIScreenBase?) Tree;
+            }
+        }
         // View
-        [MemberNotNullWhen( true, "View" )] public virtual bool IsViewable => false;
-        protected internal virtual UIViewBase? View => null;
+        [MemberNotNullWhen( true, "View" )]
+        public virtual bool IsViewable {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return false;
+            }
+        }
+        protected internal virtual UIViewBase? View {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return null;
+            }
+        }
 
         // Constructor
         public UIWidgetBase() {
@@ -38,9 +55,6 @@ namespace UnityEngine.Framework {
             }
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-            if (IsViewable) {
-                Assert.Operation.Message( $"View {View} must be disposed" ).Valid( View.IsDisposed );
-            }
             disposeCancellationTokenSource?.Cancel();
             IsDisposed = true;
         }
@@ -53,10 +67,12 @@ namespace UnityEngine.Framework {
 
         // AddChild
         protected override void AddChild(UIWidgetBase child, object? argument = null) {
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.AddChild( child, argument );
         }
         protected override void RemoveChild(UIWidgetBase child, object? argument = null) {
+            Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.RemoveChild( child, argument );
             child.Dispose();
@@ -65,15 +81,42 @@ namespace UnityEngine.Framework {
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase where TView : notnull, UIViewBase {
 
+        private TView view = default!;
+
         // View
-        public sealed override bool IsViewable => true;
-        protected internal sealed override UIViewBase? View => View2;
-        protected internal TView View2 { get; init; } = default!;
+        public sealed override bool IsViewable {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return true;
+            }
+        }
+        protected internal sealed override UIViewBase? View {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return View2;
+            }
+        }
+        protected internal TView View2 {
+            get {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return view;
+            }
+            init {
+                Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                view = value;
+            }
+        }
 
         // Constructor
         public UIWidgetBase() {
         }
         public override void Dispose() {
+            foreach (var child in Children) {
+                Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );
+            }
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"Widget {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
+            Assert.Operation.Message( $"Widget {this} must be released" ).Valid( View2.IsDisposed );
             base.Dispose();
         }
 
@@ -81,13 +124,13 @@ namespace UnityEngine.Framework {
         protected virtual void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-root" ).NotDisposed( !IsRoot );
-            Assert.Operation.Message( $"Widget {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
+            Assert.Operation.Message( $"Parent {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
             Parent.View.AddViewRecursive( View2 );
         }
         protected virtual void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-root" ).NotDisposed( !IsRoot );
-            Assert.Operation.Message( $"Widget {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
+            Assert.Operation.Message( $"Parent {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
             Parent.View.RemoveViewRecursive( View2 );
         }
 

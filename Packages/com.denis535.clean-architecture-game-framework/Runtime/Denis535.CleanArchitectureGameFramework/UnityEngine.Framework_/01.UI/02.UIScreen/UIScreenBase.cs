@@ -9,13 +9,24 @@ namespace UnityEngine.Framework {
 
     public abstract class UIScreenBase : DisposableBase, ITree<UIWidgetBase> {
 
+        private UIWidgetBase? widget;
+
         // Document
         protected internal UIDocument Document { get; }
         // AudioSource
         protected internal AudioSource AudioSource { get; }
         // Widget
         UIWidgetBase? ITree<UIWidgetBase>.Root { get => Widget; set => Widget = value; }
-        protected internal UIWidgetBase? Widget { get; private set; }
+        protected internal UIWidgetBase? Widget {
+            get {
+                Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return widget;
+            }
+            private set {
+                Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                widget = value;
+            }
+        }
 
         // Constructor
         public UIScreenBase(UIDocument document, AudioSource audioSource) {
@@ -25,6 +36,8 @@ namespace UnityEngine.Framework {
         public override void Dispose() {
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
+            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( Document == false || Document.rootVisualElement == null || Document.rootVisualElement.childCount == 0 );
+            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( AudioSource == false || AudioSource.clip == null );
             base.Dispose();
         }
 

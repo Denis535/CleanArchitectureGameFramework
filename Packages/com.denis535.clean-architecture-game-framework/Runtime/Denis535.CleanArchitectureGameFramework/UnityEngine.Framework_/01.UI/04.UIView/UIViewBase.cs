@@ -7,7 +7,7 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIViewBase : VisualElement {
+    public abstract class UIViewBase : VisualElement, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
@@ -23,12 +23,23 @@ namespace UnityEngine.Framework {
             }
         }
         // IsAttachedToPanel
-        public bool IsAttachedToPanel => panel != null;
+        public bool IsAttachedToPanel {
+            get {
+                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return panel != null;
+            }
+        }
         // IsAttachedToParent
-        public bool IsAttachedToParent => parent != null;
+        public bool IsAttachedToParent {
+            get {
+                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return parent != null;
+            }
+        }
         // Parent
         public UIViewBase? Parent2 {
             get {
+                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 return GetParent( this );
                 static UIViewBase? GetParent(VisualElement element) {
                     if (element.parent != null) {
@@ -41,6 +52,7 @@ namespace UnityEngine.Framework {
         // Children
         public IEnumerable<UIViewBase> Children2 {
             get {
+                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 return GetChildren( this );
                 static IEnumerable<UIViewBase> GetChildren(VisualElement element) {
                     foreach (var child in element.Children()) {

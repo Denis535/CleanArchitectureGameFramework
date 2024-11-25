@@ -10,11 +10,22 @@ namespace UnityEngine.Framework {
 
     public abstract class UIThemeBase : DisposableBase, IStateful<UIPlayListBase> {
 
+        private UIPlayListBase? playList;
+
         // AudioSource
         protected AudioSource AudioSource { get; }
         // PlayList
         UIPlayListBase? IStateful<UIPlayListBase>.State { get => PlayList; set => PlayList = value; }
-        protected internal UIPlayListBase? PlayList { get; private set; }
+        protected internal UIPlayListBase? PlayList {
+            get {
+                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return playList;
+            }
+            private set {
+                Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                playList = value;
+            }
+        }
         // IsRunning
         protected internal bool IsRunning {
             get {
@@ -76,7 +87,7 @@ namespace UnityEngine.Framework {
         public override void Dispose() {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Theme {this} must have no play list" ).Valid( PlayList == null );
-            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
+            Assert.Operation.Message( $"Theme {this} must be released" ).Valid( AudioSource == false || AudioSource.clip == null );
             base.Dispose();
         }
 
