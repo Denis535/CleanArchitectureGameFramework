@@ -102,15 +102,15 @@ namespace UnityEngine.Framework {
             return Theme!.PlayAsync( clip, cancellationToken );
         }
         protected void Play(AudioClip clip) {
-            Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"PlayList {this} must be active or activating" ).Valid( Activity is Activity_.Active or Activity_.Activating );
-            Assert.Operation.Message( $"Theme {this} must be non-running" ).Valid( !IsRunning );
+            Assert.Operation.Message( $"PlayList {this} must be non-running" ).Valid( !IsRunning );
             Theme!.Play( clip );
         }
         protected void Stop() {
-            Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"PlayList {this} must be active or deactivating" ).Valid( Activity is Activity_.Active or Activity_.Deactivating );
-            Assert.Operation.Message( $"Theme {this} must be running" ).Valid( IsRunning );
+            Assert.Operation.Message( $"PlayList {this} must be running" ).Valid( IsRunning );
             Theme!.Stop();
         }
 
