@@ -14,7 +14,7 @@ namespace UnityEngine.Framework {
         }
         public static T __GetView__<T>(this UIWidgetBase<T> widget) where T : notnull, UIViewBase {
             // try not to use this method
-            return widget.View2;
+            return widget.View;
         }
 
     }
