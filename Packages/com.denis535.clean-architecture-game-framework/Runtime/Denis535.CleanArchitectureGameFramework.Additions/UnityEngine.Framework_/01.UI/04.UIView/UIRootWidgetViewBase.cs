@@ -32,13 +32,19 @@ namespace UnityEngine.Framework {
         }
 
         // AddView
-        protected override bool TryAddView(UIViewBase view) {
+        protected internal override bool TryAddView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Add( view );
             Sort();
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
-        protected override bool TryRemoveView(UIViewBase view) {
+        protected internal override bool TryRemoveView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Remove( view );
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;

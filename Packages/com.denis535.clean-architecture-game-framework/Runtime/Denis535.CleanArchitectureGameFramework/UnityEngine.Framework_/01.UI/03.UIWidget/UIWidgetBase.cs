@@ -106,6 +106,42 @@ namespace UnityEngine.Framework {
             child.Dispose();
         }
 
+        // ShowView
+        protected internal virtual void ShowView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            var wasShown = TryShowView( view );
+            Assert.Operation.Message( $"View {view} was not shown" ).Valid( wasShown );
+        }
+        protected internal virtual void HideView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            var wasHidden = TryHideView( view );
+            Assert.Operation.Message( $"View {view} was not hidden" ).Valid( wasHidden );
+        }
+
+        // TryShowView
+        private bool TryShowView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (IsViewable && View.TryAddView( View )) {
+                return true;
+            }
+            return Parent?.TryShowView( view ) ?? false;
+        }
+        private bool TryHideView(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (IsViewable && View.TryRemoveView( View )) {
+                return true;
+            }
+            return Parent?.TryHideView( view ) ?? false;
+        }
+
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase where TView : notnull, UIViewBase {
 
@@ -152,14 +188,12 @@ namespace UnityEngine.Framework {
         protected virtual void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-root" ).NotDisposed( !IsRoot );
-            Assert.Operation.Message( $"Parent {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
-            Parent.View.AddViewRecursive( View );
+            Parent.ShowView( View );
         }
         protected virtual void HideSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-root" ).NotDisposed( !IsRoot );
-            Assert.Operation.Message( $"Parent {Parent} must be viewable" ).NotDisposed( Parent.IsViewable );
-            Parent.View.RemoveViewRecursive( View );
+            Parent.HideView( View );
         }
 
     }
