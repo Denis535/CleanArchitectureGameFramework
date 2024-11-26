@@ -100,22 +100,17 @@ namespace UnityEngine.Framework {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is UIPlayListBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                if (PlayList != null) {
-                    RemoveStateInternal( PlayList, argument );
-                }
-                SetStateInternal( playList, argument );
+                IStateful<UIPlayListBase>.SetState( this, playList, argument );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                if (PlayList != null) {
-                    RemoveStateInternal( PlayList, argument );
-                }
+                IStateful<UIPlayListBase>.SetState( this, playList, argument );
             }
         }
-        private void SetStateInternal(UIPlayListBase playList, object? argument) {
-            IStateful<UIPlayListBase>.SetStateInternal( this, playList, argument );
+        void IStateful<UIPlayListBase>.AddState(UIPlayListBase playList, object? argument) {
+            IStateful<UIPlayListBase>.AddState( this, playList, argument );
         }
-        private void RemoveStateInternal(UIPlayListBase playList, object? argument) {
-            IStateful<UIPlayListBase>.RemoveStateInternal( this, playList, argument );
+        void IStateful<UIPlayListBase>.RemoveState(UIPlayListBase playList, object? argument) {
+            IStateful<UIPlayListBase>.RemoveState( this, playList, argument );
             playList.Dispose();
         }
 

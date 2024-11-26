@@ -52,22 +52,17 @@ namespace UnityEngine.Framework {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                if (Widget != null) {
-                    RemoveRootInternal( Widget, argument );
-                }
-                SetRootInternal( widget, argument );
+                ITree<UIWidgetBase>.SetRoot( this, widget, argument );
             } else {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                if (Widget != null) {
-                    RemoveRootInternal( Widget, argument );
-                }
+                ITree<UIWidgetBase>.SetRoot( this, widget, argument );
             }
         }
-        private void SetRootInternal(UIWidgetBase widget, object? argument) {
-            ITree<UIWidgetBase>.SetRootInternal( this, widget, argument );
+        void ITree<UIWidgetBase>.AddRoot(UIWidgetBase widget, object? argument) {
+            ITree<UIWidgetBase>.AddRoot( this, widget, argument );
         }
-        private void RemoveRootInternal(UIWidgetBase widget, object? argument) {
-            ITree<UIWidgetBase>.RemoveRootInternal( this, widget, argument );
+        void ITree<UIWidgetBase>.RemoveRoot(UIWidgetBase widget, object? argument) {
+            ITree<UIWidgetBase>.RemoveRoot( this, widget, argument );
             widget.Dispose();
         }
 

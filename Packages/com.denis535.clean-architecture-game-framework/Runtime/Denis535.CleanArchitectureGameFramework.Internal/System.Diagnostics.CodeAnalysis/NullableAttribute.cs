@@ -7,26 +7,26 @@ namespace System.Diagnostics.CodeAnalysis {
 
     // https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis
 
+    // Input:  field/property setter/method argument
+    // Output: field/property getter/method result (or out argument)
+
     // AllowNull            - Allows null input
     // DisallowNull         - Disallows null input
 
-    // MaybeNull            - Allows null output
-    // MaybeNull/When       - Allows null output (when result == true/false)
+    // MaybeNull            - Output maybe null
+    // MaybeNull/When       - Output maybe null (when result == true/false)
 
-    // NotNull              - Disallows null output
-    // NotNull/When         - Disallows null output (when result == true/false)
-    // NotNull/If/NotNull   - Disallows null output (if argument != null)
+    // NotNull              - Output is not null
+    // NotNull/When         - Output is not null (when result == true/false)
+    // NotNull/If/NotNull   - Output is not null (if argument != null)
 
-    // MemberNotNull        - Checks that member output is not null
-    // MemberNotNull/When   - Checks that member output is not null (when result == true/false)
+    // MemberNotNull        - Member output is not null
+    // MemberNotNull/When   - Member output is not null (when result == true/false)
 
     // DoesNotReturn        - Throws exception
     // DoesNotReturn/If     - Throws exception (if argument == true/false)
 
-    // Input:  field/property/method argument
-    // Output: field/property/method result, method out argument
-
-    // Input
+    // AllowNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false )]
     //public sealed class AllowNullAttribute : Attribute {
     //}
@@ -34,7 +34,7 @@ namespace System.Diagnostics.CodeAnalysis {
     //public sealed class DisallowNullAttribute : Attribute {
     //}
 
-    // Output/MaybeNull
+    // MaybeNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false )]
     //public sealed class MaybeNullAttribute : Attribute {
     //}
@@ -46,7 +46,7 @@ namespace System.Diagnostics.CodeAnalysis {
     //    }
     //}
 
-    // Output/NotNull
+    // NotNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false )]
     //public sealed class NotNullAttribute : Attribute {
     //}
@@ -65,10 +65,10 @@ namespace System.Diagnostics.CodeAnalysis {
     //    }
     //}
 
-    // Ensure
+    // MemberNotNull
     [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
-    public sealed class MemberNotNullAttribute : Attribute {
+    internal sealed class MemberNotNullAttribute : Attribute {
         public string[] Members { get; }
         public MemberNotNullAttribute(string member) {
             Members = new[] { member };
@@ -79,7 +79,7 @@ namespace System.Diagnostics.CodeAnalysis {
     }
     [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
-    public sealed class MemberNotNullWhenAttribute : Attribute {
+    internal sealed class MemberNotNullWhenAttribute : Attribute {
         public bool ReturnValue { get; }
         public string[] Members { get; }
         public MemberNotNullWhenAttribute(bool returnValue, string member) {
@@ -92,7 +92,7 @@ namespace System.Diagnostics.CodeAnalysis {
         }
     }
 
-    // Ensure
+    // DoesNotReturn
     //[AttributeUsage( AttributeTargets.Method, Inherited = false )]
     //public sealed class DoesNotReturnAttribute : Attribute {
     //}
@@ -103,5 +103,4 @@ namespace System.Diagnostics.CodeAnalysis {
     //        ParameterValue = parameterValue;
     //    }
     //}
-
 }

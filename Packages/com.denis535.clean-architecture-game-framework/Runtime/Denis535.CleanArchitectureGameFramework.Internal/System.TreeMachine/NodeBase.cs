@@ -15,9 +15,9 @@ namespace System.TreeMachine {
         }
 
         // Owner
-        private object? Owner { get; set; } = null;
+        private protected object? Owner { get; private set; } = null;
         // Activity
-        public Activity_ Activity { get; private set; } = Activity_.Inactive;
+        public Activity_ Activity { get; private protected set; } = Activity_.Inactive;
 
         // Tree
         public ITree<TThis>? Tree => (ITree<TThis>?) Root?.Owner;
@@ -51,50 +51,59 @@ namespace System.TreeMachine {
         }
         public IEnumerable<TThis> DescendantsAndSelf => Descendants.Prepend( (TThis) this );
 
-        // OnActivate
-        public event Action<object?>? OnBeforeActivateEvent;
-        public event Action<object?>? OnAfterActivateEvent;
-        public event Action<object?>? OnBeforeDeactivateEvent;
-        public event Action<object?>? OnAfterDeactivateEvent;
+        // OnAttach
+        public event Action<object?>? OnBeforeAttachEvent;
+        public event Action<object?>? OnAfterAttachEvent;
+        public event Action<object?>? OnBeforeDetachEvent;
+        public event Action<object?>? OnAfterDetachEvent;
 
         // Constructor
-        public NodeBase() {
+        private protected NodeBase() {
         }
 
         // Attach
         internal void Attach(ITree<TThis> owner, object? argument) {
-            if (true) {
-                Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
+            Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
+            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
+            {
                 Owner = owner;
+                OnBeforeAttach( argument );
                 OnAttach( argument );
-                Activate( argument );
+                OnAfterAttach( argument );
             }
+            Activate( argument );
         }
         internal void Detach(ITree<TThis> owner, object? argument) {
-            if (true) {
-                Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
-                Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
-                Deactivate( argument );
+            Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
+            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
+            Deactivate( argument );
+            {
+                OnBeforeDetach( argument );
                 OnDetach( argument );
+                OnAfterDetach( argument );
                 Owner = null;
             }
         }
 
         // Attach
         private void Attach(TThis owner, object? argument) {
+            Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
+            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             if (owner.Activity is Activity_.Active) {
-                Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-                Owner = owner;
-                OnAttach( argument );
+                {
+                    Owner = owner;
+                    OnBeforeAttach( argument );
+                    OnAttach( argument );
+                    OnAfterAttach( argument );
+                }
                 Activate( argument );
             } else {
-                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
-                Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-                Owner = owner;
-                OnAttach( argument );
+                {
+                    Owner = owner;
+                    OnBeforeAttach( argument );
+                    OnAttach( argument );
+                    OnAfterAttach( argument );
+                }
             }
         }
         private void Detach(TThis owner, object? argument) {
@@ -102,82 +111,43 @@ namespace System.TreeMachine {
                 Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
                 Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
                 Deactivate( argument );
-                OnDetach( argument );
-                Owner = null;
+                {
+                    OnBeforeDetach( argument );
+                    OnDetach( argument );
+                    OnAfterDetach( argument );
+                    Owner = null;
+                }
             } else {
-                Assert.Argument.Message( $"Argument 'argument' ({argument}) must be null" ).Valid( argument == null );
                 Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
                 Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-                OnDetach( argument );
-                Owner = null;
+                {
+                    OnBeforeDetach( argument );
+                    OnDetach( argument );
+                    OnAfterDetach( argument );
+                    Owner = null;
+                }
             }
         }
 
         // OnAttach
+        protected virtual void OnBeforeAttach(object? argument) {
+            OnBeforeAttachEvent?.Invoke( argument );
+        }
         protected abstract void OnAttach(object? argument);
+        protected virtual void OnAfterAttach(object? argument) {
+            OnAfterAttachEvent?.Invoke( argument );
+        }
+        protected virtual void OnBeforeDetach(object? argument) {
+            OnBeforeDetachEvent?.Invoke( argument );
+        }
         protected abstract void OnDetach(object? argument);
+        protected virtual void OnAfterDetach(object? argument) {
+            OnAfterDetachEvent?.Invoke( argument );
+        }
 
         // Activate
-        private void Activate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Activating );
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-            OnBeforeActivateInternal( argument );
-            Activity = Activity_.Activating;
-            {
-                OnActivate( argument );
-                foreach (var child in Children) {
-                    child.Activate( argument );
-                }
-            }
-            Activity = Activity_.Active;
-            OnAfterActivateInternal( argument );
-        }
-        private void Deactivate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Deactivating );
-            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
-            OnBeforeDeactivateInternal( argument );
-            Activity = Activity_.Deactivating;
-            {
-                foreach (var child in Children.Reverse()) {
-                    child.Deactivate( argument );
-                }
-                OnDeactivate( argument );
-            }
-            Activity = Activity_.Inactive;
-            OnAfterDeactivateInternal( argument );
-        }
-
-        // OnActivate
-        private protected virtual void OnBeforeActivateInternal(object? argument) {
-            OnBeforeActivateEvent?.Invoke( argument );
-            OnBeforeActivate( argument );
-        }
-        private protected virtual void OnAfterActivateInternal(object? argument) {
-            OnAfterActivate( argument );
-            OnAfterActivateEvent?.Invoke( argument );
-        }
-        private protected virtual void OnBeforeDeactivateInternal(object? argument) {
-            OnBeforeDeactivateEvent?.Invoke( argument );
-            OnBeforeDeactivate( argument );
-        }
-        private protected virtual void OnAfterDeactivateInternal(object? argument) {
-            OnAfterDeactivate( argument );
-            OnAfterDeactivateEvent?.Invoke( argument );
-        }
-
-        // OnActivate
-        protected virtual void OnBeforeActivate(object? argument) {
-        }
-        protected abstract void OnActivate(object? argument);
-        protected virtual void OnAfterActivate(object? argument) {
-        }
-        protected virtual void OnBeforeDeactivate(object? argument) {
-        }
-        protected abstract void OnDeactivate(object? argument);
-        protected virtual void OnAfterDeactivate(object? argument) {
-        }
+        private protected abstract void Activate(object? argument);
+        private protected abstract void Deactivate(object? argument);
 
         // AddChild
         protected virtual void AddChild(TThis child, object? argument = null) {

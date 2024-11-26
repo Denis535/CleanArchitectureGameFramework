@@ -7,8 +7,8 @@ namespace UnityEngine.Framework {
     using System.Threading;
     using System.Threading.Tasks;
     using UnityEngine;
-    
-    public abstract class UIPlayListBase : StateBase<UIPlayListBase>, IDisposable {
+
+    public abstract class UIPlayListBase : StateBase2<UIPlayListBase>, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
@@ -89,6 +89,24 @@ namespace UnityEngine.Framework {
             Assert.Operation.Message( $"PlayList {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             disposeCancellationTokenSource?.Cancel();
             IsDisposed = true;
+        }
+
+        protected override void OnBeforeAttach(object? argument) {
+            base.OnBeforeAttach( argument );
+        }
+        protected override void OnAttach(object? argument) {
+        }
+        protected override void OnAfterAttach(object? argument) {
+            base.OnAfterAttach( argument );
+        }
+
+        protected override void OnBeforeDetach(object? argument) {
+            base.OnBeforeDetach( argument );
+        }
+        protected override void OnDetach(object? argument) {
+        }
+        protected override void OnAfterDetach(object? argument) {
+            base.OnAfterDetach( argument );
         }
 
         // Play

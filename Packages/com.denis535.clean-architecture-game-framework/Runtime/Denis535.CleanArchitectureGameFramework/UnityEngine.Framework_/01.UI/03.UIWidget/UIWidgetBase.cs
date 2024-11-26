@@ -8,7 +8,7 @@ namespace UnityEngine.Framework {
     using System.TreeMachine;
     using UnityEngine;
 
-    public abstract class UIWidgetBase : NodeBase2<UIWidgetBase>, IDisposable {
+    public abstract class UIWidgetBase : NodeBase3<UIWidgetBase>, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
@@ -66,9 +66,31 @@ namespace UnityEngine.Framework {
         }
 
         // OnAttach
+        protected override void OnBeforeAttach(object? argument) {
+            base.OnBeforeAttach( argument );
+        }
         protected override void OnAttach(object? argument) {
         }
+        protected override void OnAfterAttach(object? argument) {
+            base.OnAfterAttach( argument );
+        }
+        protected override void OnBeforeDetach(object? argument) {
+            base.OnBeforeDetach( argument );
+        }
         protected override void OnDetach(object? argument) {
+        }
+        protected override void OnAfterDetach(object? argument) {
+            base.OnAfterDetach( argument );
+        }
+
+        // OnDescendantAttach
+        protected override void OnBeforeDescendantAttach(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnAfterDescendantAttach(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnBeforeDescendantDetach(UIWidgetBase descendant, object? argument) {
+        }
+        protected override void OnAfterDescendantDetach(UIWidgetBase descendant, object? argument) {
         }
 
         // AddChild

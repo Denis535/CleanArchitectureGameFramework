@@ -1,11 +1,10 @@
 ﻿#nullable enable
-namespace System.TreeMachine {
+namespace System.StateMachine {
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using System.Linq;
 
-    public abstract class NodeBase2<TThis> : NodeBase<TThis> where TThis : NodeBase2<TThis> {
+    public abstract class StateBase2<TThis> : StateBase<TThis> where TThis : StateBase2<TThis> {
 
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
@@ -14,35 +13,27 @@ namespace System.TreeMachine {
         public event Action<object?>? OnAfterDeactivateEvent;
 
         // Constructor
-        public NodeBase2() {
+        public StateBase2() {
         }
 
         // Activate
         private protected sealed override void Activate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Activating );
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
+            Assert.Operation.Message( $"State {this} must have owner" ).Valid( Owner != null );
+            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             OnBeforeActivate( argument );
             Activity = Activity_.Activating;
             {
                 OnActivate( argument );
-                foreach (var child in Children) {
-                    child.Activate( argument );
-                }
             }
             Activity = Activity_.Active;
             OnAfterActivate( argument );
         }
         private protected sealed override void Deactivate(object? argument) {
-            Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Deactivating );
-            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
+            Assert.Operation.Message( $"State {this} must have owner" ).Valid( Owner != null );
+            Assert.Operation.Message( $"State {this} must be active" ).Valid( Activity is Activity_.Active );
             OnBeforeDeactivate( argument );
             Activity = Activity_.Deactivating;
             {
-                foreach (var child in Children.Reverse()) {
-                    child.Deactivate( argument );
-                }
                 OnDeactivate( argument );
             }
             Activity = Activity_.Inactive;
