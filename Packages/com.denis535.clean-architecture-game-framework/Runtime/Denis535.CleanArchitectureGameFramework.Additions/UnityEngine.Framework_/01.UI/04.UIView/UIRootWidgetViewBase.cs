@@ -32,7 +32,7 @@ namespace UnityEngine.Framework {
         }
 
         // AddView
-        protected internal override bool TryAddView(UIViewBase view) {
+        protected internal override bool AddView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -41,7 +41,7 @@ namespace UnityEngine.Framework {
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
-        protected internal override bool TryRemoveView(UIViewBase view) {
+        protected internal override bool RemoveView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );

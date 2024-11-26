@@ -79,14 +79,14 @@ namespace UnityEngine.Framework {
             IsDisposed = true;
         }
 
-        // TryAddView
-        protected internal virtual bool TryAddView(UIViewBase view) {
+        // AddView
+        protected internal virtual bool AddView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             return false;
         }
-        protected internal virtual bool TryRemoveView(UIViewBase view) {
+        protected internal virtual bool RemoveView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );

@@ -126,6 +126,26 @@ namespace UnityEngine.Framework {
             Theme!.Stop();
         }
 
+        // WhenEvent
+        protected CancellationToken WhenOnBeforeDeactivateEvent() {
+            var cts = new CancellationTokenSource();
+            OnBeforeDeactivateEvent += OnEvent;
+            void OnEvent(object? argument) {
+                cts.Cancel();
+                OnBeforeDeactivateEvent -= OnEvent;
+            }
+            return cts.Token;
+        }
+        protected CancellationToken WhenOnAfterDeactivateEvent() {
+            var cts = new CancellationTokenSource();
+            OnAfterDeactivateEvent += OnEvent;
+            void OnEvent(object? argument) {
+                cts.Cancel();
+                OnAfterDeactivateEvent -= OnEvent;
+            }
+            return cts.Token;
+        }
+
         // Helpers
         protected static T[] Shuffle<T>(T[] array) {
             for (int i = 0, j = array.Length; i < array.Length; i++, j--) {
