@@ -91,6 +91,7 @@ namespace UnityEngine.Framework {
             IsDisposed = true;
         }
 
+        // OnAttach
         protected override void OnBeforeAttach(object? argument) {
             base.OnBeforeAttach( argument );
         }
@@ -99,7 +100,6 @@ namespace UnityEngine.Framework {
         protected override void OnAfterAttach(object? argument) {
             base.OnAfterAttach( argument );
         }
-
         protected override void OnBeforeDetach(object? argument) {
             base.OnBeforeDetach( argument );
         }
@@ -107,6 +107,24 @@ namespace UnityEngine.Framework {
         }
         protected override void OnAfterDetach(object? argument) {
             base.OnAfterDetach( argument );
+        }
+
+        // OnActivate
+        protected override void OnBeforeActivate(object? argument) {
+            base.OnBeforeActivate( argument );
+        }
+        //protected override void OnActivate(object? argument) {
+        //}
+        protected override void OnAfterActivate(object? argument) {
+            base.OnAfterActivate( argument );
+        }
+        protected override void OnBeforeDeactivate(object? argument) {
+            base.OnBeforeDeactivate( argument );
+        }
+        //protected override void OnDeactivate(object? argument) {
+        //}
+        protected override void OnAfterDeactivate(object? argument) {
+            base.OnAfterDeactivate( argument );
         }
 
         // Play
@@ -126,8 +144,28 @@ namespace UnityEngine.Framework {
             Theme!.Stop();
         }
 
-        // WhenEvent
-        protected CancellationToken WhenOnBeforeDeactivateEvent() {
+        // GetCancellationToken
+        protected CancellationToken GetCancellationToken_OnBeforeDetachEvent() {
+            var cts = new CancellationTokenSource();
+            OnBeforeDetachEvent += OnEvent;
+            void OnEvent(object? argument) {
+                cts.Cancel();
+                OnBeforeDetachEvent -= OnEvent;
+            }
+            return cts.Token;
+        }
+        protected CancellationToken GetCancellationToken_OnAfterDetachEvent() {
+            var cts = new CancellationTokenSource();
+            OnAfterDetachEvent += OnEvent;
+            void OnEvent(object? argument) {
+                cts.Cancel();
+                OnAfterDetachEvent -= OnEvent;
+            }
+            return cts.Token;
+        }
+
+        // GetCancellationToken
+        protected CancellationToken GetCancellationToken_OnBeforeDeactivateEvent() {
             var cts = new CancellationTokenSource();
             OnBeforeDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -136,7 +174,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-        protected CancellationToken WhenOnAfterDeactivateEvent() {
+        protected CancellationToken GetCancellationToken_OnAfterDeactivateEvent() {
             var cts = new CancellationTokenSource();
             OnAfterDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
