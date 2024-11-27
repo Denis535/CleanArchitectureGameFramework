@@ -7,65 +7,65 @@ namespace System.Diagnostics.CodeAnalysis {
 
     // https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis
 
-    // Input:  field (set), property (set), argument
-    // Output: field (get), property (get), argument (out), result
+    // Input:  field/property setter/method argument
+    // Output: field/property getter/method result (or out argument)
 
-    // AllowNull            - Input allows null
-    // DisallowNull         - Input disallows null
+    // AllowNull            - Allows null input
+    // DisallowNull         - Disallows null input
 
-    // MaybeNull            - Output may be null
-    // MaybeNull/When       - Output may be null (when result == true/false)
+    // MaybeNull            - Output maybe null
+    // MaybeNull/When       - Output maybe null (when result == true/false)
 
-    // NotNull              - Output is non-null
-    // NotNull/When         - Output is non-null (when result == true/false)
-    // NotNull/If/NotNull   - Output is non-null (if argument == non-null)
+    // NotNull              - Output is not null
+    // NotNull/When         - Output is not null (when result == true/false)
+    // NotNull/If/NotNull   - Output is not null (if argument != null)
 
-    // MemberNotNull        - Method/property will ensure that the output is non-null
-    // MemberNotNull/When   - Method/property will ensure that the output is non-null (when result == true/false)
+    // MemberNotNull        - Member output is not null
+    // MemberNotNull/When   - Member output is not null (when result == true/false)
 
-    // DoesNotReturn        - Method will never return
-    // DoesNotReturn/If     - Method will never return (if argument == true/false)
+    // DoesNotReturn        - Throws exception
+    // DoesNotReturn/If     - Throws exception (if argument == true/false)
 
-    // Input
+    // AllowNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false )]
-    //internal sealed class AllowNullAttribute : Attribute {
+    //public sealed class AllowNullAttribute : Attribute {
     //}
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false )]
-    //internal sealed class DisallowNullAttribute : Attribute {
+    //public sealed class DisallowNullAttribute : Attribute {
     //}
 
-    // Output/MaybeNull
+    // MaybeNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false )]
-    //internal sealed class MaybeNullAttribute : Attribute {
+    //public sealed class MaybeNullAttribute : Attribute {
     //}
     //[AttributeUsage( AttributeTargets.Parameter, Inherited = false )]
-    //internal sealed class MaybeNullWhenAttribute : Attribute {
+    //public sealed class MaybeNullWhenAttribute : Attribute {
     //    public bool ReturnValue { get; }
     //    public MaybeNullWhenAttribute(bool returnValue) {
     //        ReturnValue = returnValue;
     //    }
     //}
 
-    // Output/NotNull
+    // NotNull
     //[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false )]
-    //internal sealed class NotNullAttribute : Attribute {
+    //public sealed class NotNullAttribute : Attribute {
     //}
     //[AttributeUsage( AttributeTargets.Parameter, Inherited = false )]
-    //internal sealed class NotNullWhenAttribute : Attribute {
+    //public sealed class NotNullWhenAttribute : Attribute {
     //    public bool ReturnValue { get; }
     //    public NotNullWhenAttribute(bool returnValue) {
     //        ReturnValue = returnValue;
     //    }
     //}
     //[AttributeUsage( AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false )]
-    //internal sealed class NotNullIfNotNullAttribute : Attribute {
+    //public sealed class NotNullIfNotNullAttribute : Attribute {
     //    public string ParameterName { get; }
     //    public NotNullIfNotNullAttribute(string parameterName) {
     //        ParameterName = parameterName;
     //    }
     //}
 
-    // Ensure
+    // MemberNotNull
     [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
     internal sealed class MemberNotNullAttribute : Attribute {
@@ -92,16 +92,15 @@ namespace System.Diagnostics.CodeAnalysis {
         }
     }
 
-    // Ensure
+    // DoesNotReturn
     //[AttributeUsage( AttributeTargets.Method, Inherited = false )]
-    //internal sealed class DoesNotReturnAttribute : Attribute {
+    //public sealed class DoesNotReturnAttribute : Attribute {
     //}
     //[AttributeUsage( AttributeTargets.Parameter, Inherited = false )]
-    //internal sealed class DoesNotReturnIfAttribute : Attribute {
+    //public sealed class DoesNotReturnIfAttribute : Attribute {
     //    public bool ParameterValue { get; }
     //    public DoesNotReturnIfAttribute(bool parameterValue) {
     //        ParameterValue = parameterValue;
     //    }
     //}
-
 }

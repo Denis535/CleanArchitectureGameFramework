@@ -68,7 +68,7 @@ namespace System.Diagnostics.CodeAnalysis {
     // MemberNotNull
     [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
-    internal sealed class MemberNotNullAttribute : Attribute {
+    public sealed class MemberNotNullAttribute : Attribute {
         public string[] Members { get; }
         public MemberNotNullAttribute(string member) {
             Members = new[] { member };
@@ -79,7 +79,7 @@ namespace System.Diagnostics.CodeAnalysis {
     }
     [EditorBrowsable( EditorBrowsableState.Never )]
     [AttributeUsage( AttributeTargets.Method | AttributeTargets.Property, Inherited = false, AllowMultiple = true )]
-    internal sealed class MemberNotNullWhenAttribute : Attribute {
+    public sealed class MemberNotNullWhenAttribute : Attribute {
         public bool ReturnValue { get; }
         public string[] Members { get; }
         public MemberNotNullWhenAttribute(bool returnValue, string member) {
