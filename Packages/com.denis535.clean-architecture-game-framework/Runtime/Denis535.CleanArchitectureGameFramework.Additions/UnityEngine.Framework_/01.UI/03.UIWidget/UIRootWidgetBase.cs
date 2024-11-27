@@ -24,16 +24,6 @@ namespace UnityEngine.Framework {
             HideSelf();
         }
 
-        // OnDescendantActivate
-        protected override void OnBeforeDescendantActivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnAfterDescendantActivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnBeforeDescendantDeactivate(UIWidgetBase descendant, object? argument) {
-        }
-        protected override void OnAfterDescendantDeactivate(UIWidgetBase descendant, object? argument) {
-        }
-
         // ShowSelf
         protected override void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
