@@ -55,6 +55,11 @@ namespace UnityEngine.Framework {
         // Constructor
         public UIWidgetBase() {
         }
+        ~UIWidgetBase() {
+            if (!IsDisposed) {
+                Debug.LogWarning( $"Widget '{this}' must be disposed" );
+            }
+        }
         public virtual void Dispose() {
             foreach (var child in Children) {
                 Assert.Operation.Message( $"Child {child} must be disposed" ).Valid( child.IsDisposed );

@@ -4,6 +4,7 @@ namespace System {
     using System.Collections;
     using System.Collections.Generic;
     using System.Threading;
+    using UnityEngine;
 
     public abstract class DisposableBase : IDisposable {
 
@@ -23,6 +24,11 @@ namespace System {
 
         // Constructor
         public DisposableBase() {
+        }
+        ~DisposableBase() {
+            if (!IsDisposed) {
+                Debug.LogWarning( $"Disposable '{this}' must be disposed" );
+            }
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"Disposable {this} must be non-disposed" ).NotDisposed( !IsDisposed );
