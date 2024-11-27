@@ -4,23 +4,46 @@ namespace UnityEditor.ColorfulProjectWindow {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using UnityEditor;
     using UnityEngine;
 
     [InitializeOnLoad]
-    public class ProjectWindow2 : ProjectWindow {
+    public class ProjectWindow : ProjectWindowBase2 {
 
         // Constructor
-        static ProjectWindow2() {
-            new ProjectWindow2();
+        static ProjectWindow() {
+            new ProjectWindow();
         }
 
         // Constructor
-        public ProjectWindow2() {
+        public ProjectWindow() {
         }
         public override void Dispose() {
             base.Dispose();
+        }
+
+        // OnGUI
+        protected override void OnGUI(string guid, Rect rect) {
+            base.OnGUI( guid, rect );
+        }
+
+        // IsPackage
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            return base.IsPackage( path, out name, out rest );
+        }
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            return base.IsAssembly( path, out name, out rest );
+        }
+        protected override bool IsAssets(string path, string name, string rest) {
+            return base.IsAssets( path, name, rest );
+        }
+        protected override bool IsResources(string path, string name, string rest) {
+            return base.IsResources( path, name, rest );
+        }
+        protected override bool IsSources(string path, string name, string rest) {
+            return base.IsSources( path, name, rest );
         }
 
         // DrawPackageElement

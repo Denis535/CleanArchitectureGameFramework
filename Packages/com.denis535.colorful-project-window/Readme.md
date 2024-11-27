@@ -1,54 +1,89 @@
 # Overview
-The package provides you with a more convenient project window, which highlights the most important files and folders in special colors.
-This highlights packages, assemblies, assets, resources and sources in their appropriate colors.
-Thus, this makes working with the project window much more convenient and faster.
+The package provides you with a more convenient project window that highlights the most important files and folders in special colors.
+This highlights packages, assemblies, assets, resources and sources in the appropriate colors.
+Thus, it makes working with the project window much more convenient and faster.
 
 # How to use it
 ```
-[InitializeOnLoad]
-public class ProjectWindow2 : ProjectWindow {
+#if UNITY_EDITOR
+#nullable enable
+namespace UnityEditor.ColorfulProjectWindow {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Text;
+    using UnityEditor;
+    using UnityEngine;
 
-    // Constructor
-    static ProjectWindow2() {
-        new ProjectWindow2();
-    }
+    [InitializeOnLoad]
+    public class ProjectWindow : ProjectWindowBase2 {
 
-    // Constructor
-    public ProjectWindow2() {
-    }
-    public override void Dispose() {
-        base.Dispose();
-    }
+        // Constructor
+        static ProjectWindow() {
+            new ProjectWindow();
+        }
 
-    // DrawPackageElement
-    protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
-        base.DrawPackageElement( rect, path, name, rest );
-    }
-    protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
-        base.DrawAssemblyElement( rect, path, name, rest );
-    }
-    protected override void DrawAssemblyContentElement(Rect rect, string path, string name, string rest) {
-        base.DrawAssemblyContentElement( rect, path, name, rest );
-    }
+        // Constructor
+        public ProjectWindow() {
+        }
+        public override void Dispose() {
+            base.Dispose();
+        }
 
-    // DrawPackageItem
-    protected override void DrawPackageItem(Rect rect, string path, string name) {
-        base.DrawPackageItem( rect, path, name );
-    }
-    protected override void DrawAssemblyItem(Rect rect, string path, string name) {
-        base.DrawAssemblyItem( rect, path, name );
-    }
-    protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
-        base.DrawAssetsItem( rect, path, name, rest );
-    }
-    protected override void DrawResourcesItem(Rect rect, string path, string name, string rest) {
-        base.DrawResourcesItem( rect, path, name, rest );
-    }
-    protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
-        base.DrawSourcesItem( rect, path, name, rest );
-    }
+        // OnGUI
+        protected override void OnGUI(string guid, Rect rect) {
+            base.OnGUI( guid, rect );
+        }
 
+        // IsPackage
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            return base.IsPackage( path, out name, out rest );
+        }
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            return base.IsAssembly( path, out name, out rest );
+        }
+        protected override bool IsAssets(string path, string name, string rest) {
+            return base.IsAssets( path, name, rest );
+        }
+        protected override bool IsResources(string path, string name, string rest) {
+            return base.IsResources( path, name, rest );
+        }
+        protected override bool IsSources(string path, string name, string rest) {
+            return base.IsSources( path, name, rest );
+        }
+
+        // DrawPackageElement
+        protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
+            base.DrawPackageElement( rect, path, name, rest );
+        }
+        protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
+            base.DrawAssemblyElement( rect, path, name, rest );
+        }
+        protected override void DrawAssemblyContentElement(Rect rect, string path, string name, string rest) {
+            base.DrawAssemblyContentElement( rect, path, name, rest );
+        }
+
+        // DrawPackageItem
+        protected override void DrawPackageItem(Rect rect, string path, string name) {
+            base.DrawPackageItem( rect, path, name );
+        }
+        protected override void DrawAssemblyItem(Rect rect, string path, string name) {
+            base.DrawAssemblyItem( rect, path, name );
+        }
+        protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
+            base.DrawAssetsItem( rect, path, name, rest );
+        }
+        protected override void DrawResourcesItem(Rect rect, string path, string name, string rest) {
+            base.DrawResourcesItem( rect, path, name, rest );
+        }
+        protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
+            base.DrawSourcesItem( rect, path, name, rest );
+        }
+
+    }
 }
+#endif
 ```
 
 # Preferences

@@ -23,11 +23,28 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected virtual void OnGUI(string guid, Rect rect) {
             var path = AssetDatabase.GUIDToAssetPath( guid );
             if (IsAssembly( path, out var name, out var rest )) {
+                // .../[Name]
+                // .../[Name]/[Rest]
                 DrawAssemblyElement( rect, path, name, rest );
             } else
             if (IsPackage( path, out name, out rest )) {
+                // .../[Name]
+                // .../[Name]/[Rest]
                 DrawPackageElement( rect, path, name, rest );
             }
+        }
+
+        // IsPackage
+        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
+        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
+        protected virtual bool IsAssets(string path, string name, string rest) {
+            return rest.Equals( "Assets" ) || rest.StartsWith( "Assets/" ) || rest.StartsWith( "Assets." );
+        }
+        protected virtual bool IsResources(string path, string name, string rest) {
+            return rest.Equals( "Resources" ) || rest.StartsWith( "Resources/" ) || rest.StartsWith( "Resources." );
+        }
+        protected virtual bool IsSources(string path, string name, string rest) {
+            return true;
         }
 
         // DrawElement
@@ -67,19 +84,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected abstract void DrawAssetsItem(Rect rect, string path, string name, string rest);
         protected abstract void DrawResourcesItem(Rect rect, string path, string name, string rest);
         protected abstract void DrawSourcesItem(Rect rect, string path, string name, string rest);
-
-        // IsPackage
-        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
-        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
-        protected virtual bool IsAssets(string path, string name, string rest) {
-            return rest.Equals( "Assets" ) || rest.StartsWith( "Assets/" ) || rest.StartsWith( "Assets." );
-        }
-        protected virtual bool IsResources(string path, string name, string rest) {
-            return rest.Equals( "Resources" ) || rest.StartsWith( "Resources/" ) || rest.StartsWith( "Resources." );
-        }
-        protected virtual bool IsSources(string path, string name, string rest) {
-            return true;
-        }
 
         // Helpers
         protected static bool IsFile(string path) {

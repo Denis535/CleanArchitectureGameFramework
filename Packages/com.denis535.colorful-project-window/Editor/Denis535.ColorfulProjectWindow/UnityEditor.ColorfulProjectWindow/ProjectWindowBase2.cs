@@ -10,7 +10,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEditor;
     using UnityEngine;
 
-    public class ProjectWindow : ProjectWindowBase {
+    public abstract class ProjectWindowBase2 : ProjectWindowBase {
 
         // Settings
         protected Settings Settings => Settings.Instance;
@@ -20,7 +20,7 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected string[] AssemblyPaths { get; }
 
         // Constructor
-        public ProjectWindow() {
+        public ProjectWindowBase2() {
             PackagePaths = AssetDatabase.GetAllAssetPaths()
                 .Where( i => Path.GetFileName( i ) is "package.json" )
                 .Select( Path.GetDirectoryName )
@@ -36,7 +36,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                     .Distinct()
                     .ToArray();
         }
-        public ProjectWindow(string[] packagePaths, string[] assemblyPaths) {
+        public ProjectWindowBase2(string[] packagePaths, string[] assemblyPaths) {
             PackagePaths = packagePaths;
             AssemblyPaths = assemblyPaths;
         }
@@ -47,6 +47,39 @@ namespace UnityEditor.ColorfulProjectWindow {
         // OnGUI
         protected override void OnGUI(string guid, Rect rect) {
             base.OnGUI( guid, rect );
+        }
+
+        // IsPackage
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (packagePath != null) {
+                name = Path.GetFileName( packagePath );
+                rest = path.Substring( packagePath.Length ).TrimStart( '/' );
+                return true;
+            }
+            name = null;
+            rest = null;
+            return false;
+        }
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
+            if (assemblyPath != null) {
+                name = Path.GetFileName( assemblyPath );
+                rest = path.Substring( assemblyPath.Length ).TrimStart( '/' );
+                return true;
+            }
+            name = null;
+            rest = null;
+            return false;
+        }
+        protected override bool IsAssets(string path, string name, string rest) {
+            return base.IsAssets( path, name, rest );
+        }
+        protected override bool IsResources(string path, string name, string rest) {
+            return base.IsResources( path, name, rest );
+        }
+        protected override bool IsSources(string path, string name, string rest) {
+            return base.IsSources( path, name, rest );
         }
 
         // DrawElement
@@ -75,43 +108,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
             Highlight( rect, Settings.SourcesColor, path, name, rest );
-        }
-
-        // IsPackage
-        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
-            // Assets/Packages/[Name]
-            // Assets/Packages/[Name]/[Rest]
-            var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (packagePath != null) {
-                name = Path.GetFileName( packagePath );
-                rest = path.Substring( packagePath.Length ).TrimStart( '/' );
-                return true;
-            }
-            name = null;
-            rest = null;
-            return false;
-        }
-        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
-            // Assets/Assemblies/[Name]
-            // Assets/Assemblies/[Name]/[Rest]
-            var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
-            if (assemblyPath != null) {
-                name = Path.GetFileName( assemblyPath );
-                rest = path.Substring( assemblyPath.Length ).TrimStart( '/' );
-                return true;
-            }
-            name = null;
-            rest = null;
-            return false;
-        }
-        protected override bool IsAssets(string path, string name, string rest) {
-            return base.IsAssets( path, name, rest );
-        }
-        protected override bool IsResources(string path, string name, string rest) {
-            return base.IsResources( path, name, rest );
-        }
-        protected override bool IsSources(string path, string name, string rest) {
-            return base.IsSources( path, name, rest );
         }
 
         // Helpers
@@ -158,6 +154,7 @@ namespace UnityEditor.ColorfulProjectWindow {
             result.a = color.a;
             return result;
         }
+        // Helpers
         protected static void DrawRect(Rect rect, Color color) {
             var prev = GUI.color;
             GUI.color = color;
