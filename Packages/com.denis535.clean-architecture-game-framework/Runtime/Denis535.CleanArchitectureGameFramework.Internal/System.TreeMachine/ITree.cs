@@ -10,15 +10,9 @@ namespace System.TreeMachine {
         protected T? Root { get; set; }
 
         // SetRoot
-        protected internal void SetRoot(T? root, object? argument = null) {
-            SetRoot( this, root, argument );
-        }
-        protected void AddRoot(T root, object? argument = null) {
-            AddRoot( this, root, argument );
-        }
-        protected void RemoveRoot(T root, object? argument = null) {
-            RemoveRoot( this, root, argument );
-        }
+        protected void SetRoot(T? root, object? argument);
+        protected void AddRoot(T root, object? argument);
+        protected internal void RemoveRoot(T root, object? argument);
 
         // Helpers
         protected static void SetRoot(ITree<T> tree, T? root, object? argument) {

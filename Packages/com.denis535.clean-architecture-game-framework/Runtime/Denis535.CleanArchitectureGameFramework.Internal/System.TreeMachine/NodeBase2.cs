@@ -20,7 +20,7 @@ namespace System.TreeMachine {
         // Activate
         private protected sealed override void Activate(object? argument) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Activating );
+            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>) Owner).Activity is Activity_.Active or Activity_.Activating );
             Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             OnBeforeActivate( argument );
             Activity = Activity_.Activating;
@@ -35,7 +35,7 @@ namespace System.TreeMachine {
         }
         private protected sealed override void Deactivate(object? argument) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
-            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>?) Owner)!.Activity is Activity_.Active or Activity_.Deactivating );
+            Assert.Operation.Message( $"Node {this} must have owner with valid activity" ).Valid( (Owner is ITree<TThis>) || ((NodeBase<TThis>) Owner).Activity is Activity_.Active or Activity_.Deactivating );
             Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
             OnBeforeDeactivate( argument );
             Activity = Activity_.Deactivating;

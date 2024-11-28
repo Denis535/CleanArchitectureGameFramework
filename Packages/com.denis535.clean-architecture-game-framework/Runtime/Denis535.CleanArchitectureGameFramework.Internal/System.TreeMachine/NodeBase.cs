@@ -150,20 +150,20 @@ namespace System.TreeMachine {
         private protected abstract void Deactivate(object? argument);
 
         // AddChild
-        protected virtual void AddChild(TThis child, object? argument = null) {
+        protected virtual void AddChild(TThis child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Node {this} must have no child {child} node" ).Valid( !Children.Contains( child ) );
             Children_.Add( child );
             Sort( Children_ );
             child.Attach( (TThis) this, argument );
         }
-        protected virtual void RemoveChild(TThis child, object? argument = null) {
+        protected virtual void RemoveChild(TThis child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Node {this} must have child {child} node" ).Valid( Children.Contains( child ) );
             child.Detach( (TThis) this, argument );
             Children_.Remove( child );
         }
-        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument = null) {
+        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument) {
             var child = Children.LastOrDefault( predicate );
             if (child != null) {
                 RemoveChild( child, argument );
@@ -171,25 +171,19 @@ namespace System.TreeMachine {
             }
             return false;
         }
-        protected void RemoveChildren(IEnumerable<TThis> children, object? argument = null) {
+        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument) {
+            var children = Children.Where( predicate ).Reverse().ToList();
             foreach (var child in children) {
                 RemoveChild( child, argument );
             }
+            return children.Count;
         }
-        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument = null) {
-            var children = Children.Where( predicate ).Reverse().ToList();
-            if (children.Any()) {
-                RemoveChildren( children, argument );
-                return children.Count;
-            }
-            return 0;
-        }
-        protected void RemoveSelf(object? argument = null) {
+        protected void RemoveSelf(object? argument) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
             if (Parent != null) {
                 Parent.RemoveChild( (TThis) this, argument );
             } else {
-                Tree!.SetRoot( null, argument );
+                Tree!.RemoveRoot( (TThis) this, argument );
             }
         }
 
