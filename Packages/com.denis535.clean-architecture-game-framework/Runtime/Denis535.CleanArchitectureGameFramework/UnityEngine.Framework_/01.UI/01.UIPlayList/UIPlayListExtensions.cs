@@ -8,52 +8,42 @@ namespace UnityEngine.Framework {
 
     public static class UIPlayListExtensions {
 
-        // GetView
-        public static UIViewBase? __GetView__(this UIWidgetBase widget) {
-            // try not to use this method
-            return widget.View;
-        }
-        public static T __GetView__<T>(this UIWidgetBase<T> widget) where T : notnull, UIViewBase {
-            // try not to use this method
-            return widget.View;
-        }
-
         // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDetachEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetCancellationToken_OnBeforeDetachEvent(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
-            widget.OnBeforeDetachEvent += OnEvent;
+            playList.OnBeforeDetachEvent += OnEvent;
             void OnEvent(object? argument) {
                 cts.Cancel();
-                widget.OnBeforeDetachEvent -= OnEvent;
+                playList.OnBeforeDetachEvent -= OnEvent;
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDetachEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetCancellationToken_OnAfterDetachEvent(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
-            widget.OnAfterDetachEvent += OnEvent;
+            playList.OnAfterDetachEvent += OnEvent;
             void OnEvent(object? argument) {
                 cts.Cancel();
-                widget.OnAfterDetachEvent -= OnEvent;
+                playList.OnAfterDetachEvent -= OnEvent;
             }
             return cts.Token;
         }
 
         // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDeactivateEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetCancellationToken_OnBeforeDeactivateEvent(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
-            widget.OnBeforeDeactivateEvent += OnEvent;
+            playList.OnBeforeDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
                 cts.Cancel();
-                widget.OnBeforeDeactivateEvent -= OnEvent;
+                playList.OnBeforeDeactivateEvent -= OnEvent;
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDeactivateEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetCancellationToken_OnAfterDeactivateEvent(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
-            widget.OnAfterDeactivateEvent += OnEvent;
+            playList.OnAfterDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
                 cts.Cancel();
-                widget.OnAfterDeactivateEvent -= OnEvent;
+                playList.OnAfterDeactivateEvent -= OnEvent;
             }
             return cts.Token;
         }
