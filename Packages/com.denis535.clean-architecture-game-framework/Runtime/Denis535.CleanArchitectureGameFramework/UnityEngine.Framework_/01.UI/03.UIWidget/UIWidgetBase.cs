@@ -191,46 +191,6 @@ namespace UnityEngine.Framework {
             return Parent?.HideViewRecursiveInternal( view ) ?? false;
         }
 
-        // GetCancellationToken
-        protected CancellationToken GetCancellationToken_OnBeforeDetachEvent() {
-            var cts = new CancellationTokenSource();
-            OnBeforeDetachEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnBeforeDetachEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-        protected CancellationToken GetCancellationToken_OnAfterDetachEvent() {
-            var cts = new CancellationTokenSource();
-            OnAfterDetachEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnAfterDetachEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-
-        // GetCancellationToken
-        protected CancellationToken GetCancellationToken_OnBeforeDeactivateEvent() {
-            var cts = new CancellationTokenSource();
-            OnBeforeDeactivateEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnBeforeDeactivateEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-        protected CancellationToken GetCancellationToken_OnAfterDeactivateEvent() {
-            var cts = new CancellationTokenSource();
-            OnAfterDeactivateEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnAfterDeactivateEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-
     }
     public abstract class UIWidgetBase<TView> : UIWidgetBase where TView : notnull, UIViewBase {
 

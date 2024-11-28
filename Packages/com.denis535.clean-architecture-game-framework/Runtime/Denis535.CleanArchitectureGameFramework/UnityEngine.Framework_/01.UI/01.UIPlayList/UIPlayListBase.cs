@@ -149,46 +149,6 @@ namespace UnityEngine.Framework {
             Theme!.Stop();
         }
 
-        // GetCancellationToken
-        protected CancellationToken GetCancellationToken_OnBeforeDetachEvent() {
-            var cts = new CancellationTokenSource();
-            OnBeforeDetachEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnBeforeDetachEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-        protected CancellationToken GetCancellationToken_OnAfterDetachEvent() {
-            var cts = new CancellationTokenSource();
-            OnAfterDetachEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnAfterDetachEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-
-        // GetCancellationToken
-        protected CancellationToken GetCancellationToken_OnBeforeDeactivateEvent() {
-            var cts = new CancellationTokenSource();
-            OnBeforeDeactivateEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnBeforeDeactivateEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-        protected CancellationToken GetCancellationToken_OnAfterDeactivateEvent() {
-            var cts = new CancellationTokenSource();
-            OnAfterDeactivateEvent += OnEvent;
-            void OnEvent(object? argument) {
-                cts.Cancel();
-                OnAfterDeactivateEvent -= OnEvent;
-            }
-            return cts.Token;
-        }
-
         // Helpers
         protected static T[] Shuffle<T>(T[] array) {
             for (int i = 0, j = array.Length; i < array.Length; i++, j--) {

@@ -6,7 +6,7 @@ namespace UnityEngine.Framework {
     using System.Threading;
     using UnityEngine;
 
-    public static class UIWidgetExtensions {
+    public static class UIPlayListExtensions {
 
         // GetView
         public static UIViewBase? __GetView__(this UIWidgetBase widget) {
