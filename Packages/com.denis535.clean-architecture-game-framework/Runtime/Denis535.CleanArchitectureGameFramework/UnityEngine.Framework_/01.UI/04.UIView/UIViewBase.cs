@@ -70,9 +70,11 @@ namespace UnityEngine.Framework {
         public UIViewBase() {
         }
         ~UIViewBase() {
+#if DEBUG
             if (!IsDisposed) {
                 Debug.LogWarning( $"View '{this}' must be disposed" );
             }
+#endif
         }
         public virtual void Dispose() {
             foreach (var child in Children2) {

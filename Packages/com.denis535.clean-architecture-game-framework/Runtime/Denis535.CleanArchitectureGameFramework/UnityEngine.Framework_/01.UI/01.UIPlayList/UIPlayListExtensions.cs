@@ -8,8 +8,8 @@ namespace UnityEngine.Framework {
 
     public static class UIPlayListExtensions {
 
-        // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDetachEvent(this UIPlayListBase playList) {
+        // GetEventCancellationToken
+        public static CancellationToken GetEventCancellationToken_OnBeforeDetach(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
             playList.OnBeforeDetachEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -18,7 +18,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDetachEvent(this UIPlayListBase playList) {
+        public static CancellationToken GetEventCancellationToken_OnAfterDetach(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
             playList.OnAfterDetachEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -27,9 +27,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-
-        // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDeactivateEvent(this UIPlayListBase playList) {
+        public static CancellationToken GetEventCancellationToken_OnBeforeDeactivate(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
             playList.OnBeforeDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -38,7 +36,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDeactivateEvent(this UIPlayListBase playList) {
+        public static CancellationToken GetEventCancellationToken_OnAfterDeactivate(this UIPlayListBase playList) {
             var cts = new CancellationTokenSource();
             playList.OnAfterDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {

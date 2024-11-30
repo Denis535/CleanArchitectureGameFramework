@@ -56,9 +56,11 @@ namespace UnityEngine.Framework {
         public UIWidgetBase() {
         }
         ~UIWidgetBase() {
+#if DEBUG
             if (!IsDisposed) {
                 Debug.LogWarning( $"Widget '{this}' must be disposed" );
             }
+#endif
         }
         public virtual void Dispose() {
             foreach (var child in Children) {

@@ -26,9 +26,11 @@ namespace System {
         public DisposableBase() {
         }
         ~DisposableBase() {
+#if DEBUG
             if (!IsDisposed) {
                 Debug.LogWarning( $"Disposable '{this}' must be disposed" );
             }
+#endif
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"Disposable {this} must be non-disposed" ).NotDisposed( !IsDisposed );

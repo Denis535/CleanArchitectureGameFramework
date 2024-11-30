@@ -18,8 +18,8 @@ namespace UnityEngine.Framework {
             return widget.View;
         }
 
-        // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDetachEvent(this UIWidgetBase widget) {
+        // GetEventCancellationToken
+        public static CancellationToken GetEventCancellationToken_OnBeforeDetach(this UIWidgetBase widget) {
             var cts = new CancellationTokenSource();
             widget.OnBeforeDetachEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -28,7 +28,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDetachEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetEventCancellationToken_OnAfterDetach(this UIWidgetBase widget) {
             var cts = new CancellationTokenSource();
             widget.OnAfterDetachEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -37,9 +37,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-
-        // GetCancellationToken
-        public static CancellationToken GetCancellationToken_OnBeforeDeactivateEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetEventCancellationToken_OnBeforeDeactivate(this UIWidgetBase widget) {
             var cts = new CancellationTokenSource();
             widget.OnBeforeDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {
@@ -48,7 +46,7 @@ namespace UnityEngine.Framework {
             }
             return cts.Token;
         }
-        public static CancellationToken GetCancellationToken_OnAfterDeactivateEvent(this UIWidgetBase widget) {
+        public static CancellationToken GetEventCancellationToken_OnAfterDeactivate(this UIWidgetBase widget) {
             var cts = new CancellationTokenSource();
             widget.OnAfterDeactivateEvent += OnEvent;
             void OnEvent(object? argument) {

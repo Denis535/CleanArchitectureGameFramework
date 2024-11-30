@@ -85,9 +85,11 @@ namespace UnityEngine.Framework {
         public UIPlayListBase() {
         }
         ~UIPlayListBase() {
+#if DEBUG
             if (!IsDisposed) {
                 Debug.LogWarning( $"PlayList '{this}' must be disposed" );
             }
+#endif
         }
         public virtual void Dispose() {
             Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );

@@ -36,8 +36,8 @@ namespace UnityEngine.Framework {
         public override void Dispose() {
             Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Assert.Operation.Message( $"Screen {this} must have no widget" ).Valid( Widget == null );
-            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( Document == false || Document.rootVisualElement == null || Document.rootVisualElement.childCount == 0 );
-            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( AudioSource == false || AudioSource.clip == null );
+            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( !Document || Document.rootVisualElement == null || Document.rootVisualElement.childCount == 0 );
+            Assert.Operation.Message( $"Screen {this} must be released" ).Valid( !AudioSource || AudioSource.clip == null );
             base.Dispose();
         }
 
