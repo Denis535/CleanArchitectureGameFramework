@@ -146,14 +146,14 @@ namespace UnityEngine.Framework {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            var wasShown = IsViewable && View.AddView( view );
+            var wasShown = ShowViewInternal( view );
             Assert.Operation.Message( $"View {view} was not shown" ).Valid( wasShown );
         }
         protected internal virtual void HideView(UIViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            var wasHidden = IsViewable && View.RemoveView( view );
+            var wasHidden = HideViewInternal( view );
             Assert.Operation.Message( $"View {view} was not hidden" ).Valid( wasHidden );
         }
 
@@ -171,6 +171,26 @@ namespace UnityEngine.Framework {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             var wasHidden = HideViewRecursiveInternal( view );
             Assert.Operation.Message( $"View {view} was not hidden" ).Valid( wasHidden );
+        }
+
+        // ShowViewInternal
+        private bool ShowViewInternal(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (IsViewable && View.AddView( view )) {
+                return true;
+            }
+            return false;
+        }
+        private bool HideViewInternal(UIViewBase view) {
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
+            Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
+            Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+            if (IsViewable && View.RemoveView( view )) {
+                return true;
+            }
+            return false;
         }
 
         // ShowViewRecursiveInternal

@@ -22,12 +22,12 @@ namespace System {
             return EqualityComparer<bool>.Default.Equals( value.HasValue, other.HasValue );
         }
         public static bool Equals<T>(Option<T> value, T other) {
-            if (value.HasValue) return EqualityComparer<T>.Default.Equals( value.Value, other );
-            return false;
+            if (value.HasValue && true) return EqualityComparer<T>.Default.Equals( value.Value, other );
+            return EqualityComparer<bool>.Default.Equals( false, true );
         }
         public static bool Equals<T>(T value, Option<T> other) {
-            if (other.HasValue) return EqualityComparer<T>.Default.Equals( value, other.Value );
-            return false;
+            if (true && other.HasValue) return EqualityComparer<T>.Default.Equals( value, other.Value );
+            return EqualityComparer<bool>.Default.Equals( true, false );
         }
 
         // Compare
@@ -36,11 +36,11 @@ namespace System {
             return Comparer<bool>.Default.Compare( value.HasValue, other.HasValue );
         }
         public static int Compare<T>(Option<T> value, T other) {
-            if (value.HasValue) return Comparer<T>.Default.Compare( value.Value, other );
+            if (value.HasValue && true) return Comparer<T>.Default.Compare( value.Value, other );
             return Comparer<bool>.Default.Compare( false, true );
         }
         public static int Compare<T>(T value, Option<T> other) {
-            if (other.HasValue) return Comparer<T>.Default.Compare( value, other.Value );
+            if (true && other.HasValue) return Comparer<T>.Default.Compare( value, other.Value );
             return Comparer<bool>.Default.Compare( true, false );
         }
 
@@ -76,7 +76,7 @@ namespace System {
         // TryGetValue
         public bool TryGetValue([MaybeNullWhen( false )] out T value) {
             if (HasValue) {
-                value = this.Value;
+                value = Value;
                 return true;
             }
             value = default;
@@ -85,18 +85,22 @@ namespace System {
 
         // Equals
         public bool Equals(Option<T> other) {
-            return Option.Equals( this, other );
+            if (HasValue && other.HasValue) return EqualityComparer<T>.Default.Equals( Value, other.Value );
+            return EqualityComparer<bool>.Default.Equals( HasValue, other.HasValue );
         }
         public bool Equals(T other) {
-            return Option.Equals( this, other );
+            if (HasValue && true) return EqualityComparer<T>.Default.Equals( Value, other );
+            return EqualityComparer<bool>.Default.Equals( HasValue, true );
         }
 
         // CompareTo
         public int CompareTo(Option<T> other) {
-            return Option.Compare( this, other );
+            if (HasValue && other.HasValue) return Comparer<T>.Default.Compare( Value, other.Value );
+            return Comparer<bool>.Default.Compare( HasValue, other.HasValue );
         }
         public int CompareTo(T other) {
-            return Option.Compare( this, other );
+            if (HasValue && true) return Comparer<T>.Default.Compare( Value, other );
+            return Comparer<bool>.Default.Compare( HasValue, true );
         }
 
         // Utils
@@ -105,12 +109,35 @@ namespace System {
             return "Nothing";
         }
         public override bool Equals(object? other) {
-            if (other is Option<T> other_) return Option.Equals( this, other_ );
+            if (other is Option<T> other_) return Equals( other_ );
+            if (other is T other__) return Equals( other__ );
             return false;
         }
         public override int GetHashCode() {
             if (HasValue) return Value?.GetHashCode() ?? 0;
             return 0;
+        }
+
+        // Utils
+        public static bool operator ==(Option<T> left, Option<T> right) {
+            return left.Equals( right );
+        }
+        public static bool operator ==(Option<T> left, T right) {
+            return left.Equals( right );
+        }
+        public static bool operator ==(T left, Option<T> right) {
+            return right.Equals( left );
+        }
+
+        // Utils
+        public static bool operator !=(Option<T> left, Option<T> right) {
+            return !left.Equals( right );
+        }
+        public static bool operator !=(Option<T> left, T right) {
+            return !left.Equals( right );
+        }
+        public static bool operator !=(T left, Option<T> right) {
+            return !right.Equals( left );
         }
 
         // Utils
@@ -127,28 +154,6 @@ namespace System {
         //public static explicit operator Option<T>(Option<object?> value) {
         //    return new Option<T>( value.hasValue, (T) value.value );
         //}
-
-        // Utils
-        public static bool operator ==(Option<T> left, Option<T> right) {
-            return Option.Equals( left, right );
-        }
-        public static bool operator ==(Option<T> left, T right) {
-            return Option.Equals( left, right );
-        }
-        public static bool operator ==(T left, Option<T> right) {
-            return Option.Equals( left, right );
-        }
-
-        // Utils
-        public static bool operator !=(Option<T> left, Option<T> right) {
-            return !Option.Equals( left, right );
-        }
-        public static bool operator !=(Option<T> left, T right) {
-            return !Option.Equals( left, right );
-        }
-        public static bool operator !=(T left, Option<T> right) {
-            return !Option.Equals( left, right );
-        }
 
     }
 }
