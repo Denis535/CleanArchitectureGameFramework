@@ -1,5 +1,5 @@
 #nullable enable
-namespace UnityEditor {
+namespace CleanArchitectureGameFramework {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace UnityEditor {
     using UnityEditorInternal;
     using UnityEngine;
 
-    public static class MenuBar {
+    public static class PackageMenuBar {
 
         // TakeScreenshot
         [MenuItem( "Tools/Clean Architecture Game Framework/Take Screenshot (Game) _F12", priority = 0 )]
@@ -37,7 +37,7 @@ namespace UnityEditor {
         // AboutPackage
         [MenuItem( "Tools/Clean Architecture Game Framework/About Package", priority = 1_000_000 )]
         public static void AboutPackage() {
-            _ = EditorWindow.GetWindow<AboutWindow>();
+            _ = EditorWindow.GetWindow<AboutPackageWindow>();
         }
 
     }

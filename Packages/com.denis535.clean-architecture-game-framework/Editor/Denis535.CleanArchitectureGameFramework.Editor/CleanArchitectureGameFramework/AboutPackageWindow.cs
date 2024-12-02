@@ -1,5 +1,5 @@
 #nullable enable
-namespace UnityEditor {
+namespace CleanArchitectureGameFramework {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -7,10 +7,10 @@ namespace UnityEditor {
     using UnityEngine;
     using UnityEngine.Framework;
 
-    public class AboutWindow : EditorWindow {
+    public class AboutPackageWindow : EditorWindow {
 
         // Constructor
-        public AboutWindow() {
+        public AboutPackageWindow() {
             titleContent = new GUIContent( "About Clean Architecture Game Framework package" );
             minSize = maxSize = new Vector2( 1200, 800 );
         }
