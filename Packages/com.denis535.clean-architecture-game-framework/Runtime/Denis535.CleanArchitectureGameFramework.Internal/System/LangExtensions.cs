@@ -5,7 +5,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Runtime.CompilerServices;
 
-    public static class CSharpExtensions {
+    public static class LangExtensions {
 
         // Chain
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -19,7 +19,7 @@ namespace System {
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static Option<T> If<T>(this T value, Func<T, bool> predicate) {
-            if (predicate( value )) return new Option<T>( value );
+            if (predicate( value )) return Option.Create( value );
             return default;
         }
 
@@ -31,12 +31,12 @@ namespace System {
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static Option<TResult> Pipe2<T, TResult>(this Option<T> value, Func<T, TResult> converter) {
-            if (value.HasValue) return new Option<TResult>( converter( value.Value ) );
+            if (value.HasValue) return Option.Create( converter( value.Value ) );
             return default;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static Option<T> If2<T>(this Option<T> value, Func<T, bool> predicate) {
-            if (value.HasValue && predicate( value.Value )) return new Option<T>( value.Value );
+            if (value.HasValue && predicate( value.Value )) return Option.Create( value.Value );
             return default;
         }
 
