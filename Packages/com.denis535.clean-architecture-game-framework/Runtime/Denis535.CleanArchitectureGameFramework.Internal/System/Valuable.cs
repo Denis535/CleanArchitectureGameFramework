@@ -1,5 +1,5 @@
 #nullable enable
-namespace System.Linq {
+namespace System {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -15,17 +15,10 @@ namespace System.Linq {
             return new Valuable_Value<T>( value );
         }
 
-    }
-    public interface IValuable<T> {
-
-        bool TryGetValue([MaybeNullWhen( false )] out T value);
-
-    }
-    public static class IValuableExtensions {
-
         public static IValuable<TResult> Select<T, TResult>(this IValuable<T> valuable, Func<T, TResult> selector) {
             return new Valuable_ValueSelector<T, TResult>( valuable, selector );
         }
+
         public static IValuable<T> Where<T>(this IValuable<T> valuable, Func<T, bool> predicate) {
             return new Valuable_ValueFilter<T>( valuable, predicate );
         }
@@ -42,6 +35,11 @@ namespace System.Linq {
             }
             return default;
         }
+
+    }
+    public interface IValuable<T> {
+
+        bool TryGetValue([MaybeNullWhen( false )] out T value);
 
     }
     internal readonly struct Valuable_Empty<T> : IValuable<T> {
@@ -71,16 +69,16 @@ namespace System.Linq {
     }
     internal readonly struct Valuable_ValueSelector<T, TResult> : IValuable<TResult> {
 
-        private readonly IValuable<T> target;
+        private readonly IValuable<T> source;
         private readonly Func<T, TResult> selector;
 
-        public Valuable_ValueSelector(IValuable<T> target, Func<T, TResult> selector) {
-            this.target = target;
+        public Valuable_ValueSelector(IValuable<T> source, Func<T, TResult> selector) {
+            this.source = source;
             this.selector = selector;
         }
 
         public bool TryGetValue([MaybeNullWhen( false )] out TResult value) {
-            if (target.TryGetValue( out var tmp )) {
+            if (source.TryGetValue( out var tmp )) {
                 value = selector( tmp );
                 return true;
             }
@@ -91,16 +89,16 @@ namespace System.Linq {
     }
     internal readonly struct Valuable_ValueFilter<T> : IValuable<T> {
 
-        private readonly IValuable<T> target;
+        private readonly IValuable<T> source;
         private readonly Func<T, bool> predicate;
 
-        public Valuable_ValueFilter(IValuable<T> target, Func<T, bool> predicate) {
-            this.target = target;
+        public Valuable_ValueFilter(IValuable<T> source, Func<T, bool> predicate) {
+            this.source = source;
             this.predicate = predicate;
         }
 
         public bool TryGetValue([MaybeNullWhen( false )] out T value) {
-            if (target.TryGetValue( out var tmp )) {
+            if (source.TryGetValue( out var tmp )) {
                 if (predicate( tmp )) {
                     value = tmp;
                     return true;
