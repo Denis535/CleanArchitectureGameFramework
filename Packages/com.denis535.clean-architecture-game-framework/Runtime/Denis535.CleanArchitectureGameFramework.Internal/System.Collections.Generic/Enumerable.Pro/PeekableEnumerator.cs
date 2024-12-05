@@ -8,7 +8,7 @@ namespace System.Collections.Generic {
 
         private IEnumerator<T> Source { get; }
         public bool IsStarted { get; private set; }
-        public bool IsFinished { get; private set; }
+        public bool IsCompleted { get; private set; }
         public Option<T> Current { get; private set; }
         private Option<T> Next { get; set; }
 
@@ -29,16 +29,16 @@ namespace System.Collections.Generic {
         // Take
         public Option<T> Take() {
             if (Next.HasValue) {
-                (IsStarted, IsFinished) = (true, false);
+                (IsStarted, IsCompleted) = (true, false);
                 (Current, Next) = (Next, default);
                 return Current;
             }
             if (Source.MoveNext()) {
-                (IsStarted, IsFinished) = (true, false);
+                (IsStarted, IsCompleted) = (true, false);
                 (Current, Next) = (Option.Create( Source.Current ), default);
                 return Current;
             }
-            (IsStarted, IsFinished) = (true, true);
+            (IsStarted, IsCompleted) = (true, true);
             (Current, Next) = (default, default);
             return Current;
         }
@@ -59,7 +59,7 @@ namespace System.Collections.Generic {
         // Reset
         public void Reset() {
             Source.Reset();
-            (IsStarted, IsFinished) = (false, false);
+            (IsStarted, IsCompleted) = (false, false);
             (Current, Next) = (default, default);
         }
 
@@ -67,18 +67,18 @@ namespace System.Collections.Generic {
     public static class PeekableEnumeratorExtensions {
 
         // Take/If
-        public static Option<T> TakeIf<T>(this PeekableEnumerator<T> enumerator, Func<T, bool> predicate) {
-            if (enumerator.Peek().TryGetValue( out var next ) && predicate( next )) {
-                return enumerator.Take();
+        public static Option<T> TakeIf<T>(this PeekableEnumerator<T> source, Func<T, bool> predicate) {
+            if (source.Peek().TryGetValue( out var next ) && predicate( next )) {
+                return source.Take();
             }
             return default;
         }
 
         // Take/While
-        public static IEnumerable<T> TakeWhile<T>(this PeekableEnumerator<T> enumerator, Func<T, bool> predicate) {
+        public static IEnumerable<T> TakeWhile<T>(this PeekableEnumerator<T> source, Func<T, bool> predicate) {
             // [true, true], false
-            while (enumerator.Peek().TryGetValue( out var next ) && predicate( next )) {
-                yield return enumerator.Take().Value;
+            while (source.Peek().TryGetValue( out var next ) && predicate( next )) {
+                yield return source.Take().Value;
             }
         }
 

@@ -8,7 +8,7 @@ namespace System.Collections.Generic {
 
         private IEnumerator<T> Source { get; }
         public bool IsStarted { get; private set; }
-        public bool IsFinished { get; private set; }
+        public bool IsCompleted { get; private set; }
         public Option<T> Current { get; private set; }
 
         // Constructor
@@ -28,11 +28,11 @@ namespace System.Collections.Generic {
         // Take
         public Option<T> Take() {
             if (Source.MoveNext()) {
-                (IsStarted, IsFinished) = (true, false);
+                (IsStarted, IsCompleted) = (true, false);
                 Current = Option.Create( Source.Current );
                 return Current;
             }
-            (IsStarted, IsFinished) = (true, true);
+            (IsStarted, IsCompleted) = (true, true);
             Current = default;
             return Current;
         }
@@ -40,7 +40,7 @@ namespace System.Collections.Generic {
         // Reset
         public void Reset() {
             Source.Reset();
-            (IsStarted, IsFinished) = (false, false);
+            (IsStarted, IsCompleted) = (false, false);
             Current = default;
         }
 

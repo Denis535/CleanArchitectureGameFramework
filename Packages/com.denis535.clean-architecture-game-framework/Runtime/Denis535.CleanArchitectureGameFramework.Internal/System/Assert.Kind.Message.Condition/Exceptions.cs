@@ -63,8 +63,8 @@ namespace System {
                 return "Null";
             }
             private static Exception GetException(Type type, string? message) {
-                var constructor = type.GetConstructor( new Type?[] { typeof( string ), typeof( Exception ) } );
-                return (Exception) constructor.Invoke( new object?[] { message, null } );
+                var constructor = type.GetConstructor( new[] { typeof( string ), typeof( Exception ) } );
+                return (Exception) constructor.Invoke( new[] { message, null } );
             }
 
         }

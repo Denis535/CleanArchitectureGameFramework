@@ -5,7 +5,7 @@ namespace System {
     using System.Collections.Generic;
     using System.Linq;
 
-    public static class CLI {
+    public static class CLIUtils {
 
         // HasKey
         public static bool HasKey(string[] arguments, string key) {

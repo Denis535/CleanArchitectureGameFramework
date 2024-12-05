@@ -8,6 +8,9 @@ namespace System {
     public static class Option {
 
         // Create
+        public static Option<T> Create<T>() {
+            return default;
+        }
         public static Option<T> Create<T>(T value) {
             return new Option<T>( value );
         }
