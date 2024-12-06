@@ -5,6 +5,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Text;
     using UnityEditor;
     using UnityEngine;
@@ -31,6 +32,14 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // DrawElement
         protected override void DrawElement(Rect rect, string path) {
+            if (path.Equals( "Assets/Assets" ) || path.StartsWith( "Assets/Assets/" )) {
+                Highlight( rect, Settings.AssetsColor, path.Count( i => i == '/' ) >= 2 );
+                return;
+            }
+            if (path.StartsWith( "Assets/Assets." )) {
+                Highlight( rect, Settings.AssetsColor, path.Count( i => i == '/' ) >= 2 );
+                return;
+            }
             base.DrawElement( rect, path );
         }
         protected override void DrawPackageElement(Rect rect, string path, string package, string content) {
