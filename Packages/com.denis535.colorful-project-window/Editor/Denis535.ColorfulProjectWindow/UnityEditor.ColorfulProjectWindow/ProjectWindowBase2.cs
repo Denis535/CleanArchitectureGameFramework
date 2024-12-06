@@ -49,6 +49,34 @@ namespace UnityEditor.ColorfulProjectWindow {
             base.OnGUI( guid, rect );
         }
 
+        // DrawElement
+        protected override void DrawElement(Rect rect, string path) {
+            base.DrawElement( rect, path );
+        }
+        protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
+            base.DrawPackageElement( rect, path, name, rest );
+        }
+        protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
+            base.DrawAssemblyElement( rect, path, name, rest );
+        }
+
+        // DrawPackage
+        protected override void DrawPackage(Rect rect, string path, string name) {
+            Highlight( rect, Settings.PackageColor, path, name );
+        }
+        protected override void DrawAssembly(Rect rect, string path, string name) {
+            Highlight( rect, Settings.AssemblyColor, path, name );
+        }
+        protected override void DrawAssets(Rect rect, string path, string name, string rest) {
+            Highlight( rect, Settings.AssetsColor, path, name, rest );
+        }
+        protected override void DrawResources(Rect rect, string path, string name, string rest) {
+            Highlight( rect, Settings.ResourcesColor, path, name, rest );
+        }
+        protected override void DrawSources(Rect rect, string path, string name, string rest) {
+            Highlight( rect, Settings.SourcesColor, path, name, rest );
+        }
+
         // IsPackage
         protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
             var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
@@ -80,34 +108,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected override bool IsSources(string path, string name, string rest) {
             return base.IsSources( path, name, rest );
-        }
-
-        // DrawElement
-        protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
-            base.DrawPackageElement( rect, path, name, rest );
-        }
-        protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
-            base.DrawAssemblyElement( rect, path, name, rest );
-        }
-        protected override void DrawAssemblyContentElement(Rect rect, string path, string name, string rest) {
-            base.DrawAssemblyContentElement( rect, path, name, rest );
-        }
-
-        // DrawItem
-        protected override void DrawPackageItem(Rect rect, string path, string name) {
-            Highlight( rect, Settings.PackageColor, path, name );
-        }
-        protected override void DrawAssemblyItem(Rect rect, string path, string name) {
-            Highlight( rect, Settings.AssemblyColor, path, name );
-        }
-        protected override void DrawAssetsItem(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.AssetsColor, path, name, rest );
-        }
-        protected override void DrawResourcesItem(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.ResourcesColor, path, name, rest );
-        }
-        protected override void DrawSourcesItem(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.SourcesColor, path, name, rest );
         }
 
         // Helpers
