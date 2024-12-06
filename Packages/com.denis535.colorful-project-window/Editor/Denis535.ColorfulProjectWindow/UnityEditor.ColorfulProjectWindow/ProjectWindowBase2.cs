@@ -53,65 +53,65 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected override void DrawElement(Rect rect, string path) {
             base.DrawElement( rect, path );
         }
-        protected override void DrawPackageElement(Rect rect, string path, string name, string rest) {
-            base.DrawPackageElement( rect, path, name, rest );
+        protected override void DrawPackageElement(Rect rect, string path, string package, string content) {
+            base.DrawPackageElement( rect, path, package, content );
         }
-        protected override void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
-            base.DrawAssemblyElement( rect, path, name, rest );
+        protected override void DrawAssemblyElement(Rect rect, string path, string assembly, string content) {
+            base.DrawAssemblyElement( rect, path, assembly, content );
         }
 
         // DrawPackage
-        protected override void DrawPackage(Rect rect, string path, string name) {
-            Highlight( rect, Settings.PackageColor, path, name );
+        protected override void DrawPackage(Rect rect, string path, string package) {
+            Highlight( rect, Settings.PackageColor, false );
         }
-        protected override void DrawAssembly(Rect rect, string path, string name) {
-            Highlight( rect, Settings.AssemblyColor, path, name );
+        protected override void DrawAssembly(Rect rect, string path, string assembly) {
+            Highlight( rect, Settings.AssemblyColor, false );
         }
-        protected override void DrawAssets(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.AssetsColor, path, name, rest );
+        protected override void DrawAssets(Rect rect, string path, string assembly, string content) {
+            Highlight( rect, Settings.AssetsColor, content.Contains( '/' ) );
         }
-        protected override void DrawResources(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.ResourcesColor, path, name, rest );
+        protected override void DrawResources(Rect rect, string path, string assembly, string content) {
+            Highlight( rect, Settings.ResourcesColor, content.Contains( '/' ) );
         }
-        protected override void DrawSources(Rect rect, string path, string name, string rest) {
-            Highlight( rect, Settings.SourcesColor, path, name, rest );
+        protected override void DrawSources(Rect rect, string path, string assembly, string content) {
+            Highlight( rect, Settings.SourcesColor, content.Contains( '/' ) );
         }
 
         // IsPackage
-        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+        protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
             var packagePath = PackagePaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
             if (packagePath != null) {
-                name = Path.GetFileName( packagePath );
-                rest = path.Substring( packagePath.Length ).TrimStart( '/' );
+                package = Path.GetFileName( packagePath );
+                content = path.Substring( packagePath.Length ).TrimStart( '/' );
                 return true;
             }
-            name = null;
-            rest = null;
+            package = null;
+            content = null;
             return false;
         }
-        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest) {
+        protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
             var assemblyPath = AssemblyPaths.FirstOrDefault( i => path.Equals( i ) || path.StartsWith( i + '/' ) );
             if (assemblyPath != null) {
-                name = Path.GetFileName( assemblyPath );
-                rest = path.Substring( assemblyPath.Length ).TrimStart( '/' );
+                assembly = Path.GetFileName( assemblyPath );
+                content = path.Substring( assemblyPath.Length ).TrimStart( '/' );
                 return true;
             }
-            name = null;
-            rest = null;
+            assembly = null;
+            content = null;
             return false;
         }
-        protected override bool IsAssets(string path, string name, string rest) {
-            return base.IsAssets( path, name, rest );
+        protected override bool IsAssets(string path, string assembly, string content) {
+            return base.IsAssets( path, assembly, content );
         }
-        protected override bool IsResources(string path, string name, string rest) {
-            return base.IsResources( path, name, rest );
+        protected override bool IsResources(string path, string assembly, string content) {
+            return base.IsResources( path, assembly, content );
         }
-        protected override bool IsSources(string path, string name, string rest) {
-            return base.IsSources( path, name, rest );
+        protected override bool IsSources(string path, string assembly, string content) {
+            return base.IsSources( path, assembly, content );
         }
 
         // Helpers
-        protected static void Highlight(Rect rect, Color color, string path, string name) {
+        protected static void Highlight(Rect rect, Color color, bool isDeep) {
             if (rect.height == 16) {
                 rect.x -= 16;
                 rect.width = 16;
@@ -120,18 +120,7 @@ namespace UnityEditor.ColorfulProjectWindow {
                 rect.width = 64;
                 rect.height = 64;
             }
-            DrawRect( rect, color );
-        }
-        protected static void Highlight(Rect rect, Color color, string path, string name, string rest) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-            }
-            if (rest.Contains( '/' )) {
+            if (isDeep) {
                 color = Darken( color, 1.5f );
             }
             DrawRect( rect, color );

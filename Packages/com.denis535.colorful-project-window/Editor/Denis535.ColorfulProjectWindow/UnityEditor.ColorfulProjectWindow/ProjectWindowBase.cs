@@ -26,56 +26,56 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // DrawElement
         protected virtual void DrawElement(Rect rect, string path) {
-            // Assets/Package/Assembly/Namespace
-            // Assets/Package/Assembly/Assets.Namespace
-            if (IsAssembly( path, out var name, out var rest )) {
-                // .../[Assembly]
-                // .../[Assembly]/[Rest]
-                DrawAssemblyElement( rect, path, name, rest );
-            } else if (IsPackage( path, out name, out rest )) {
-                // .../[Package]
-                // .../[Package]/[Rest]
-                DrawPackageElement( rect, path, name, rest );
+            // Assets/[Package]/[Assembly]/[Content]
+            // Assets/[Package]/[Assembly]/[Content]
+
+            // Assets/[Assembly]/[Content]
+            // Assets/[Assembly]/[Content]
+
+            if (IsAssembly( path, out var assembly, out var content )) {
+                DrawAssemblyElement( rect, path, assembly, content );
+            } else if (IsPackage( path, out var package, out content )) {
+                DrawPackageElement( rect, path, package, content );
             }
         }
-        protected virtual void DrawPackageElement(Rect rect, string path, string name, string rest) {
-            if (rest == string.Empty) {
-                DrawPackage( rect, path, name );
+        protected virtual void DrawPackageElement(Rect rect, string path, string package, string content) {
+            if (content == string.Empty) {
+                DrawPackage( rect, path, package );
             }
         }
-        protected virtual void DrawAssemblyElement(Rect rect, string path, string name, string rest) {
-            if (rest == string.Empty) {
-                DrawAssembly( rect, path, name );
+        protected virtual void DrawAssemblyElement(Rect rect, string path, string assembly, string content) {
+            if (content == string.Empty) {
+                DrawAssembly( rect, path, assembly );
             } else {
-                if (IsFolder( path ) || rest.Contains( '/' )) {
-                    if (IsAssets( path, name, rest )) {
-                        DrawAssets( rect, path, name, rest );
-                    } else if (IsResources( path, name, rest )) {
-                        DrawResources( rect, path, name, rest );
-                    } else if (IsSources( path, name, rest )) {
-                        DrawSources( rect, path, name, rest );
+                if (IsFolder( path ) || content.Contains( '/' )) {
+                    if (IsAssets( path, assembly, content )) {
+                        DrawAssets( rect, path, assembly, content );
+                    } else if (IsResources( path, assembly, content )) {
+                        DrawResources( rect, path, assembly, content );
+                    } else if (IsSources( path, assembly, content )) {
+                        DrawSources( rect, path, assembly, content );
                     }
                 }
             }
         }
 
         // DrawPackage
-        protected abstract void DrawPackage(Rect rect, string path, string name);
-        protected abstract void DrawAssembly(Rect rect, string path, string name);
-        protected abstract void DrawAssets(Rect rect, string path, string name, string rest);
-        protected abstract void DrawResources(Rect rect, string path, string name, string rest);
-        protected abstract void DrawSources(Rect rect, string path, string name, string rest);
+        protected abstract void DrawPackage(Rect rect, string path, string package);
+        protected abstract void DrawAssembly(Rect rect, string path, string assembly);
+        protected abstract void DrawAssets(Rect rect, string path, string assembly, string content);
+        protected abstract void DrawResources(Rect rect, string path, string assembly, string content);
+        protected abstract void DrawSources(Rect rect, string path, string assembly, string content);
 
         // IsPackage
-        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
-        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? name, [NotNullWhen( true )] out string? rest);
-        protected virtual bool IsAssets(string path, string name, string rest) {
-            return rest.Equals( "Assets" ) || rest.StartsWith( "Assets/" ) || rest.StartsWith( "Assets." );
+        protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content);
+        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
+        protected virtual bool IsAssets(string path, string assembly, string content) {
+            return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
         }
-        protected virtual bool IsResources(string path, string name, string rest) {
-            return rest.Equals( "Resources" ) || rest.StartsWith( "Resources/" ) || rest.StartsWith( "Resources." );
+        protected virtual bool IsResources(string path, string assembly, string content) {
+            return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
-        protected virtual bool IsSources(string path, string name, string rest) {
+        protected virtual bool IsSources(string path, string assembly, string content) {
             return true;
         }
 
