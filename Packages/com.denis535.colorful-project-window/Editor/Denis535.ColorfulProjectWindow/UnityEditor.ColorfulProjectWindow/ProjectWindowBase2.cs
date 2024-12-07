@@ -12,8 +12,6 @@ namespace UnityEditor.ColorfulProjectWindow {
 
     public abstract class ProjectWindowBase2 : ProjectWindowBase {
 
-        // Settings
-        protected Settings Settings => Settings.Instance;
         // PackagePaths
         protected string[] PackagePaths { get; }
         // AssemblyPaths
@@ -62,19 +60,19 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // DrawPackage
         protected override void DrawPackage(Rect rect, string path, string package) {
-            Highlight( rect, Settings.PackageColor, false );
+            base.DrawPackage( rect, path, package );
         }
         protected override void DrawAssembly(Rect rect, string path, string assembly) {
-            Highlight( rect, Settings.AssemblyColor, false );
+            base.DrawAssembly( rect, path, assembly );
         }
         protected override void DrawAssets(Rect rect, string path, string assembly, string content) {
-            Highlight( rect, Settings.AssetsColor, content.Contains( '/' ) );
+            base.DrawAssets( rect, path, assembly, content );
         }
         protected override void DrawResources(Rect rect, string path, string assembly, string content) {
-            Highlight( rect, Settings.ResourcesColor, content.Contains( '/' ) );
+            base.DrawResources( rect, path, assembly, content );
         }
         protected override void DrawSources(Rect rect, string path, string assembly, string content) {
-            Highlight( rect, Settings.SourcesColor, content.Contains( '/' ) );
+            base.DrawSources( rect, path, assembly, content );
         }
 
         // IsPackage
@@ -108,47 +106,6 @@ namespace UnityEditor.ColorfulProjectWindow {
         }
         protected override bool IsSources(string path, string assembly, string content) {
             return base.IsSources( path, assembly, content );
-        }
-
-        // Helpers
-        protected static void Highlight(Rect rect, Color color, bool isDeep) {
-            if (rect.height == 16) {
-                rect.x -= 16;
-                rect.width = 16;
-                rect.height = 16;
-            } else {
-                rect.width = 64;
-                rect.height = 64;
-            }
-            if (isDeep) {
-                color = Darken( color, 1.5f );
-            }
-            DrawRect( rect, color );
-        }
-        // Helpers
-        protected static Color HSVA(int h, float s, float v, float a) {
-            var color = Color.HSVToRGB( h / 360f, s, v );
-            color.a = a;
-            return color;
-        }
-        protected static Color Lighten(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v * factor );
-            result.a = color.a;
-            return result;
-        }
-        protected static Color Darken(Color color, float factor) {
-            Color.RGBToHSV( color, out var h, out var s, out var v );
-            var result = Color.HSVToRGB( h, s, v / factor );
-            result.a = color.a;
-            return result;
-        }
-        // Helpers
-        protected static void DrawRect(Rect rect, Color color) {
-            var prev = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture( rect, Texture2D.whiteTexture );
-            GUI.color = prev;
         }
 
     }

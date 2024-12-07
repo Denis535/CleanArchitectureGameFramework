@@ -11,7 +11,7 @@ namespace UnityEditor.ColorfulProjectWindow {
     using UnityEngine;
 
     [InitializeOnLoad]
-    public class ProjectWindow : ProjectWindowBase2 {
+    public class ProjectWindow : ProjectWindowBase {
 
         // Constructor
         static ProjectWindow() {
@@ -68,10 +68,53 @@ namespace UnityEditor.ColorfulProjectWindow {
 
         // IsPackage
         protected override bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
-            return base.IsPackage( path, out package, out content );
+            if (IsPackage( path, "Packages/com.denis535.addressables-extensions", out package, out content )) {
+                return true;
+            }
+            if (IsPackage( path, "Packages/com.denis535.addressables-source-generator", out package, out content )) {
+                return true;
+            }
+            if (IsPackage( path, "Packages/com.denis535.clean-architecture-game-framework", out package, out content )) {
+                return true;
+            }
+            if (IsPackage( path, "Packages/com.denis535.colorful-project-window", out package, out content )) {
+                return true;
+            }
+            package = null;
+            content = null;
+            return false;
         }
         protected override bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
-            return base.IsAssembly( path, out assembly, out content );
+            if (IsAssembly( path, "Assets/MyProject", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Assets/MyProject2", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.addressables-extensions/Runtime/Denis535.Addressables.Extensions", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.addressables-source-generator/Editor/Denis535.Addressables.SourceGenerator", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.clean-architecture-game-framework/Runtime/Denis535.CleanArchitectureGameFramework", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.clean-architecture-game-framework/Runtime/Denis535.CleanArchitectureGameFramework.Additions", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.clean-architecture-game-framework/Runtime/Denis535.CleanArchitectureGameFramework.Internal", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.clean-architecture-game-framework/Editor/Denis535.CleanArchitectureGameFramework.Editor", out assembly, out content )) {
+                return true;
+            }
+            if (IsAssembly( path, "Packages/com.denis535.colorful-project-window/Editor/Denis535.ColorfulProjectWindow", out assembly, out content )) {
+                return true;
+            }
+            assembly = null;
+            content = null;
+            return false;
         }
         protected override bool IsAssets(string path, string assembly, string content) {
             return base.IsAssets( path, assembly, content );
