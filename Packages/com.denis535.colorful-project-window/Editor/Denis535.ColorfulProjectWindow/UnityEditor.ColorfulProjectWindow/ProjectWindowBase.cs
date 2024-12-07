@@ -51,14 +51,12 @@ namespace UnityEditor.ColorfulProjectWindow {
             if (content == string.Empty) {
                 DrawAssembly( rect, path, assembly );
             } else {
-                if (IsFolder( path ) || content.Contains( '/' )) {
-                    if (IsAssets( path, assembly, content )) {
-                        DrawAssets( rect, path, assembly, content );
-                    } else if (IsResources( path, assembly, content )) {
-                        DrawResources( rect, path, assembly, content );
-                    } else if (IsSources( path, assembly, content )) {
-                        DrawSources( rect, path, assembly, content );
-                    }
+                if (IsAssets( path, assembly, content )) {
+                    DrawAssets( rect, path, assembly, content );
+                } else if (IsResources( path, assembly, content )) {
+                    DrawResources( rect, path, assembly, content );
+                } else if (IsSources( path, assembly, content )) {
+                    DrawSources( rect, path, assembly, content );
                 }
             }
         }
@@ -90,7 +88,7 @@ namespace UnityEditor.ColorfulProjectWindow {
             return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
         protected virtual bool IsSources(string path, string assembly, string content) {
-            return true;
+            return !path.EndsWith( ".asmdef" ) && !path.EndsWith( ".asmref" );
         }
 
         // Helpers
