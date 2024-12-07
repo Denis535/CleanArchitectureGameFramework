@@ -36,27 +36,30 @@ namespace UnityEditor.ColorfulProjectWindow {
             // Assets/[Assembly]/[Content]
             // Assets/[Assembly]/[Content]
 
-            if (IsAssembly( path, out var assembly, out var content )) {
-                DrawAssemblyElement( rect, path, assembly, content );
-            } else if (IsPackage( path, out var package, out content )) {
-                DrawPackageElement( rect, path, package, content );
-            }
-        }
-        protected virtual void DrawPackageElement(Rect rect, string path, string package, string content) {
-            if (content == string.Empty) {
-                DrawPackage( rect, path, package );
-            }
-        }
-        protected virtual void DrawAssemblyElement(Rect rect, string path, string assembly, string content) {
-            if (content == string.Empty) {
-                DrawAssembly( rect, path, assembly );
+            if (IsPackage( path, out var package, out var content )) {
+                if (content == string.Empty) {
+                    DrawPackage( rect, path, package );
+                } else {
+                    if (IsAssembly( path, package, out var assembly, out content )) {
+                        DrawAssembly( rect, path, package, assembly, content );
+                    }
+                }
             } else {
-                if (IsAssets( path, assembly, content )) {
-                    DrawAssets( rect, path, assembly, content );
-                } else if (IsResources( path, assembly, content )) {
-                    DrawResources( rect, path, assembly, content );
-                } else if (IsSources( path, assembly, content )) {
-                    DrawSources( rect, path, assembly, content );
+                if (IsAssembly( path, null, out var assembly, out content )) {
+                    DrawAssembly( rect, path, null, assembly, content );
+                }
+            }
+            void DrawAssembly(Rect rect, string path, string? package, string assembly, string content) {
+                if (content == string.Empty) {
+                    this.DrawAssembly( rect, path, package, assembly );
+                } else {
+                    if (IsAssets( path, assembly, content )) {
+                        DrawAssets( rect, path, package, assembly, content );
+                    } else if (IsResources( path, assembly, content )) {
+                        DrawResources( rect, path, package, assembly, content );
+                    } else if (IsSources( path, assembly, content )) {
+                        DrawSources( rect, path, package, assembly, content );
+                    }
                 }
             }
         }
@@ -65,22 +68,22 @@ namespace UnityEditor.ColorfulProjectWindow {
         protected virtual void DrawPackage(Rect rect, string path, string package) {
             Highlight( rect, Settings.PackageColor, false );
         }
-        protected virtual void DrawAssembly(Rect rect, string path, string assembly) {
+        protected virtual void DrawAssembly(Rect rect, string path, string? package, string assembly) {
             Highlight( rect, Settings.AssemblyColor, false );
         }
-        protected virtual void DrawAssets(Rect rect, string path, string assembly, string content) {
+        protected virtual void DrawAssets(Rect rect, string path, string? package, string assembly, string content) {
             Highlight( rect, Settings.AssetsColor, content.Contains( '/' ) );
         }
-        protected virtual void DrawResources(Rect rect, string path, string assembly, string content) {
+        protected virtual void DrawResources(Rect rect, string path, string? package, string assembly, string content) {
             Highlight( rect, Settings.ResourcesColor, content.Contains( '/' ) );
         }
-        protected virtual void DrawSources(Rect rect, string path, string assembly, string content) {
+        protected virtual void DrawSources(Rect rect, string path, string? package, string assembly, string content) {
             Highlight( rect, Settings.SourcesColor, content.Contains( '/' ) );
         }
 
         // IsPackage
         protected abstract bool IsPackage(string path, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content);
-        protected abstract bool IsAssembly(string path, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
+        protected abstract bool IsAssembly(string path, string? package, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content);
         protected virtual bool IsAssets(string path, string assembly, string content) {
             return content.Equals( "Assets" ) || content.StartsWith( "Assets/" ) || content.StartsWith( "Assets." );
         }
@@ -88,24 +91,14 @@ namespace UnityEditor.ColorfulProjectWindow {
             return content.Equals( "Resources" ) || content.StartsWith( "Resources/" ) || content.StartsWith( "Resources." );
         }
         protected virtual bool IsSources(string path, string assembly, string content) {
-            return !path.EndsWith( ".asmdef" ) && !path.EndsWith( ".asmref" );
+            return !path.EndsWith( ".asmdef" ) && !path.EndsWith( ".asmref" ) && !path.EndsWith( ".rsp" );
         }
 
         // Helpers
-        protected static bool IsPackage(string path, string packagePath, [NotNullWhen( true )] out string? package, [NotNullWhen( true )] out string? content) {
-            if (path.Equals( packagePath ) || path.StartsWith( packagePath + '/' )) {
-                package = Path.GetFileName( packagePath );
-                content = path.Substring( packagePath.Length ).TrimStart( '/' );
-                return true;
-            }
-            package = null;
-            content = null;
-            return false;
-        }
-        protected static bool IsAssembly(string path, string assemblyPath, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
-            if (path.Equals( assemblyPath ) || path.StartsWith( assemblyPath + '/' )) {
-                assembly = Path.GetFileName( assemblyPath );
-                content = path.Substring( assemblyPath.Length ).TrimStart( '/' );
+        protected static bool IsMatch(string path, string pattern, [NotNullWhen( true )] out string? assembly, [NotNullWhen( true )] out string? content) {
+            if (path.Equals( pattern ) || path.StartsWith( pattern + '/' )) {
+                assembly = Path.GetFileName( pattern );
+                content = path.Substring( pattern.Length ).TrimStart( '/' );
                 return true;
             }
             assembly = null;
