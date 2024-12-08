@@ -80,16 +80,6 @@ namespace UnityEngine.Framework {
             }
         }
         protected virtual void SetVisibility(UIViewBase view, UIViewBase? next) {
-            if (next != null) {
-                view.SetEnabled( false );
-                view.SetDisplayed( GetLayerOf( view ) != GetLayerOf( next ) );
-            } else {
-                view.SetEnabled( true );
-                view.SetDisplayed( true );
-            }
-        }
-        protected virtual int GetLayerOf(UIViewBase view) {
-            return 0;
         }
 
     }
