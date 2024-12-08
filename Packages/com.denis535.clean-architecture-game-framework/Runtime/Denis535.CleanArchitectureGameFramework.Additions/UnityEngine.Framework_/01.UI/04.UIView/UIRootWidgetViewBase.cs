@@ -60,14 +60,14 @@ namespace UnityEngine.Framework {
 
         // SetVisibility
         protected virtual void SetVisibility(IReadOnlyList<VisualElement> views) {
-            foreach (var view in views.Cast<UIViewBase>().SkipLast( 1 )) {
+            foreach (var view in views.SkipLast( 1 ).Cast<UIViewBase>()) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
             for (var i = 0; i < views.Count; i++) {
                 var view = (UIViewBase) views[ i ];
-                var next = (UIViewBase) views.ElementAtOrDefault( i + 1 );
+                var next = views.Skip( i + 1 ).Cast<UIViewBase>();
                 SetVisibility( view, next );
             }
             if (views.Any()) {
@@ -79,8 +79,26 @@ namespace UnityEngine.Framework {
                 }
             }
         }
-        protected virtual void SetVisibility(UIViewBase view, UIViewBase? next) {
+        protected virtual void SetVisibility(UIViewBase view, IEnumerable<UIViewBase> next) {
+            //if (next.Any()) {
+            //    if (view is not MainWidgetView and not GameWidgetView) {
+            //        view.SetEnabled( false );
+            //    } else {
+            //        view.SetEnabled( true );
+            //    }
+            //    if (GetPriorityOf( view ) < GetPriorityOf( next.First() )) {
+            //        view.SetDisplayed( false );
+            //    } else {
+            //        view.SetDisplayed( true );
+            //    }
+            //} else {
+            //    view.SetEnabled( true );
+            //    view.SetDisplayed( true );
+            //}
         }
+        //protected virtual int GetPriorityOf(UIViewBase view) {
+        //    return 0;
+        //}
 
     }
 }
