@@ -38,7 +38,9 @@ namespace UnityEngine.Framework {
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Add( view );
             Sort();
+            SaveFocus( (IReadOnlyList<VisualElement>) Children() );
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
+            LoadFocus( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
         protected internal override bool RemoveView(UIViewBase view) {
@@ -46,7 +48,9 @@ namespace UnityEngine.Framework {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             Remove( view );
+            SaveFocus( (IReadOnlyList<VisualElement>) Children() );
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
+            LoadFocus( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
 
@@ -58,20 +62,48 @@ namespace UnityEngine.Framework {
             return 0;
         }
 
-        // SetVisibility
-        protected virtual void SetVisibility(IReadOnlyList<VisualElement> views) {
+        // SaveFocus
+        protected virtual void SaveFocus(IReadOnlyList<VisualElement> views) {
             foreach (var view in views.SkipLast( 1 ).Cast<UIViewBase>()) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
-            for (var i = 0; i < views.Count; i++) {
-                var view = (UIViewBase) views[ i ];
-                var next = views.Skip( i + 1 ).Cast<UIViewBase>();
-                SetVisibility( view, next );
-            }
-            if (views.Any()) {
-                var view = (UIViewBase) views.Last();
+        }
+
+        // SetVisibility
+        protected virtual void SetVisibility(IReadOnlyList<VisualElement> views) {
+            //for (var i = 0; i < views.Count; i++) {
+            //    var view = (UIViewBase) views[ i ];
+            //    var next = views.Skip( i + 1 ).Cast<UIViewBase>();
+            //    SetVisibility( view, next );
+            //}
+        }
+        //protected virtual void SetVisibility(UIViewBase view, IEnumerable<UIViewBase> next) {
+        //    if (next.Any()) {
+        //        if (view is not MainWidgetView and not GameWidgetView) {
+        //            view.SetEnabled( false );
+        //        } else {
+        //            view.SetEnabled( true );
+        //        }
+        //        if (GetPriorityOf( view ) < GetPriorityOf( next.First() )) {
+        //            view.SetDisplayed( false );
+        //        } else {
+        //            view.SetDisplayed( true );
+        //        }
+        //    } else {
+        //        view.SetEnabled( true );
+        //        view.SetDisplayed( true );
+        //    }
+        //}
+        //protected virtual int GetPriorityOf(UIViewBase view) {
+        //    return 0;
+        //}
+
+        // LoadFocus
+        protected virtual void LoadFocus(IReadOnlyList<VisualElement> views) {
+            var view = (UIViewBase?) views.LastOrDefault();
+            if (view != null) {
                 if (!view.HasFocusedElement()) {
                     if (!view.LoadFocus()) {
                         view.InitFocus();
@@ -79,26 +111,6 @@ namespace UnityEngine.Framework {
                 }
             }
         }
-        protected virtual void SetVisibility(UIViewBase view, IEnumerable<UIViewBase> next) {
-            //if (next.Any()) {
-            //    if (view is not MainWidgetView and not GameWidgetView) {
-            //        view.SetEnabled( false );
-            //    } else {
-            //        view.SetEnabled( true );
-            //    }
-            //    if (GetPriorityOf( view ) < GetPriorityOf( next.First() )) {
-            //        view.SetDisplayed( false );
-            //    } else {
-            //        view.SetDisplayed( true );
-            //    }
-            //} else {
-            //    view.SetEnabled( true );
-            //    view.SetDisplayed( true );
-            //}
-        }
-        //protected virtual int GetPriorityOf(UIViewBase view) {
-        //    return 0;
-        //}
 
     }
 }
