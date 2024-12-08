@@ -24,6 +24,14 @@ namespace UnityEngine.Framework {
             HideSelf();
         }
 
+        // Sort
+        protected override void Sort(List<UIWidgetBase> children) {
+            children.Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( a ), GetOrderOf( b ) ) );
+        }
+        protected virtual int GetOrderOf(UIWidgetBase widget) {
+            return 0;
+        }
+
         // ShowSelf
         protected override void ShowSelf() {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
