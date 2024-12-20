@@ -7,10 +7,10 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetBase<TView> : UIWidgetBase2<TView> where TView : UIRootWidgetViewBase {
+    public abstract class RootWidgetBase<TView> : WidgetBase2<TView> where TView : RootWidgetViewBase {
 
         // Constructor
-        public UIRootWidgetBase(IDependencyContainer container) : base( container ) {
+        public RootWidgetBase(IDependencyContainer container) : base( container ) {
         }
         public override void Dispose() {
             base.Dispose();

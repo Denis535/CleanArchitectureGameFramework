@@ -2,30 +2,33 @@
 This package provides you with a framework that helps you develop your projects following best practices.
 
 # Reference
-## Assemblies
 The package contains the following modules:
 - CleanArchitectureGameFramework - the main module.
 - CleanArchitectureGameFramework.Additions - the additional module with different additions.
 - CleanArchitectureGameFramework.Internal - the low-level module with different utilities and helpers.
 
-## Namespaces
 The package contains the following namespaces and types:
 - Framework - the root subject area namespace.
-    - Program - The program entity.
+    - Program - the program entity.
 - Framework.UI - the presentation subject area namespace.
-    - Theme - The audio theme entity.
-    - PlayList - The audio playlist.
-    - Screen - The graphics screen entity. It contains the widget tree and the visual element tree.
-    - Widget - The graphics widget. It may contain the view.
-    - View - The visual element. It is just the VisualElement.
-    - Router - The application manager service. It can load, reload, unload the scenes and quit the application.
+    - Theme - the audio theme entity.
+    - PlayList - the audio playlist.
+    - Screen - the graphics screen entity. It contains the widget tree and the visual element tree.
+    - Widget - the graphics widget. It may contain the view.
+    - View - the visual element. It is just the VisualElement.
+    - Router - the application manager service. It can load, reload, unload the scenes and quit the application.
 - Framework.App - the application subject area namespace.
-    - Application - The application entity.
-    - Storage - The object that provides you with values.
+    - Application - the application entity.
+    - Storage - the object that provides you with different values.
 - Framework.Domain - the business subject area namespace.
-    - Game - The game entity. It contains informations, rules and states.
-    - Player - The player entity. It contains informations and states.
-    - Entity - The entity (any object of scene). It contains informations and states.
+    - Game - the game entity. It contains informations, rules and states.
+    - Player - the player entity. It contains informations and states.
+    - Entity - the entity (any scene object). It contains informations, logic and states.
+    - Actor
+    - Thing
+    - Vehicle
+    - World
+
 # Media
 - [![YouTube](https://img.youtube.com/vi/ERAgdyVVXUw/0.jpg)](https://youtu.be/ERAgdyVVXUw)
 
@@ -42,4 +45,4 @@ The package contains the following namespaces and types:
 - https://www.udemy.com/user/denis-84102
 
 # If you want to support me
-If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos.
+If you want to support me, please rate my projects and subscribe to my YouTube channel.

@@ -11,4 +11,4 @@ This package is an addition to Addressables and gives you the ability to manage 
 - https://www.udemy.com/user/denis-84102
 
 # If you want to support me
-If you want to support me, please rate my packages, subscribe to my YouTube channel and like my videos.
+If you want to support me, please rate my projects and subscribe to my YouTube channel.

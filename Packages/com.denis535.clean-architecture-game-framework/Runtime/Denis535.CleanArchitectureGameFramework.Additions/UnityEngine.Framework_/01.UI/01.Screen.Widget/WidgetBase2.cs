@@ -5,13 +5,13 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIWidgetBase2 : WidgetBase {
+    public abstract class WidgetBase2 : WidgetBase {
 
         // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIWidgetBase2(IDependencyContainer container) {
+        public WidgetBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {
@@ -19,13 +19,13 @@ namespace UnityEngine.Framework {
         }
 
     }
-    public abstract class UIWidgetBase2<TView> : WidgetBase<TView> where TView : notnull, ViewBase {
+    public abstract class WidgetBase2<TView> : WidgetBase<TView> where TView : notnull, ViewBase {
 
         // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIWidgetBase2(IDependencyContainer container) {
+        public WidgetBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {

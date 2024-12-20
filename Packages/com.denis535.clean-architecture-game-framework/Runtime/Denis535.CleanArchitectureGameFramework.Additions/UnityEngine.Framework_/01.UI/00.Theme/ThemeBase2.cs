@@ -5,13 +5,13 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase2 : RouterBase {
+    public abstract class ThemeBase2 : ThemeBase {
 
         // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIRouterBase2(IDependencyContainer container) {
+        public ThemeBase2(IDependencyContainer container, AudioSource audioSource) : base( audioSource ) {
             Container = container;
         }
         public override void Dispose() {

@@ -5,13 +5,13 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIPlayListBase2 : PlayListBase {
+    public abstract class PlayListBase2 : PlayListBase {
 
         // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIPlayListBase2(IDependencyContainer container) {
+        public PlayListBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {

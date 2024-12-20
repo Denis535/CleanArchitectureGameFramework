@@ -4,15 +4,14 @@ namespace UnityEngine.Framework {
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
-    public abstract class UIScreenBase2 : ScreenBase {
+    public abstract class RouterBase2 : RouterBase {
 
         // System
         protected IDependencyContainer Container { get; }
 
         // Constructor
-        public UIScreenBase2(IDependencyContainer container, UIDocument document, AudioSource audioSource) : base( document, audioSource ) {
+        public RouterBase2(IDependencyContainer container) {
             Container = container;
         }
         public override void Dispose() {

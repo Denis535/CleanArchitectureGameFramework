@@ -7,7 +7,7 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetViewBase : ViewBase {
+    public abstract class RootWidgetViewBase : ViewBase {
 
         // Views
         public IEnumerable<ViewBase> Views => Children().Cast<ViewBase>();
@@ -22,7 +22,7 @@ namespace UnityEngine.Framework {
         }
 
         // Constructor
-        public UIRootWidgetViewBase() {
+        public RootWidgetViewBase() {
             name = "root-widget-view";
             AddToClassList( "root-widget-view" );
             pickingMode = PickingMode.Ignore;
