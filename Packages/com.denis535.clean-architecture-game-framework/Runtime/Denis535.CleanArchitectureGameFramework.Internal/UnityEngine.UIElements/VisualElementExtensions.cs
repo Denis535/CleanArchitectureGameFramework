@@ -9,8 +9,13 @@ namespace UnityEngine.UIElements {
 
     public static partial class VisualElementExtensions {
 
-        // IsAttached
-        public static bool IsAttached(this VisualElement element) {
+        // IsAttachedToParent
+        public static bool IsAttachedToParent(this VisualElement element) {
+            return element.parent != null;
+        }
+
+        // IsAttachedToPanel
+        public static bool IsAttachedToPanel(this VisualElement element) {
             return element.panel != null;
         }
 
@@ -49,10 +54,8 @@ namespace UnityEngine.UIElements {
             element.name = name;
             return element;
         }
-        public static T Classes<T>(this T element, params string?[] classes) where T : notnull, VisualElement {
-            foreach (var @class in classes) {
-                element.AddToClassList( @class );
-            }
+        public static T Class<T>(this T element, string @class) where T : notnull, VisualElement {
+            element.AddToClassList( @class );
             return element;
         }
         public static T Style<T>(this T element, Action<IStyle> callback) where T : notnull, VisualElement {
@@ -88,13 +91,13 @@ namespace UnityEngine.UIElements {
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireElement<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             var result = element.Query<T>( name, classes ).First();
-            Assert.Operation.Message( $"Element {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
+            Assert.Operation.Message( $"Element {typeof( T )} was not found" ).Valid( result != null );
             return result;
         }
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T[] RequireElements<T>(this VisualElement element, string? name, params string[] classes) where T : notnull, VisualElement {
             var result = element.Query<T>( name, classes ).ToList().ToArray().NullIfEmpty();
-            Assert.Operation.Message( $"Elements {typeof( T )} ({name}, {classes}) was not found" ).Valid( result != null );
+            Assert.Operation.Message( $"Elements {typeof( T )} was not found" ).Valid( result != null );
             return result;
         }
 

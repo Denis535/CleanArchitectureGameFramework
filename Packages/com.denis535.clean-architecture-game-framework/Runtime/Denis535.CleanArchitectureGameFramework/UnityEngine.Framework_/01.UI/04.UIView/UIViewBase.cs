@@ -22,18 +22,18 @@ namespace UnityEngine.Framework {
                 return disposeCancellationTokenSource.Token;
             }
         }
-        // IsAttachedToPanel
-        public bool IsAttachedToPanel {
-            get {
-                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                return panel != null;
-            }
-        }
         // IsAttachedToParent
         public bool IsAttachedToParent {
             get {
                 Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 return parent != null;
+            }
+        }
+        // IsAttachedToPanel
+        public bool IsAttachedToPanel {
+            get {
+                Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
+                return panel != null;
             }
         }
         // Parent
