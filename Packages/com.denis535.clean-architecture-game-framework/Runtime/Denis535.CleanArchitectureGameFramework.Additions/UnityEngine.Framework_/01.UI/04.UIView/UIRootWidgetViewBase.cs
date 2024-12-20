@@ -7,10 +7,10 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIRootWidgetViewBase : UIViewBase {
+    public abstract class UIRootWidgetViewBase : ViewBase {
 
         // Views
-        public IEnumerable<UIViewBase> Views => Children().Cast<UIViewBase>();
+        public IEnumerable<ViewBase> Views => Children().Cast<ViewBase>();
         // OnSubmit
         public event EventCallback<NavigationSubmitEvent> OnSubmitEvent {
             add => RegisterCallback( value, TrickleDown.TrickleDown );
@@ -32,7 +32,7 @@ namespace UnityEngine.Framework {
         }
 
         // TryAddView
-        protected internal override bool TryAddView(UIViewBase view) {
+        protected internal override bool TryAddView(ViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-attached to parent" ).Valid( !view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -41,7 +41,7 @@ namespace UnityEngine.Framework {
             SetVisibility( (IReadOnlyList<VisualElement>) Children() );
             return true;
         }
-        protected internal override bool TryRemoveView(UIViewBase view) {
+        protected internal override bool TryRemoveView(ViewBase view) {
             Assert.Argument.Message( $"Argument 'view' ({view}) must be non-disposed" ).Valid( !view.IsDisposed );
             Assert.Argument.Message( $"Argument 'view' ({view}) must be attached to parent" ).Valid( view.IsAttachedToParent );
             Assert.Operation.Message( $"View {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -52,9 +52,9 @@ namespace UnityEngine.Framework {
 
         // Sort
         protected virtual void Sort() {
-            Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( (UIViewBase) a ), GetOrderOf( (UIViewBase) b ) ) );
+            Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( (ViewBase) a ), GetOrderOf( (ViewBase) b ) ) );
         }
-        protected virtual int GetOrderOf(UIViewBase view) {
+        protected virtual int GetOrderOf(ViewBase view) {
             return 0;
         }
 
@@ -70,14 +70,14 @@ namespace UnityEngine.Framework {
 
         // Helpers
         protected static void SaveFocus(IReadOnlyList<VisualElement> views) {
-            foreach (var view in views.SkipLast( 1 ).Cast<UIViewBase>()) {
+            foreach (var view in views.SkipLast( 1 ).Cast<ViewBase>()) {
                 if (view.HasFocusedElement()) {
                     view.SaveFocus();
                 }
             }
         }
         protected static void LoadFocus(IReadOnlyList<VisualElement> views) {
-            var view = (UIViewBase?) views.LastOrDefault();
+            var view = (ViewBase?) views.LastOrDefault();
             if (view != null) {
                 if (!view.HasFocusedElement()) {
                     if (!view.LoadFocus()) {

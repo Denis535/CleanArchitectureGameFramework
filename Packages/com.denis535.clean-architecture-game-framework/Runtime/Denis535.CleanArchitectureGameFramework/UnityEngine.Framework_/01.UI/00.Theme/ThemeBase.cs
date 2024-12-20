@@ -8,15 +8,15 @@ namespace UnityEngine.Framework {
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public abstract class UIThemeBase : DisposableBase, IStateful<UIPlayListBase> {
+    public abstract class ThemeBase : DisposableBase, IStateful<PlayListBase> {
 
-        private UIPlayListBase? playList;
+        private PlayListBase? playList;
 
         // AudioSource
         protected AudioSource AudioSource { get; }
         // PlayList
-        UIPlayListBase? IStateful<UIPlayListBase>.State { get => PlayList; set => PlayList = value; }
-        protected internal UIPlayListBase? PlayList {
+        PlayListBase? IStateful<PlayListBase>.State { get => PlayList; set => PlayList = value; }
+        protected internal PlayListBase? PlayList {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 return playList;
@@ -81,7 +81,7 @@ namespace UnityEngine.Framework {
         }
 
         // Constructor
-        public UIThemeBase(AudioSource audioSource) {
+        public ThemeBase(AudioSource audioSource) {
             AudioSource = audioSource;
         }
         public override void Dispose() {
@@ -92,25 +92,25 @@ namespace UnityEngine.Framework {
         }
 
         // SetPlayList
-        void IStateful<UIPlayListBase>.SetState(UIPlayListBase? state, object? argument) {
+        void IStateful<PlayListBase>.SetState(PlayListBase? state, object? argument) {
             SetPlayList( state, argument );
         }
-        protected virtual void SetPlayList(UIPlayListBase? playList, object? argument = null) {
+        protected virtual void SetPlayList(PlayListBase? playList, object? argument = null) {
             if (playList != null) {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
-                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is UIPlayListBase.Activity_.Inactive );
+                Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is PlayListBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<UIPlayListBase>.SetState( this, playList, argument );
+                IStateful<PlayListBase>.SetState( this, playList, argument );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<UIPlayListBase>.SetState( this, playList, argument );
+                IStateful<PlayListBase>.SetState( this, playList, argument );
             }
         }
-        void IStateful<UIPlayListBase>.AddState(UIPlayListBase playList, object? argument) {
-            IStateful<UIPlayListBase>.AddState( this, playList, argument );
+        void IStateful<PlayListBase>.AddState(PlayListBase playList, object? argument) {
+            IStateful<PlayListBase>.AddState( this, playList, argument );
         }
-        void IStateful<UIPlayListBase>.RemoveState(UIPlayListBase playList, object? argument) {
-            IStateful<UIPlayListBase>.RemoveState( this, playList, argument );
+        void IStateful<PlayListBase>.RemoveState(PlayListBase playList, object? argument) {
+            IStateful<PlayListBase>.RemoveState( this, playList, argument );
             playList.Dispose();
         }
 

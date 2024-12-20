@@ -6,10 +6,10 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public static class UIViewExtensions {
+    public static class ViewExtensions {
 
         // Focus
-        public static void InitFocus(this UIViewBase view) {
+        public static void InitFocus(this ViewBase view) {
             // sometimes it throws an error
             try {
                 if (view.focusable) {
@@ -24,7 +24,7 @@ namespace UnityEngine.Framework {
             } catch {
             }
         }
-        public static bool LoadFocus(this UIViewBase view) {
+        public static bool LoadFocus(this ViewBase view) {
             // sometimes it throws an error
             try {
                 var focusedElement = view.LoadFocusedElement();
@@ -36,28 +36,28 @@ namespace UnityEngine.Framework {
             }
             return false;
         }
-        public static void SaveFocus(this UIViewBase view) {
+        public static void SaveFocus(this ViewBase view) {
             var focusedElement = GetFocusedElement( view );
             view.SaveFocusedElement( focusedElement );
         }
 
         // GetFocusedElement
-        public static VisualElement? GetFocusedElement(this UIViewBase view) {
+        public static VisualElement? GetFocusedElement(this ViewBase view) {
             var focusedElement = (VisualElement?) view.focusController?.focusedElement;
             if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return focusedElement;
             return null;
         }
-        public static bool HasFocusedElement(this UIViewBase view) {
+        public static bool HasFocusedElement(this ViewBase view) {
             var focusedElement = (VisualElement?) view.focusController?.focusedElement;
             if (focusedElement != null && (view == focusedElement || view.Contains( focusedElement ))) return true;
             return false;
         }
 
         // LoadFocusedElement
-        public static VisualElement? LoadFocusedElement(this UIViewBase view) {
+        public static VisualElement? LoadFocusedElement(this ViewBase view) {
             return (VisualElement) view.userData;
         }
-        public static void SaveFocusedElement(this UIViewBase view, VisualElement? focusedElement) {
+        public static void SaveFocusedElement(this ViewBase view, VisualElement? focusedElement) {
             view.userData = focusedElement;
         }
 

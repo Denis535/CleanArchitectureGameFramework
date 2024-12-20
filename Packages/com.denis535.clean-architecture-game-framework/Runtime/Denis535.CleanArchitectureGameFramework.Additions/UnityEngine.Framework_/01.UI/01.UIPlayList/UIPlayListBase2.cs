@@ -5,7 +5,7 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIPlayListBase2 : UIPlayListBase {
+    public abstract class UIPlayListBase2 : PlayListBase {
 
         // System
         protected IDependencyContainer Container { get; }

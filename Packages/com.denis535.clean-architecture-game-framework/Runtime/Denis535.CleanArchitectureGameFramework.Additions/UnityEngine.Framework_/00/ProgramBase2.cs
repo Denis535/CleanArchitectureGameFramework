@@ -42,9 +42,9 @@ namespace UnityEngine.Framework {
 
     }
     public abstract partial class ProgramBase2<TTheme, TScreen, TRouter, TApplication, TGame> : ProgramBase2
-        where TTheme : notnull, UIThemeBase
-        where TScreen : notnull, UIScreenBase
-        where TRouter : notnull, UIRouterBase
+        where TTheme : notnull, ThemeBase
+        where TScreen : notnull, ScreenBase
+        where TRouter : notnull, RouterBase
         where TApplication : notnull, ApplicationBase
         where TGame : notnull, GameBase {
 
@@ -92,7 +92,7 @@ namespace UnityEngine.Framework {
                 HelpBox.Draw();
             }
         }
-        protected virtual void OnInspectorGUI(UIThemeBase theme, UIScreenBase screen, UIRouterBase router, ApplicationBase application, GameBase? game) {
+        protected virtual void OnInspectorGUI(ThemeBase theme, ScreenBase screen, RouterBase router, ApplicationBase application, GameBase? game) {
             LabelField( "Theme", theme.ToString() );
             LabelField( "PlayList", theme.PlayList?.Pipe( GetDisplayString ) ?? "Null" );
             GUILayout.Space( 2 );
@@ -113,15 +113,15 @@ namespace UnityEngine.Framework {
             }
         }
         // Helpers
-        protected static string? GetDisplayString(UIPlayListBase playList) {
+        protected static string? GetDisplayString(PlayListBase playList) {
             return playList.ToString();
         }
-        protected static string? GetDisplayString(UIWidgetBase widget) {
+        protected static string? GetDisplayString(WidgetBase widget) {
             var builder = new StringBuilder();
             builder.AppendHierarchy( widget, i => i.ToString(), i => i.Children );
             return builder.ToString();
         }
-        protected static string? GetDisplayString(UIViewBase view) {
+        protected static string? GetDisplayString(ViewBase view) {
             var builder = new StringBuilder();
             builder.AppendHierarchy( (VisualElement) view, i => $"{i.GetType().FullName} ({i.name})", i => i.Children() );
             return builder.ToString();

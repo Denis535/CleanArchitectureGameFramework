@@ -8,7 +8,7 @@ namespace UnityEngine.Framework {
     using System.Threading.Tasks;
     using UnityEngine;
 
-    public abstract class UIPlayListBase : StateBase2<UIPlayListBase>, IDisposable {
+    public abstract class PlayListBase : StateBase2<PlayListBase>, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 
@@ -24,11 +24,11 @@ namespace UnityEngine.Framework {
             }
         }
         // Theme
-        protected UIThemeBase? Theme {
+        protected ThemeBase? Theme {
             get {
                 Assert.Operation.Message( $"PlayList {this} must be non-disposed" ).NotDisposed( !IsDisposed );
                 Assert.Operation.Message( $"PlayList {this} must be active or activating or deactivating" ).Valid( Activity is Activity_.Active or Activity_.Activating or Activity_.Deactivating );
-                return (UIThemeBase?) Stateful;
+                return (ThemeBase?) Stateful;
             }
         }
         // IsRunning
@@ -82,9 +82,9 @@ namespace UnityEngine.Framework {
         }
 
         // Constructor
-        public UIPlayListBase() {
+        public PlayListBase() {
         }
-        ~UIPlayListBase() {
+        ~PlayListBase() {
 #if DEBUG
             if (!IsDisposed) {
                 Debug.LogWarning( $"PlayList '{this}' must be disposed" );

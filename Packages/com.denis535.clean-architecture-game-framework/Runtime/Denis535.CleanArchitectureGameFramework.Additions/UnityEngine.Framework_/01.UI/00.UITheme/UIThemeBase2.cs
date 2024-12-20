@@ -5,7 +5,7 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIThemeBase2 : UIThemeBase {
+    public abstract class UIThemeBase2 : ThemeBase {
 
         // System
         protected IDependencyContainer Container { get; }

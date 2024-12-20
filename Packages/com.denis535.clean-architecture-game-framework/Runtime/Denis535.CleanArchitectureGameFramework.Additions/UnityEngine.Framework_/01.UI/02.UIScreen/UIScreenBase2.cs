@@ -6,7 +6,7 @@ namespace UnityEngine.Framework {
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public abstract class UIScreenBase2 : UIScreenBase {
+    public abstract class UIScreenBase2 : ScreenBase {
 
         // System
         protected IDependencyContainer Container { get; }

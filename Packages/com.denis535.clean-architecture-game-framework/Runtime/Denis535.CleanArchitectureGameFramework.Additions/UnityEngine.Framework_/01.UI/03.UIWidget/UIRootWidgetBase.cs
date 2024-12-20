@@ -25,10 +25,10 @@ namespace UnityEngine.Framework {
         }
 
         // Sort
-        protected override void Sort(List<UIWidgetBase> children) {
+        protected override void Sort(List<WidgetBase> children) {
             children.Sort( (a, b) => Comparer<int>.Default.Compare( GetOrderOf( a ), GetOrderOf( b ) ) );
         }
-        protected virtual int GetOrderOf(UIWidgetBase widget) {
+        protected virtual int GetOrderOf(WidgetBase widget) {
             return 0;
         }
 

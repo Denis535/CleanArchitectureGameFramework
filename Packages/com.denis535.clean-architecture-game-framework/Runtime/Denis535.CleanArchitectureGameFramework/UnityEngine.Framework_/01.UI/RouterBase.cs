@@ -5,10 +5,10 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase : DisposableBase {
+    public abstract class RouterBase : DisposableBase {
 
         // Constructor
-        public UIRouterBase() {
+        public RouterBase() {
         }
         public override void Dispose() {
             Assert.Operation.Message( $"Router {this} must be non-disposed" ).NotDisposed( !IsDisposed );

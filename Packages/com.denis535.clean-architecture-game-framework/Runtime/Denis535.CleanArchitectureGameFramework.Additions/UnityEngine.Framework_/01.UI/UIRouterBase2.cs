@@ -5,7 +5,7 @@ namespace UnityEngine.Framework {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class UIRouterBase2 : UIRouterBase {
+    public abstract class UIRouterBase2 : RouterBase {
 
         // System
         protected IDependencyContainer Container { get; }
