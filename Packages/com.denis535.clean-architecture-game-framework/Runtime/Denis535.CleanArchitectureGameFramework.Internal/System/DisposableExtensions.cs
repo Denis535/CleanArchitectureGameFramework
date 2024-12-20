@@ -13,10 +13,5 @@ namespace System {
             }
         }
 
-        // ThrowIfDisposed
-        public static void ThrowIfDisposed(this DisposableBase disposable) {
-            Assert.Operation.Message( $"Disposable {disposable} must be non-disposed" ).NotDisposed( !disposable.IsDisposed );
-        }
-
     }
 }

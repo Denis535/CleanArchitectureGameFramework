@@ -37,11 +37,6 @@ namespace System {
             disposeCancellationTokenSource?.Cancel();
             IsDisposed = true;
         }
-        protected void DisposeInternal() {
-            Assert.Operation.Message( $"Disposable {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            disposeCancellationTokenSource?.Cancel();
-            IsDisposed = true;
-        }
 
     }
 }
