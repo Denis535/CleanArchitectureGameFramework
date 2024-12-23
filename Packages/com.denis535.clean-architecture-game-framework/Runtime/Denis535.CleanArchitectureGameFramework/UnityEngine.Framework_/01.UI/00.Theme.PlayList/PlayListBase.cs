@@ -167,11 +167,11 @@ namespace UnityEngine.Framework {
             }
             return array[ 0 ];
         }
-        protected static T GetRandom<T>(T[] array, T? value) {
+        protected static T GetNextRandom<T>(T[] array, T? value) where T : class {
             var index = UnityEngine.Random.Range( 0, array.Length );
             if (index != -1) {
-                if (ReferenceEquals( array[ index ], value ) && array.Length > 1) {
-                    return GetRandom( array, value );
+                if (array.Length >= 2 && array[ index ] == value) {
+                    return GetNextRandom( array, value );
                 }
                 return array[ index ];
             }
