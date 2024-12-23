@@ -139,6 +139,29 @@ namespace UnityEngine.Framework {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.RemoveChild( child, argument, onRemoved );
         }
+        protected new bool RemoveChild(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? onRemoved) {
+            return base.RemoveChild( predicate, argument, onRemoved );
+        }
+        protected new int RemoveChildren(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? onRemoved) {
+            return base.RemoveChildren( predicate, argument, onRemoved );
+        }
+        protected new void RemoveSelf(object? argument, Action<WidgetBase>? onRemoved) {
+            base.RemoveSelf( argument, onRemoved );
+        }
+
+        // AddChild
+        protected void RemoveChild(WidgetBase child, object? argument) {
+            base.RemoveChild( child, argument, i => i.Dispose() );
+        }
+        protected bool RemoveChild(Func<WidgetBase, bool> predicate, object? argument) {
+            return base.RemoveChild( predicate, argument, i => i.Dispose() );
+        }
+        protected int RemoveChildren(Func<WidgetBase, bool> predicate, object? argument) {
+            return base.RemoveChildren( predicate, argument, i => i.Dispose() );
+        }
+        protected void RemoveSelf(object? argument) {
+            base.RemoveSelf( argument, i => i.Dispose() );
+        }
 
         // ShowView
         protected internal virtual void ShowView(ViewBase view) {

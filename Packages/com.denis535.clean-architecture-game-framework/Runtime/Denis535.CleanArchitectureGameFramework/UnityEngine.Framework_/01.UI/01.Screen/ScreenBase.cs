@@ -74,5 +74,13 @@ namespace UnityEngine.Framework {
             ITree<WidgetBase>.RemoveRoot( this, widget, argument, onRemoved );
         }
 
+        // SetWidget
+        protected void SetWidget(WidgetBase? widget, object? argument) {
+            SetWidget( widget, argument, i => i.Dispose() );
+        }
+        protected void RemoveWidget(WidgetBase widget, object? argument) {
+            RemoveWidget( widget, argument, i => i.Dispose() );
+        }
+
     }
 }

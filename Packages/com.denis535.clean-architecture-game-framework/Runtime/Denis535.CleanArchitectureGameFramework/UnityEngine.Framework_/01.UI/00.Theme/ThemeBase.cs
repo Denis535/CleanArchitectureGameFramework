@@ -122,6 +122,14 @@ namespace UnityEngine.Framework {
             IStateful<PlayListBase>.RemoveState( this, playList, argument, onRemoved );
         }
 
+        // SetPlayList
+        protected void SetPlayList(PlayListBase? playList, object? argument) {
+            SetPlayList( playList, argument, i => i.Dispose() );
+        }
+        protected void RemovePlayList(PlayListBase playList, object? argument) {
+            RemovePlayList( playList, argument, i => i.Dispose() );
+        }
+
         // Play
         protected internal async Task PlayAsync(AudioClip clip, CancellationToken cancellationToken) {
             Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
