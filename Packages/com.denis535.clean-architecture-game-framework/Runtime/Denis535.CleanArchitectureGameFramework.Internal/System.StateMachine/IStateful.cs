@@ -10,14 +10,14 @@ namespace System.StateMachine {
         protected T? State { get; set; }
 
         // SetState
-        protected void SetState(T? state, object? argument, Action<T>? onRemoved);
+        protected void SetState(T? state, object? argument, Action<T>? callback);
         protected void AddState(T state, object? argument);
-        protected void RemoveState(T state, object? argument, Action<T>? onRemoved);
+        protected void RemoveState(T state, object? argument, Action<T>? callback);
 
         // Helpers
-        protected static void SetState(IStateful<T> stateful, T? state, object? argument, Action<T>? onRemoved) {
+        protected static void SetState(IStateful<T> stateful, T? state, object? argument, Action<T>? callback) {
             if (stateful.State != null) {
-                stateful.RemoveState( stateful.State, argument, onRemoved );
+                stateful.RemoveState( stateful.State, argument, callback );
             }
             if (state != null) {
                 stateful.AddState( state, argument );
@@ -29,12 +29,12 @@ namespace System.StateMachine {
             stateful.State = state;
             stateful.State.Attach( stateful, argument );
         }
-        protected static void RemoveState(IStateful<T> stateful, T state, object? argument, Action<T>? onRemoved) {
+        protected static void RemoveState(IStateful<T> stateful, T state, object? argument, Action<T>? callback) {
             Assert.Argument.Message( $"Argument 'state' must be non-null" ).NotNull( state != null );
             Assert.Operation.Message( $"Stateful {stateful} must have {state} state" ).Valid( stateful.State == state );
             stateful.State.Detach( stateful, argument );
             stateful.State = null;
-            onRemoved?.Invoke( state );
+            callback?.Invoke( state );
         }
 
     }

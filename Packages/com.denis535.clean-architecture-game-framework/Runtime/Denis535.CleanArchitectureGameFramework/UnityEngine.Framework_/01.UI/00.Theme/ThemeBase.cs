@@ -93,33 +93,33 @@ namespace UnityEngine.Framework {
         }
 
         // SetState
-        void IStateful<PlayListBase>.SetState(PlayListBase? state, object? argument, Action<PlayListBase>? onRemoved) {
-            SetPlayList( state, argument, onRemoved );
+        void IStateful<PlayListBase>.SetState(PlayListBase? state, object? argument, Action<PlayListBase>? callback) {
+            SetPlayList( state, argument, callback );
         }
         void IStateful<PlayListBase>.AddState(PlayListBase state, object? argument) {
             AddPlayList( state, argument );
         }
-        void IStateful<PlayListBase>.RemoveState(PlayListBase state, object? argument, Action<PlayListBase>? onRemoved) {
-            RemovePlayList( state, argument, onRemoved );
+        void IStateful<PlayListBase>.RemoveState(PlayListBase state, object? argument, Action<PlayListBase>? callback) {
+            RemovePlayList( state, argument, callback );
         }
 
         // SetPlayList
-        protected virtual void SetPlayList(PlayListBase? playList, object? argument, Action<PlayListBase>? onRemoved) {
+        protected virtual void SetPlayList(PlayListBase? playList, object? argument, Action<PlayListBase>? callback) {
             if (playList != null) {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is PlayListBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<PlayListBase>.SetState( this, playList, argument, onRemoved );
+                IStateful<PlayListBase>.SetState( this, playList, argument, callback );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<PlayListBase>.SetState( this, playList, argument, onRemoved );
+                IStateful<PlayListBase>.SetState( this, playList, argument, callback );
             }
         }
         protected virtual void AddPlayList(PlayListBase playList, object? argument) {
             IStateful<PlayListBase>.AddState( this, playList, argument );
         }
-        protected virtual void RemovePlayList(PlayListBase playList, object? argument, Action<PlayListBase>? onRemoved) {
-            IStateful<PlayListBase>.RemoveState( this, playList, argument, onRemoved );
+        protected virtual void RemovePlayList(PlayListBase playList, object? argument, Action<PlayListBase>? callback) {
+            IStateful<PlayListBase>.RemoveState( this, playList, argument, callback );
         }
 
         // SetPlayList

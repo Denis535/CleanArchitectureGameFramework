@@ -108,34 +108,34 @@ namespace System.TreeMachine {
             Sort( Children_ );
             child.Attach( (TThis) this, argument );
         }
-        protected virtual void RemoveChild(TThis child, object? argument, Action<TThis>? onRemoved) {
+        protected virtual void RemoveChild(TThis child, object? argument, Action<TThis>? callback) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Node {this} must have child {child} node" ).Valid( Children.Contains( child ) );
             child.Detach( (TThis) this, argument );
             Children_.Remove( child );
-            onRemoved?.Invoke( child );
+            callback?.Invoke( child );
         }
-        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument, Action<TThis>? onRemoved) {
+        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument, Action<TThis>? callback) {
             var child = Children.LastOrDefault( predicate );
             if (child != null) {
-                RemoveChild( child, argument, onRemoved );
+                RemoveChild( child, argument, callback );
                 return true;
             }
             return false;
         }
-        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument, Action<TThis>? onRemoved) {
+        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument, Action<TThis>? callback) {
             var children = Children.Where( predicate ).Reverse().ToList();
             foreach (var child in children) {
-                RemoveChild( child, argument, onRemoved );
+                RemoveChild( child, argument, callback );
             }
             return children.Count;
         }
-        protected void RemoveSelf(object? argument, Action<TThis>? onRemoved) {
+        protected void RemoveSelf(object? argument, Action<TThis>? callback) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
             if (Parent != null) {
-                Parent.RemoveChild( (TThis) this, argument, onRemoved );
+                Parent.RemoveChild( (TThis) this, argument, callback );
             } else {
-                Tree!.RemoveRoot( (TThis) this, argument, onRemoved );
+                Tree!.RemoveRoot( (TThis) this, argument, callback );
             }
         }
 

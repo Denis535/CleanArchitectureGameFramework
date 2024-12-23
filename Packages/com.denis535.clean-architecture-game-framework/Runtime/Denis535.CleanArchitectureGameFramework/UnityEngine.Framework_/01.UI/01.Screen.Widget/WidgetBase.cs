@@ -134,19 +134,19 @@ namespace UnityEngine.Framework {
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.AddChild( child, argument );
         }
-        protected override void RemoveChild(WidgetBase child, object? argument, Action<WidgetBase>? onRemoved) {
+        protected override void RemoveChild(WidgetBase child, object? argument, Action<WidgetBase>? callback) {
             Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            base.RemoveChild( child, argument, onRemoved );
+            base.RemoveChild( child, argument, callback );
         }
-        protected new bool RemoveChild(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? onRemoved) {
-            return base.RemoveChild( predicate, argument, onRemoved );
+        protected new bool RemoveChild(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? callback) {
+            return base.RemoveChild( predicate, argument, callback );
         }
-        protected new int RemoveChildren(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? onRemoved) {
-            return base.RemoveChildren( predicate, argument, onRemoved );
+        protected new int RemoveChildren(Func<WidgetBase, bool> predicate, object? argument, Action<WidgetBase>? callback) {
+            return base.RemoveChildren( predicate, argument, callback );
         }
-        protected new void RemoveSelf(object? argument, Action<WidgetBase>? onRemoved) {
-            base.RemoveSelf( argument, onRemoved );
+        protected new void RemoveSelf(object? argument, Action<WidgetBase>? callback) {
+            base.RemoveSelf( argument, callback );
         }
 
         // AddChild

@@ -43,35 +43,35 @@ namespace UnityEngine.Framework {
         }
 
         // SetRoot
-        void ITree<WidgetBase>.SetRoot(WidgetBase? root, object? argument, Action<WidgetBase>? onRemoved) {
-            SetWidget( root, argument, onRemoved );
+        void ITree<WidgetBase>.SetRoot(WidgetBase? root, object? argument, Action<WidgetBase>? callback) {
+            SetWidget( root, argument, callback );
         }
         void ITree<WidgetBase>.AddRoot(WidgetBase root, object? argument) {
             AddWidget( root, argument );
         }
-        void ITree<WidgetBase>.RemoveRoot(WidgetBase root, object? argument, Action<WidgetBase>? onRemoved) {
-            RemoveWidget( root, argument, onRemoved );
+        void ITree<WidgetBase>.RemoveRoot(WidgetBase root, object? argument, Action<WidgetBase>? callback) {
+            RemoveWidget( root, argument, callback );
         }
 
         // SetWidget
-        protected virtual void SetWidget(WidgetBase? widget, object? argument, Action<WidgetBase>? onRemoved) {
+        protected virtual void SetWidget(WidgetBase? widget, object? argument, Action<WidgetBase>? callback) {
             if (widget != null) {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be inactive" ).Valid( widget.Activity is WidgetBase.Activity_.Inactive );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                ITree<WidgetBase>.SetRoot( this, widget, argument, onRemoved );
+                ITree<WidgetBase>.SetRoot( this, widget, argument, callback );
             } else {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                ITree<WidgetBase>.SetRoot( this, widget, argument, onRemoved );
+                ITree<WidgetBase>.SetRoot( this, widget, argument, callback );
             }
         }
         protected virtual void AddWidget(WidgetBase widget, object? argument) {
             ITree<WidgetBase>.AddRoot( this, widget, argument );
         }
-        protected virtual void RemoveWidget(WidgetBase widget, object? argument, Action<WidgetBase>? onRemoved) {
-            ITree<WidgetBase>.RemoveRoot( this, widget, argument, onRemoved );
+        protected virtual void RemoveWidget(WidgetBase widget, object? argument, Action<WidgetBase>? callback) {
+            ITree<WidgetBase>.RemoveRoot( this, widget, argument, callback );
         }
 
         // SetWidget
