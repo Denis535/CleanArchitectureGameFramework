@@ -14,8 +14,9 @@ namespace UnityEngine.Framework {
 
         // AudioSource
         protected AudioSource AudioSource { get; }
-        // PlayList
+        // State
         PlayListBase? IStateful<PlayListBase>.State { get => PlayList; set => PlayList = value; }
+        // PlayList
         protected internal PlayListBase? PlayList {
             get {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -91,27 +92,34 @@ namespace UnityEngine.Framework {
             base.Dispose();
         }
 
-        // SetPlayList
-        void IStateful<PlayListBase>.SetState(PlayListBase? state, object? argument) {
-            SetPlayList( state, argument );
+        // SetState
+        void IStateful<PlayListBase>.SetState(PlayListBase? state, object? argument, Action<PlayListBase>? onRemoved) {
+            SetPlayList( state, argument, onRemoved );
         }
-        protected virtual void SetPlayList(PlayListBase? playList, object? argument = null) {
+        void IStateful<PlayListBase>.AddState(PlayListBase state, object? argument) {
+            AddPlayList( state, argument );
+        }
+        void IStateful<PlayListBase>.RemoveState(PlayListBase state, object? argument, Action<PlayListBase>? onRemoved) {
+            RemovePlayList( state, argument, onRemoved );
+        }
+
+        // SetPlayList
+        protected virtual void SetPlayList(PlayListBase? playList, object? argument, Action<PlayListBase>? onRemoved) {
             if (playList != null) {
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be non-disposed" ).Valid( !playList.IsDisposed );
                 Assert.Argument.Message( $"Argument 'playList' ({playList}) must be inactive" ).Valid( playList.Activity is PlayListBase.Activity_.Inactive );
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<PlayListBase>.SetState( this, playList, argument );
+                IStateful<PlayListBase>.SetState( this, playList, argument, onRemoved );
             } else {
                 Assert.Operation.Message( $"Theme {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                IStateful<PlayListBase>.SetState( this, playList, argument );
+                IStateful<PlayListBase>.SetState( this, playList, argument, onRemoved );
             }
         }
-        void IStateful<PlayListBase>.AddState(PlayListBase playList, object? argument) {
+        protected virtual void AddPlayList(PlayListBase playList, object? argument) {
             IStateful<PlayListBase>.AddState( this, playList, argument );
         }
-        void IStateful<PlayListBase>.RemoveState(PlayListBase playList, object? argument) {
-            IStateful<PlayListBase>.RemoveState( this, playList, argument );
-            playList.Dispose();
+        protected virtual void RemovePlayList(PlayListBase playList, object? argument, Action<PlayListBase>? onRemoved) {
+            IStateful<PlayListBase>.RemoveState( this, playList, argument, onRemoved );
         }
 
         // Play

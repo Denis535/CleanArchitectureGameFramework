@@ -8,6 +8,25 @@ namespace UnityEngine {
 
     public static class GameObjectExtensions {
 
+        // SetLayer
+        public static void SetLayer(this GameObject gameObject, int layer) {
+            gameObject.layer = layer;
+        }
+
+        // SetLayerRecursively
+        public static void SetLayerRecursively(this GameObject gameObject, int layer) {
+            gameObject.layer = layer;
+            for (var i = 0; i < gameObject.transform.childCount; i++) {
+                gameObject.transform.GetChild( i ).gameObject.SetLayerRecursively( layer );
+            }
+        }
+        public static void SetLayerRecursively(this GameObject gameObject, int layer, int layer2) {
+            gameObject.layer = layer;
+            for (var i = 0; i < gameObject.transform.childCount; i++) {
+                gameObject.transform.GetChild( i ).gameObject.SetLayerRecursively( layer, layer2 );
+            }
+        }
+
         // Require/Component
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static T RequireComponent<T>(this GameObject gameObject) {

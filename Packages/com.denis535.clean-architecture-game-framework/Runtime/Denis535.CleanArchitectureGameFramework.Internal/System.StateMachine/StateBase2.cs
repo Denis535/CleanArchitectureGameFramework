@@ -5,6 +5,15 @@ namespace System.StateMachine {
     using System.Text;
 
     public abstract class StateBase2<TThis> : StateBase<TThis> where TThis : StateBase2<TThis> {
+        public enum Activity_ {
+            Inactive,
+            Activating,
+            Active,
+            Deactivating,
+        }
+
+        // Activity
+        public Activity_ Activity { get; private set; } = Activity_.Inactive;
 
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
@@ -16,8 +25,20 @@ namespace System.StateMachine {
         public StateBase2() {
         }
 
+        // Attach
+        internal sealed override void Attach(IStateful<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"State {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
+            base.Attach( owner, argument );
+            Activate( argument );
+        }
+        internal sealed override void Detach(IStateful<TThis> owner, object? argument) {
+            Assert.Operation.Message( $"State {this} must be active" ).Valid( Activity is Activity_.Active );
+            Deactivate( argument );
+            base.Detach( owner, argument );
+        }
+
         // Activate
-        private protected sealed override void Activate(object? argument) {
+        private void Activate(object? argument) {
             Assert.Operation.Message( $"State {this} must have owner" ).Valid( Owner != null );
             Assert.Operation.Message( $"State {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
             OnBeforeActivate( argument );
@@ -28,7 +49,7 @@ namespace System.StateMachine {
             Activity = Activity_.Active;
             OnAfterActivate( argument );
         }
-        private protected sealed override void Deactivate(object? argument) {
+        private void Deactivate(object? argument) {
             Assert.Operation.Message( $"State {this} must have owner" ).Valid( Owner != null );
             Assert.Operation.Message( $"State {this} must be active" ).Valid( Activity is Activity_.Active );
             OnBeforeDeactivate( argument );

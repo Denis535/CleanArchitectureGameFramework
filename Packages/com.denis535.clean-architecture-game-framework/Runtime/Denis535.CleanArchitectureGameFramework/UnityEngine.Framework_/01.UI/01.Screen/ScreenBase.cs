@@ -46,11 +46,11 @@ namespace UnityEngine.Framework {
         void ITree<WidgetBase>.SetRoot(WidgetBase? root, object? argument, Action<WidgetBase>? onRemoved) {
             SetWidget( root, argument, onRemoved );
         }
-        void ITree<WidgetBase>.AddRoot(WidgetBase widget, object? argument) {
-            AddWidget( widget, argument );
+        void ITree<WidgetBase>.AddRoot(WidgetBase root, object? argument) {
+            AddWidget( root, argument );
         }
-        void ITree<WidgetBase>.RemoveRoot(WidgetBase widget, object? argument, Action<WidgetBase>? onRemoved) {
-            RemoveWidget( widget, argument, onRemoved );
+        void ITree<WidgetBase>.RemoveRoot(WidgetBase root, object? argument, Action<WidgetBase>? onRemoved) {
+            RemoveWidget( root, argument, onRemoved );
         }
 
         // SetWidget
