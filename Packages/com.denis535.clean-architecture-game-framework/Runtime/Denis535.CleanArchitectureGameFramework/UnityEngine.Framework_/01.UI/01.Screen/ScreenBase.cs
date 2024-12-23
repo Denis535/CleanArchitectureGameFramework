@@ -15,8 +15,9 @@ namespace UnityEngine.Framework {
         protected internal UIDocument Document { get; }
         // AudioSource
         protected internal AudioSource AudioSource { get; }
-        // Widget
+        // Root
         WidgetBase? ITree<WidgetBase>.Root { get => Widget; set => Widget = value; }
+        // Widget
         protected internal WidgetBase? Widget {
             get {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
@@ -41,29 +42,36 @@ namespace UnityEngine.Framework {
             base.Dispose();
         }
 
-        // SetWidget
-        void ITree<WidgetBase>.SetRoot(WidgetBase? root, object? argument) {
-            SetWidget( root, argument );
+        // SetRoot
+        void ITree<WidgetBase>.SetRoot(WidgetBase? root, object? argument, Action<WidgetBase>? onRemoved) {
+            SetWidget( root, argument, onRemoved );
         }
-        protected internal virtual void SetWidget(WidgetBase? widget, object? argument = null) {
+        void ITree<WidgetBase>.AddRoot(WidgetBase widget, object? argument) {
+            AddWidget( widget, argument );
+        }
+        void ITree<WidgetBase>.RemoveRoot(WidgetBase widget, object? argument, Action<WidgetBase>? onRemoved) {
+            RemoveWidget( widget, argument, onRemoved );
+        }
+
+        // SetWidget
+        protected virtual void SetWidget(WidgetBase? widget, object? argument, Action<WidgetBase>? onRemoved) {
             if (widget != null) {
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be non-disposed" ).Valid( !widget.IsDisposed );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be inactive" ).Valid( widget.Activity is WidgetBase.Activity_.Inactive );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.IsViewable );
                 Assert.Argument.Message( $"Argument 'widget' ({widget}) must be viewable" ).Valid( widget.View != null );
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                ITree<WidgetBase>.SetRoot( this, widget, argument );
+                ITree<WidgetBase>.SetRoot( this, widget, argument, onRemoved );
             } else {
                 Assert.Operation.Message( $"Screen {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-                ITree<WidgetBase>.SetRoot( this, widget, argument );
+                ITree<WidgetBase>.SetRoot( this, widget, argument, onRemoved );
             }
         }
-        void ITree<WidgetBase>.AddRoot(WidgetBase widget, object? argument) {
+        protected virtual void AddWidget(WidgetBase widget, object? argument) {
             ITree<WidgetBase>.AddRoot( this, widget, argument );
         }
-        void ITree<WidgetBase>.RemoveRoot(WidgetBase widget, object? argument) {
-            ITree<WidgetBase>.RemoveRoot( this, widget, argument );
-            widget.Dispose();
+        protected virtual void RemoveWidget(WidgetBase widget, object? argument, Action<WidgetBase>? onRemoved) {
+            ITree<WidgetBase>.RemoveRoot( this, widget, argument, onRemoved );
         }
 
     }

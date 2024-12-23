@@ -7,18 +7,9 @@ namespace System.TreeMachine {
     using System.Linq;
 
     public abstract class NodeBase<TThis> where TThis : NodeBase<TThis> {
-        public enum Activity_ {
-            Inactive,
-            Activating,
-            Active,
-            Deactivating,
-        }
 
         // Owner
         private protected object? Owner { get; private set; } = null;
-        // Activity
-        public Activity_ Activity { get; private protected set; } = Activity_.Inactive;
-
         // Tree
         public ITree<TThis>? Tree => (ITree<TThis>?) Root?.Owner;
 
@@ -58,75 +49,39 @@ namespace System.TreeMachine {
         public event Action<object?>? OnAfterDetachEvent;
 
         // Constructor
-        private protected NodeBase() {
+        public NodeBase() {
         }
 
         // Attach
-        internal void Attach(ITree<TThis> owner, object? argument) {
+        internal virtual void Attach(ITree<TThis> owner, object? argument) {
             Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-            {
-                Owner = owner;
-                OnBeforeAttach( argument );
-                OnAttach( argument );
-                OnAfterAttach( argument );
-            }
-            Activate( argument );
+            Owner = owner;
+            OnBeforeAttach( argument );
+            OnAttach( argument );
+            OnAfterAttach( argument );
         }
-        internal void Detach(ITree<TThis> owner, object? argument) {
+        internal virtual void Detach(ITree<TThis> owner, object? argument) {
             Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
-            Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
-            Deactivate( argument );
-            {
-                OnBeforeDetach( argument );
-                OnDetach( argument );
-                OnAfterDetach( argument );
-                Owner = null;
-            }
+            OnBeforeDetach( argument );
+            OnDetach( argument );
+            OnAfterDetach( argument );
+            Owner = null;
         }
 
         // Attach
-        private void Attach(TThis owner, object? argument) {
+        internal virtual void Attach(TThis owner, object? argument) {
             Assert.Operation.Message( $"Node {this} must have no owner" ).Valid( Owner == null );
-            Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-            if (owner.Activity is Activity_.Active) {
-                {
-                    Owner = owner;
-                    OnBeforeAttach( argument );
-                    OnAttach( argument );
-                    OnAfterAttach( argument );
-                }
-                Activate( argument );
-            } else {
-                {
-                    Owner = owner;
-                    OnBeforeAttach( argument );
-                    OnAttach( argument );
-                    OnAfterAttach( argument );
-                }
-            }
+            Owner = owner;
+            OnBeforeAttach( argument );
+            OnAttach( argument );
+            OnAfterAttach( argument );
         }
-        private void Detach(TThis owner, object? argument) {
-            if (owner.Activity is Activity_.Active) {
-                Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
-                Assert.Operation.Message( $"Node {this} must be active" ).Valid( Activity is Activity_.Active );
-                Deactivate( argument );
-                {
-                    OnBeforeDetach( argument );
-                    OnDetach( argument );
-                    OnAfterDetach( argument );
-                    Owner = null;
-                }
-            } else {
-                Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
-                Assert.Operation.Message( $"Node {this} must be inactive" ).Valid( Activity is Activity_.Inactive );
-                {
-                    OnBeforeDetach( argument );
-                    OnDetach( argument );
-                    OnAfterDetach( argument );
-                    Owner = null;
-                }
-            }
+        internal virtual void Detach(TThis owner, object? argument) {
+            Assert.Operation.Message( $"Node {this} must have {owner} owner" ).Valid( Owner == owner );
+            OnBeforeDetach( argument );
+            OnDetach( argument );
+            OnAfterDetach( argument );
+            Owner = null;
         }
 
         // OnAttach
@@ -145,10 +100,6 @@ namespace System.TreeMachine {
             OnAfterDetachEvent?.Invoke( argument );
         }
 
-        // Activate
-        private protected abstract void Activate(object? argument);
-        private protected abstract void Deactivate(object? argument);
-
         // AddChild
         protected virtual void AddChild(TThis child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
@@ -157,33 +108,34 @@ namespace System.TreeMachine {
             Sort( Children_ );
             child.Attach( (TThis) this, argument );
         }
-        protected virtual void RemoveChild(TThis child, object? argument) {
+        protected virtual void RemoveChild(TThis child, object? argument, Action<TThis>? onRemoved) {
             Assert.Argument.Message( $"Argument 'child' must be non-null" ).NotNull( child != null );
             Assert.Operation.Message( $"Node {this} must have child {child} node" ).Valid( Children.Contains( child ) );
             child.Detach( (TThis) this, argument );
             Children_.Remove( child );
+            onRemoved?.Invoke( child );
         }
-        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument) {
+        protected bool RemoveChild(Func<TThis, bool> predicate, object? argument, Action<TThis>? onRemoved) {
             var child = Children.LastOrDefault( predicate );
             if (child != null) {
-                RemoveChild( child, argument );
+                RemoveChild( child, argument, onRemoved );
                 return true;
             }
             return false;
         }
-        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument) {
+        protected int RemoveChildren(Func<TThis, bool> predicate, object? argument, Action<TThis>? onRemoved) {
             var children = Children.Where( predicate ).Reverse().ToList();
             foreach (var child in children) {
-                RemoveChild( child, argument );
+                RemoveChild( child, argument, onRemoved );
             }
             return children.Count;
         }
-        protected void RemoveSelf(object? argument) {
+        protected void RemoveSelf(object? argument, Action<TThis>? onRemoved) {
             Assert.Operation.Message( $"Node {this} must have owner" ).Valid( Owner != null );
             if (Parent != null) {
-                Parent.RemoveChild( (TThis) this, argument );
+                Parent.RemoveChild( (TThis) this, argument, onRemoved );
             } else {
-                Tree!.RemoveRoot( (TThis) this, argument );
+                Tree!.RemoveRoot( (TThis) this, argument, onRemoved );
             }
         }
 

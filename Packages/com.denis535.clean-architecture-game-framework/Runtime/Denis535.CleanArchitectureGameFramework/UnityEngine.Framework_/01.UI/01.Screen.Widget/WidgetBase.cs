@@ -129,16 +129,15 @@ namespace UnityEngine.Framework {
         }
 
         // AddChild
-        protected override void AddChild(WidgetBase child, object? argument = null) {
+        protected override void AddChild(WidgetBase child, object? argument) {
             Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
             base.AddChild( child, argument );
         }
-        protected override void RemoveChild(WidgetBase child, object? argument = null) {
+        protected override void RemoveChild(WidgetBase child, object? argument, Action<WidgetBase>? onRemoved) {
             Assert.Argument.Message( $"Argument 'child' ({child}) must be non-disposed" ).Valid( !child.IsDisposed );
             Assert.Operation.Message( $"Widget {this} must be non-disposed" ).NotDisposed( !IsDisposed );
-            base.RemoveChild( child, argument );
-            child.Dispose();
+            base.RemoveChild( child, argument, onRemoved );
         }
 
         // ShowView
