@@ -7,7 +7,7 @@ namespace System {
     public static class DisposableExtensions {
 
         // DisposeAll
-        public static void DisposeAll(this IEnumerable<DisposableBase> disposables) {
+        public static void DisposeAll(this IEnumerable<IDisposable> disposables) {
             foreach (var disposable in disposables) {
                 disposable.Dispose();
             }
