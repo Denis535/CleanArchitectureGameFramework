@@ -8,7 +8,7 @@ namespace UnityEngine.Framework {
     using System.TreeMachine;
     using UnityEngine;
 
-    public abstract class WidgetBase : NodeBase3<WidgetBase>, IDisposable {
+    public abstract class WidgetBase : NodeBase4<WidgetBase>, IDisposable {
 
         private CancellationTokenSource? disposeCancellationTokenSource;
 

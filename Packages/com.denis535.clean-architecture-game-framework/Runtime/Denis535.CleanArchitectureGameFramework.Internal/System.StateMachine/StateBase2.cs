@@ -62,17 +62,19 @@ namespace System.StateMachine {
         }
 
         // OnActivate
+        protected abstract void OnActivate(object? argument);
         protected virtual void OnBeforeActivate(object? argument) {
             OnBeforeActivateEvent?.Invoke( argument );
         }
-        protected abstract void OnActivate(object? argument);
         protected virtual void OnAfterActivate(object? argument) {
             OnAfterActivateEvent?.Invoke( argument );
         }
+
+        // OnDeactivate
+        protected abstract void OnDeactivate(object? argument);
         protected virtual void OnBeforeDeactivate(object? argument) {
             OnBeforeDeactivateEvent?.Invoke( argument );
         }
-        protected abstract void OnDeactivate(object? argument);
         protected virtual void OnAfterDeactivate(object? argument) {
             OnAfterDeactivateEvent?.Invoke( argument );
         }

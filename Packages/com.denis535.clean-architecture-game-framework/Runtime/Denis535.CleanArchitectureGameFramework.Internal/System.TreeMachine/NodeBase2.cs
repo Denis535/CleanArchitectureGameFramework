@@ -16,6 +16,9 @@ namespace System.TreeMachine {
         // Activity
         public Activity_ Activity { get; private set; } = Activity_.Inactive;
 
+        // Children
+        private protected abstract IReadOnlyList<TThis> ChildrenInternal { get; }
+
         // OnActivate
         public event Action<object?>? OnBeforeActivateEvent;
         public event Action<object?>? OnAfterActivateEvent;
@@ -23,7 +26,7 @@ namespace System.TreeMachine {
         public event Action<object?>? OnAfterDeactivateEvent;
 
         // Constructor
-        public NodeBase2() {
+        private protected NodeBase2() {
         }
 
         // Attach
@@ -68,7 +71,7 @@ namespace System.TreeMachine {
             Activity = Activity_.Activating;
             {
                 OnActivate( argument );
-                foreach (var child in Children) {
+                foreach (var child in ChildrenInternal) {
                     child.Activate( argument );
                 }
             }
@@ -82,7 +85,7 @@ namespace System.TreeMachine {
             OnBeforeDeactivate( argument );
             Activity = Activity_.Deactivating;
             {
-                foreach (var child in Children.Reverse()) {
+                foreach (var child in ChildrenInternal.Reverse()) {
                     child.Deactivate( argument );
                 }
                 OnDeactivate( argument );
@@ -92,17 +95,19 @@ namespace System.TreeMachine {
         }
 
         // OnActivate
+        protected abstract void OnActivate(object? argument);
         protected virtual void OnBeforeActivate(object? argument) {
             OnBeforeActivateEvent?.Invoke( argument );
         }
-        protected abstract void OnActivate(object? argument);
         protected virtual void OnAfterActivate(object? argument) {
             OnAfterActivateEvent?.Invoke( argument );
         }
+
+        // OnDeactivate
+        protected abstract void OnDeactivate(object? argument);
         protected virtual void OnBeforeDeactivate(object? argument) {
             OnBeforeDeactivateEvent?.Invoke( argument );
         }
-        protected abstract void OnDeactivate(object? argument);
         protected virtual void OnAfterDeactivate(object? argument) {
             OnAfterDeactivateEvent?.Invoke( argument );
         }
